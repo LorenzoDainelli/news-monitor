@@ -60,12 +60,16 @@ CNBC, Il Sole 24 Ore). Se una ricerca non risponde, logga e prosegui con il rest
   `{"ts": "<ISO 8601>", "routine": "report", "titoli_cercati": N,
   "notizie_trovate": N, "notizie_inviate": N, "email_inviata": true/false,
   "note": "..."}`.
-- Committa lo stato:
+- Committa lo stato **direttamente su `main`** (il branch che viene riclonato
+  alla run successiva). La routine lavora su un branch `claude/...`, quindi NON
+  basta `git push`: bisogna pushare il commit corrente su `main`:
   ```bash
-  git add state/ && git commit -m "stato: run report <data>" && git push
+  git add state/
+  git commit -m "stato: run report <data>"
+  git push origin HEAD:main
   ```
-  (Richiede l'opzione **Allow unrestricted branch pushes** abilitata sul repo,
-  così il commit arriva su `main` e viene riletto alla run successiva.)
+  (Richiede l'opzione **Allow unrestricted branch pushes** abilitata sul repo.
+  Lo stato DEVE finire su `main`, altrimenti la deduplicazione si rompe.)
 
 ## Note di robustezza
 - Errori isolati (una ricerca, una fonte) → logga e prosegui, non fermare la run.
