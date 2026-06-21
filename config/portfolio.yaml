@@ -1,23 +1,315 @@
 # Portfolio monitorato.
-# FASE 1: un solo titolo, per validare l'idraulica (email + rete + stato).
-# Aggiungeremo gli altri titoli nelle fasi successive.
 #
 # Campi:
 #   isin             codice ISIN (privato)
-#   ticker           simbolo per la ricerca news
+#   ticker           simbolo per la ricerca news (per gli ETF la ricerca è guidata
+#                    soprattutto dal nome/tema, il ticker è indicativo)
 #   nome             nome esteso azienda/ETF
-#   tipo             azione | etf   (gli ETF avranno trattamento dedicato)
-#   borsa            mercato di quotazione
-#   priorita         alta | bassa   (alta = passa sempre dagli event-check)
-#   soglia_rilevanza 0-100, soglia specifica del titolo (override di quella globale)
+#   tipo             azione | etf   (gli ETF hanno tassonomia dedicata)
+#   borsa            mercato/quotazione di riferimento
+#   peso             peso in portafoglio (%)
+#   priorita         alta | bassa   (alta = passerà anche dagli event-check;
+#                    NB: non ancora attiva — gli event-check arrivano in Fase 4.
+#                    Per ora TUTTO è coperto dai due report giornalieri.)
 #   tag              etichette tematiche per filtrare
 
 titoli:
-  - isin: US0378331005
-    ticker: AAPL
-    nome: Apple Inc.
+  # ===================== ETF =====================
+  - isin: IE00B4L5Y983
+    ticker: IWDA
+    nome: iShares Core MSCI World UCITS ETF USD (Acc)
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 20
+    priorita: bassa
+    tag: [globale, large-cap, core]
+  - isin: IE00B5BMR087
+    ticker: CSPX
+    nome: iShares Core S&P 500 UCITS ETF USD (Acc)
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 5.5
+    priorita: bassa
+    tag: [USA, large-cap, core]
+  - isin: IE00B53SZB19
+    ticker: CNDX
+    nome: iShares Nasdaq 100 UCITS ETF (Acc)
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 2.5
+    priorita: bassa
+    tag: [USA, tech, growth]
+  - isin: IE00BK5BR626
+    ticker: VHYL
+    nome: Vanguard FTSE All-World High Dividend Yield UCITS ETF (Acc)
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 6
+    priorita: bassa
+    tag: [dividendi, globale, value]
+  - isin: IE00BM67HK77
+    ticker: XDWH
+    nome: Xtrackers MSCI World Health Care UCITS ETF 1C
+    tipo: etf
+    borsa: Xetra
+    peso: 4
+    priorita: bassa
+    tag: [salute, farma]
+  - isin: IE000OJ5TQP4
+    ticker: NATO
+    nome: HanETF Future of Defence UCITS ETF
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 4
+    priorita: bassa
+    tag: [difesa, NATO]
+  - isin: IE000M7V94E1
+    ticker: NUKL
+    nome: VanEck Uranium and Nuclear Technologies UCITS ETF A
+    tipo: etf
+    borsa: Xetra
+    peso: 4
+    priorita: bassa
+    tag: [uranio, nucleare, energia]
+  - isin: IE00BM67HS53
+    ticker: XDWM
+    nome: Xtrackers MSCI World Materials UCITS ETF 1C
+    tipo: etf
+    borsa: Xetra
+    peso: 4
+    priorita: bassa
+    tag: [materiali, commodities]
+  - isin: IE000CK5G8J7
+    ticker: GIFL
+    nome: iShares Global Infrastructure UCITS ETF USD (Acc)
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 4
+    priorita: bassa
+    tag: [infrastrutture]
+  - isin: IE000R8PO127
+    ticker: UKRN
+    nome: Defiance Ukraine Reconstruction UCITS ETF
+    tipo: etf
+    borsa: Borsa Italiana
+    peso: 2
+    priorita: bassa
+    tag: [ricostruzione, ucraina]
+  - isin: IE00BYZK4776
+    ticker: HEAL
+    nome: iShares Healthcare Innovation UCITS ETF (Acc)
+    tipo: etf
+    borsa: Borsa Italiana/Xetra
+    peso: 4
+    priorita: bassa
+    tag: [salute, biotech, innovazione]
+
+  # ===================== AZIONI =====================
+  - isin: NL0010273215
+    ticker: ASML
+    nome: ASML Holding
+    tipo: azione
+    borsa: Euronext Amsterdam
+    peso: 3
+    priorita: alta
+    tag: [semiconduttori, AI]
+  - isin: US84615Q1031
+    ticker: SPACEX
+    nome: SpaceX
+    tipo: azione
+    borsa: non quotata (mercato privato)   # ricerca news solo per nome
+    peso: 2.75
+    priorita: alta
+    tag: [spazio, difesa]
+  - isin: US67066G1040
+    ticker: NVDA
+    nome: NVIDIA
     tipo: azione
     borsa: NASDAQ
+    peso: 2.5
     priorita: alta
-    soglia_rilevanza: 60
+    tag: [semiconduttori, AI]
+  - isin: US8740391003
+    ticker: TSM
+    nome: Taiwan Semiconductor (TSMC)
+    tipo: azione
+    borsa: NYSE (ADR)
+    peso: 2.5
+    priorita: alta
+    tag: [semiconduttori]
+  - isin: US5949181045
+    ticker: MSFT
+    nome: Microsoft
+    tipo: azione
+    borsa: NASDAQ
+    peso: 2.25
+    priorita: alta
+    tag: [tech, cloud, AI]
+  - isin: US02079K3059
+    ticker: GOOG
+    nome: Alphabet (Google) Class C
+    tipo: azione
+    borsa: NASDAQ
+    peso: 2.25
+    priorita: alta
+    tag: [tech, AI, pubblicita]
+  - isin: US11135F1012
+    ticker: AVGO
+    nome: Broadcom
+    tipo: azione
+    borsa: NASDAQ
+    peso: 2
+    priorita: alta
+    tag: [semiconduttori, AI]
+  - isin: US4581401001
+    ticker: INTC
+    nome: Intel
+    tipo: azione
+    borsa: NASDAQ
+    peso: 2
+    priorita: alta
+    tag: [semiconduttori]
+  - isin: US68389X1054
+    ticker: ORCL
+    nome: Oracle
+    tipo: azione
+    borsa: NYSE
+    peso: 1.75
+    priorita: alta
+    tag: [tech, cloud, database]
+  - isin: US9581021055
+    ticker: WDC
+    nome: Western Digital / SanDisk
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1.75
+    priorita: alta
+    tag: [hardware, storage]   # DA VERIFICARE: ISIN = Western Digital (WDC); SanDisk dopo lo spin-off è SNDK
+  - isin: US0378331005
+    ticker: AAPL
+    nome: Apple
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1.5
+    priorita: alta
     tag: [tech, hardware, AI]
+  - isin: US7960508882
+    ticker: SSNLF
+    nome: Samsung Electronics (GDR)
+    tipo: azione
+    borsa: OTC / Corea (005930.KS)
+    peso: 1.5
+    priorita: alta
+    tag: [semiconduttori, hardware]
+  - isin: US69608A1088
+    ticker: PLTR
+    nome: Palantir Technologies
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1.5
+    priorita: alta
+    tag: [software, AI, difesa]
+  - isin: US46625H1005
+    ticker: JPM
+    nome: JPMorgan Chase
+    tipo: azione
+    borsa: NYSE
+    peso: 1.25
+    priorita: alta
+    tag: [banche, finanza]
+  - isin: US5324571083
+    ticker: LLY
+    nome: Eli Lilly
+    tipo: azione
+    borsa: NYSE
+    peso: 1.25
+    priorita: alta
+    tag: [farma, salute]
+  - isin: US0311621009
+    ticker: AMGN
+    nome: Amgen
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1.25
+    priorita: alta
+    tag: [farma, biotech]
+  - isin: US0231351067
+    ticker: AMZN
+    nome: Amazon
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1
+    priorita: alta
+    tag: [tech, e-commerce, cloud]
+  - isin: US30303M1027
+    ticker: META
+    nome: Meta Platforms
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1
+    priorita: alta
+    tag: [tech, social, AI]
+  - isin: US9311421039
+    ticker: WMT
+    nome: Walmart
+    tipo: azione
+    borsa: NYSE
+    peso: 1
+    priorita: alta
+    tag: [retail, consumi]
+  - isin: US64110L1061
+    ticker: NFLX
+    nome: Netflix
+    tipo: azione
+    borsa: NASDAQ
+    peso: 1
+    priorita: alta
+    tag: [streaming, media]
+  - isin: US1912161007
+    ticker: KO
+    nome: Coca-Cola
+    tipo: azione
+    borsa: NYSE
+    peso: 1
+    priorita: alta
+    tag: [consumi, beverage]
+  - isin: US4592001014
+    ticker: IBM
+    nome: IBM
+    tipo: azione
+    borsa: NYSE
+    peso: 1
+    priorita: alta
+    tag: [tech, cloud, AI]
+  - isin: GB00BP6MXD84
+    ticker: SHEL
+    nome: Shell
+    tipo: azione
+    borsa: London / NYSE
+    peso: 1
+    priorita: alta
+    tag: [energia, oil-gas]
+  - isin: US4781601046
+    ticker: JNJ
+    nome: Johnson & Johnson
+    tipo: azione
+    borsa: NYSE
+    peso: 1
+    priorita: alta
+    tag: [farma, salute]
+  - isin: US42328H1095
+    ticker: HLIO
+    nome: Helios Technologies
+    tipo: azione
+    borsa: NYSE
+    peso: 1
+    priorita: alta
+    tag: [industriale, componentistica]
+  - isin: US8740541094
+    ticker: TTWO
+    nome: Take-Two Interactive
+    tipo: azione
+    borsa: NASDAQ
+    peso: 0.3      # PAC ~1 euro/mese
+    priorita: alta
+    tag: [gaming, media]
