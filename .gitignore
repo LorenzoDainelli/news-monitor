@@ -1,0 +1,10 @@
+# Mai committare segreti o file temporanei
+.env
+*.env
+
+# Impostazioni locali di Claude Code (non vanno nel repo condiviso/cloud)
+.claude/settings.local.json
+__pycache__/
+*.pyc
+out.html
+*.tmp

@@ -1,0 +1,23 @@
+# Portfolio monitorato.
+# FASE 1: un solo titolo, per validare l'idraulica (email + rete + stato).
+# Aggiungeremo gli altri titoli nelle fasi successive.
+#
+# Campi:
+#   isin             codice ISIN (privato)
+#   ticker           simbolo per la ricerca news
+#   nome             nome esteso azienda/ETF
+#   tipo             azione | etf   (gli ETF avranno trattamento dedicato)
+#   borsa            mercato di quotazione
+#   priorita         alta | bassa   (alta = passa sempre dagli event-check)
+#   soglia_rilevanza 0-100, soglia specifica del titolo (override di quella globale)
+#   tag              etichette tematiche per filtrare
+
+titoli:
+  - isin: US0378331005
+    ticker: AAPL
+    nome: Apple Inc.
+    tipo: azione
+    borsa: NASDAQ
+    priorita: alta
+    soglia_rilevanza: 60
+    tag: [tech, hardware, AI]

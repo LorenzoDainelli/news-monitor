@@ -1,0 +1,21 @@
+# Impostazioni globali del sistema.
+
+email:
+  destinatario: lorenzodainelli08@gmail.com
+  # In avvio Resend consente l'invio dal mittente di onboarding SOLO verso
+  # l'email con cui ti sei registrato. Dopo aver verificato un tuo dominio,
+  # cambia 'mittente' con un indirizzo del tuo dominio.
+  mittente: "Monitor Titoli <onboarding@resend.dev>"
+
+# Soglia di rilevanza globale (0-100): sotto questa, la notizia non entra nel
+# report. Le soglie per-titolo in portfolio.yaml hanno la precedenza.
+soglia_rilevanza_globale: 60
+
+fuso_orario: Europe/Rome
+
+# normale | vacanza  (in 'vacanza' passano solo gli eventi critici)
+modalita: normale
+
+# FASE 1: forza l'invio di un'email di prova anche senza notizie sopra soglia,
+# per validare l'invio end-to-end. Mettere a 'false' quando il sistema è a regime.
+test_mode: true
