@@ -1,1 +1,2 @@
 {"ts": "init", "routine": "setup", "note": "runlog creato"}
+{"ts":"2026-06-21T00:00:00Z","routine":"report","titoli_cercati":1,"notizie_trovate":3,"notizie_inviate":3,"email_inviata":true,"note":"test_mode=true; 3 notizie AAPL sopra soglia 60; email id=fcf683a4-4737-4c04-a637-ac327de94437"}

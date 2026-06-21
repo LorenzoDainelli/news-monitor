@@ -1,3 +1,22 @@
 {
-  "items": []
+  "items": [
+    {
+      "id": "https://www.cnbc.com/2026/06/19/memory-crisis-hits-such-extremes-that-even-apple-cant-be-safe-.html",
+      "ticker": "AAPL",
+      "url": "https://www.cnbc.com/2026/06/19/memory-crisis-hits-such-extremes-that-even-apple-cant-be-safe-.html",
+      "data_invio": "2026-06-21T00:00:00Z"
+    },
+    {
+      "id": "https://www.cnbc.com/2026/06/18/trump-intel-apple-chip-design-deal.html",
+      "ticker": "AAPL",
+      "url": "https://www.cnbc.com/2026/06/18/trump-intel-apple-chip-design-deal.html",
+      "data_invio": "2026-06-21T00:00:00Z"
+    },
+    {
+      "id": "https://9to5mac.com/2026/06/20/three-apple-stores-are-closing-for-good-today/",
+      "ticker": "AAPL",
+      "url": "https://9to5mac.com/2026/06/20/three-apple-stores-are-closing-for-good-today/",
+      "data_invio": "2026-06-21T00:00:00Z"
+    }
+  ]
 }
