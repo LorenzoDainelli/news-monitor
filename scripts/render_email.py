@@ -112,13 +112,18 @@ def build_html(data: dict) -> str:
     test = data.get("test_mode")
     title = ("[PROVA] " if test else "") + f"\U0001F4CA Monitor titoli — {date}"
     body = []
+    # nota in alto (es. heartbeat del digest settimanale)
+    if data.get("note"):
+        body.append(f'<div style="background:#eef2f7;border:1px solid #d6dee8;border-radius:10px;'
+                    f'padding:12px 14px;margin:0 0 14px;font-size:14px;color:{NAVY};line-height:1.5;">'
+                    f'{esc(data["note"])}</div>')
     items = data.get("items") or []
     if items:
         body.append(f'<div style="font-size:13px;color:#57606a;margin:0 0 14px;">'
                     f'{len(items)} notizie selezionate, in ordine di rilevanza.</div>')
         body.extend(card(it) for it in items)
-    else:
-        diag = data.get("diagnostic") or {}
+    elif data.get("diagnostic"):
+        diag = data["diagnostic"]
         body.append(
             f'<div style="background:#ffffff;border:1px solid #e1e4e8;border-radius:10px;padding:16px;">'
             f'<div style="font-weight:700;color:{NAVY};font-size:16px;">EMAIL DI PROVA — sistema attivo</div>'
@@ -127,6 +132,13 @@ def build_html(data: dict) -> str:
             f'Titoli cercati: {esc(diag.get("titoli_cercati","n/d"))} · '
             f'candidati: {esc(diag.get("candidati","0"))} · '
             f'soglia: {esc(diag.get("soglia","n/d"))}.</div></div>')
+    # elenco "titoli tranquilli" (digest settimanale)
+    quiet = data.get("quiet") or []
+    if quiet:
+        chips = "".join(pill(q, "#555", "#f0f0f0") for q in quiet)
+        body.append(f'<div style="margin-top:10px;"><div style="font-weight:700;color:{NAVY};'
+                    f'font-size:14px;margin-bottom:6px;">\U0001F4ED Titoli tranquilli (nessuna notizia)</div>'
+                    f'{chips}</div>')
 
     disclaimer = (
         "Analisi qualitativa assistita, non una previsione di prezzo e non un consiglio "
