@@ -704,6 +704,81 @@
       "rilevanza": 62,
       "titolo": "Analisti avvertono: SanDisk potrebbe essere sopravvalutata fino al 579% dopo il recente rialzo",
       "url": "https://finnhub.io/api/news?id=326004a1264192648d69043c2d418b23af772f1f4fbb446dfaca81b9c70d6ba1"
+    },
+    {
+      "id": "cnbc-spcx-bond-sale-100b-cash-20260622",
+      "ticker": "SPCX",
+      "data": "2026-06-22T17:04:06+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 82,
+      "titolo": "SpaceX rivela $100 miliardi in cassa ed emette obbligazioni dopo il record IPO",
+      "url": "https://www.cnbc.com/2026/06/22/spacex-spcx-bond-sale-ipo.html"
+    },
+    {
+      "id": "finnhub-goog-brain-drain-deepmind-20260622",
+      "ticker": "GOOG",
+      "data": "2026-06-22T17:04:06+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 78,
+      "titolo": "Alphabet perde oltre il 6% tra fuga di talenti AI e trascinamento da SpaceX",
+      "url": "https://finnhub.io/api/news?id=64baa9d6dbc8e5b3358da81f66906ef3b349f3b5ff388d081bdc544c9cbad311"
+    },
+    {
+      "id": "finnhub-avgo-jpm-defends-google-rumors-20260622",
+      "ticker": "AVGO",
+      "data": "2026-06-22T17:04:06+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "J.P. Morgan difende Broadcom: i rumor su Google non reggono, forte rialzo in arrivo",
+      "url": "https://finnhub.io/api/news?id=a124e103f61349c3cbe57dfb84788d30da99891ac96467faa3d681417e6a0424"
+    },
+    {
+      "id": "finnhub-pltr-french-dgsi-replaces-20260622",
+      "ticker": "PLTR",
+      "data": "2026-06-22T17:04:06+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 70,
+      "titolo": "L'intelligence interna francese abbandona Palantir in favore di un concorrente locale",
+      "url": "https://finnhub.io/api/news?id=3ff64da7e67545c31b2b49f0ae13f3095d701634398da4479d01d472a4efb9a5"
+    },
+    {
+      "id": "finnhub-asml-bofa-target-2345-20260622",
+      "ticker": "ASML",
+      "data": "2026-06-22T17:04:06+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 68,
+      "titolo": "Bank of America alza il target price di ASML a $2.345 con rating Buy, upside del 22%",
+      "url": "https://finnhub.io/api/news?id=5fb2b96b448aa0fd83f9aab438ffb2658f60cdd744b4b1f6ec68a1c471d7564f"
     }
   ]
 }

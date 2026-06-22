@@ -347,6 +347,36 @@
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762",
       "data_invio": "2026-06-22T14:10:00+02:00"
+    },
+    {
+      "id": "cnbc-spcx-bond-sale-100b-cash-20260622",
+      "ticker": "SPCX",
+      "url": "https://www.cnbc.com/2026/06/22/spacex-spcx-bond-sale-ipo.html",
+      "data_invio": "2026-06-22T17:04:06+00:00"
+    },
+    {
+      "id": "finnhub-goog-brain-drain-deepmind-20260622",
+      "ticker": "GOOG",
+      "url": "https://finnhub.io/api/news?id=64baa9d6dbc8e5b3358da81f66906ef3b349f3b5ff388d081bdc544c9cbad311",
+      "data_invio": "2026-06-22T17:04:06+00:00"
+    },
+    {
+      "id": "finnhub-avgo-jpm-defends-google-rumors-20260622",
+      "ticker": "AVGO",
+      "url": "https://finnhub.io/api/news?id=a124e103f61349c3cbe57dfb84788d30da99891ac96467faa3d681417e6a0424",
+      "data_invio": "2026-06-22T17:04:06+00:00"
+    },
+    {
+      "id": "finnhub-pltr-french-dgsi-replaces-20260622",
+      "ticker": "PLTR",
+      "url": "https://finnhub.io/api/news?id=3ff64da7e67545c31b2b49f0ae13f3095d701634398da4479d01d472a4efb9a5",
+      "data_invio": "2026-06-22T17:04:06+00:00"
+    },
+    {
+      "id": "finnhub-asml-bofa-target-2345-20260622",
+      "ticker": "ASML",
+      "url": "https://finnhub.io/api/news?id=5fb2b96b448aa0fd83f9aab438ffb2658f60cdd744b4b1f6ec68a1c471d7564f",
+      "data_invio": "2026-06-22T17:04:06+00:00"
     }
   ]
 }
