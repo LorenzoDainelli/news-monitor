@@ -43,7 +43,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Digest notizie da Finnhub.")
     ap.add_argument("--tickers", required=True, help="Ticker separati da virgola")
     ap.add_argument("--from-hours", type=int, default=36)
-    ap.add_argument("--max-per-ticker", type=int, default=5)
+    ap.add_argument("--max-per-ticker", type=int, default=3)
     ap.add_argument("--summary-chars", type=int, default=200)
     ap.add_argument("--no-general", action="store_true",
                     help="Salta le notizie macro generali")

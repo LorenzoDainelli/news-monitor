@@ -66,8 +66,11 @@ tipo evento × magnitudo/sorpresa × recenza × quanto tocca direttamente il tit
 `peso`/`priorita` del titolo. Bande: 80-100 critico · 60-79 importante ·
 40-59 da report · <40 rumore (scarta).
 
-## Passo 4 — Decidi se inviare
-- Ordina i candidati per `rilevanza` decrescente.
+## Passo 4 — Decidi se inviare e seleziona le TOP 5
+- Ordina i candidati per `rilevanza` decrescente e **seleziona le prime 5**: sono
+  le uniche che vanno nell'email. Gli eventuali candidati oltre la 5ª restano
+  fuori (non marcarli `seen`): verranno rivalutati alla run successiva o
+  decadranno dalla finestra di 36h. Così l'email resta focalizzata (max 5).
 - `test_mode: true` → invia sempre (oggetto con `[PROVA]`); se nessun candidato,
   manda un'email di prova diagnostica breve (titoli cercati, candidati, soglia).
 - `test_mode: false` e nessun candidato >= soglia → **NON inviare**. Vai al Passo 6.
@@ -77,8 +80,8 @@ Mantieni lo stile attuale (palette navy `#1a2b4a` / grigi, pulito). Requisiti:
 - `<meta name="viewport" content="width=device-width, initial-scale=1">`.
 - Contenitore esterno **fluido**: `width:100%; max-width:600px;` centrato. **Niente
   larghezze fisse in px** sui contenuti; font >= 14px.
-- Struttura: intestazione con data → **Da leggere oggi** (le 3-5 voci a rilevanza
-  più alta, una riga ciascuna) → card per notizia → footer con **disclaimer**.
+- Struttura: intestazione con data → una **card per ciascuna delle 5 voci
+  selezionate** (ordinate per rilevanza decrescente) → footer con **disclaimer**.
 - **Impatto e confidenza come "pillole" che vanno a capo da sole** (NON una riga
   larga unica, che su mobile si taglia). Ogni pillola:
   `display:inline-block; padding:4px 8px; border-radius:12px; margin:2px 4px 2px 0;
