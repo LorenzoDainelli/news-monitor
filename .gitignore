@@ -7,4 +7,6 @@
 __pycache__/
 *.pyc
 out.html
+report.json
+state_update.json
 *.tmp

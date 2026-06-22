@@ -44,7 +44,7 @@ def main() -> int:
     ap.add_argument("--tickers", required=True, help="Ticker separati da virgola")
     ap.add_argument("--from-hours", type=int, default=36)
     ap.add_argument("--max-per-ticker", type=int, default=3)
-    ap.add_argument("--summary-chars", type=int, default=200)
+    ap.add_argument("--summary-chars", type=int, default=120)
     ap.add_argument("--no-general", action="store_true",
                     help="Salta le notizie macro generali")
     args = ap.parse_args()

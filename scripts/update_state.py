@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""Aggiorna i file di stato da un JSON compatto (così il modello non scrive
+Python inline a ogni run). Deduplica e fa pruning. Solo libreria standard.
+
+Uso:
+    python scripts/update_state.py --data-file state_update.json [--prune-days 30]
+
+Struttura attesa del JSON:
+{
+  "seen_add":        [{"id":"...","ticker":"...","url":"...","data_invio":"ISO"}],
+  "predictions_add": [{"id":"...","ticker":"...","data":"ISO","tipo_evento":"...",
+                       "impatto":{...},"confidenza":"...","rilevanza":80,
+                       "titolo":"...","url":"..."}],
+  "runlog": {"ts":"ISO","routine":"report","titoli_cercati":27,"notizie_trovate":56,
+             "notizie_inviate":5,"email_inviata":true,"note":"..."}
+}
+"""
+import argparse
+import json
+import os
+import sys
+from datetime import datetime, timezone, timedelta
+
+ROOT = os.path.join(os.path.dirname(__file__), "..", "state")
+SEEN = os.path.join(ROOT, "seen.json")
+PRED = os.path.join(ROOT, "predictions.json")
+RUNLOG = os.path.join(ROOT, "runlog.ndjson")
+
+
+def load_items(path):
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return json.load(fh).get("items", [])
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
+def save_items(path, items):
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump({"items": items}, fh, ensure_ascii=False, indent=2)
+
+
+def _date_of(item, *keys):
+    for k in keys:
+        v = item.get(k)
+        if v:
+            return v
+    return ""
+
+
+def prune(items, days, *date_keys):
+    if not days:
+        return items
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+    kept = []
+    for it in items:
+        d = _date_of(it, *date_keys)
+        if not d or d >= cutoff:  # tieni se senza data o piu' recente del cutoff
+            kept.append(it)
+    return kept
+
+
+def merge(existing, additions, dedup_key):
+    seen_keys = {it.get(dedup_key) for it in existing if it.get(dedup_key)}
+    for it in additions or []:
+        k = it.get(dedup_key)
+        if k and k in seen_keys:
+            continue
+        existing.append(it)
+        if k:
+            seen_keys.add(k)
+    return existing
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Aggiorna lo stato da JSON.")
+    ap.add_argument("--data-file", required=True)
+    ap.add_argument("--prune-days", type=int, default=30)
+    args = ap.parse_args()
+
+    try:
+        with open(args.data_file, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"ERRORE lettura {args.data_file}: {exc}", file=sys.stderr)
+        return 1
+
+    seen = merge(load_items(SEEN), data.get("seen_add"), "id")
+    seen = prune(seen, args.prune_days, "data_invio")
+    save_items(SEEN, seen)
+
+    pred = merge(load_items(PRED), data.get("predictions_add"), "id")
+    pred = prune(pred, args.prune_days, "data")
+    save_items(PRED, pred)
+
+    if data.get("runlog"):
+        with open(RUNLOG, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(data["runlog"], ensure_ascii=False) + "\n")
+
+    print(f"Stato aggiornato: seen={len(seen)} predictions={len(pred)} "
+          f"(+{len(data.get('seen_add') or [])} seen, +{len(data.get('predictions_add') or [])} pred)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

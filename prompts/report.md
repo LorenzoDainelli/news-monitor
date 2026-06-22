@@ -77,44 +77,57 @@ tipo evento × magnitudo/sorpresa × recenza × quanto tocca direttamente il tit
   manda un'email di prova diagnostica breve (titoli cercati, candidati, soglia).
 - `test_mode: false` e nessun candidato >= soglia → **NON inviare**. Vai al Passo 6.
 
-## Passo 5 — Costruisci e invia l'email (HTML responsive — mobile first)
-Mantieni lo stile attuale (palette navy `#1a2b4a` / grigi, pulito). Requisiti:
-- `<meta name="viewport" content="width=device-width, initial-scale=1">`.
-- Contenitore esterno **fluido**: `width:100%; max-width:600px;` centrato. **Niente
-  larghezze fisse in px** sui contenuti; font >= 14px.
-- Struttura: intestazione con data → una **card per ciascuna delle 5 voci
-  selezionate** (ordinate per rilevanza decrescente) → footer con **disclaimer**.
-- **Impatto e confidenza come "pillole" che vanno a capo da sole** (NON una riga
-  larga unica, che su mobile si taglia). Ogni pillola:
-  `display:inline-block; padding:4px 8px; border-radius:12px; margin:2px 4px 2px 0;
-  font-size:13px; white-space:nowrap;`. Quattro pillole separate:
-  `Breve ▲` · `Medio =` · `Lungo ▼` · `Confidenza: media`
-  (▲ verde positivo, = grigio neutro, ▼ rosso negativo). Le pillole, essendo
-  inline-block, si dispongono su più righe sugli schermi stretti senza tagliarsi.
-- Card a larghezza fluida (`width:100%`), non in tabelle a larghezza fissa.
-Salva l'HTML in `out.html` e invia (la chiave è in variabile d'ambiente):
-```bash
-python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
-  --subject "📊 Monitor titoli — <data>" --html-file out.html
+## Passo 5 — Scrivi il JSON, renderizza l'HTML, invia
+**NON scrivere l'HTML a mano** (spreca token). Produci solo i **dati** e lascia che
+sia lo script a costruire l'email.
+1. Scrivi un file `report.json` con questa struttura:
+   ```json
+   {
+     "date": "<data odierna, es. 22 giugno 2026>",
+     "test_mode": <true|false>,
+     "diagnostic": {"titoli_cercati": N, "candidati": N, "soglia": N},
+     "items": [
+       {"ticker":"...", "tickers":["..."], "also":"<opz: 'Tocca anche X: ...'>",
+        "tipo_evento":"...", "rilevanza":NN, "titolo":"...", "riassunto":"...",
+        "impatto":{"breve":"positivo|neutro|negativo","medio":"...","lungo":"..."},
+        "confidenza":"bassa|media|alta", "tag":["..."],
+        "sentiment_analisti":"<opz>", "fonti":[{"nome":"Testata — titolo","url":"..."}]}
+     ]
+   }
+   ```
+   - `items` = le 5 voci selezionate (ordinate per rilevanza). In `test_mode` senza
+     candidati: `items: []` e compila `diagnostic`.
+2. Renderizza e invia (la chiave è in variabile d'ambiente):
+   ```bash
+   python scripts/render_email.py --data-file report.json --out out.html
+   python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
+     --subject "📊 Monitor titoli — <data>" --html-file out.html
+   ```
+Se `send_email.py` esce != 0: invio fallito → non aggiornare lo stato, logga l'errore.
+
+⚠️ **Invia UNA SOLA VOLTA per run.** Se dopo l'invio noti un errore, **NON
+reinviare**: correggi solo lo stato. Mai una seconda email per run.
+
+## Passo 6 — Aggiorna lo stato (via script) e committa su `main`
+**NON scrivere Python inline** per aggiornare i JSON. Scrivi un file
+`state_update.json` e lascia fare allo script (deduplica e fa pruning a 30 giorni):
+```json
+{
+  "seen_add": [{"id":"<url normalizzato>","ticker":"...","url":"...","data_invio":"<ISO>"}],
+  "predictions_add": [{"id":"...","ticker":"...","data":"<ISO>","tipo_evento":"...",
+     "impatto":{"breve":"...","medio":"...","lungo":"..."},"confidenza":"...",
+     "rilevanza":NN,"titolo":"...","url":"..."}],
+  "runlog": {"ts":"<ISO>","routine":"report","titoli_cercati":N,"notizie_trovate":N,
+     "notizie_inviate":N,"email_inviata":true,"note":"..."}
+}
 ```
-Se lo script esce != 0: invio fallito → non aggiornare `seen.json`, logga l'errore.
-
-⚠️ **Invia UNA SOLA VOLTA per run.** Completa prima tutto il triage e l'analisi,
-poi esegui `send_email.py` una volta sola. Se dopo l'invio noti un errore, **NON
-reinviare**: correggi solo `seen.json`/`runlog`. Mai una seconda email per run.
-
-## Passo 6 — Aggiorna stato, logga le stime, committa su `main`
-- `seen.json`: voci inviate (`id`, `ticker`, `url`, `data_invio`).
-- `predictions.json`: per ogni voce inviata `{id, ticker, data, tipo_evento,
-  impatto:{breve,medio,lungo}, confidenza, rilevanza, titolo, url}`.
-- `runlog.ndjson`: una riga `{ts, routine:"report", titoli_cercati, notizie_trovate,
-  notizie_inviate, email_inviata, note}`.
-- Committa lo stato **su `main`** (la routine lavora su un branch `claude/...`):
-  ```bash
-  git add state/
-  git commit -m "stato: run report <data>"
-  git push origin HEAD:main
-  ```
+(`seen_add` e `predictions_add` solo per le voci effettivamente inviate.) Poi:
+```bash
+python scripts/update_state.py --data-file state_update.json
+git add state/
+git commit -m "stato: run report <data>"
+git push origin HEAD:main
+```
 
 ## Robustezza
 - Errori isolati (una ricerca/fonte) → logga e prosegui, non fermare la run.
