@@ -20,6 +20,7 @@ fuso_orario: Europe/Rome
 # normale | vacanza  (in 'vacanza' passano solo gli eventi critici)
 modalita: normale
 
-# FASE 1: forza l'invio di un'email di prova anche senza notizie sopra soglia,
-# per validare l'invio end-to-end. Mettere a 'false' quando il sistema è a regime.
-test_mode: true
+# A regime: 'false' = invia solo quando c'è qualcosa sopra soglia (report) o di
+# critico (event-check). Weekly/monthly inviano sempre (heartbeat). Rimetti 'true'
+# solo se devi ri-testare l'invio end-to-end.
+test_mode: false
