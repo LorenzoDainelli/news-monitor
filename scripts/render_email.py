@@ -28,8 +28,16 @@ import argparse
 import html
 import json
 import sys
+from datetime import datetime, timezone, timedelta
 
 NAVY = "#1a2b4a"
+MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
+        "agosto", "settembre", "ottobre", "novembre", "dicembre"]
+
+
+def _oggi() -> str:
+    d = datetime.now(timezone.utc) + timedelta(hours=2)  # ~Europe/Rome (CEST)
+    return f"{d.day} {MESI[d.month - 1]} {d.year}"
 IMPACT = {
     "positivo": ("▲", "#1a7f37", "#e6f4ea"),  # ▲ verde
     "neutro":   ("=",       "#57606a", "#eaeef2"),
@@ -100,7 +108,7 @@ def card(it: dict) -> str:
 
 
 def build_html(data: dict) -> str:
-    date = esc(data.get("date", ""))
+    date = esc(data.get("date") or _oggi())
     test = data.get("test_mode")
     title = ("[PROVA] " if test else "") + f"\U0001F4CA Monitor titoli — {date}"
     body = []
