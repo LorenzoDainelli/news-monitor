@@ -779,6 +779,51 @@
       "rilevanza": 68,
       "titolo": "Bank of America alza il target price di ASML a $2.345 con rating Buy, upside del 22%",
       "url": "https://finnhub.io/api/news?id=5fb2b96b448aa0fd83f9aab438ffb2658f60cdd744b4b1f6ec68a1c471d7564f"
+    },
+    {
+      "id": "pred-intc-chips-equity-20260622",
+      "ticker": "INTC",
+      "data": "2026-06-22T20:10:00+00:00",
+      "tipo_evento": "Partnership strategico / Equity stake governativo",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 88,
+      "titolo": "Intel sigla accordi con Google e Tesla: USA entra in equity",
+      "url": "https://finnhub.io/api/news?id=47dbca27ea1d4e780ad26c0b657b300660cae4fd60299502b92859537e5e52fe"
+    },
+    {
+      "id": "pred-nflx-52week-low-20260622",
+      "ticker": "NFLX",
+      "data": "2026-06-22T20:10:00+00:00",
+      "tipo_evento": "Fallimento M&A / Perdita di valore",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 85,
+      "titolo": "Netflix crolla al minimo 52 settimane: fallite acquisizioni strategiche",
+      "url": "https://finnhub.io/api/news?id=8d37fcd3f9b66405f2b243b83f8c919a86dc9bfe3e3aff1a5345ad20316db245"
+    },
+    {
+      "id": "pred-pltr-mixed-deal-growth-20260622",
+      "ticker": "PLTR",
+      "data": "2026-06-22T20:10:00+00:00",
+      "tipo_evento": "Perdita di deal + Forte crescita USA",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 82,
+      "titolo": "Palantir perde contratto Francia, ma revenue USA boom +104%",
+      "url": "https://finnhub.io/api/news?id=0a722d89d8a6684292a0c754d6306b108f2db8cce797a415a13fe9a6bb563849"
     }
   ]
 }

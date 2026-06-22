@@ -377,6 +377,30 @@
       "ticker": "ASML",
       "url": "https://finnhub.io/api/news?id=5fb2b96b448aa0fd83f9aab438ffb2658f60cdd744b4b1f6ec68a1c471d7564f",
       "data_invio": "2026-06-22T17:04:06+00:00"
+    },
+    {
+      "id": "finnhub-intc-google-tesla-equity-20260622",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=47dbca27ea1d4e780ad26c0b657b300660cae4fd60299502b92859537e5e52fe",
+      "data_invio": "2026-06-22T20:10:00+00:00"
+    },
+    {
+      "id": "benzinga-nflx-52week-low-20260622",
+      "ticker": "NFLX",
+      "url": "https://finnhub.io/api/news?id=8d37fcd3f9b66405f2b243b83f8c919a86dc9bfe3e3aff1a5345ad20316db245",
+      "data_invio": "2026-06-22T20:10:00+00:00"
+    },
+    {
+      "id": "yahoo-pltr-underperformance-20260622",
+      "ticker": "PLTR",
+      "url": "https://finnhub.io/api/news?id=0a722d89d8a6684292a0c754d6306b108f2db8cce797a415a13fe9a6bb563849",
+      "data_invio": "2026-06-22T20:10:00+00:00"
+    },
+    {
+      "id": "yahoo-pltr-us-growth-20260622",
+      "ticker": "PLTR",
+      "url": "https://finnhub.io/api/news?id=8404ff1c7f3c432afffdb3f7be75a8ee255234c527feef3e0c3edbdca548278d",
+      "data_invio": "2026-06-22T20:10:00+00:00"
     }
   ]
 }
