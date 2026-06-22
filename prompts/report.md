@@ -47,6 +47,8 @@ Tieni una lista breve dei candidati sopravvissuti (titolo, ticker, fonte, punteg
 Solo per i candidati sopravvissuti, e aggregando in **una voce** la stessa notizia
 da più fonti, compila:
 - `tipo_evento` (tassonomia sotto)
+- `titolo`: titolo della notizia **riscritto in italiano semplice e poco tecnico**,
+  mantenendo il significato (non l'headline originale in inglese/gergale)
 - `riassunto`: 2-3 frasi in italiano semplice
 - `fonti`: una o più (testata + link)
 - `impatto`: `{ breve, medio, lungo }` ∈ `{positivo, negativo, neutro}`

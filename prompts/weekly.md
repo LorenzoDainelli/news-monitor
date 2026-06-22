@@ -17,11 +17,16 @@ Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
   negli ultimi 7 giorni, prendi le **5-8 più rilevanti** (per `rilevanza`).
   Diventano gli `items` (hai già: tipo_evento, impatto, confidenza, rilevanza,
   titolo, url; aggiungi un `riassunto` di 1 frase se utile).
+  **Copia `impatto` (oggetto {breve,medio,lungo}) e `confidenza` ESATTAMENTE come
+  sono in `predictions.json` — NON rimetterli a "neutro".**
 - **Titoli tranquilli**: i titoli di `portfolio.yaml` che **non** compaiono in
   nessuna voce di `seen.json` negli ultimi 7 giorni. Raggruppali per tipo e usa il
-  **nome** (NON il ticker): `quiet = {"azioni": [nomi], "etf": [nomi abbreviati]}`.
-  Per gli ETF abbrevia il nome lungo (es. "iShares Core MSCI World UCITS ETF USD
-  (Acc)" → "Core MSCI World"; "HanETF Future of Defence" → "Future of Defence").
+  `quiet = {"azioni": [nomi], "etf": [nomi brevi]}`.
+  **Azioni**: usa il `nome`. **ETF**: usa SEMPRE questi nomi brevi (mai il ticker) —
+  IWDA=Core MSCI World, CSPX=S&P 500, CNDX=Nasdaq 100, VHYL=High Dividend,
+  XDWH=World Health Care, NATO=Future of Defence, NUKL=Uranio & Nucleare,
+  XDWM=World Materials, GIFL=Global Infrastructure, UKRN=Ukraine Reconstruction,
+  HEAL=Healthcare Innovation.
 
 ## Passo 3 — Costruisci `report.json` e invia
 Struttura (stessa del report, con i campi extra `note` e `quiet`):

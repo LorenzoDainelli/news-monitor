@@ -12,12 +12,18 @@ Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
 ## Passo 2 — Calcola (ultimi ~30 giorni)
 - **Statistiche**: dal `runlog` quante run ed email nel mese.
 - **Top notizie del mese**: da `predictions.json` (ultimi 30 giorni) le **8-12 più
-  rilevanti** (per `rilevanza`) → `items`.
+  rilevanti** (per `rilevanza`) → `items`. **Copia `impatto` (oggetto
+  {breve,medio,lungo}) e `confidenza` ESATTAMENTE come sono in `predictions.json`
+  — NON rimetterli a "neutro".**
 - **Temi del mese**: aggrega i `tag` delle notizie del mese → quali temi/settori si
   sono mossi di più (es. "AI/semiconduttori molto attivi, difesa in evidenza").
 - **Titoli tranquilli del mese**: titoli di `portfolio.yaml` senza alcuna voce in
-  `seen.json` negli ultimi 30 giorni → `quiet = {"azioni":[nomi], "etf":[nomi
-  abbreviati]}` (nomi, non ticker).
+  `seen.json` negli ultimi 30 giorni → `quiet = {"azioni":[nomi], "etf":[nomi brevi]}`.
+  **Azioni**: usa il `nome`. **ETF**: usa SEMPRE questi nomi brevi (mai il ticker) —
+  IWDA=Core MSCI World, CSPX=S&P 500, CNDX=Nasdaq 100, VHYL=High Dividend,
+  XDWH=World Health Care, NATO=Future of Defence, NUKL=Uranio & Nucleare,
+  XDWM=World Materials, GIFL=Global Infrastructure, UKRN=Ukraine Reconstruction,
+  HEAL=Healthcare Innovation.
 
 ## Passo 3 — Costruisci `report.json` e invia
 ```json

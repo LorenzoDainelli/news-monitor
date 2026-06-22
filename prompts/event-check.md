@@ -30,7 +30,7 @@ azioni), `state/seen.json`.
 
 ## Passo 3 — Analizza i critici (max 3)
 Per i candidati critici (al massimo 3, i più rilevanti) compila i campi come nel
-report: `tipo_evento, riassunto, impatto{breve,medio,lungo}, confidenza, tag,
+report: `titolo` (italiano semplice e poco tecnico), `tipo_evento, riassunto, impatto{breve,medio,lungo}, confidenza, tag,
 fonti, rilevanza`. Niente fetch di articoli: usa il digest.
 
 ## Passo 4 — Avviso email (solo se ci sono critici)
