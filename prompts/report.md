@@ -6,28 +6,38 @@ semplice; mai esporre la chiave API. Il sistema aiuta a CAPIRE, non prevede i pr
 
 > ## ⚠️ EFFICIENZA — vincolo di budget (NON NEGOZIABILE)
 > Il budget di token è la risorsa più scarsa. Quindi:
-> 1. **UNA sola WebSearch per titolo.** Niente query multiple sullo stesso titolo.
-> 2. **NON aprire/scaricare gli articoli** (niente fetch). Lavora sugli **snippet**
->    dei risultati di ricerca. Apri un articolo **solo** se è indispensabile per
->    riassumere correttamente una notizia **già sopra soglia** (caso raro).
-> 3. **Triage prima, analisi dopo**: l'analisi completa va fatta SOLO sulle poche
->    notizie che superano la soglia. Sui titoli senza notizie rilevanti non
->    ragionare e non scrivere nulla: passa oltre.
-> 4. Sii **conciso** in ogni passo. Non rileggere file inutilmente.
+> 1. **Le notizie delle azioni si scaricano con UNA sola chiamata a
+>    `scripts/fetch_news.py`** (vedi Passo 2): è lo script a fare le richieste, tu
+>    leggi solo il digest compatto. **NON fare una WebSearch per ogni titolo.**
+> 2. **Per i temi ETF** puoi fare **al massimo 2-3 WebSearch totali** (la news API
+>    copre poco gli ETF UCITS), con parsimonia.
+> 3. **NON aprire/scaricare articoli interi** (niente fetch). Apri un articolo solo
+>    se indispensabile per una notizia **già sopra soglia** (max 1-2, caso raro).
+> 4. **Triage prima, analisi dopo**: l'analisi completa solo sulle poche notizie
+>    sopra soglia. Sui titoli senza notizie non ragionare e non scrivere nulla.
+> 5. Sii **conciso**. Non rileggere file inutilmente.
 
 ## Passo 1 — Carica configurazione e stato
 Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
 `state/predictions.json`. Una lettura ciascuno.
 
-## Passo 2 — TRIAGE (fase economica, solo snippet)
-Per ogni titolo del portfolio:
-- fai **una** WebSearch per notizie delle ultime ~36 ore (nome + ticker; per gli
-  **ETF** cerca il tema/flussi/ribilanciamenti, non earnings);
-- guarda **solo gli snippet**;
-- scarta subito ciò che è già in `seen.json`, il rumore e l'off-topic;
-- per ciò che resta, stima **al volo** la rilevanza (vedi rubrica) e tieni solo i
-  candidati con rilevanza >= soglia del titolo (altrimenti `soglia_rilevanza_globale`).
-Se un titolo non ha candidati, **passa oltre senza scrivere nulla**.
+## Passo 2 — Scarica le notizie (UNA chiamata) e fai il TRIAGE
+1. Dai titoli con `tipo: azione` estrai la lista dei ticker ed eseguila in **una
+   sola** chiamata:
+   ```bash
+   python scripts/fetch_news.py --tickers TICK1,TICK2,...,TICKn
+   ```
+   Lo script restituisce un JSON compatto: `items` (notizie per azione, già
+   deduplicate; il campo `tickers` elenca i titoli toccati) e `macro` (contesto
+   generale). Leggi quello: NON fare una ricerca web per ogni titolo.
+2. Per i **temi degli ETF** (difesa/NATO, uranio/nucleare, salute, materiali,
+   infrastrutture, ricostruzione Ucraina, ecc.) puoi fare **al massimo 2-3
+   WebSearch totali** (non una per ETF): la news API copre poco gli ETF UCITS.
+3. **Triage** sul digest (più gli eventuali risultati ETF):
+   - scarta ciò che è già in `seen.json`, il rumore, l'off-topic;
+   - stima al volo la rilevanza (rubrica) e tieni solo i candidati >= soglia del
+     titolo (altrimenti `soglia_rilevanza_globale`).
+   Se non resta nulla per un titolo, passa oltre senza scrivere nulla.
 Tieni una lista breve dei candidati sopravvissuti (titolo, ticker, fonte, punteggio).
 
 ## Passo 3 — ANALISI (solo sui candidati sopra soglia)
@@ -39,7 +49,7 @@ da più fonti, compila:
 - `impatto`: `{ breve, medio, lungo }` ∈ `{positivo, negativo, neutro}`
 - `confidenza`: `bassa | media | alta`
 - `tag`: tematici
-- `sentiment_analisti` (solo **se già presente** negli snippet): rating/target/revisioni
+- `sentiment_analisti` (solo **se già presente** nei dati scaricati): rating/target/revisioni
 - `rilevanza`: 0-100
 Se una notizia tocca **più titoli**, segnalalo nella voce (una voce sola).
 Ricorda: l'impatto è **analisi qualitativa**, non una previsione, mai un consiglio.
