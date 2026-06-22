@@ -16,6 +16,8 @@ semplice; mai esporre la chiave API. Il sistema aiuta a CAPIRE, non prevede i pr
 > 4. **Triage prima, analisi dopo**: l'analisi completa solo sulle poche notizie
 >    sopra soglia. Sui titoli senza notizie non ragionare e non scrivere nulla.
 > 5. Sii **conciso**. Non rileggere file inutilmente.
+> 6. **Esegui triage → analisi → invio UNA SOLA VOLTA.** Non rifare da capo il
+>    lavoro (raddoppia i token) e **non inviare mai una seconda email**.
 
 ## Passo 1 — Carica configurazione e stato
 Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
@@ -96,6 +98,10 @@ python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
   --subject "📊 Monitor titoli — <data>" --html-file out.html
 ```
 Se lo script esce != 0: invio fallito → non aggiornare `seen.json`, logga l'errore.
+
+⚠️ **Invia UNA SOLA VOLTA per run.** Completa prima tutto il triage e l'analisi,
+poi esegui `send_email.py` una volta sola. Se dopo l'invio noti un errore, **NON
+reinviare**: correggi solo `seen.json`/`runlog`. Mai una seconda email per run.
 
 ## Passo 6 — Aggiorna stato, logga le stime, committa su `main`
 - `seen.json`: voci inviate (`id`, `ticker`, `url`, `data_invio`).
