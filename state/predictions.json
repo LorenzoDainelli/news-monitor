@@ -539,6 +539,81 @@
       "rilevanza": 65,
       "titolo": "Apple CEO avverte: prezzi iPhone potrebbero salire per AI",
       "url": "https://finnhub.io/api/news?id=ddffb23565810107a2c296fa44c94b614f163853b2640d596bfd4a6ef0b8e62e"
+    },
+    {
+      "id": "intel-apple-partnership-fab-usa",
+      "ticker": "INTC",
+      "data": "2026-06-22",
+      "tipo_evento": "partnership_produttiva",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 85,
+      "titolo": "Apple e Intel partner per fab USA: confermato deal con appoggio Trump",
+      "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916"
+    },
+    {
+      "id": "tsmc-upgrade-buy-ai-demand",
+      "ticker": "TSM",
+      "data": "2026-06-22",
+      "tipo_evento": "upgrade_analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 80,
+      "titolo": "TSMC upgrade a Buy: domanda AI robusta, capex disciplinato, vantaggio EUV",
+      "url": "https://finnhub.io/api/news?id=0ad4ce0b85a22cc899bf31fa842314b3c6ff6de05fe9a2e7eb585ff42810853a"
+    },
+    {
+      "id": "jpm-macro-chip-crowding-warning",
+      "ticker": "MACRO",
+      "data": "2026-06-22",
+      "tipo_evento": "macro_warning",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 75,
+      "titolo": "JPMorgan alert: settore chip sovraffollato, rischio selloff acuto",
+      "url": "https://finnhub.io/api/news?id=f617bed01fc18b7b11dac6d7e204a364f1670eaa8d3953586b5768c374895d50"
+    },
+    {
+      "id": "oracle-capex-ai-buildout",
+      "ticker": "ORCL",
+      "data": "2026-06-22",
+      "tipo_evento": "earnings_capex",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "positivo",
+        "lungo": "dipende"
+      },
+      "confidenza": "alta",
+      "rilevanza": 75,
+      "titolo": "Oracle Q4: record revenue AI-driven, ma capex resta elevato",
+      "url": "https://finnhub.io/api/news?id=ebcc55712099f4a2135a80d27dd233b85043f4833486031ef6001f6edf5e21eb"
+    },
+    {
+      "id": "broadcom-custom-ai-chips",
+      "ticker": "AVGO",
+      "data": "2026-06-22",
+      "tipo_evento": "tema_investimento_ai",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 75,
+      "titolo": "Broadcom: il modo migliore investire in AI per custom chips",
+      "url": "https://finnhub.io/api/news?id=ca5837ecd6296c7e29d600e06070363d82c0ed7fc523937db7024283a3f240cd"
     }
   ]
 }

@@ -251,6 +251,48 @@
       "ticker": "AAPL",
       "url": "https://finnhub.io/api/news?id=ddffb23565810107a2c296fa44c94b614f163853b2640d596bfd4a6ef0b8e62e",
       "data_invio": "2026-06-22T08:36:25.933171+00:00"
+    },
+    {
+      "id": "finnhub-apple-intel-chip-fab-usa-20260622",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916",
+      "data_invio": "2026-06-22T10:00:00+02:00"
+    },
+    {
+      "id": "finnhub-intc-overnight-jump-apple-deal-20260622",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=dd18859597e6e117dc93d90d3164be682a6ad995ff338dcb2382fc8396e88ddc",
+      "data_invio": "2026-06-22T10:00:00+02:00"
+    },
+    {
+      "id": "seekingalpha-tsmc-upgrade-ai-demand-20260622",
+      "ticker": "TSM",
+      "url": "https://finnhub.io/api/news?id=0ad4ce0b85a22cc899bf31fa842314b3c6ff6de05fe9a2e7eb585ff42810853a",
+      "data_invio": "2026-06-22T10:00:00+02:00"
+    },
+    {
+      "id": "finnhub-jpm-crowded-semiconductor-warning-20260622",
+      "ticker": "MACRO",
+      "url": "https://finnhub.io/api/news?id=f617bed01fc18b7b11dac6d7e204a364f1670eaa8d3953586b5768c374895d50",
+      "data_invio": "2026-06-22T10:00:00+02:00"
+    },
+    {
+      "id": "finnhub-oracle-ai-capex-bottleneck-20260622",
+      "ticker": "ORCL",
+      "url": "https://finnhub.io/api/news?id=ebcc55712099f4a2135a80d27dd233b85043f4833486031ef6001f6edf5e21eb",
+      "data_invio": "2026-06-22T10:00:00+02:00"
+    },
+    {
+      "id": "finnhub-orcl-dips-capex-pressure-20260622",
+      "ticker": "ORCL",
+      "url": "https://finnhub.io/api/news?id=2fdf5890caddda1df3014416707a966550a0c710d8f80800eacb35c116328215",
+      "data_invio": "2026-06-22T10:00:00+02:00"
+    },
+    {
+      "id": "finnhub-broadcom-ai-chips-leadership-20260622",
+      "ticker": "AVGO",
+      "url": "https://finnhub.io/api/news?id=ca5837ecd6296c7e29d600e06070363d82c0ed7fc523937db7024283a3f240cd",
+      "data_invio": "2026-06-22T10:00:00+02:00"
     }
   ]
 }
