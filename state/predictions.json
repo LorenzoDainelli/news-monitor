@@ -186,6 +186,127 @@
       "rilevanza": 65,
       "titolo": "IBM: $10B quantum+AI investment su 5 anni; Think 2026 blueprint AI Operating Model",
       "url": "https://newsroom.ibm.com/2026-05-05-think-2026-ibm-delivers-the-blueprint-for-the-ai-operating-model-as-the-ai-divide-widens"
+    },
+    {
+      "id": "finnhub-spcx-cursor-acquisition-60b",
+      "ticker": "SPCX",
+      "data": "2026-06-22",
+      "tipo_evento": "M&A",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 80,
+      "titolo": "SpaceX acquisisce Cursor per $60B — primo grande M&A post-IPO",
+      "url": "https://finnhub.io/api/news?id=b745f8ee3bb3721501772ede1a3e5b805aa5c9553b1c2dd017a730caa3fb9728"
+    },
+    {
+      "id": "finnhub-intc-aapl-chip-deal-usa-trump",
+      "ticker": "INTC",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "alta",
+      "rilevanza": 70,
+      "titolo": "Apple-Intel accordo chip USA confermato da Trump, INTC +5% overnight",
+      "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916"
+    },
+    {
+      "id": "finnhub-nflx-acquisition-wall-street-likes",
+      "ticker": "NFLX",
+      "data": "2026-06-22",
+      "tipo_evento": "M&A",
+      "impatto": { "breve": "neutro", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Netflix fa un'acquisizione approvata da Wall Street",
+      "url": "https://finnhub.io/api/news?id=03c1125565b3a3e5c0e24dd0c41bc5f52c97f11eece6452534d98bc1be7d3bf0"
+    },
+    {
+      "id": "finnhub-tsm-asml-buying-opportunity-upgrade",
+      "ticker": "TSM",
+      "data": "2026-06-22",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "TSMC upgraded a buy: domanda AI, CapEx disciplinato, vantaggio EUV",
+      "url": "https://finnhub.io/api/news?id=0ad4ce0b85a22cc899bf31fa842314b3c6ff6de05fe9a2e7eb585ff42810853a"
+    },
+    {
+      "id": "finnhub-goog-morgan-stanley-ai-spending",
+      "ticker": "GOOG",
+      "data": "2026-06-22",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 64,
+      "titolo": "Morgan Stanley positivo su Google AI spending: capex $180-190B giustificato",
+      "url": "https://finnhub.io/api/news?id=6be6b4b48a6e164ff92d85a699eb8c33bf17ef333c4ad7c5c980c3263728400b"
+    },
+    {
+      "id": "finnhub-jpm-crowded-semiconductor-warning",
+      "ticker": "MACRO",
+      "data": "2026-06-22",
+      "tipo_evento": "macro",
+      "impatto": { "breve": "negativo", "medio": "neutro", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "JPMorgan: trade semiconduttori sovraffollato, rischio selloff improvvisi",
+      "url": "https://finnhub.io/api/news?id=f617bed01fc18b7b11dac6d7e204a364f1670eaa8d3953586b5768c374895d50"
+    },
+    {
+      "id": "finnhub-macro-iran-hormuz-memory-stocks",
+      "ticker": "MACRO",
+      "data": "2026-06-22",
+      "tipo_evento": "macro",
+      "impatto": { "breve": "negativo", "medio": "neutro", "lungo": "neutro" },
+      "confidenza": "bassa",
+      "rilevanza": 63,
+      "titolo": "Iran/Hormuz: tensioni poi trattative; memorie (SNDK, WDC) in controtendenza al selloff",
+      "url": "https://finnhub.io/api/news?id=772443f271c8469fb9e2216f3a8b7738f12ae4f4c09307236f85acd9b46a34b7"
+    },
+    {
+      "id": "finnhub-meta-india-ai-datacenter-reliance",
+      "ticker": "META",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "neutro", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Meta primo data center AI su misura in India con Reliance Industries",
+      "url": "https://finnhub.io/api/news?id=d27daaf6d7a3fd086360e6831e4a56bbc76ef21f0b51448c988de128f1aa4d10"
+    },
+    {
+      "id": "finnhub-msft-xbox-restructuring-june30",
+      "ticker": "MSFT",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "negativo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Microsoft: ristrutturazione Xbox e possibile spin-off — 30 giugno data chiave",
+      "url": "https://finnhub.io/api/news?id=013dea3ad5bcb5afde18807f5d6147e2261604db7e52fa1c9f57ed8acec2ba53"
+    },
+    {
+      "id": "finnhub-sndk-wdc-western-digital-crushing-sp500",
+      "ticker": "WDC",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "alta",
+      "rilevanza": 62,
+      "titolo": "Western Digital batte l'S&P 500: boom memorie non è solo SanDisk",
+      "url": "https://finnhub.io/api/news?id=95884ca1a714410c49ee2295f8e31837630e95923bccb0704944025ee27e7add"
+    },
+    {
+      "id": "finnhub-lly-bioarctic-collaboration",
+      "ticker": "LLY",
+      "data": "2026-06-22",
+      "tipo_evento": "prodotto",
+      "impatto": { "breve": "neutro", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "bassa",
+      "rilevanza": 61,
+      "titolo": "Eli Lilly + BioArctic: collaborazione su trattamenti cerebrali con BrainTransporter™",
+      "url": "https://finnhub.io/api/news?id=8e31e2d1f14585dafee85b0b2c5c8f34a7162935bf076f7b15862d7fb4827db2"
     }
   ]
 }
