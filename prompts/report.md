@@ -20,8 +20,9 @@ semplice; mai esporre la chiave API. Il sistema aiuta a CAPIRE, non prevede i pr
 >    lavoro (raddoppia i token) e **non inviare mai una seconda email**.
 
 ## Passo 1 — Carica configurazione e stato
-Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
-`state/predictions.json`. Una lettura ciascuno.
+Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`.
+NON leggere `state/predictions.json` (non serve al report: lo aggiorna solo
+`update_state.py`). Una lettura ciascuno.
 
 ## Passo 2 — Scarica le notizie (UNA chiamata) e fai il TRIAGE
 1. Dai titoli con `tipo: azione` estrai la lista dei ticker ed eseguila in **una
