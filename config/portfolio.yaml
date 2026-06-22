@@ -114,10 +114,10 @@ titoli:
     priorita: alta
     tag: [semiconduttori, AI]
   - isin: US84615Q1031
-    ticker: SPACEX
+    ticker: SPCX
     nome: SpaceX
     tipo: azione
-    borsa: non quotata (mercato privato)   # ricerca news solo per nome
+    borsa: NASDAQ                # IPO 12 giugno 2026, ticker SPCX
     peso: 2.75
     priorita: alta
     tag: [spazio, difesa]
@@ -177,14 +177,22 @@ titoli:
     peso: 1.75
     priorita: alta
     tag: [tech, cloud, database]
-  - isin: US9581021055
-    ticker: WDC
-    nome: Western Digital / SanDisk
+  - isin: ""                  # SanDisk (SNDK) — ISIN da confermare dopo lo spin-off
+    ticker: SNDK
+    nome: SanDisk
     tipo: azione
     borsa: NASDAQ
-    peso: 1.75
+    peso: 1
     priorita: alta
-    tag: [hardware, storage]   # DA VERIFICARE: ISIN = Western Digital (WDC); SanDisk dopo lo spin-off è SNDK
+    tag: [hardware, storage, memorie]
+  - isin: US9581021055
+    ticker: WDC
+    nome: Western Digital
+    tipo: azione
+    borsa: NASDAQ
+    peso: 0.75
+    priorita: alta
+    tag: [hardware, storage]
   - isin: US0378331005
     ticker: AAPL
     nome: Apple
