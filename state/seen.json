@@ -203,6 +203,24 @@
       "ticker": "LLY",
       "url": "https://finnhub.io/api/news?id=8e31e2d1f14585dafee85b0b2c5c8f34a7162935bf076f7b15862d7fb4827db2",
       "data_invio": "2026-06-22T07:50:00+02:00"
+    },
+    {
+      "id": "seeking-alpha-ai-data-center-boom",
+      "ticker": "ASML|TSM|PLTR",
+      "url": "https://finnhub.io/api/news?id=0c7be6ef288726423c7b530e1af50302a423f956fc4179cc4068361023baddb9",
+      "data_invio": "2026-06-22T08:30:00+02:00"
+    },
+    {
+      "id": "yahoo-alphabet-magnificent-seven-ai",
+      "ticker": "GOOG",
+      "url": "https://finnhub.io/api/news?id=bd461c5cab11e9313f1352915880f9db75fbf5e6e669a0bf17d396f5e54e819c",
+      "data_invio": "2026-06-22T08:30:00+02:00"
+    },
+    {
+      "id": "yahoo-palantir-ai-crushed-earnings",
+      "ticker": "PLTR",
+      "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762",
+      "data_invio": "2026-06-22T08:30:00+02:00"
     }
   ]
 }
