@@ -251,6 +251,36 @@
       "ticker": "AAPL",
       "url": "https://finnhub.io/api/news?id=ddffb23565810107a2c296fa44c94b614f163853b2640d596bfd4a6ef0b8e62e",
       "data_invio": "2026-06-22T08:36:25.933171+00:00"
+    },
+    {
+      "id": "finnhub.io/d9921efad041e2eab5ccfa8a764b1b44c6cd4f2f5efa9409ee296e5a27042aff",
+      "ticker": "NVDA",
+      "url": "https://finnhub.io/api/news?id=d9921efad041e2eab5ccfa8a764b1b44c6cd4f2f5efa9409ee296e5a27042aff",
+      "data_invio": "2026-06-22T08:45:00+02:00"
+    },
+    {
+      "id": "finnhub.io/16e198847bdf27bd31d0be061a3b210c679ba657fda3ee72c92bf05303812c22",
+      "ticker": "AVGO",
+      "url": "https://finnhub.io/api/news?id=16e198847bdf27bd31d0be061a3b210c679ba657fda3ee72c92bf05303812c22",
+      "data_invio": "2026-06-22T08:45:00+02:00"
+    },
+    {
+      "id": "finnhub.io/86cb9e850747308c79d00317362d0cd399faafb0c4afa33285ac0eb2663be668",
+      "ticker": "AMZN",
+      "url": "https://finnhub.io/api/news?id=86cb9e850747308c79d00317362d0cd399faafb0c4afa33285ac0eb2663be668",
+      "data_invio": "2026-06-22T08:45:00+02:00"
+    },
+    {
+      "id": "finnhub.io/9b422f116af4fe9eeefd92d4884948fe7de826bf750cbaa34fb1bbe45d15ee79",
+      "ticker": "META",
+      "url": "https://finnhub.io/api/news?id=9b422f116af4fe9eeefd92d4884948fe7de826bf750cbaa34fb1bbe45d15ee79",
+      "data_invio": "2026-06-22T08:45:00+02:00"
+    },
+    {
+      "id": "finnhub.io/22ae4c15c90b9b042c096a6bbba60e73bfa780aec5205fd84c40e8199677ae1d",
+      "ticker": "SPCX",
+      "url": "https://finnhub.io/api/news?id=22ae4c15c90b9b042c096a6bbba60e73bfa780aec5205fd84c40e8199677ae1d",
+      "data_invio": "2026-06-22T08:45:00+02:00"
     }
   ]
 }

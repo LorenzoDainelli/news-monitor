@@ -27,7 +27,7 @@
       },
       "confidenza": "alta",
       "rilevanza": 82,
-      "titolo": "Oracle Q4 FY2026: ricavi +21%, cloud IaaS +93%, RPO +363% \u2014 titolo \u221210% per piano raccolta $40B",
+      "titolo": "Oracle Q4 FY2026: ricavi +21%, cloud IaaS +93%, RPO +363% — titolo −10% per piano raccolta $40B",
       "url": "https://www.cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026.html"
     },
     {
@@ -42,7 +42,7 @@
       },
       "confidenza": "alta",
       "rilevanza": 80,
-      "titolo": "Broadcom Q2 FY2026: AI revenue $10,8B (+2x), ricavi +48% \u2014 titolo \u221215% senza rialzo guidance",
+      "titolo": "Broadcom Q2 FY2026: AI revenue $10,8B (+2x), ricavi +48% — titolo −15% senza rialzo guidance",
       "url": "https://www.cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026.html"
     },
     {
@@ -57,7 +57,7 @@
       },
       "confidenza": "media",
       "rilevanza": 78,
-      "titolo": "USA accusano ASML di EUV in Cina \u2014 ASML nega, conta tutti i 314 sistemi",
+      "titolo": "USA accusano ASML di EUV in Cina — ASML nega, conta tutti i 314 sistemi",
       "url": "https://www.bloomberg.com/news/articles/2026-06-19/us-tells-asml-it-s-concerned-china-may-have-top-chip-tool"
     },
     {
@@ -87,7 +87,7 @@
       },
       "confidenza": "alta",
       "rilevanza": 72,
-      "titolo": "NVIDIA: guidance Q2 FY2027 a $91B, Blackwell esaurito \u2014 prossimi earnings 26 agosto",
+      "titolo": "NVIDIA: guidance Q2 FY2027 a $91B, Blackwell esaurito — prossimi earnings 26 agosto",
       "url": "https://intellectia.ai/blog/nvda-stock-earnings-analysis-may-2026"
     },
     {
@@ -147,7 +147,7 @@
       },
       "confidenza": "bassa",
       "rilevanza": 65,
-      "titolo": "Intel: +250% nel 2026, Apple foundry deal, CHIPS Act grants \u2014 ma consensus analisti Hold a $92",
+      "titolo": "Intel: +250% nel 2026, Apple foundry deal, CHIPS Act grants — ma consensus analisti Hold a $92",
       "url": "https://www.heygotrade.com/en/blog/intel-stock-2026-ai-comeback/"
     },
     {
@@ -162,7 +162,7 @@
       },
       "confidenza": "bassa",
       "rilevanza": 62,
-      "titolo": "Palantir: \u221226% nel 2026, Wolfe Research upgrade a Peer Perform; Q1 +85% YoY, guidance alzata",
+      "titolo": "Palantir: −26% nel 2026, Wolfe Research upgrade a Peer Perform; Q1 +85% YoY, guidance alzata",
       "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-down-26-2026-despite-164049335.html"
     },
     {
@@ -177,7 +177,7 @@
       },
       "confidenza": "media",
       "rilevanza": 62,
-      "titolo": "Microsoft Build 2026: Project Solara, Scout agent, MAI models \u2014 Azure +31%, dividendo $0,91",
+      "titolo": "Microsoft Build 2026: Project Solara, Scout agent, MAI models — Azure +31%, dividendo $0,91",
       "url": "https://news.microsoft.com/build-2026/"
     },
     {
@@ -192,7 +192,7 @@
       },
       "confidenza": "alta",
       "rilevanza": 72,
-      "titolo": "Netflix Q2 guidance miss: ricavi $12.57B (\u2212$0.06B) vs consensus, EPS $0.78 (\u2212$0.06) vs atteso",
+      "titolo": "Netflix Q2 guidance miss: ricavi $12.57B (−$0.06B) vs consensus, EPS $0.78 (−$0.06) vs atteso",
       "url": "https://ir.netflix.net/investor-news-and-events/financial-releases/press-release-details/2026/Netflix-Q2-2026-Financial-Results/default.aspx"
     },
     {
@@ -267,7 +267,7 @@
       },
       "confidenza": "media",
       "rilevanza": 80,
-      "titolo": "SpaceX acquisisce Cursor per $60B \u2014 primo grande M&A post-IPO",
+      "titolo": "SpaceX acquisisce Cursor per $60B — primo grande M&A post-IPO",
       "url": "https://finnhub.io/api/news?id=b745f8ee3bb3721501772ede1a3e5b805aa5c9553b1c2dd017a730caa3fb9728"
     },
     {
@@ -387,7 +387,7 @@
       },
       "confidenza": "media",
       "rilevanza": 62,
-      "titolo": "Microsoft: ristrutturazione Xbox e possibile spin-off \u2014 30 giugno data chiave",
+      "titolo": "Microsoft: ristrutturazione Xbox e possibile spin-off — 30 giugno data chiave",
       "url": "https://finnhub.io/api/news?id=013dea3ad5bcb5afde18807f5d6147e2261604db7e52fa1c9f57ed8acec2ba53"
     },
     {
@@ -402,7 +402,7 @@
       },
       "confidenza": "alta",
       "rilevanza": 62,
-      "titolo": "Western Digital batte l'S&P 500: boom memorie non \u00e8 solo SanDisk",
+      "titolo": "Western Digital batte l'S&P 500: boom memorie non è solo SanDisk",
       "url": "https://finnhub.io/api/news?id=95884ca1a714410c49ee2295f8e31837630e95923bccb0704944025ee27e7add"
     },
     {
@@ -417,7 +417,7 @@
       },
       "confidenza": "bassa",
       "rilevanza": 61,
-      "titolo": "Eli Lilly + BioArctic: collaborazione su trattamenti cerebrali con BrainTransporter\u2122",
+      "titolo": "Eli Lilly + BioArctic: collaborazione su trattamenti cerebrali con BrainTransporter™",
       "url": "https://finnhub.io/api/news?id=8e31e2d1f14585dafee85b0b2c5c8f34a7162935bf076f7b15862d7fb4827db2"
     },
     {
@@ -462,7 +462,7 @@
       },
       "confidenza": "media",
       "rilevanza": 65,
-      "titolo": "Palantir tra 3 AI stocks che crushed earnings; valutazione gi\u00e0 ampia",
+      "titolo": "Palantir tra 3 AI stocks che crushed earnings; valutazione già ampia",
       "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762"
     },
     {
@@ -539,6 +539,81 @@
       "rilevanza": 65,
       "titolo": "Apple CEO avverte: prezzi iPhone potrebbero salire per AI",
       "url": "https://finnhub.io/api/news?id=ddffb23565810107a2c296fa44c94b614f163853b2640d596bfd4a6ef0b8e62e"
+    },
+    {
+      "id": "finnhub.io/d9921efad041e2eab5ccfa8a764b1b44c6cd4f2f5efa9409ee296e5a27042aff",
+      "ticker": "NVDA",
+      "data": "2026-06-22",
+      "tipo_evento": "dividendi",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "NVIDIA: dividend growth 20% annuo, sostenibilità alta",
+      "url": "https://finnhub.io/api/news?id=d9921efad041e2eab5ccfa8a764b1b44c6cd4f2f5efa9409ee296e5a27042aff"
+    },
+    {
+      "id": "finnhub.io/16e198847bdf27bd31d0be061a3b210c679ba657fda3ee72c92bf05303812c22",
+      "ticker": "AVGO",
+      "data": "2026-06-22",
+      "tipo_evento": "macro / trend strutturale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "AI arms race: collo di bottiglia è l'energia",
+      "url": "https://finnhub.io/api/news?id=16e198847bdf27bd31d0be061a3b210c679ba657fda3ee72c92bf05303812c22"
+    },
+    {
+      "id": "finnhub.io/86cb9e850747308c79d00317362d0cd399faafb0c4afa33285ac0eb2663be668",
+      "ticker": "AMZN",
+      "data": "2026-06-22",
+      "tipo_evento": "prodotto / AI",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 64,
+      "titolo": "Amazon Trainium: chipset AI pronto per mercato esterno",
+      "url": "https://finnhub.io/api/news?id=86cb9e850747308c79d00317362d0cd399faafb0c4afa33285ac0eb2663be668"
+    },
+    {
+      "id": "finnhub.io/9b422f116af4fe9eeefd92d4884948fe7de826bf750cbaa34fb1bbe45d15ee79",
+      "ticker": "META",
+      "data": "2026-06-22",
+      "tipo_evento": "investimento strategico",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Meta valuta investimento fintech India Cred",
+      "url": "https://finnhub.io/api/news?id=9b422f116af4fe9eeefd92d4884948fe7de826bf750cbaa34fb1bbe45d15ee79"
+    },
+    {
+      "id": "finnhub.io/22ae4c15c90b9b042c096a6bbba60e73bfa780aec5205fd84c40e8199677ae1d",
+      "ticker": "SPCX",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale / competitive analysis",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 66,
+      "titolo": "SpaceX vs Lockheed: confronto strategico post-IPO",
+      "url": "https://finnhub.io/api/news?id=22ae4c15c90b9b042c096a6bbba60e73bfa780aec5205fd84c40e8199677ae1d"
     }
   ]
 }
