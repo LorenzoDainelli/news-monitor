@@ -329,6 +329,24 @@
       "ticker": "SNDK",
       "url": "https://finnhub.io/api/news?id=326004a1264192648d69043c2d418b23af772f1f4fbb446dfaca81b9c70d6ba1",
       "data_invio": "2026-06-22T10:22:00+00:00"
+    },
+    {
+      "id": "finnhub-nflx-ma-wall-street-20260622",
+      "ticker": "NFLX",
+      "url": "https://finnhub.io/api/news?id=03c1125565b3a3e5c0e24dd0c41bc5f52c97f11eece6452534d98bc1be7d3bf0",
+      "data_invio": "2026-06-22T14:10:00+02:00"
+    },
+    {
+      "id": "finnhub-orcl-equity-raise-capex-tumble-20260622",
+      "ticker": "ORCL",
+      "url": "https://finnhub.io/api/news?id=e579067894b69247fee39507573b7cc42201cd0f2e4bb2544444e5c016b4e9d0",
+      "data_invio": "2026-06-22T14:10:00+02:00"
+    },
+    {
+      "id": "finnhub-pltr-crushed-earnings-20260622",
+      "ticker": "PLTR",
+      "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762",
+      "data_invio": "2026-06-22T14:10:00+02:00"
     }
   ]
 }
