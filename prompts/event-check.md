@@ -31,14 +31,16 @@ azioni), `state/seen.json`.
 ## Passo 3 — Analizza i critici (max 3)
 Per i candidati critici (al massimo 3, i più rilevanti) compila i campi come nel
 report: `titolo` (italiano semplice e poco tecnico), `tipo_evento, riassunto, impatto{breve,medio,lungo}, confidenza, tag,
-fonti, rilevanza`. Niente fetch di articoli: usa il digest.
+fonti, rilevanza`. Le **fonti (testata + link) sono obbligatorie** per ogni voce.
+L'`impatto` ha valori di **una sola parola** (positivo/neutro/negativo), mai frasi.
+Niente fetch di articoli: usa il digest.
 
 ## Passo 4 — Avviso email (solo se ci sono critici)
 Scrivi `report.json` (stessa struttura del report; `test_mode` da settings) e invia:
 ```bash
 python scripts/render_email.py --data-file report.json --out out.html
 python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
-  --subject "🚨 Avviso titoli — <data e ora>" --html-file out.html
+  --subject "🚨 Avviso titoli — <data>" --html-file out.html
 ```
 **Una sola email.** Se in `test_mode: true` non ci sono critici, invia comunque un
 breve avviso diagnostico (`items: []`, compila `diagnostic`).

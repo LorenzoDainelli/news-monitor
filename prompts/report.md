@@ -51,7 +51,9 @@ da più fonti, compila:
   mantenendo il significato (non l'headline originale in inglese/gergale)
 - `riassunto`: 2-3 frasi in italiano semplice
 - `fonti`: una o più (testata + link)
-- `impatto`: `{ breve, medio, lungo }` ∈ `{positivo, negativo, neutro}`
+- `impatto`: `{ breve, medio, lungo }`, ogni valore **una sola parola** ∈
+  `{positivo, neutro, negativo}` (MAI una frase o un commento: il ragionamento va
+  nel `riassunto`)
 - `confidenza`: `bassa | media | alta`
 - `tag`: tematici
 - `sentiment_analisti` (solo **se già presente** nei dati scaricati): rating/target/revisioni

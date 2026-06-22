@@ -55,11 +55,49 @@ def pill(text, color, bg):
             f'color:{color};background:{bg};">{esc(text)}</span>')
 
 
+def _norm_impact(val) -> str:
+    """Riduce un valore d'impatto a una sola parola, anche se il modello ci ha
+    messo una frase (es. 'positivo perché...' -> 'positivo')."""
+    s = str(val or "").lower()
+    if "positiv" in s:
+        return "positivo"
+    if "negativ" in s:
+        return "negativo"
+    return "neutro"
+
+
+def _overall_color(imp: dict) -> str:
+    """Colore del bordo card secondo l'impatto netto (verde/rosso/grigio)."""
+    vals = [_norm_impact((imp or {}).get(k)) for k in ("breve", "medio", "lungo")]
+    pos, neg = vals.count("positivo"), vals.count("negativo")
+    if pos > neg:
+        return "#1a7f37"
+    if neg > pos:
+        return "#cf222e"
+    return "#8b949e"
+
+
+def _rel_badge(score) -> str:
+    """Badge rilevanza colorato per attirare l'occhio sulle notizie top."""
+    try:
+        s = int(score)
+    except (TypeError, ValueError):
+        s = 0
+    if s >= 80:
+        bg, col = "#ffebe9", "#cf222e"
+    elif s >= 70:
+        bg, col = "#fff3cd", "#9a6700"
+    else:
+        bg, col = "#eaeef2", "#57606a"
+    return (f'<span style="display:inline-block;padding:2px 8px;border-radius:10px;'
+            f'font-size:12px;font-weight:700;color:{col};background:{bg};">{s}/100</span>')
+
+
 def impact_block(imp: dict) -> str:
     out = ['<div style="margin:8px 0;">']
     for label, key in (("Breve", "breve"), ("Medio", "medio"), ("Lungo", "lungo")):
-        val = (imp or {}).get(key, "neutro")
-        arrow, color, bg = IMPACT.get(val, IMPACT["neutro"])
+        val = _norm_impact((imp or {}).get(key))
+        arrow, color, bg = IMPACT[val]
         out.append(pill(f"{label} {arrow} {val}", color, bg))
     return "".join(out) + "</div>"
 
@@ -67,13 +105,15 @@ def impact_block(imp: dict) -> str:
 def card(it: dict) -> str:
     tickers = it.get("tickers") or ([it.get("ticker")] if it.get("ticker") else [])
     tk = " / ".join(esc(t) for t in tickers)
+    bordo = _overall_color(it.get("impatto"))
     parts = [f'<div style="width:100%;box-sizing:border-box;background:#ffffff;'
-             f'border:1px solid #e1e4e8;border-radius:10px;padding:14px 16px;margin:0 0 14px;">']
-    # riga alto: tipo evento + rilevanza
+             f'border:1px solid #e1e4e8;border-left:5px solid {bordo};'
+             f'border-radius:10px;padding:14px 16px;margin:0 0 14px;">']
+    # riga alto: tipo evento + badge rilevanza colorato
     parts.append(
         f'<div style="font-size:12px;color:{NAVY};font-weight:700;text-transform:uppercase;'
-        f'letter-spacing:.4px;">{esc(it.get("tipo_evento","NEWS"))} '
-        f'<span style="color:#6a737d;font-weight:600;">· Rilevanza {esc(it.get("rilevanza",""))}/100</span></div>')
+        f'letter-spacing:.4px;margin-bottom:2px;">{esc(it.get("tipo_evento","NEWS"))} '
+        f'&nbsp;{_rel_badge(it.get("rilevanza"))}</div>')
     # titolo
     parts.append(f'<div style="font-size:17px;font-weight:700;color:{NAVY};margin:6px 0;">'
                  f'{tk + " — " if tk else ""}{esc(it.get("titolo",""))}</div>')
