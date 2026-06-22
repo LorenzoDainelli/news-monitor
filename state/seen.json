@@ -101,6 +101,36 @@
       "ticker": "MSFT",
       "url": "https://news.microsoft.com/build-2026/",
       "data_invio": "2026-06-22T00:00:00+02:00"
+    },
+    {
+      "id": "netflix.ir/q2-2026-guidance-miss",
+      "ticker": "NFLX",
+      "url": "https://ir.netflix.net/investor-news-and-events/financial-releases/press-release-details/2026/Netflix-Q2-2026-Financial-Results/default.aspx",
+      "data_invio": "2026-06-22T14:30:00+02:00"
+    },
+    {
+      "id": "stockstotrade.com/sandisk-memory-boom-2026",
+      "ticker": "SNDK",
+      "url": "https://stockstotrade.com/news/sandisk-corporation-sndk-news-2026_06_18/",
+      "data_invio": "2026-06-22T14:30:00+02:00"
+    },
+    {
+      "id": "samsung-electronics-hbm-expansion-2026",
+      "ticker": "SSNLF",
+      "url": "https://finance.yahoo.com/quote/SSNLF/",
+      "data_invio": "2026-06-22T14:30:00+02:00"
+    },
+    {
+      "id": "amgen-imdylltra-eu-approval-es-sclc",
+      "ticker": "AMGN",
+      "url": "https://www.prnewswire.com/news-releases/amgen-to-present-new-data-across-rare-autoimmune-and-inflammatory-diseases-at-eular-2026-302790204.html",
+      "data_invio": "2026-06-22T14:30:00+02:00"
+    },
+    {
+      "id": "ibm-quantum-ai-investment-10b",
+      "ticker": "IBM",
+      "url": "https://newsroom.ibm.com/2026-05-05-think-2026-ibm-delivers-the-blueprint-for-the-ai-operating-model-as-the-ai-divide-widens",
+      "data_invio": "2026-06-22T14:30:00+02:00"
     }
   ]
 }

@@ -131,6 +131,61 @@
       "rilevanza": 62,
       "titolo": "Microsoft Build 2026: Project Solara, Scout agent, MAI models — Azure +31%, dividendo $0,91",
       "url": "https://news.microsoft.com/build-2026/"
+    },
+    {
+      "id": "netflix.ir/q2-2026-guidance-miss",
+      "ticker": "NFLX",
+      "data": "2026-06-22",
+      "tipo_evento": "revisione guidance",
+      "impatto": { "breve": "negativo", "medio": "neutro", "lungo": "positivo" },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "Netflix Q2 guidance miss: ricavi $12.57B (−$0.06B) vs consensus, EPS $0.78 (−$0.06) vs atteso",
+      "url": "https://ir.netflix.net/investor-news-and-events/financial-releases/press-release-details/2026/Netflix-Q2-2026-Financial-Results/default.aspx"
+    },
+    {
+      "id": "stockstotrade.com/sandisk-memory-boom-2026",
+      "ticker": "SNDK",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "SanDisk: Q3 revenue $5.95B (+251% YoY), 2026 capacity sold out, 2027 bookings $42B+",
+      "url": "https://stockstotrade.com/news/sandisk-corporation-sndk-news-2026_06_18/"
+    },
+    {
+      "id": "samsung-electronics-hbm-expansion-2026",
+      "ticker": "SSNLF",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Samsung Q1 op profit +750%, HBM espansione +50%, target market share HBM4 30%+",
+      "url": "https://finance.yahoo.com/quote/SSNLF/"
+    },
+    {
+      "id": "amgen-imdylltra-eu-approval-es-sclc",
+      "ticker": "AMGN",
+      "data": "2026-06-22",
+      "tipo_evento": "approvazione prodotto",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Amgen: IMDYLLTRA EU approval (giugno 1) per ES-SCLC; beat earnings, raised FY guidance",
+      "url": "https://www.prnewswire.com/news-releases/amgen-to-present-new-data-across-rare-autoimmune-and-inflammatory-diseases-at-eular-2026-302790204.html"
+    },
+    {
+      "id": "ibm-quantum-ai-investment-10b",
+      "ticker": "IBM",
+      "data": "2026-06-22",
+      "tipo_evento": "investimento strategico",
+      "impatto": { "breve": "neutro", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "IBM: $10B quantum+AI investment su 5 anni; Think 2026 blueprint AI Operating Model",
+      "url": "https://newsroom.ibm.com/2026-05-05-think-2026-ibm-delivers-the-blueprint-for-the-ai-operating-model-as-the-ai-divide-widens"
     }
   ]
 }
