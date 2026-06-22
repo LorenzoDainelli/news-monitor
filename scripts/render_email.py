@@ -132,13 +132,24 @@ def build_html(data: dict) -> str:
             f'Titoli cercati: {esc(diag.get("titoli_cercati","n/d"))} · '
             f'candidati: {esc(diag.get("candidati","0"))} · '
             f'soglia: {esc(diag.get("soglia","n/d"))}.</div></div>')
-    # elenco "titoli tranquilli" (digest settimanale)
-    quiet = data.get("quiet") or []
+    # elenco "titoli tranquilli" (digest settimanale): lista semplice oppure
+    # oggetto {"azioni":[nomi], "etf":[nomi abbreviati]}
+    quiet = data.get("quiet")
     if quiet:
-        chips = "".join(pill(q, "#555", "#f0f0f0") for q in quiet)
+        def _chips(names):
+            return "".join(pill(n, "#555", "#f0f0f0") for n in names)
+        if isinstance(quiet, dict):
+            sezioni = ""
+            for label, key in (("Azioni", "azioni"), ("ETF", "etf")):
+                names = quiet.get(key) or []
+                if names:
+                    sezioni += (f'<div style="font-size:13px;color:#57606a;margin:8px 0 2px;">'
+                                f'{label}</div>{_chips(names)}')
+        else:
+            sezioni = _chips(quiet)
         body.append(f'<div style="margin-top:10px;"><div style="font-weight:700;color:{NAVY};'
                     f'font-size:14px;margin-bottom:6px;">\U0001F4ED Titoli tranquilli (nessuna notizia)</div>'
-                    f'{chips}</div>')
+                    f'{sezioni}</div>')
 
     disclaimer = (
         "Analisi qualitativa assistita, non una previsione di prezzo e non un consiglio "

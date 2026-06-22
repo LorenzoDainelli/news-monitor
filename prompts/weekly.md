@@ -18,8 +18,10 @@ Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
   Diventano gli `items` (hai già: tipo_evento, impatto, confidenza, rilevanza,
   titolo, url; aggiungi un `riassunto` di 1 frase se utile).
 - **Titoli tranquilli**: i titoli di `portfolio.yaml` che **non** compaiono in
-  nessuna voce di `seen.json` negli ultimi 7 giorni → lista `quiet` (usa il ticker
-  o il nome breve). È il "questa settimana è stato tranquillo".
+  nessuna voce di `seen.json` negli ultimi 7 giorni. Raggruppali per tipo e usa il
+  **nome** (NON il ticker): `quiet = {"azioni": [nomi], "etf": [nomi abbreviati]}`.
+  Per gli ETF abbrevia il nome lungo (es. "iShares Core MSCI World UCITS ETF USD
+  (Acc)" → "Core MSCI World"; "HanETF Future of Defence" → "Future of Defence").
 
 ## Passo 3 — Costruisci `report.json` e invia
 Struttura (stessa del report, con i campi extra `note` e `quiet`):
@@ -29,7 +31,7 @@ Struttura (stessa del report, con i campi extra `note` e `quiet`):
   "test_mode": <da settings>,
   "note": "✅ Sistema attivo: <N> run e <M> email negli ultimi 7 giorni. <1 frase di sintesi della settimana>.",
   "items": [ { ...le top notizie della settimana... } ],
-  "quiet": ["TICK1","TICK2", "..."]
+  "quiet": {"azioni": ["Apple","Coca-Cola","..."], "etf": ["Core MSCI World","S&P 500","..."]}
 }
 ```
 Poi:
