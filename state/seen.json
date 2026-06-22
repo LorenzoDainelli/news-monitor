@@ -401,6 +401,18 @@
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=8404ff1c7f3c432afffdb3f7be75a8ee255234c527feef3e0c3edbdca548278d",
       "data_invio": "2026-06-22T20:10:00+00:00"
+    },
+    {
+      "id": "finnhub-intc-aapl-chip-deal-20260622",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=f5415214ebc6397b905ab95277c7317cf770e16397a4e7d74dc50c3c16e94ce9",
+      "data_invio": "2026-06-22T22:04:27+00:00"
+    },
+    {
+      "id": "ko-irs-tax-bill-20260622",
+      "ticker": "KO",
+      "url": "https://www.yahoo.com/ko-irs-tax-20b",
+      "data_invio": "2026-06-22T22:04:27+00:00"
     }
   ]
 }
