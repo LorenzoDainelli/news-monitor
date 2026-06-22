@@ -221,6 +221,36 @@
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762",
       "data_invio": "2026-06-22T08:30:00+02:00"
+    },
+    {
+      "id": "orcl-capex-concern-20260622",
+      "ticker": "ORCL",
+      "url": "https://finnhub.io/api/news?id=2fdf5890caddda1df3014416707a966550a0c710d8f80800eacb35c116328215",
+      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+    },
+    {
+      "id": "intc-aapl-deal-trump-20260622",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916",
+      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+    },
+    {
+      "id": "nflx-ma-wall-street-20260622",
+      "ticker": "NFLX",
+      "url": "https://finnhub.io/api/news?id=03c1125565b3a3e5c0e24dd0c41bc5f52c97f11eece6452534d98bc1be7d3bf0",
+      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+    },
+    {
+      "id": "avgo-ai-revenue-boom-20260622",
+      "ticker": "AVGO",
+      "url": "https://finnhub.io/api/news?id=ca5837ecd6296c7e29d600e06070363d82c0ed7fc523937db7024283a3f240cd",
+      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+    },
+    {
+      "id": "aapl-pricing-concern-20260622",
+      "ticker": "AAPL",
+      "url": "https://finnhub.io/api/news?id=ddffb23565810107a2c296fa44c94b614f163853b2640d596bfd4a6ef0b8e62e",
+      "data_invio": "2026-06-22T08:36:25.933171+00:00"
     }
   ]
 }
