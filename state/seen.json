@@ -305,6 +305,30 @@
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=e579067894b69247fee39507573b7cc42201cd0f2e4bb2544444e5c016b4e9d0",
       "data_invio": "2026-06-22T10:10:00+00:00"
+    },
+    {
+      "id": "finnhub-goog-avgo-triggerfish-chip-mediatek-20260622",
+      "ticker": "GOOG",
+      "url": "https://finnhub.io/api/news?id=18a8e1234737007869e7354cda35768a7d96771377abba93faee2e4efda2bedd",
+      "data_invio": "2026-06-22T10:22:00+00:00"
+    },
+    {
+      "id": "finnhub-intc-china-export-curbs-hormuz-20260622",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=9c6a7da04100e88cdefd1373e6721103623e76b0ded20502ce9421dbdd9492af",
+      "data_invio": "2026-06-22T10:22:00+00:00"
+    },
+    {
+      "id": "finnhub-asml-euv-china-compliance-20260622",
+      "ticker": "ASML",
+      "url": "https://finnhub.io/api/news?id=6dfc4572c54dc83024ba8e264fa5fd530e959266f7a43a0193febfa8094203bf",
+      "data_invio": "2026-06-22T10:22:00+00:00"
+    },
+    {
+      "id": "finnhub-sndk-overvalued-579pct-20260622",
+      "ticker": "SNDK",
+      "url": "https://finnhub.io/api/news?id=326004a1264192648d69043c2d418b23af772f1f4fbb446dfaca81b9c70d6ba1",
+      "data_invio": "2026-06-22T10:22:00+00:00"
     }
   ]
 }
