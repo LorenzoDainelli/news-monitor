@@ -614,6 +614,36 @@
       "rilevanza": 75,
       "titolo": "Broadcom: il modo migliore investire in AI per custom chips",
       "url": "https://finnhub.io/api/news?id=ca5837ecd6296c7e29d600e06070363d82c0ed7fc523937db7024283a3f240cd"
+    },
+    {
+      "id": "ssnlf-skhynix-overtakes-samsung-20260622",
+      "ticker": "SSNLF",
+      "data": "2026-06-22T10:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "SK Hynix supera Samsung e diventa l'azienda più preziosa della Corea del Sud",
+      "url": "https://finnhub.io/api/news?id=3bb745f3270d4f8bb362971a065225cc8af14304548b5da117f9d87fc3a9b372"
+    },
+    {
+      "id": "orcl-equity-raise-capex-tumble-20260622",
+      "ticker": "ORCL",
+      "data": "2026-06-22T10:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Oracle in calo dopo i conti Q4: capex in forte aumento e nuova emissione azionaria pesano sul titolo",
+      "url": "https://finnhub.io/api/news?id=e579067894b69247fee39507573b7cc42201cd0f2e4bb2544444e5c016b4e9d0"
     }
   ]
 }
