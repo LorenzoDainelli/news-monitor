@@ -1,3 +1,136 @@
 {
-  "items": []
+  "items": [
+    {
+      "id": "cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates",
+      "ticker": "SPCX",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale / IPO",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 85,
+      "titolo": "SpaceX debutta in borsa (SPCX) a $2,1T di market cap; Starship anomalia il 18 giugno",
+      "url": "https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html"
+    },
+    {
+      "id": "cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026",
+      "ticker": "ORCL",
+      "data": "2026-06-22",
+      "tipo_evento": "earnings",
+      "impatto": { "breve": "negativo", "medio": "neutro", "lungo": "positivo" },
+      "confidenza": "alta",
+      "rilevanza": 82,
+      "titolo": "Oracle Q4 FY2026: ricavi +21%, cloud IaaS +93%, RPO +363% — titolo −10% per piano raccolta $40B",
+      "url": "https://www.cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026.html"
+    },
+    {
+      "id": "cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026",
+      "ticker": "AVGO",
+      "data": "2026-06-22",
+      "tipo_evento": "earnings",
+      "impatto": { "breve": "negativo", "medio": "neutro", "lungo": "positivo" },
+      "confidenza": "alta",
+      "rilevanza": 80,
+      "titolo": "Broadcom Q2 FY2026: AI revenue $10,8B (+2x), ricavi +48% — titolo −15% senza rialzo guidance",
+      "url": "https://www.cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026.html"
+    },
+    {
+      "id": "bloomberg.com/news/2026-06-19/us-tells-asml-concerned-china-euv",
+      "ticker": "ASML",
+      "data": "2026-06-22",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": { "breve": "neutro", "medio": "negativo", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 78,
+      "titolo": "USA accusano ASML di EUV in Cina — ASML nega, conta tutti i 314 sistemi",
+      "url": "https://www.bloomberg.com/news/articles/2026-06-19/us-tells-asml-it-s-concerned-china-may-have-top-chip-tool"
+    },
+    {
+      "id": "investor.lilly.com/foundayo-achieve-glp1-oral",
+      "ticker": "LLY",
+      "data": "2026-06-22",
+      "tipo_evento": "prodotto",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "Eli Lilly: Foundayo (GLP-1 orale) supera semaglutide in 3 trial Fase 3 su diabete tipo 2",
+      "url": "https://investor.lilly.com/news-releases/news-release-details/lillys-oral-glp-1-foundayo-orforglipron-delivered-superior-a1c"
+    },
+    {
+      "id": "intellectia.ai/nvda-earnings-analysis-may-2026",
+      "ticker": "NVDA",
+      "data": "2026-06-22",
+      "tipo_evento": "revisione guidance",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "NVIDIA: guidance Q2 FY2027 a $91B, Blackwell esaurito — prossimi earnings 26 agosto",
+      "url": "https://intellectia.ai/blog/nvda-stock-earnings-analysis-may-2026"
+    },
+    {
+      "id": "barchart.com/2500516/western-digital-mark-calendars-june-22",
+      "ticker": "WDC",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "alta",
+      "rilevanza": 68,
+      "titolo": "Western Digital: chiude oggi (22/6) lo swap azioni SanDisk, WDC diventa pure-play storage",
+      "url": "https://www.barchart.com/story/news/2500516/dear-western-digital-stock-fans-mark-your-calendars-for-june-22"
+    },
+    {
+      "id": "gurufocus.com/tsm-expects-30-revenue-growth-2026",
+      "ticker": "TSM",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "positivo", "medio": "positivo", "lungo": "neutro" },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "TSMC: rialzo prezzi 3nm +15% nel H2 2026, crescita ricavi >30%, indagine ITC in corso",
+      "url": "https://www.gurufocus.com/news/8900265/tsm-expects-over-30-revenue-growth-by-2026-driven-by-ai-demand"
+    },
+    {
+      "id": "fool.com/2026/06/04/massive-news-alphabet-investors",
+      "ticker": "GOOG",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "negativo", "medio": "neutro", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Alphabet: aumento capitale $80B per AI infra; capex 2026 $180-190B; Cloud $20B+",
+      "url": "https://www.fool.com/investing/2026/06/04/massive-news-for-alphabet-stock-investors/"
+    },
+    {
+      "id": "heygotrade.com/intel-stock-2026-ai-comeback",
+      "ticker": "INTC",
+      "data": "2026-06-22",
+      "tipo_evento": "news aziendale",
+      "impatto": { "breve": "neutro", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "Intel: +250% nel 2026, Apple foundry deal, CHIPS Act grants — ma consensus analisti Hold a $92",
+      "url": "https://www.heygotrade.com/en/blog/intel-stock-2026-ai-comeback/"
+    },
+    {
+      "id": "yahoo-finance/palantir-down-26-2026-despite-upgrade",
+      "ticker": "PLTR",
+      "data": "2026-06-22",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": { "breve": "neutro", "medio": "neutro", "lungo": "positivo" },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "Palantir: −26% nel 2026, Wolfe Research upgrade a Peer Perform; Q1 +85% YoY, guidance alzata",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-down-26-2026-despite-164049335.html"
+    },
+    {
+      "id": "news.microsoft.com/build-2026",
+      "ticker": "MSFT",
+      "data": "2026-06-22",
+      "tipo_evento": "prodotto",
+      "impatto": { "breve": "neutro", "medio": "positivo", "lungo": "positivo" },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Microsoft Build 2026: Project Solara, Scout agent, MAI models — Azure +31%, dividendo $0,91",
+      "url": "https://news.microsoft.com/build-2026/"
+    }
+  ]
 }
