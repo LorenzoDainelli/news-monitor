@@ -16,7 +16,9 @@
       "id": "cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates",
       "ticker": "SPCX",
       "url": "https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "SpaceX debutta in borsa (SPCX) a $2,1T di market cap; Starship anomalia il 18 giugno",
+      "tipo_evento": "news aziendale / IPO"
     },
     {
       "id": "cnbc.com/2026/06/15/spacex-stock-record-ipo-debut",
@@ -28,7 +30,9 @@
       "id": "cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026",
       "ticker": "ORCL",
       "url": "https://www.cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026.html",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Oracle Q4 FY2026: ricavi +21%, cloud IaaS +93%, RPO +363% — titolo −10% per piano raccolta $40B",
+      "tipo_evento": "earnings"
     },
     {
       "id": "investor.oracle.com/investor-news/2026/Oracle-Record-Q4-FY2026",
@@ -40,13 +44,17 @@
       "id": "cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026",
       "ticker": "AVGO",
       "url": "https://www.cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026.html",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Broadcom Q2 FY2026: AI revenue $10,8B (+2x), ricavi +48% — titolo −15% senza rialzo guidance",
+      "tipo_evento": "earnings"
     },
     {
       "id": "bloomberg.com/news/2026-06-19/us-tells-asml-concerned-china-euv",
       "ticker": "ASML",
       "url": "https://www.bloomberg.com/news/articles/2026-06-19/us-tells-asml-it-s-concerned-china-may-have-top-chip-tool",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "USA accusano ASML di EUV in Cina — ASML nega, conta tutti i 314 sistemi",
+      "tipo_evento": "legale/regolatorio"
     },
     {
       "id": "tomshardware.com/asml-denies-euv-china-shipment",
@@ -58,91 +66,121 @@
       "id": "investor.lilly.com/foundayo-achieve-glp1-oral",
       "ticker": "LLY",
       "url": "https://investor.lilly.com/news-releases/news-release-details/lillys-oral-glp-1-foundayo-orforglipron-delivered-superior-a1c",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Eli Lilly: Foundayo (GLP-1 orale) supera semaglutide in 3 trial Fase 3 su diabete tipo 2",
+      "tipo_evento": "prodotto"
     },
     {
       "id": "intellectia.ai/nvda-earnings-analysis-may-2026",
       "ticker": "NVDA",
       "url": "https://intellectia.ai/blog/nvda-stock-earnings-analysis-may-2026",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "NVIDIA: guidance Q2 FY2027 a $91B, Blackwell esaurito — prossimi earnings 26 agosto",
+      "tipo_evento": "revisione guidance"
     },
     {
       "id": "barchart.com/2500516/western-digital-mark-calendars-june-22",
       "ticker": "WDC",
       "url": "https://www.barchart.com/story/news/2500516/dear-western-digital-stock-fans-mark-your-calendars-for-june-22",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Western Digital: chiude oggi (22/6) lo swap azioni SanDisk, WDC diventa pure-play storage",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "gurufocus.com/tsm-expects-30-revenue-growth-2026",
       "ticker": "TSM",
       "url": "https://www.gurufocus.com/news/8900265/tsm-expects-over-30-revenue-growth-by-2026-driven-by-ai-demand",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "TSMC: rialzo prezzi 3nm +15% nel H2 2026, crescita ricavi >30%, indagine ITC in corso",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "fool.com/2026/06/04/massive-news-alphabet-investors",
       "ticker": "GOOG",
       "url": "https://www.fool.com/investing/2026/06/04/massive-news-for-alphabet-stock-investors/",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Alphabet: aumento capitale $80B per AI infra; capex 2026 $180-190B; Cloud $20B+",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "heygotrade.com/intel-stock-2026-ai-comeback",
       "ticker": "INTC",
       "url": "https://www.heygotrade.com/en/blog/intel-stock-2026-ai-comeback/",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Intel: +250% nel 2026, Apple foundry deal, CHIPS Act grants — ma consensus analisti Hold a $92",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "yahoo-finance/palantir-down-26-2026-despite-upgrade",
       "ticker": "PLTR",
       "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-down-26-2026-despite-164049335.html",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Palantir: −26% nel 2026, Wolfe Research upgrade a Peer Perform; Q1 +85% YoY, guidance alzata",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "news.microsoft.com/build-2026",
       "ticker": "MSFT",
       "url": "https://news.microsoft.com/build-2026/",
-      "data_invio": "2026-06-22T00:00:00+02:00"
+      "data_invio": "2026-06-22T00:00:00+02:00",
+      "titolo": "Microsoft Build 2026: Project Solara, Scout agent, MAI models — Azure +31%, dividendo $0,91",
+      "tipo_evento": "prodotto"
     },
     {
       "id": "netflix.ir/q2-2026-guidance-miss",
       "ticker": "NFLX",
       "url": "https://ir.netflix.net/investor-news-and-events/financial-releases/press-release-details/2026/Netflix-Q2-2026-Financial-Results/default.aspx",
-      "data_invio": "2026-06-22T14:30:00+02:00"
+      "data_invio": "2026-06-22T14:30:00+02:00",
+      "titolo": "Netflix Q2 guidance miss: ricavi $12.57B (−$0.06B) vs consensus, EPS $0.78 (−$0.06) vs atteso",
+      "tipo_evento": "revisione guidance"
     },
     {
       "id": "stockstotrade.com/sandisk-memory-boom-2026",
       "ticker": "SNDK",
       "url": "https://stockstotrade.com/news/sandisk-corporation-sndk-news-2026_06_18/",
-      "data_invio": "2026-06-22T14:30:00+02:00"
+      "data_invio": "2026-06-22T14:30:00+02:00",
+      "titolo": "SanDisk: Q3 revenue $5.95B (+251% YoY), 2026 capacity sold out, 2027 bookings $42B+",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "samsung-electronics-hbm-expansion-2026",
       "ticker": "SSNLF",
       "url": "https://finance.yahoo.com/quote/SSNLF/",
-      "data_invio": "2026-06-22T14:30:00+02:00"
+      "data_invio": "2026-06-22T14:30:00+02:00",
+      "titolo": "Samsung Q1 op profit +750%, HBM espansione +50%, target market share HBM4 30%+",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "amgen-imdylltra-eu-approval-es-sclc",
       "ticker": "AMGN",
       "url": "https://www.prnewswire.com/news-releases/amgen-to-present-new-data-across-rare-autoimmune-and-inflammatory-diseases-at-eular-2026-302790204.html",
-      "data_invio": "2026-06-22T14:30:00+02:00"
+      "data_invio": "2026-06-22T14:30:00+02:00",
+      "titolo": "Amgen: IMDYLLTRA EU approval (giugno 1) per ES-SCLC; beat earnings, raised FY guidance",
+      "tipo_evento": "approvazione prodotto"
     },
     {
       "id": "ibm-quantum-ai-investment-10b",
       "ticker": "IBM",
       "url": "https://newsroom.ibm.com/2026-05-05-think-2026-ibm-delivers-the-blueprint-for-the-ai-operating-model-as-the-ai-divide-widens",
-      "data_invio": "2026-06-22T14:30:00+02:00"
+      "data_invio": "2026-06-22T14:30:00+02:00",
+      "titolo": "IBM: $10B quantum+AI investment su 5 anni; Think 2026 blueprint AI Operating Model",
+      "tipo_evento": "investimento strategico"
     },
     {
       "id": "finnhub-spcx-cursor-acquisition-60b",
       "ticker": "SPCX",
       "url": "https://finnhub.io/api/news?id=b745f8ee3bb3721501772ede1a3e5b805aa5c9553b1c2dd017a730caa3fb9728",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "SpaceX acquisisce Cursor per $60B — primo grande M&A post-IPO",
+      "tipo_evento": "M&A"
     },
     {
       "id": "finnhub-intc-aapl-chip-deal-usa-trump",
       "ticker": "INTC",
       "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Apple e Intel partner per fab USA: confermato deal con appoggio Trump",
+      "tipo_evento": "partnership_produttiva"
     },
     {
       "id": "finnhub-intc-overnight-jump-5pct",
@@ -154,109 +192,145 @@
       "id": "finnhub-nflx-acquisition-wall-street-likes",
       "ticker": "NFLX",
       "url": "https://finnhub.io/api/news?id=03c1125565b3a3e5c0e24dd0c41bc5f52c97f11eece6452534d98bc1be7d3bf0",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Netflix M&A finalmente approvata da Wall Street",
+      "tipo_evento": "M&A"
     },
     {
       "id": "finnhub-tsm-asml-buying-opportunity-upgrade",
       "ticker": "TSM",
       "url": "https://finnhub.io/api/news?id=0ad4ce0b85a22cc899bf31fa842314b3c6ff6de05fe9a2e7eb585ff42810853a",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "TSMC upgrade a Buy: domanda AI robusta, capex disciplinato, vantaggio EUV",
+      "tipo_evento": "upgrade_analisti"
     },
     {
       "id": "finnhub-goog-morgan-stanley-ai-spending",
       "ticker": "GOOG",
       "url": "https://finnhub.io/api/news?id=6be6b4b48a6e164ff92d85a699eb8c33bf17ef333c4ad7c5c980c3263728400b",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Morgan Stanley positivo su Google AI spending: capex $180-190B giustificato",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "finnhub-jpm-crowded-semiconductor-warning",
       "ticker": "MACRO",
       "url": "https://finnhub.io/api/news?id=f617bed01fc18b7b11dac6d7e204a364f1670eaa8d3953586b5768c374895d50",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "JPMorgan alert: settore chip sovraffollato, rischio selloff acuto",
+      "tipo_evento": "macro_warning"
     },
     {
       "id": "finnhub-macro-iran-hormuz-memory-stocks",
       "ticker": "MACRO",
       "url": "https://finnhub.io/api/news?id=772443f271c8469fb9e2216f3a8b7738f12ae4f4c09307236f85acd9b46a34b7",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Iran/Hormuz: tensioni poi trattative; memorie (SNDK, WDC) in controtendenza al selloff",
+      "tipo_evento": "macro"
     },
     {
       "id": "finnhub-meta-india-ai-datacenter-reliance",
       "ticker": "META",
       "url": "https://finnhub.io/api/news?id=d27daaf6d7a3fd086360e6831e4a56bbc76ef21f0b51448c988de128f1aa4d10",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Meta primo data center AI su misura in India con Reliance Industries",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-msft-xbox-restructuring-june30",
       "ticker": "MSFT",
       "url": "https://finnhub.io/api/news?id=013dea3ad5bcb5afde18807f5d6147e2261604db7e52fa1c9f57ed8acec2ba53",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Microsoft: ristrutturazione Xbox e possibile spin-off — 30 giugno data chiave",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-sndk-wdc-western-digital-crushing-sp500",
       "ticker": "WDC",
       "url": "https://finnhub.io/api/news?id=95884ca1a714410c49ee2295f8e31837630e95923bccb0704944025ee27e7add",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Western Digital batte l'S&P 500: boom memorie non è solo SanDisk",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-lly-bioarctic-collaboration",
       "ticker": "LLY",
       "url": "https://finnhub.io/api/news?id=8e31e2d1f14585dafee85b0b2c5c8f34a7162935bf076f7b15862d7fb4827db2",
-      "data_invio": "2026-06-22T07:50:00+02:00"
+      "data_invio": "2026-06-22T07:50:00+02:00",
+      "titolo": "Eli Lilly + BioArctic: collaborazione su trattamenti cerebrali con BrainTransporter™",
+      "tipo_evento": "prodotto"
     },
     {
       "id": "seeking-alpha-ai-data-center-boom",
       "ticker": "ASML|TSM|PLTR",
       "url": "https://finnhub.io/api/news?id=0c7be6ef288726423c7b530e1af50302a423f956fc4179cc4068361023baddb9",
-      "data_invio": "2026-06-22T08:30:00+02:00"
+      "data_invio": "2026-06-22T08:30:00+02:00",
+      "titolo": "3 Stocks To Play The AI And Data Center Boom: ASML, TSMC, Palantir",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "yahoo-alphabet-magnificent-seven-ai",
       "ticker": "GOOG",
       "url": "https://finnhub.io/api/news?id=bd461c5cab11e9313f1352915880f9db75fbf5e6e669a0bf17d396f5e54e819c",
-      "data_invio": "2026-06-22T08:30:00+02:00"
+      "data_invio": "2026-06-22T08:30:00+02:00",
+      "titolo": "Alphabet: Best Magnificent Seven AI Stock per capex structure e ROI perspective",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "yahoo-palantir-ai-crushed-earnings",
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762",
-      "data_invio": "2026-06-22T08:30:00+02:00"
+      "data_invio": "2026-06-22T08:30:00+02:00",
+      "titolo": "Palantir tra 3 AI stocks che crushed earnings; valutazione già ampia",
+      "tipo_evento": "earnings"
     },
     {
       "id": "orcl-capex-concern-20260622",
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=2fdf5890caddda1df3014416707a966550a0c710d8f80800eacb35c116328215",
-      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+      "data_invio": "2026-06-22T08:36:25.933171+00:00",
+      "titolo": "Oracle RPO supera market cap, ma capex +25% spaventa",
+      "tipo_evento": "earnings + capex"
     },
     {
       "id": "intc-aapl-deal-trump-20260622",
       "ticker": "INTC",
       "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916",
-      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+      "data_invio": "2026-06-22T08:36:25.933171+00:00",
+      "titolo": "Apple e Intel partner per fab USA: confermato deal con appoggio Trump",
+      "tipo_evento": "partnership_produttiva"
     },
     {
       "id": "nflx-ma-wall-street-20260622",
       "ticker": "NFLX",
       "url": "https://finnhub.io/api/news?id=03c1125565b3a3e5c0e24dd0c41bc5f52c97f11eece6452534d98bc1be7d3bf0",
-      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+      "data_invio": "2026-06-22T08:36:25.933171+00:00",
+      "titolo": "Netflix M&A finalmente approvata da Wall Street",
+      "tipo_evento": "M&A"
     },
     {
       "id": "avgo-ai-revenue-boom-20260622",
       "ticker": "AVGO",
       "url": "https://finnhub.io/api/news?id=ca5837ecd6296c7e29d600e06070363d82c0ed7fc523937db7024283a3f240cd",
-      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+      "data_invio": "2026-06-22T08:36:25.933171+00:00",
+      "titolo": "Broadcom: il modo migliore investire in AI per custom chips",
+      "tipo_evento": "tema_investimento_ai"
     },
     {
       "id": "aapl-pricing-concern-20260622",
       "ticker": "AAPL",
       "url": "https://finnhub.io/api/news?id=ddffb23565810107a2c296fa44c94b614f163853b2640d596bfd4a6ef0b8e62e",
-      "data_invio": "2026-06-22T08:36:25.933171+00:00"
+      "data_invio": "2026-06-22T08:36:25.933171+00:00",
+      "titolo": "Apple CEO avverte: prezzi iPhone potrebbero salire per AI",
+      "tipo_evento": "guidance + pricing"
     },
     {
       "id": "finnhub-apple-intel-chip-fab-usa-20260622",
       "ticker": "INTC",
       "url": "https://finnhub.io/api/news?id=ed305496a27b663de12fa0bcbab192ffb0fa38d8a2abb191c029ed88f077a916",
-      "data_invio": "2026-06-22T10:00:00+02:00"
+      "data_invio": "2026-06-22T10:00:00+02:00",
+      "titolo": "Apple e Intel partner per fab USA: confermato deal con appoggio Trump",
+      "tipo_evento": "partnership_produttiva"
     },
     {
       "id": "finnhub-intc-overnight-jump-apple-deal-20260622",
@@ -268,133 +342,177 @@
       "id": "seekingalpha-tsmc-upgrade-ai-demand-20260622",
       "ticker": "TSM",
       "url": "https://finnhub.io/api/news?id=0ad4ce0b85a22cc899bf31fa842314b3c6ff6de05fe9a2e7eb585ff42810853a",
-      "data_invio": "2026-06-22T10:00:00+02:00"
+      "data_invio": "2026-06-22T10:00:00+02:00",
+      "titolo": "TSMC upgrade a Buy: domanda AI robusta, capex disciplinato, vantaggio EUV",
+      "tipo_evento": "upgrade_analisti"
     },
     {
       "id": "finnhub-jpm-crowded-semiconductor-warning-20260622",
       "ticker": "MACRO",
       "url": "https://finnhub.io/api/news?id=f617bed01fc18b7b11dac6d7e204a364f1670eaa8d3953586b5768c374895d50",
-      "data_invio": "2026-06-22T10:00:00+02:00"
+      "data_invio": "2026-06-22T10:00:00+02:00",
+      "titolo": "JPMorgan alert: settore chip sovraffollato, rischio selloff acuto",
+      "tipo_evento": "macro_warning"
     },
     {
       "id": "finnhub-oracle-ai-capex-bottleneck-20260622",
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=ebcc55712099f4a2135a80d27dd233b85043f4833486031ef6001f6edf5e21eb",
-      "data_invio": "2026-06-22T10:00:00+02:00"
+      "data_invio": "2026-06-22T10:00:00+02:00",
+      "titolo": "Oracle Q4: record revenue AI-driven, ma capex resta elevato",
+      "tipo_evento": "earnings_capex"
     },
     {
       "id": "finnhub-orcl-dips-capex-pressure-20260622",
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=2fdf5890caddda1df3014416707a966550a0c710d8f80800eacb35c116328215",
-      "data_invio": "2026-06-22T10:00:00+02:00"
+      "data_invio": "2026-06-22T10:00:00+02:00",
+      "titolo": "Oracle RPO supera market cap, ma capex +25% spaventa",
+      "tipo_evento": "earnings + capex"
     },
     {
       "id": "finnhub-broadcom-ai-chips-leadership-20260622",
       "ticker": "AVGO",
       "url": "https://finnhub.io/api/news?id=ca5837ecd6296c7e29d600e06070363d82c0ed7fc523937db7024283a3f240cd",
-      "data_invio": "2026-06-22T10:00:00+02:00"
+      "data_invio": "2026-06-22T10:00:00+02:00",
+      "titolo": "Broadcom: il modo migliore investire in AI per custom chips",
+      "tipo_evento": "tema_investimento_ai"
     },
     {
       "id": "ssnlf-skhynix-overtakes-samsung-20260622",
       "ticker": "SSNLF",
       "url": "https://finnhub.io/api/news?id=3bb745f3270d4f8bb362971a065225cc8af14304548b5da117f9d87fc3a9b372",
-      "data_invio": "2026-06-22T10:10:00+00:00"
+      "data_invio": "2026-06-22T10:10:00+00:00",
+      "titolo": "SK Hynix supera Samsung e diventa l'azienda più preziosa della Corea del Sud",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "orcl-equity-raise-capex-tumble-20260622",
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=e579067894b69247fee39507573b7cc42201cd0f2e4bb2544444e5c016b4e9d0",
-      "data_invio": "2026-06-22T10:10:00+00:00"
+      "data_invio": "2026-06-22T10:10:00+00:00",
+      "titolo": "Oracle in calo dopo i conti Q4: capex in forte aumento e nuova emissione azionaria pesano sul titolo",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-goog-avgo-triggerfish-chip-mediatek-20260622",
       "ticker": "GOOG",
       "url": "https://finnhub.io/api/news?id=18a8e1234737007869e7354cda35768a7d96771377abba93faee2e4efda2bedd",
-      "data_invio": "2026-06-22T10:22:00+00:00"
+      "data_invio": "2026-06-22T10:22:00+00:00",
+      "titolo": "Google sviluppa il chip AI di nuova generazione 'Triggerfish' con MediaTek",
+      "tipo_evento": "prodotto"
     },
     {
       "id": "finnhub-intc-china-export-curbs-hormuz-20260622",
       "ticker": "INTC",
       "url": "https://finnhub.io/api/news?id=9c6a7da04100e88cdefd1373e6721103623e76b0ded20502ce9421dbdd9492af",
-      "data_invio": "2026-06-22T10:22:00+00:00"
+      "data_invio": "2026-06-22T10:22:00+00:00",
+      "titolo": "La Cina inasprisce i controlli all'export tecnologico; si allentano le tensioni sullo Stretto di Hormuz",
+      "tipo_evento": "macro"
     },
     {
       "id": "finnhub-asml-euv-china-compliance-20260622",
       "ticker": "ASML",
       "url": "https://finnhub.io/api/news?id=6dfc4572c54dc83024ba8e264fa5fd530e959266f7a43a0193febfa8094203bf",
-      "data_invio": "2026-06-22T10:22:00+00:00"
+      "data_invio": "2026-06-22T10:22:00+00:00",
+      "titolo": "ASML ribadisce la piena conformità ai controlli sulle esportazioni di macchine EUV verso la Cina",
+      "tipo_evento": "legale/regolatorio"
     },
     {
       "id": "finnhub-sndk-overvalued-579pct-20260622",
       "ticker": "SNDK",
       "url": "https://finnhub.io/api/news?id=326004a1264192648d69043c2d418b23af772f1f4fbb446dfaca81b9c70d6ba1",
-      "data_invio": "2026-06-22T10:22:00+00:00"
+      "data_invio": "2026-06-22T10:22:00+00:00",
+      "titolo": "Analisti avvertono: SanDisk potrebbe essere sopravvalutata fino al 579% dopo il recente rialzo",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-nflx-ma-wall-street-20260622",
       "ticker": "NFLX",
       "url": "https://finnhub.io/api/news?id=03c1125565b3a3e5c0e24dd0c41bc5f52c97f11eece6452534d98bc1be7d3bf0",
-      "data_invio": "2026-06-22T14:10:00+02:00"
+      "data_invio": "2026-06-22T14:10:00+02:00",
+      "titolo": "Netflix M&A finalmente approvata da Wall Street",
+      "tipo_evento": "M&A"
     },
     {
       "id": "finnhub-orcl-equity-raise-capex-tumble-20260622",
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=e579067894b69247fee39507573b7cc42201cd0f2e4bb2544444e5c016b4e9d0",
-      "data_invio": "2026-06-22T14:10:00+02:00"
+      "data_invio": "2026-06-22T14:10:00+02:00",
+      "titolo": "Oracle in calo dopo i conti Q4: capex in forte aumento e nuova emissione azionaria pesano sul titolo",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-pltr-crushed-earnings-20260622",
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=6982cff82d932a0fecaa7d1b5d5d1b7e9b9799cf13200e2f1008b42ca9cd4762",
-      "data_invio": "2026-06-22T14:10:00+02:00"
+      "data_invio": "2026-06-22T14:10:00+02:00",
+      "titolo": "Palantir tra 3 AI stocks che crushed earnings; valutazione già ampia",
+      "tipo_evento": "earnings"
     },
     {
       "id": "cnbc-spcx-bond-sale-100b-cash-20260622",
       "ticker": "SPCX",
       "url": "https://www.cnbc.com/2026/06/22/spacex-spcx-bond-sale-ipo.html",
-      "data_invio": "2026-06-22T17:04:06+00:00"
+      "data_invio": "2026-06-22T17:04:06+00:00",
+      "titolo": "SpaceX rivela $100 miliardi in cassa ed emette obbligazioni dopo il record IPO",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-goog-brain-drain-deepmind-20260622",
       "ticker": "GOOG",
       "url": "https://finnhub.io/api/news?id=64baa9d6dbc8e5b3358da81f66906ef3b349f3b5ff388d081bdc544c9cbad311",
-      "data_invio": "2026-06-22T17:04:06+00:00"
+      "data_invio": "2026-06-22T17:04:06+00:00",
+      "titolo": "Alphabet perde oltre il 6% tra fuga di talenti AI e trascinamento da SpaceX",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "finnhub-avgo-jpm-defends-google-rumors-20260622",
       "ticker": "AVGO",
       "url": "https://finnhub.io/api/news?id=a124e103f61349c3cbe57dfb84788d30da99891ac96467faa3d681417e6a0424",
-      "data_invio": "2026-06-22T17:04:06+00:00"
+      "data_invio": "2026-06-22T17:04:06+00:00",
+      "titolo": "J.P. Morgan difende Broadcom: i rumor su Google non reggono, forte rialzo in arrivo",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "finnhub-pltr-french-dgsi-replaces-20260622",
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=3ff64da7e67545c31b2b49f0ae13f3095d701634398da4479d01d472a4efb9a5",
-      "data_invio": "2026-06-22T17:04:06+00:00"
+      "data_invio": "2026-06-22T17:04:06+00:00",
+      "titolo": "L'intelligence interna francese abbandona Palantir in favore di un concorrente locale",
+      "tipo_evento": "legale/regolatorio"
     },
     {
       "id": "finnhub-asml-bofa-target-2345-20260622",
       "ticker": "ASML",
       "url": "https://finnhub.io/api/news?id=5fb2b96b448aa0fd83f9aab438ffb2658f60cdd744b4b1f6ec68a1c471d7564f",
-      "data_invio": "2026-06-22T17:04:06+00:00"
+      "data_invio": "2026-06-22T17:04:06+00:00",
+      "titolo": "Bank of America alza il target price di ASML a $2.345 con rating Buy, upside del 22%",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "finnhub-intc-google-tesla-equity-20260622",
       "ticker": "INTC",
       "url": "https://finnhub.io/api/news?id=47dbca27ea1d4e780ad26c0b657b300660cae4fd60299502b92859537e5e52fe",
-      "data_invio": "2026-06-22T20:10:00+00:00"
+      "data_invio": "2026-06-22T20:10:00+00:00",
+      "titolo": "Intel sigla accordi con Google e Tesla: USA entra in equity",
+      "tipo_evento": "Partnership strategico / Equity stake governativo"
     },
     {
       "id": "benzinga-nflx-52week-low-20260622",
       "ticker": "NFLX",
       "url": "https://finnhub.io/api/news?id=8d37fcd3f9b66405f2b243b83f8c919a86dc9bfe3e3aff1a5345ad20316db245",
-      "data_invio": "2026-06-22T20:10:00+00:00"
+      "data_invio": "2026-06-22T20:10:00+00:00",
+      "titolo": "Netflix crolla al minimo 52 settimane: fallite acquisizioni strategiche",
+      "tipo_evento": "Fallimento M&A / Perdita di valore"
     },
     {
       "id": "yahoo-pltr-underperformance-20260622",
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=0a722d89d8a6684292a0c754d6306b108f2db8cce797a415a13fe9a6bb563849",
-      "data_invio": "2026-06-22T20:10:00+00:00"
+      "data_invio": "2026-06-22T20:10:00+00:00",
+      "titolo": "Palantir perde contratto Francia, ma revenue USA boom +104%",
+      "tipo_evento": "Perdita di deal + Forte crescita USA"
     },
     {
       "id": "yahoo-pltr-us-growth-20260622",
@@ -406,31 +524,41 @@
       "id": "yahoo-orcl-workforce-cut-13pct-20260623",
       "ticker": "ORCL",
       "url": "https://finnhub.io/api/news?id=da00d69b0262467ad2601b01a4cb6c6b9c2619eb7c21f3e66cb456bb21425b3a",
-      "data_invio": "2026-06-23T07:30:00+00:00"
+      "data_invio": "2026-06-23T07:30:00+00:00",
+      "titolo": "Oracle taglia 21.000 posti e punta a 50 miliardi di dollari per l'AI",
+      "tipo_evento": "news aziendale"
     },
     {
       "id": "yahoo-amgn-willful-patent-infringement-20260623",
       "ticker": "AMGN",
       "url": "https://finnhub.io/api/news?id=85eca25839d94e22c7ea0ab0eba3eb415758c3c248778ffe8556cabf1a1e0793",
-      "data_invio": "2026-06-23T07:30:00+00:00"
+      "data_invio": "2026-06-23T07:30:00+00:00",
+      "titolo": "Giuria del Delaware: Amgen ha violato intenzionalmente brevetti altrui",
+      "tipo_evento": "legale/regolatorio"
     },
     {
       "id": "yahoo-avgo-ai-revenue-triple-dip-17pct-20260623",
       "ticker": "AVGO",
       "url": "https://finnhub.io/api/news?id=660a402b56dae407427945a9fa0d5908306c790678a618e2e5a4608f20669fc0",
-      "data_invio": "2026-06-23T07:30:00+00:00"
+      "data_invio": "2026-06-23T07:30:00+00:00",
+      "titolo": "Broadcom: ricavi AI verso 16 miliardi al trimestre, ma il titolo cede il 17%",
+      "tipo_evento": "earnings"
     },
     {
       "id": "globenewswire-lly-centessa-court-approval-20260622",
       "ticker": "LLY",
       "url": "https://finnhub.io/api/news?id=20da687d23bf7ef570c1669738033c927266e214292f219c0508cd9059ee4a03",
-      "data_invio": "2026-06-23T07:30:00+00:00"
+      "data_invio": "2026-06-23T07:30:00+00:00",
+      "titolo": "L'Alta Corte inglese approva l'acquisizione di Centessa Pharmaceuticals da parte di Eli Lilly",
+      "tipo_evento": "M&A"
     },
     {
       "id": "yahoo-ibm-trump-quantum-eo-20260622",
       "ticker": "IBM",
       "url": "https://finnhub.io/api/news?id=8d1b04a7f5952a86196a5bf9d6d4bfeb6db1dcaeeead820c335d0c7b87555f5f",
-      "data_invio": "2026-06-23T07:30:00+00:00"
+      "data_invio": "2026-06-23T07:30:00+00:00",
+      "titolo": "Trump firma due decreti per accelerare il quantum computing negli USA",
+      "tipo_evento": "macro"
     },
     {
       "id": "orcl-ellison-cuts-21000-jobs-20260623",
@@ -472,7 +600,9 @@
       "id": "korea-selloff-chip-intc-nvda-sndk-20260623",
       "ticker": "MACRO",
       "url": "https://finnhub.io/api/news?id=f304f526512184de6f58a9a597e8854fa955fc4a19dc955c3f98aed38ee317fa",
-      "data_invio": "2026-06-23T19:10:00+00:00"
+      "data_invio": "2026-06-23T19:10:00+00:00",
+      "titolo": "Crollo dei mercati coreani trascina giù i chip mondiali",
+      "tipo_evento": "macro"
     },
     {
       "id": "korea-selloff-ssnlf-hynix-20260623",
@@ -484,25 +614,33 @@
       "id": "bofa-semiconductor-outlook-intc-2028-20260623",
       "ticker": "INTC",
       "url": "https://finnhub.io/api/news?id=066d1c84fedd5badec81931f952326a7e99038b03af7b3b305f7db035811256c",
-      "data_invio": "2026-06-23T19:10:00+00:00"
+      "data_invio": "2026-06-23T19:10:00+00:00",
+      "titolo": "BofA alza le stime sull'AI fino al 2028 e indica Intel tra i principali beneficiari",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "jpm-upgrades-ibm-20260623",
       "ticker": "IBM",
       "url": "https://finnhub.io/api/news?id=c322bd2d722017ebbb7143293021c93b7d8d4e90ec497c4b49170ce74ce2120c",
-      "data_invio": "2026-06-23T19:10:00+00:00"
+      "data_invio": "2026-06-23T19:10:00+00:00",
+      "titolo": "JPMorgan promuove IBM nonostante il crollo generalizzato dei tecnologici",
+      "tipo_evento": "upgrade/downgrade analisti"
     },
     {
       "id": "palantir-zeta-ai-marketing-pact-20260623",
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=acf8eaf109a0fad712f5b7ba2650fe19f5b3a07cb559388185cdada78d8a8beb",
-      "data_invio": "2026-06-23T19:10:00+00:00"
+      "data_invio": "2026-06-23T19:10:00+00:00",
+      "titolo": "Palantir sigla un'alleanza con Zeta per costruire una piattaforma AI di marketing",
+      "tipo_evento": "prodotto"
     },
     {
       "id": "netherlands-pax-silica-asml-dispute-20260623",
       "ticker": "ASML",
       "url": "https://finnhub.io/api/news?id=bb87f1c7bb35f3e57cd849142ec25430631c43045485290f78962d983ee7676d",
-      "data_invio": "2026-06-23T19:10:00+00:00"
+      "data_invio": "2026-06-23T19:10:00+00:00",
+      "titolo": "I Paesi Bassi entrano nell'iniziativa AI alleata degli USA nonostante il contenzioso su ASML",
+      "tipo_evento": "legale/regolatorio"
     }
   ]
 }

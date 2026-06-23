@@ -19,25 +19,36 @@ semplice; mai esporre la chiave API. Il sistema aiuta a CAPIRE, non prevede i pr
 > 6. **Esegui triage → analisi → invio UNA SOLA VOLTA.** Non rifare da capo il
 >    lavoro (raddoppia i token) e **non inviare mai una seconda email**.
 
-## Passo 1 — Carica configurazione e stato
-Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`.
-NON leggere `state/predictions.json` (non serve al report: lo aggiorna solo
-`update_state.py`). Una lettura ciascuno.
+## Passo 1 — Carica configurazione
+Leggi `config/settings.yaml` e `config/portfolio.yaml`. **NON** leggere
+`state/seen.json` né `state/predictions.json`: la **deduplica è gestita dallo
+script** `fetch_news.py` (Passo 2), che scarta a monte le notizie già inviate e ti
+passa l'elenco `recent_seen` per riconoscere i doppioni di evento.
 
 ## Passo 2 — Scarica le notizie (UNA chiamata) e fai il TRIAGE
 1. Dai titoli con `tipo: azione` estrai la lista dei ticker ed eseguila in **una
-   sola** chiamata:
+   sola** chiamata (passa SEMPRE `--seen-file`, è ciò che evita i doppioni):
    ```bash
-   python scripts/fetch_news.py --tickers TICK1,TICK2,...,TICKn
+   python scripts/fetch_news.py --tickers TICK1,TICK2,...,TICKn --seen-file state/seen.json
    ```
-   Lo script restituisce un JSON compatto: `items` (notizie per azione, già
-   deduplicate; il campo `tickers` elenca i titoli toccati) e `macro` (contesto
-   generale). Leggi quello: NON fare una ricerca web per ogni titolo.
+   Lo script restituisce un JSON compatto:
+   - `items`: notizie per azione, già deduplicate **e già ripulite da quelle con
+     URL già inviato** (campo `tickers` = titoli toccati);
+   - `macro`: contesto generale;
+   - `recent_seen`: le notizie **già inviate negli ultimi giorni** (con `ticker` e
+     `titolo`) — ti serve per la **dedup di evento** al punto 3.
+   Leggi quello: NON fare una ricerca web per ogni titolo.
 2. Per i **temi degli ETF** (difesa/NATO, uranio/nucleare, salute, materiali,
    infrastrutture, ricostruzione Ucraina, ecc.) puoi fare **al massimo 2-3
    WebSearch totali** (non una per ETF): la news API copre poco gli ETF UCITS.
 3. **Triage** sul digest (più gli eventuali risultati ETF):
-   - scarta ciò che è già in `seen.json`, il rumore, l'off-topic;
+   - **DEDUP DI EVENTO (obbligatoria):** confronta ogni candidato con `recent_seen`.
+     Se lo **stesso evento** (stessa azienda + stesso fatto, es. "Oracle taglia
+     21.000 posti") è già stato inviato — **anche da una fonte/URL diverso, anche
+     con un punteggio diverso** — **scartalo**. Lo script toglie già i doppioni di
+     URL; questo passo toglie i doppioni di *evento*. Nel dubbio, stesso fatto = non
+     reinviare.
+   - scarta il rumore e l'off-topic;
    - stima al volo la rilevanza (rubrica) e tieni solo i candidati >= soglia del
      titolo (altrimenti `soglia_rilevanza_globale`).
    Se non resta nulla per un titolo, passa oltre senza scrivere nulla.
@@ -60,6 +71,17 @@ da più fonti, compila:
 - `rilevanza`: 0-100
 Se una notizia tocca **più titoli**, segnalalo nella voce (una voce sola).
 Ricorda: l'impatto è **analisi qualitativa**, non una previsione, mai un consiglio.
+
+**Affidabilità dell'analisi (valutazione equilibrata):**
+- **Notizie a doppia faccia**: molte notizie hanno sia un lato positivo sia uno
+  negativo (es. tagli di personale = risparmio sui costi *ma* segnale di
+  ridimensionamento; capex elevato = investimento sul futuro *ma* pressione sui
+  margini). NON scegliere un solo angolo: per ogni orizzonte (breve/medio/lungo)
+  valuta l'effetto **netto** (quale prevale) e **spiega il trade-off nel
+  `riassunto`**. Se il segno è incerto, usa `neutro` e abbassa la `confidenza`.
+- **Coerenza**: ancora `rilevanza` e `impatto` alla rubrica e ai fatti, non
+  all'enfasi del singolo titolo-fonte. Lo stesso fatto deve ricevere una
+  valutazione coerente, non dipendere da come l'ha titolato un giornale.
 
 ### Tassonomia `tipo_evento`
 - **Azioni**: earnings · upgrade/downgrade analisti · revisione guidance · M&A ·
@@ -118,7 +140,8 @@ reinviare**: correggi solo lo stato. Mai una seconda email per run.
 `state_update.json` e lascia fare allo script (deduplica e fa pruning a 30 giorni):
 ```json
 {
-  "seen_add": [{"id":"<url normalizzato>","ticker":"...","url":"...","data_invio":"<ISO>"}],
+  "seen_add": [{"id":"<slug breve>","ticker":"...","titolo":"<stesso titolo della voce>",
+     "tipo_evento":"...","url":"<URL della fonte principale>","data_invio":"<ISO>"}],
   "predictions_add": [{"id":"...","ticker":"...","data":"<ISO>","tipo_evento":"...",
      "impatto":{"breve":"...","medio":"...","lungo":"..."},"confidenza":"...",
      "rilevanza":NN,"titolo":"...","url":"..."}],
@@ -126,7 +149,10 @@ reinviare**: correggi solo lo stato. Mai una seconda email per run.
      "notizie_inviate":N,"email_inviata":true,"note":"..."}
 }
 ```
-(`seen_add` e `predictions_add` solo per le voci effettivamente inviate.) Poi:
+(`seen_add` e `predictions_add` solo per le voci effettivamente inviate.)
+In `seen_add` l'`url` **deve essere quello della fonte principale** (è la chiave di
+dedup: stessa notizia = stesso URL) e il `titolo` è quello mostrato nell'email
+(serve alla dedup di evento delle run successive). Poi:
 ```bash
 python scripts/update_state.py --data-file state_update.json
 git add state/

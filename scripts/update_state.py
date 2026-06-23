@@ -21,6 +21,9 @@ import os
 import sys
 from datetime import datetime, timezone, timedelta
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from newskey import news_key  # noqa: E402
+
 ROOT = os.path.join(os.path.dirname(__file__), "..", "state")
 SEEN = os.path.join(ROOT, "seen.json")
 PRED = os.path.join(ROOT, "predictions.json")
@@ -60,10 +63,21 @@ def prune(items, days, *date_keys):
     return kept
 
 
-def merge(existing, additions, dedup_key):
-    seen_keys = {it.get(dedup_key) for it in existing if it.get(dedup_key)}
+def _dedup_key(it):
+    """Chiave robusta: derivata dall'URL (stessa notizia = stesso URL, anche se il
+    modello cambia l'`id` a ogni run). Fallback sull'`id` solo se manca l'URL."""
+    k = news_key(it.get("url", ""))
+    if k:
+        return k
+    rid = str(it.get("id") or "").strip().lower()
+    return ("id:" + rid) if rid else ""
+
+
+def merge(existing, additions):
+    seen_keys = {_dedup_key(it) for it in existing}
+    seen_keys.discard("")
     for it in additions or []:
-        k = it.get(dedup_key)
+        k = _dedup_key(it)
         if k and k in seen_keys:
             continue
         existing.append(it)
@@ -85,11 +99,11 @@ def main() -> int:
         print(f"ERRORE lettura {args.data_file}: {exc}", file=sys.stderr)
         return 1
 
-    seen = merge(load_items(SEEN), data.get("seen_add"), "id")
+    seen = merge(load_items(SEEN), data.get("seen_add"))
     seen = prune(seen, args.prune_days, "data_invio")
     save_items(SEEN, seen)
 
-    pred = merge(load_items(PRED), data.get("predictions_add"), "id")
+    pred = merge(load_items(PRED), data.get("predictions_add"))
     pred = prune(pred, args.prune_days, "data")
     save_items(PRED, pred)
 

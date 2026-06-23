@@ -21,6 +21,9 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone, timedelta
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from newskey import news_key  # noqa: E402
+
 COMPANY_NEWS = "https://finnhub.io/api/v1/company-news"
 GENERAL_NEWS = "https://finnhub.io/api/v1/news"
 
@@ -47,6 +50,11 @@ def main() -> int:
     ap.add_argument("--summary-chars", type=int, default=120)
     ap.add_argument("--no-general", action="store_true",
                     help="Salta le notizie macro generali")
+    ap.add_argument("--seen-file", default="",
+                    help="Path a state/seen.json: scarta le notizie con URL gia' "
+                         "inviato e fornisce 'recent_seen' per la dedup di evento")
+    ap.add_argument("--recent-days", type=int, default=4,
+                    help="Giorni di storico in 'recent_seen' (dedup di evento)")
     args = ap.parse_args()
 
     key = os.environ.get("FINNHUB_API_KEY")
@@ -60,9 +68,34 @@ def main() -> int:
     to = now.date().isoformat()
     cutoff = (now - timedelta(hours=args.from_hours)).timestamp()
 
+    # Stato gia' inviato: chiavi-URL da filtrare a monte + elenco compatto
+    # 'recent_seen' (ticker+titolo) per far riconoscere al modello i DOPPIONI di
+    # evento (stesso fatto da fonte/URL diverso).
+    seen_keys = set()
+    recent_seen = []
+    if args.seen_file:
+        try:
+            with open(args.seen_file, "r", encoding="utf-8") as fh:
+                seen_items = json.load(fh).get("items", [])
+        except (OSError, json.JSONDecodeError):
+            seen_items = []
+        rec_cutoff = (now - timedelta(days=args.recent_days)).isoformat()
+        for s in seen_items:
+            k = news_key(s.get("url", ""))
+            if k:
+                seen_keys.add(k)
+            d = s.get("data_invio", "")
+            if (not d) or d[:19] >= rec_cutoff[:19]:
+                recent_seen.append({
+                    "ticker": s.get("ticker", ""),
+                    "titolo": s.get("titolo", ""),
+                    "data": (d[:10] if d else ""),
+                })
+
     tickers = [t.strip().upper() for t in args.tickers.split(",") if t.strip()]
     by_url = {}
     errors = []
+    n_filtrate = 0
 
     for tk in tickers:
         query = urllib.parse.urlencode({"symbol": tk, "from": frm, "to": to, "token": key})
@@ -84,6 +117,9 @@ def main() -> int:
                 continue
             url = it.get("url", "")
             if not url:
+                continue
+            if news_key(url) in seen_keys:  # gia' inviata: non riproporla al modello
+                n_filtrate += 1
                 continue
             if url in by_url:  # stessa notizia su piu' titoli: unisci i ticker
                 if tk not in by_url[url]["tickers"]:
@@ -109,6 +145,9 @@ def main() -> int:
                 ts = it.get("datetime", 0)
                 if ts and ts < cutoff:
                     continue
+                if news_key(it.get("url", "")) in seen_keys:  # gia' inviata
+                    n_filtrate += 1
+                    continue
                 macro.append({
                     "title": (it.get("headline") or "").strip(),
                     "source": it.get("source", ""),
@@ -124,8 +163,10 @@ def main() -> int:
         "from": frm,
         "to": to,
         "n_items": len(by_url),
+        "n_filtrate": n_filtrate,  # notizie scartate perche' gia' inviate (URL noto)
         "items": sorted(by_url.values(), key=lambda x: x["date"], reverse=True),
         "macro": macro,
+        "recent_seen": recent_seen,  # inviate negli ultimi giorni: per dedup di EVENTO
     }
     print(json.dumps(out, ensure_ascii=False))
     if errors:

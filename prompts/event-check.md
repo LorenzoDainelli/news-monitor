@@ -13,19 +13,26 @@ eventi davvero critici, altrimenti salta.
 >   fretta** senza analizzare oltre.
 > - Una sola passata, una sola eventuale email.
 
-## Passo 1 — Config e stato
-Leggi `config/settings.yaml`, `config/portfolio.yaml` (solo per i ticker delle
-azioni), `state/seen.json`.
+## Passo 1 — Config
+Leggi `config/settings.yaml` e `config/portfolio.yaml` (solo per i ticker delle
+azioni). **NON** leggere `state/seen.json`: la dedup è gestita dallo script al
+Passo 2.
 
 ## Passo 2 — Scarica e filtra (solo critici)
-- Estrai i ticker `tipo: azione` ed esegui **una** chiamata:
-  `python scripts/fetch_news.py --tickers TICK1,...,TICKn`
+- Estrai i ticker `tipo: azione` ed esegui **una** chiamata (passa SEMPRE
+  `--seen-file`, è ciò che evita i doppioni):
+  `python scripts/fetch_news.py --tickers TICK1,...,TICKn --seen-file state/seen.json`
+  Lo script restituisce `items` (già ripuliti dalle notizie con URL già inviato) e
+  `recent_seen` (le notizie già inviate negli ultimi giorni, con `ticker` e `titolo`).
 - Dal digest tieni **solo** gli eventi critici, cioè con `rilevanza >=
   soglia_evento_critico` (da settings) **e/o** di tipo critico: earnings con
   sorpresa, M&A, revisione guidance, cambio CEO, evento regolatorio grave,
   downgrade/upgrade forte.
-- Scarta ciò che è già in `seen.json` (non riallertare ciò che un report ha già
-  mandato).
+- **DEDUP DI EVENTO (obbligatoria):** confronta ogni candidato con `recent_seen`.
+  Se lo **stesso evento** (stessa azienda + stesso fatto, es. "Oracle taglia 21.000
+  posti") è già stato inviato — **anche da una fonte/URL diverso, anche con un
+  punteggio diverso** — **scartalo**. Lo script toglie già i doppioni di URL; tu
+  togli i doppioni di *evento*. Nel dubbio, stesso fatto = non reinviare.
 - Se **non resta nulla** → niente email. Vai direttamente al Passo 5 (solo log).
 
 ## Passo 3 — Analizza i critici (max 3)
@@ -34,6 +41,11 @@ report: `titolo` (italiano semplice e poco tecnico), `tipo_evento, riassunto, im
 fonti, rilevanza`. Le **fonti (testata + link) sono obbligatorie** per ogni voce.
 L'`impatto` ha valori di **una sola parola** (positivo/neutro/negativo), mai frasi.
 Niente fetch di articoli: usa il digest.
+**Valutazione equilibrata:** se la notizia ha sia un lato positivo sia uno negativo
+(es. tagli di personale = risparmio *ma* ridimensionamento), valuta l'effetto
+**netto** per ogni orizzonte e spiega il trade-off nel `riassunto`; se il segno è
+incerto usa `neutro` con `confidenza` più bassa. Ancora il giudizio ai fatti, non
+all'enfasi del titolo-fonte.
 
 ## Passo 4 — Avviso email (solo se ci sono critici)
 Scrivi `report.json` (stessa struttura del report; `test_mode` da settings) e invia:
@@ -47,7 +59,10 @@ breve avviso diagnostico (`items: []`, compila `diagnostic`).
 
 ## Passo 5 — Stato + log + commit su `main`
 Scrivi `state_update.json` e aggiorna lo stato:
-- `seen_add` + `predictions_add` **solo** per gli avvisi effettivamente inviati;
+- `seen_add` + `predictions_add` **solo** per gli avvisi effettivamente inviati.
+  In `seen_add` ogni voce ha `{id, ticker, titolo, tipo_evento, url, data_invio}`:
+  l'`url` è quello della **fonte principale** (chiave di dedup) e il `titolo` quello
+  mostrato (serve alla dedup di evento delle run successive).
 - `runlog` **sempre** (anche con 0 critici): `{ts, routine:"event-check",
   titoli_cercati, notizie_trovate, notizie_inviate, email_inviata, note}`.
 ```bash
