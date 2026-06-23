@@ -824,6 +824,81 @@
       "rilevanza": 82,
       "titolo": "Palantir perde contratto Francia, ma revenue USA boom +104%",
       "url": "https://finnhub.io/api/news?id=0a722d89d8a6684292a0c754d6306b108f2db8cce797a415a13fe9a6bb563849"
+    },
+    {
+      "id": "yahoo-orcl-workforce-cut-13pct-20260623",
+      "ticker": "ORCL",
+      "data": "2026-06-23T07:30:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 73,
+      "titolo": "Oracle taglia 21.000 posti e punta a 50 miliardi di dollari per l'AI",
+      "url": "https://finnhub.io/api/news?id=da00d69b0262467ad2601b01a4cb6c6b9c2619eb7c21f3e66cb456bb21425b3a"
+    },
+    {
+      "id": "yahoo-amgn-willful-patent-infringement-20260623",
+      "ticker": "AMGN",
+      "data": "2026-06-23T07:30:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "Giuria del Delaware: Amgen ha violato intenzionalmente brevetti altrui",
+      "url": "https://finnhub.io/api/news?id=85eca25839d94e22c7ea0ab0eba3eb415758c3c248778ffe8556cabf1a1e0793"
+    },
+    {
+      "id": "yahoo-avgo-ai-revenue-triple-dip-17pct-20260623",
+      "ticker": "AVGO",
+      "data": "2026-06-23T07:30:00+00:00",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 70,
+      "titolo": "Broadcom: ricavi AI verso 16 miliardi al trimestre, ma il titolo cede il 17%",
+      "url": "https://finnhub.io/api/news?id=660a402b56dae407427945a9fa0d5908306c790678a618e2e5a4608f20669fc0"
+    },
+    {
+      "id": "globenewswire-lly-centessa-court-approval-20260622",
+      "ticker": "LLY",
+      "data": "2026-06-23T07:30:00+00:00",
+      "tipo_evento": "M&A",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 70,
+      "titolo": "L'Alta Corte inglese approva l'acquisizione di Centessa Pharmaceuticals da parte di Eli Lilly",
+      "url": "https://finnhub.io/api/news?id=20da687d23bf7ef570c1669738033c927266e214292f219c0508cd9059ee4a03"
+    },
+    {
+      "id": "yahoo-ibm-trump-quantum-eo-20260622",
+      "ticker": "IBM",
+      "data": "2026-06-23T07:30:00+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Trump firma due decreti per accelerare il quantum computing negli USA",
+      "url": "https://finnhub.io/api/news?id=8d1b04a7f5952a86196a5bf9d6d4bfeb6db1dcaeeead820c335d0c7b87555f5f"
     }
   ]
 }

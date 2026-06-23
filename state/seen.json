@@ -401,6 +401,36 @@
       "ticker": "PLTR",
       "url": "https://finnhub.io/api/news?id=8404ff1c7f3c432afffdb3f7be75a8ee255234c527feef3e0c3edbdca548278d",
       "data_invio": "2026-06-22T20:10:00+00:00"
+    },
+    {
+      "id": "yahoo-orcl-workforce-cut-13pct-20260623",
+      "ticker": "ORCL",
+      "url": "https://finnhub.io/api/news?id=da00d69b0262467ad2601b01a4cb6c6b9c2619eb7c21f3e66cb456bb21425b3a",
+      "data_invio": "2026-06-23T07:30:00+00:00"
+    },
+    {
+      "id": "yahoo-amgn-willful-patent-infringement-20260623",
+      "ticker": "AMGN",
+      "url": "https://finnhub.io/api/news?id=85eca25839d94e22c7ea0ab0eba3eb415758c3c248778ffe8556cabf1a1e0793",
+      "data_invio": "2026-06-23T07:30:00+00:00"
+    },
+    {
+      "id": "yahoo-avgo-ai-revenue-triple-dip-17pct-20260623",
+      "ticker": "AVGO",
+      "url": "https://finnhub.io/api/news?id=660a402b56dae407427945a9fa0d5908306c790678a618e2e5a4608f20669fc0",
+      "data_invio": "2026-06-23T07:30:00+00:00"
+    },
+    {
+      "id": "globenewswire-lly-centessa-court-approval-20260622",
+      "ticker": "LLY",
+      "url": "https://finnhub.io/api/news?id=20da687d23bf7ef570c1669738033c927266e214292f219c0508cd9059ee4a03",
+      "data_invio": "2026-06-23T07:30:00+00:00"
+    },
+    {
+      "id": "yahoo-ibm-trump-quantum-eo-20260622",
+      "ticker": "IBM",
+      "url": "https://finnhub.io/api/news?id=8d1b04a7f5952a86196a5bf9d6d4bfeb6db1dcaeeead820c335d0c7b87555f5f",
+      "data_invio": "2026-06-23T07:30:00+00:00"
     }
   ]
 }
