@@ -431,6 +431,24 @@
       "ticker": "IBM",
       "url": "https://finnhub.io/api/news?id=8d1b04a7f5952a86196a5bf9d6d4bfeb6db1dcaeeead820c335d0c7b87555f5f",
       "data_invio": "2026-06-23T07:30:00+00:00"
+    },
+    {
+      "id": "orcl-ellison-cuts-21000-jobs-20260623",
+      "ticker": "ORCL",
+      "url": "https://finnhub.io/api/news?id=8db707d55e9125bcb49a9b3ee0b3cdb2ed0f6d3e2a52b790dc5f4942b00d18d",
+      "data_invio": "2026-06-23T11:10:00+02:00"
+    },
+    {
+      "id": "spcx-sheds-600b-three-days-20260623",
+      "ticker": "SPCX",
+      "url": "https://finnhub.io/api/news?id=47811726647250996d99dc32ea8e88a78555c0b369a5095f35a96027ca52f130",
+      "data_invio": "2026-06-23T11:10:00+02:00"
+    },
+    {
+      "id": "aapl-hardware-price-hikes-downgrade-20260623",
+      "ticker": "AAPL",
+      "url": "https://finnhub.io/api/news?id=7408f7ecad7f86651a65b6ae0056d1177f989e150b98a91b94434474d2a1bff5",
+      "data_invio": "2026-06-23T11:10:00+02:00"
     }
   ]
 }
