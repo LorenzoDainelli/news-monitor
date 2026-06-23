@@ -899,6 +899,81 @@
       "rilevanza": 68,
       "titolo": "Trump firma due decreti per accelerare il quantum computing negli USA",
       "url": "https://finnhub.io/api/news?id=8d1b04a7f5952a86196a5bf9d6d4bfeb6db1dcaeeead820c335d0c7b87555f5f"
+    },
+    {
+      "id": "korea-selloff-chip-intc-nvda-sndk-20260623",
+      "ticker": "MACRO",
+      "data": "2026-06-23T19:10:00+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 82,
+      "titolo": "Crollo dei mercati coreani trascina giù i chip mondiali",
+      "url": "https://finnhub.io/api/news?id=f304f526512184de6f58a9a597e8854fa955fc4a19dc955c3f98aed38ee317fa"
+    },
+    {
+      "id": "bofa-semiconductor-outlook-intc-2028-20260623",
+      "ticker": "INTC",
+      "data": "2026-06-23T19:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "BofA alza le stime sull'AI fino al 2028 e indica Intel tra i principali beneficiari",
+      "url": "https://finnhub.io/api/news?id=066d1c84fedd5badec81931f952326a7e99038b03af7b3b305f7db035811256c"
+    },
+    {
+      "id": "jpm-upgrades-ibm-20260623",
+      "ticker": "IBM",
+      "data": "2026-06-23T19:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "JPMorgan promuove IBM nonostante il crollo generalizzato dei tecnologici",
+      "url": "https://finnhub.io/api/news?id=c322bd2d722017ebbb7143293021c93b7d8d4e90ec497c4b49170ce74ce2120c"
+    },
+    {
+      "id": "palantir-zeta-ai-marketing-pact-20260623",
+      "ticker": "PLTR",
+      "data": "2026-06-23T19:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Palantir sigla un'alleanza con Zeta per costruire una piattaforma AI di marketing",
+      "url": "https://finnhub.io/api/news?id=acf8eaf109a0fad712f5b7ba2650fe19f5b3a07cb559388185cdada78d8a8beb"
+    },
+    {
+      "id": "netherlands-pax-silica-asml-dispute-20260623",
+      "ticker": "ASML",
+      "data": "2026-06-23T19:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "I Paesi Bassi entrano nell'iniziativa AI alleata degli USA nonostante il contenzioso su ASML",
+      "url": "https://finnhub.io/api/news?id=bb87f1c7bb35f3e57cd849142ec25430631c43045485290f78962d983ee7676d"
     }
   ]
 }

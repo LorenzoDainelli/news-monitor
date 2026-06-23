@@ -467,6 +467,42 @@
       "ticker": "GOOG",
       "url": "https://finnhub.io/api/news?id=c16c31322e24a9b7a27c14f92b0ffe822e0d4c2e5a8443820ab2c8f7c8784104",
       "data_invio": "2026-06-23T15:09:00+02:00"
+    },
+    {
+      "id": "korea-selloff-chip-intc-nvda-sndk-20260623",
+      "ticker": "MACRO",
+      "url": "https://finnhub.io/api/news?id=f304f526512184de6f58a9a597e8854fa955fc4a19dc955c3f98aed38ee317fa",
+      "data_invio": "2026-06-23T19:10:00+00:00"
+    },
+    {
+      "id": "korea-selloff-ssnlf-hynix-20260623",
+      "ticker": "SSNLF",
+      "url": "https://finnhub.io/api/news?id=0f214835037d1e4e5665cbf86048de0b2e5fb6212b9a87135c06244f5cbbfdb2",
+      "data_invio": "2026-06-23T19:10:00+00:00"
+    },
+    {
+      "id": "bofa-semiconductor-outlook-intc-2028-20260623",
+      "ticker": "INTC",
+      "url": "https://finnhub.io/api/news?id=066d1c84fedd5badec81931f952326a7e99038b03af7b3b305f7db035811256c",
+      "data_invio": "2026-06-23T19:10:00+00:00"
+    },
+    {
+      "id": "jpm-upgrades-ibm-20260623",
+      "ticker": "IBM",
+      "url": "https://finnhub.io/api/news?id=c322bd2d722017ebbb7143293021c93b7d8d4e90ec497c4b49170ce74ce2120c",
+      "data_invio": "2026-06-23T19:10:00+00:00"
+    },
+    {
+      "id": "palantir-zeta-ai-marketing-pact-20260623",
+      "ticker": "PLTR",
+      "url": "https://finnhub.io/api/news?id=acf8eaf109a0fad712f5b7ba2650fe19f5b3a07cb559388185cdada78d8a8beb",
+      "data_invio": "2026-06-23T19:10:00+00:00"
+    },
+    {
+      "id": "netherlands-pax-silica-asml-dispute-20260623",
+      "ticker": "ASML",
+      "url": "https://finnhub.io/api/news?id=bb87f1c7bb35f3e57cd849142ec25430631c43045485290f78962d983ee7676d",
+      "data_invio": "2026-06-23T19:10:00+00:00"
     }
   ]
 }
