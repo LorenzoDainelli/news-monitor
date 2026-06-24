@@ -974,6 +974,81 @@
       "rilevanza": 65,
       "titolo": "I Paesi Bassi entrano nell'iniziativa AI alleata degli USA nonostante il contenzioso su ASML",
       "url": "https://finnhub.io/api/news?id=bb87f1c7bb35f3e57cd849142ec25430631c43045485290f78962d983ee7676d"
+    },
+    {
+      "id": "goog-djia-2026-06-24",
+      "ticker": "GOOG",
+      "data": "2026-06-24T07:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 75,
+      "titolo": "Alphabet (Google) entra nel Dow Jones Industrial Average al posto di Verizon",
+      "url": "https://finnhub.io/api/news?id=6b33e3ccd0dea34fae22f3a766aaf9fdb39dfba51805e056bf3026a468f2c509"
+    },
+    {
+      "id": "avgo-ai-xpv-platform-2026-06-24",
+      "ticker": "AVGO",
+      "data": "2026-06-24T07:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Broadcom co-fonda una piattaforma AI da 35 miliardi di dollari con Apollo, Blackstone e Anthropic",
+      "url": "https://finnhub.io/api/news?id=2cb45fd35a3d8fa612f42064332b0e97b3db0e6287c6a0d090e68d36a8ab4996"
+    },
+    {
+      "id": "aapl-bofa-siri-ai-2026-06-24",
+      "ticker": "AAPL",
+      "data": "2026-06-24T07:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "Bank of America mantiene Buy su Apple e aggiorna le stime dopo il cambio di strategia AI di Siri",
+      "url": "https://finnhub.io/api/news?id=1e9d482d7ab183572989200b44e125c6663b6cae0508e5234ff0f302ab7ec443"
+    },
+    {
+      "id": "jnj-talvey-mieloma-2026-06-24",
+      "ticker": "JNJ",
+      "data": "2026-06-24T07:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Johnson & Johnson: dati clinici positivi per TALVEY nel mieloma multiplo refrattario",
+      "url": "https://finnhub.io/api/news?id=be5be001081f5b439cb616202bf81fce3c26b718051042a1766cda96acdd9dc2"
+    },
+    {
+      "id": "lly-trump-factory-2026-06-24",
+      "ticker": "LLY",
+      "data": "2026-06-24T07:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Trump promuove il nuovo stabilimento da 3,5 miliardi di dollari di Eli Lilly per i farmaci anti-obesità",
+      "url": "https://finnhub.io/api/news?id=5da5cfe25e2b9295e8c80ace3f944fcf610f8a53a43d262d7e2aa9f6d816699e"
     }
   ]
 }
