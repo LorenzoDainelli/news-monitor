@@ -2,16 +2,17 @@
 
 Esecutore autonomo. **Rispetta `CLAUDE.md`** (mai segnali operativi; impatto con
 confidenza; fonti; italiano; mai esporre chiavi). Questa routine gira **3 volte al
-giorno tra i due report** e deve **costare poco**: invia un'email **solo** per
-eventi davvero critici, altrimenti salta.
+giorno tra i due report** e deve **costare poco**. **Manda sempre un'email**: un
+**avviso 🚨** se c'è un evento critico, altrimenti una breve **conferma ✅ "tutto
+tranquillo"** (così sai che ha girato e che non c'è nulla di critico).
 
 > ## ⚠️ EFFICIENZA (questa routine deve essere economica)
 > - Notizie azioni: **una sola** chiamata a `scripts/fetch_news.py`.
 > - **Niente WebSearch** (nemmeno per gli ETF: gli ETF restano ai report).
 > - **Niente fetch** di articoli.
-> - **Soglia alta**: interessano solo eventi critici. Se non c'è nulla, **salta in
->   fretta** senza analizzare oltre.
-> - Una sola passata, una sola eventuale email.
+> - **Soglia alta**: interessano solo eventi critici. Se non c'è nulla di critico,
+>   **non analizzare a fondo**: manda subito la conferma ✅ (Passo 4b) e chiudi.
+> - Una sola passata, **una sola email** (avviso 🚨 oppure conferma ✅).
 
 ## Passo 1 — Config
 Leggi `config/settings.yaml` e `config/portfolio.yaml` (solo per i ticker delle
@@ -33,7 +34,8 @@ Passo 2.
   posti") è già stato inviato — **anche da una fonte/URL diverso, anche con un
   punteggio diverso** — **scartalo**. Lo script toglie già i doppioni di URL; tu
   togli i doppioni di *evento*. Nel dubbio, stesso fatto = non reinviare.
-- Se **non resta nulla** → niente email. Vai direttamente al Passo 5 (solo log).
+- Se **non resta nulla di critico** → salta il Passo 3 e vai al **Passo 4b**
+  (conferma ✅ "tutto tranquillo").
 
 ## Passo 3 — Analizza i critici (max 3)
 Per i candidati critici (al massimo 3, i più rilevanti) compila i campi come nel
@@ -47,15 +49,34 @@ Niente fetch di articoli: usa il digest.
 incerto usa `neutro` con `confidenza` più bassa. Ancora il giudizio ai fatti, non
 all'enfasi del titolo-fonte.
 
-## Passo 4 — Avviso email (solo se ci sono critici)
+## Passo 4a — Avviso 🚨 (se ci sono eventi critici)
 Scrivi `report.json` (stessa struttura del report; `test_mode` da settings) e invia:
 ```bash
 python scripts/render_email.py --data-file report.json --out out.html
 python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
   --subject "🚨 Avviso titoli — <data>" --html-file out.html
 ```
-**Una sola email.** Se in `test_mode: true` non ci sono critici, invia comunque un
-breve avviso diagnostico (`items: []`, compila `diagnostic`).
+
+## Passo 4b — Conferma ✅ "tutto tranquillo" (se NON ci sono eventi critici)
+Manda comunque un'email breve e calma, **ben distinta** dall'avviso. Scrivi
+`report.json` con i soli campi essenziali (niente `items`):
+```json
+{
+  "date": "<data odierna>",
+  "test_mode": <da settings>,
+  "note": "✅ Nessun evento critico tra i tuoi titoli in questo controllo. Le notizie importanti ma non critiche le trovi nei report delle 07:00 e 19:00.",
+  "items": []
+}
+```
+Poi invia — **oggetto con ✅, NON 🚨**, così a colpo d'occhio si distingue dall'allarme:
+```bash
+python scripts/render_email.py --data-file report.json --out out.html
+python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
+  --subject "✅ Titoli tranquilli — <data>" --html-file out.html
+```
+(In `test_mode: true` anteponi `[PROVA]` all'oggetto.)
+
+**Una sola email per run**, in entrambi i casi (4a *oppure* 4b, mai tutte e due).
 
 ## Passo 5 — Stato + log + commit su `main`
 Scrivi `state_update.json` e aggiorna lo stato:
@@ -63,8 +84,8 @@ Scrivi `state_update.json` e aggiorna lo stato:
   In `seen_add` ogni voce ha `{id, ticker, titolo, tipo_evento, url, data_invio}`:
   l'`url` è quello della **fonte principale** (chiave di dedup) e il `titolo` quello
   mostrato (serve alla dedup di evento delle run successive).
-- `runlog` **sempre** (anche con 0 critici): `{ts, routine:"event-check",
-  titoli_cercati, notizie_trovate, notizie_inviate, email_inviata, note}`.
+- `runlog` **sempre**: `{ts, routine:"event-check", titoli_cercati, notizie_trovate,
+  notizie_inviate, email_inviata:true, tipo_email:"avviso"|"tranquillo", note}`.
 ```bash
 python scripts/update_state.py --data-file state_update.json
 git add state/

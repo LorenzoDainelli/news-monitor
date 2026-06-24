@@ -18,11 +18,14 @@ aumentarlo** e **onestà intellettuale**.
    `RESEND_API_KEY` né altri token.
 
 ## Comportamento operativo
-- **Skip mail vuote**: se nulla supera la soglia di rilevanza (e non sei in
-  `test_mode`), NON inviare email. Logga comunque la run in `state/runlog.ndjson`
-  così resta traccia che il sistema è vivo.
+- **Skip mail vuote (solo REPORT)**: nei report, se nulla supera la soglia (e non sei
+  in `test_mode`), NON inviare email; logga comunque la run in `state/runlog.ndjson`.
+  **Eccezione voluta dall'utente — Event-check**: invia SEMPRE un'email, anche senza
+  eventi critici: un avviso 🚨 se c'è qualcosa di critico, altrimenti una breve
+  conferma ✅ "tutto tranquillo" (oggetto con ✅, ben distinta dall'allarme).
 - **Deduplicazione**: una notizia già presente in `state/seen.json` non va
-  reinviata.
+  reinviata. La dedup è per **URL normalizzato** e per **evento** (stesso fatto da
+  fonte diversa = non reinviare), gestita da `fetch_news.py --seen-file`.
 - **Robustezza**: se una fonte/ricerca fallisce, logga e prosegui con il resto;
   non far fallire l'intera run.
 - **Efficienza**: tieni i passi snelli, non sprecare budget di utilizzo.
