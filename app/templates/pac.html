@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Calcolatore PAC — Finanza personale{% endblock %}
+{% block content %}
+  <div class="page-title">Calcolatore PAC</div>
+  <p class="page-sub">
+    Inserisci quanto vuoi versare ogni mese: l'app ripartisce l'importo fra i titoli secondo la % target.
+    È un calcolo, non un consiglio: la decisione resta tua.
+  </p>
+
+  <form class="form" method="get" action="/pac" style="max-width:520px; margin-bottom:18px;">
+    <div class="field" style="margin-bottom:10px;">
+      <label>Importo mensile da investire (€)</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" name="importo" value="{{ importo_input }}" placeholder="es. 500" autofocus>
+        <button type="submit" class="btn primary" style="white-space:nowrap;">Calcola</button>
+      </div>
+      <div class="hint">In futuro questo importo potrà essere suggerito dal tuo cash flow reale (Fase 3+).</div>
+    </div>
+  </form>
+
+  {% if not r.pct_ok %}
+    <div class="note warn">
+      ⚠ La somma delle % target fa <strong>{{ r.somma_pct | pct }}</strong>, non 100%.
+      Le quote qui sotto sono comunque calcolate, ma il totale non coinciderà con l'importo finché non sistemi
+      l'allocazione nel <a href="/portafoglio">portafoglio</a>.
+    </div>
+  {% endif %}
+
+  <div class="grid" style="margin-bottom:16px;">
+    <div class="stat">
+      <div class="k">Versato sui {{ r.n_asset }} asset a %</div>
+      <div class="v">{{ r.somma_quote | eur }}</div>
+    </div>
+    <div class="stat">
+      <div class="k">Importi fissi (es. Take-Two)</div>
+      <div class="v small">{{ r.somma_fissi | eur }}</div>
+    </div>
+    <div class="stat ok">
+      <div class="k">Uscita mensile totale</div>
+      <div class="v">{{ r.totale_mensile | eur }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">% + importi fissi</div>
+    </div>
+    <div class="stat {{ 'warn' if r.scostamento != 0 else 'ok' }}">
+      <div class="k">Scostamento da arrotondamenti</div>
+      <div class="v small" style="color:{{ '#cf222e' if r.scostamento != 0 else '#1a7f37' }};">
+        {{ r.scostamento | eur }}
+      </div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">differenza coi centesimi</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titolo</th>
+          <th>Categoria / Tema</th>
+          <th class="num">% Target</th>
+          <th class="num">Quota mensile</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for riga in r.righe %}
+        <tr>
+          <td><span class="t-ticker">{{ riga.ticker or '—' }}</span>
+              <span class="t-type">· {{ riga.tipo }}</span><br>{{ riga.nome }}</td>
+          <td>{{ riga.categoria or '—' }}</td>
+          <td class="num">{{ riga.pct_target | pct }}</td>
+          <td class="num">{{ riga.quota | eur }}</td>
+        </tr>
+        {% endfor %}
+        {% for riga in r.righe_fisse %}
+        <tr>
+          <td><span class="t-ticker">{{ riga.ticker or '—' }}</span><br>{{ riga.nome }}
+              <span class="pill gray">importo fisso</span></td>
+          <td>{{ riga.categoria or '—' }}</td>
+          <td class="num faint">≈ {{ riga.pct_implicita | pct }} <span class="faint">(implicita)</span></td>
+          <td class="num">{{ riga.importo | eur }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Totale</td>
+          <td></td>
+          <td class="num" style="color:{{ '#1a7f37' if r.pct_ok else '#cf222e' }};">{{ r.somma_pct | pct }}</td>
+          <td class="num">{{ r.totale_mensile | eur }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}

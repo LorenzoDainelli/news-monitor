@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Portafoglio — Finanza personale{% endblock %}
+{% block content %}
+  <div class="page-title">Portafoglio</div>
+  <p class="page-sub">Le tue posizioni e l'allocazione target. Aggiungi, modifica ed elimina tutto da qui.</p>
+
+  {% if not riepilogo.target_ok %}
+    <div class="note warn">
+      ⚠ La somma delle % target fa <strong>{{ riepilogo.somma_target | pct }}</strong>, non 100%.
+      Va benissimo mentre stai sistemando le quote — il calcolatore PAC te lo ricorderà.
+    </div>
+  {% endif %}
+
+  <div class="actions">
+    <a href="/portafoglio/nuovo" class="btn primary">+ Aggiungi posizione</a>
+    <a href="/pac" class="btn">Calcolatore PAC</a>
+    <span class="muted" style="font-size:13px;">
+      {{ riepilogo.n_posizioni }} posizioni · {{ riepilogo.n_etf }} ETF · {{ riepilogo.n_azioni }} azioni
+    </span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Titolo</th>
+          <th>Categoria / Tema</th>
+          <th class="num">% Target</th>
+          <th class="num">Quantità</th>
+          <th class="num">Valore</th>
+          <th>Ultimo acquisto</th>
+          <th style="width:1%;">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in posizioni %}
+        <tr>
+          <td>
+            <span class="t-ticker">{{ p.ticker or '—' }}</span>
+            <span class="t-type">· {{ p.tipo }}</span><br>
+            <span>{{ p.nome }}</span>
+            {% if p.isin %}<br><span class="faint" style="font-size:12px;">ISIN {{ p.isin }}</span>{% endif %}
+          </td>
+          <td>{{ p.categoria or '—' }}</td>
+          <td class="num">
+            {% if p.is_fisso %}
+              <span class="pill gray">{{ p.importo_fisso | eur }}/mese fisso</span>
+            {% else %}
+              {{ p.pct_target | pct }}
+            {% endif %}
+          </td>
+          <td class="num">{{ p.quantita | qty }}</td>
+          <td class="num">{{ p.valore_posseduto | eur if p.valore_posseduto is not none else '—' }}</td>
+          <td>{{ p.data_ultimo_acquisto.strftime('%d/%m/%Y') if p.data_ultimo_acquisto else '—' }}</td>
+          <td class="num">
+            <div style="display:flex; gap:6px;">
+              <a href="/portafoglio/{{ p.id }}/modifica" class="btn sm">Modifica</a>
+              <form method="post" action="/portafoglio/{{ p.id }}/elimina"
+                    onsubmit="return confirm('Eliminare «{{ p.nome }}»? L\'operazione non è reversibile.');">
+                <button type="submit" class="btn sm danger">Elimina</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Totale allocazione (esclusi gli importi fissi)</td>
+          <td></td>
+          <td class="num" style="color:{{ '#1a7f37' if riepilogo.target_ok else '#cf222e' }};">
+            {{ riepilogo.somma_target | pct }}
+          </td>
+          <td colspan="4"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}

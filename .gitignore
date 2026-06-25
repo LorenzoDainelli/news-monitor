@@ -10,3 +10,9 @@ out.html
 report.json
 state_update.json
 *.tmp
+
+# --- App finanza personale (locale): mai dati personali, chiavi o ambiente ---
+app/.venv/
+app/data/
+*.db
+*.sqlite3

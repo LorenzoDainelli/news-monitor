@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Modifica' if p else 'Nuova' }} posizione — Finanza personale{% endblock %}
+{% block content %}
+  <div class="page-title">{{ 'Modifica posizione' if p else 'Nuova posizione' }}</div>
+  <p class="page-sub">
+    {% if p %}Stai modificando «{{ p.nome }}».{% else %}Aggiungi un titolo al portafoglio.{% endif %}
+  </p>
+
+  <form class="form" method="post" action="/portafoglio/salva">
+    {% if p %}<input type="hidden" name="pos_id" value="{{ p.id }}">{% endif %}
+
+    <div class="field">
+      <label>Nome del titolo *</label>
+      <input type="text" name="nome" required value="{{ p.nome if p else '' }}"
+             placeholder="es. iShares Core MSCI World UCITS ETF">
+    </div>
+
+    <div class="row3">
+      <div class="field">
+        <label>Tipo</label>
+        <select name="tipo">
+          {% for t in tipi %}
+          <option value="{{ t }}" {{ 'selected' if p and p.tipo==t else '' }}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Ticker</label>
+        <input type="text" name="ticker" value="{{ p.ticker if p else '' }}" placeholder="es. IWDA">
+      </div>
+      <div class="field">
+        <label>ISIN</label>
+        <input type="text" name="isin" value="{{ p.isin if p else '' }}" placeholder="es. IE00B4L5Y983">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Categoria / Tema</label>
+      <input type="text" name="categoria" value="{{ p.categoria if p else '' }}"
+             placeholder="es. Azionario globale, Semiconduttori, Difesa…">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>% Target</label>
+        <input type="text" name="pct_target" value="{{ p.pct_target if p else '' }}" placeholder="es. 2,5">
+        <div class="hint">Quota obiettivo nel portafoglio. La somma di tutte dovrebbe fare 100%.</div>
+      </div>
+      <div class="field">
+        <label>Importo fisso mensile (€) — opzionale</label>
+        <input type="text" name="importo_fisso"
+               value="{{ p.importo_fisso if p and p.importo_fisso is not none else '' }}" placeholder="es. 1">
+        <div class="hint">Solo per titoli a importo fisso (es. Take-Two 1€/mese). Lascia vuoto altrimenti.</div>
+      </div>
+    </div>
+
+    <div class="row3">
+      <div class="field">
+        <label>Quantità posseduta</label>
+        <input type="text" name="quantita"
+               value="{{ p.quantita if p and p.quantita is not none else '' }}" placeholder="opzionale">
+      </div>
+      <div class="field">
+        <label>Valore posseduto (€)</label>
+        <input type="text" name="valore_posseduto"
+               value="{{ p.valore_posseduto if p and p.valore_posseduto is not none else '' }}" placeholder="opzionale">
+      </div>
+      <div class="field">
+        <label>Data ultimo acquisto</label>
+        <input type="date" name="data_ultimo_acquisto"
+               value="{{ p.data_ultimo_acquisto.isoformat() if p and p.data_ultimo_acquisto else '' }}">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Note</label>
+      <textarea name="note" rows="2" placeholder="appunti personali…">{{ p.note if p else '' }}</textarea>
+    </div>
+
+    <div class="actions" style="margin-bottom:0;">
+      <button type="submit" class="btn primary">{{ 'Salva modifiche' if p else 'Aggiungi posizione' }}</button>
+      <a href="/portafoglio" class="btn">Annulla</a>
+    </div>
+  </form>
+{% endblock %}
