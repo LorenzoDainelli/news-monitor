@@ -1139,6 +1139,66 @@
       "rilevanza": 63,
       "titolo": "Walmart in trattativa per acquisire Vibe.co ed espandere il business pubblicitario, secondo il WSJ",
       "url": "https://finnhub.io/api/news?id=03ae1d2bc3f1c15d6600d645a2537059aa803d0218dc870f2213f4005a8db627"
+    },
+    {
+      "id": "aapl-prezzi-mac-ipad-ai",
+      "ticker": "AAPL",
+      "data": "2026-06-25T17:10:51+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 75,
+      "titolo": "Apple alza i prezzi di Mac e iPad per i costi AI sulla memoria: azione −6%",
+      "url": "https://finnhub.io/api/news?id=fdf4c65ba04966ab1190d2877f6b9a6e66e20bb2fd2d3bafd4c3c52493ca0ecb"
+    },
+    {
+      "id": "ibm-chip-sub1nm",
+      "ticker": "IBM",
+      "data": "2026-06-25T17:10:51+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "IBM svela il primo prototipo di chip sub-1 nanometro: titolo in forte rialzo pre-market",
+      "url": "https://finnhub.io/api/news?id=a61ac4fbc7ebf6a13e624e0685e8d64bde2f8901eedec9e92c4ce43c063cd06b"
+    },
+    {
+      "id": "lly-ada-conf-vincitore",
+      "ticker": "LLY",
+      "data": "2026-06-25T17:10:51+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Eli Lilly dichiarata «vincitore chiaro» della conferenza ADA sui farmaci anti-obesità",
+      "url": "https://finnhub.io/api/news?id=e23269ab3cc9a043432fdc41d29cf9c823f0156c80e4074890dff10f6e58822a"
+    },
+    {
+      "id": "amzn-msft-ue-gatekeeper",
+      "ticker": "AMZN",
+      "data": "2026-06-25T17:10:51+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "L'UE vuole designare AWS (Amazon) e Azure (Microsoft) come «gatekeeper» tecnologici",
+      "url": "https://finnhub.io/api/news?id=1c5478ccfc3c4be8a752e1ac98f09aeade8db3c5ccccec05beed9542b6fe2fc0"
     }
   ]
 }

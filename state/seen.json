@@ -729,6 +729,78 @@
       "tipo_evento": "M&A",
       "url": "https://finnhub.io/api/news?id=03ae1d2bc3f1c15d6600d645a2537059aa803d0218dc870f2213f4005a8db627",
       "data_invio": "2026-06-25T05:10:00+00:00"
+    },
+    {
+      "id": "aapl-prezzi-mac-ipad-ai",
+      "ticker": "AAPL",
+      "titolo": "Apple alza i prezzi di Mac e iPad per i costi AI sulla memoria: azione −6%",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=fdf4c65ba04966ab1190d2877f6b9a6e66e20bb2fd2d3bafd4c3c52493ca0ecb",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "ibm-chip-sub1nm",
+      "ticker": "IBM",
+      "titolo": "IBM svela il primo prototipo di chip sub-1 nanometro: titolo in forte rialzo pre-market",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=a61ac4fbc7ebf6a13e624e0685e8d64bde2f8901eedec9e92c4ce43c063cd06b",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "lly-ada-conf-vincitore",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly dichiarata «vincitore chiaro» della conferenza ADA sui farmaci anti-obesità",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=e23269ab3cc9a043432fdc41d29cf9c823f0156c80e4074890dff10f6e58822a",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "jpm-co-presidenti-lake",
+      "ticker": "JPM",
+      "titolo": "JPMorgan nomina due co-presidenti: Marianne Lake lascia la banca",
+      "tipo_evento": "cambio CEO/management",
+      "url": "https://finnhub.io/api/news?id=ecdb6e9106698c94cb489f6d4f2fc156fe263c03aaade3af27043095eb50b2f8",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "pltr-minimo-52w-40pct",
+      "ticker": "PLTR",
+      "titolo": "Palantir tocca il minimo da 52 settimane: sette sedute al ribasso, −40% nel 2026",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=ead944133e30919c8c6ba2e39387aa1acfc3753261dba82918fb77a529cc0e34",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "amzn-msft-ue-gatekeeper",
+      "ticker": "AMZN",
+      "titolo": "L'UE vuole designare AWS (Amazon) e Azure (Microsoft) come «gatekeeper» tecnologici",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=1c5478ccfc3c4be8a752e1ac98f09aeade8db3c5ccccec05beed9542b6fe2fc0",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "msft-stifel-target400",
+      "ticker": "MSFT",
+      "titolo": "Stifel taglia il target di Microsoft a 400 dollari: i margini lordi FY2027 sono sovrastimati",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=3faa0ff696870cae83292075918b85e0599b8c7c17c85cf0d3b3c818a029b179",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "nvda-sotto200-concorrenza",
+      "ticker": "NVDA",
+      "titolo": "NVIDIA scende sotto 200 dollari: crescono i timori di concorrenza sui chip AI",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=2e242f4d95526e307fdca664f2af00f56f64da721a833392b6c4191be6250b12",
+      "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "intc-goldman-neutrale-150",
+      "ticker": "INTC",
+      "titolo": "Goldman Sachs avvia la copertura di Intel con rating Neutrale e target a 150 dollari",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=c725310b2dc9bca47053adadb14dea13ca726809d1ada1dbefb06c217fa7e6e6",
+      "data_invio": "2026-06-25T17:10:51+00:00"
     }
   ]
 }
