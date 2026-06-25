@@ -681,6 +681,54 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=5da5cfe25e2b9295e8c80ace3f944fcf610f8a53a43d262d7e2aa9f6d816699e",
       "data_invio": "2026-06-24T07:10:00+00:00"
+    },
+    {
+      "id": "micron-q3-sndk-rally-2026-06-25",
+      "ticker": "SNDK",
+      "titolo": "Micron pubblica risultati record e il settore memoria vola: SanDisk e Western Digital in forte rialzo",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=ddf50b1ac73dc72ba5f8c158f9c66e02784aa8e5fa11b8926321ce4419feff23",
+      "data_invio": "2026-06-25T05:10:00+00:00"
+    },
+    {
+      "id": "micron-q3-wdc-rally-2026-06-25",
+      "ticker": "WDC",
+      "titolo": "Micron pubblica risultati record e il settore memoria vola: SanDisk e Western Digital in forte rialzo",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=6a7a51757d0dacebd7266f8e267a22c4ff658e9eb327d37566d954c4010b14a5",
+      "data_invio": "2026-06-25T05:10:00+00:00"
+    },
+    {
+      "id": "jpm-stress-test-buyback-2026-06-25",
+      "ticker": "JPM",
+      "titolo": "JPMorgan supera lo stress test Fed 2026 e annuncia buyback da 50 miliardi con dividendo in aumento",
+      "tipo_evento": "dividendi/buyback",
+      "url": "https://www.cnbc.com/2026/06/24/jpmorgan-goldman-sachs-fed-stress-test.html",
+      "data_invio": "2026-06-25T05:10:00+00:00"
+    },
+    {
+      "id": "avgo-openai-jalapeno-chip-2026-06-25",
+      "ticker": "AVGO",
+      "titolo": "OpenAI lancia il chip AI 'Jalapeno' sviluppato con Broadcom: primo ASIC di inferenza proprietario",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=93a8b0ea7b0d2c7a1796124d223a5ddb3a440d440f226741eabf363a1b7f94d4",
+      "data_invio": "2026-06-25T05:10:00+00:00"
+    },
+    {
+      "id": "ttwo-gta6-digital-buy-2026-06-25",
+      "ticker": "TTWO",
+      "titolo": "GTA 6 uscirà solo in digitale e Take-Two riceve un upgrade Buy: focus sui ricavi ricorrenti",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=c71541478f5f5965129cf655247ca1aba8d2ad37a559b86bae86bfa1da71b516",
+      "data_invio": "2026-06-25T05:10:00+00:00"
+    },
+    {
+      "id": "wmt-vibeco-acquisition-2026-06-25",
+      "ticker": "WMT",
+      "titolo": "Walmart in trattativa per acquisire Vibe.co ed espandere il business pubblicitario, secondo il WSJ",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=03ae1d2bc3f1c15d6600d645a2537059aa803d0218dc870f2213f4005a8db627",
+      "data_invio": "2026-06-25T05:10:00+00:00"
     }
   ]
 }
