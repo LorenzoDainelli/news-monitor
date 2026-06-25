@@ -18,10 +18,10 @@
       </div>
     </div>
     <div class="stat">
-      <div class="k">{{ t('dash.stat_value') }}</div>
-      <div class="v {{ '' if r.ha_valori else 'small' }}">{{ r.valore_posseduto | eur if r.ha_valori else '—' }}</div>
+      <div class="k">{{ t('dash.stat_pf_value') }}</div>
+      <div class="v {{ '' if r.ha_valori else 'small' }}">{{ r.valore_totale | eur if r.ha_valori else '—' }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">
-        {{ t('dash.value_todo') if not r.ha_valori else t('dash.value_sum') }}
+        {{ t('dash.value_live') if r.ha_valori else t('dash.value_todo') }}
       </div>
     </div>
   </div>

@@ -3,6 +3,8 @@
 Crea le tabelle, precarica il portafoglio la prima volta, collega le pagine.
 Si avvia con run.py (o col doppio click su Avvia-Finanza.bat).
 """
+import threading
+
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -14,6 +16,7 @@ from shared.templating import templates
 # Importa i modelli PRIMA di create_all, cosi' le tabelle vengono registrate.
 import shared.settings_store          # noqa: F401  -> tabella shared_settings
 import portfolio.models               # noqa: F401  -> tabella portfolio_positions
+from portfolio import market          # noqa: F401  -> tabella portfolio_quotes
 
 from portfolio import seed
 from portfolio import service as pf_service
@@ -24,6 +27,18 @@ from shared.prefs_routes import router as prefs_router
 # --- preparazione database (una tantum) ---
 Base.metadata.create_all(bind=engine)
 seed.seed_if_empty()
+
+
+# --- aggiornamento prezzi all'apertura, in background (non blocca l'avvio) ---
+def _refresh_prezzi_bg():
+    try:
+        if market.is_stale():
+            market.refresh_all()
+    except Exception:
+        pass  # mai far fallire l'avvio per i prezzi: si riproverà
+
+
+threading.Thread(target=_refresh_prezzi_bg, daemon=True).start()
 
 # --- app web ---
 app = FastAPI(title=APP_NAME)

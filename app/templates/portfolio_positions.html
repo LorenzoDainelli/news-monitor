@@ -8,6 +8,25 @@
     <div class="note warn">{{ t('pf.warn_not100', pct=(riepilogo.somma_target | pct)) }}</div>
   {% endif %}
 
+  <div class="grid" style="margin-bottom:16px;">
+    <div class="stat ok">
+      <div class="k">{{ t('pf.total_value') }}</div>
+      <div class="v">{{ vista.totale | eur if vista.ha_totale else '—' }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('pf.prices_coverage', n=vista.n_prezzi, tot=vista.n_ticker) }}</div>
+    </div>
+    <div class="stat">
+      <div class="k">{{ t('th.price') }}</div>
+      <div class="v small">
+        {% if vista.ultimo_agg %}{{ t('pf.prices_updated', when=vista.ultimo_agg) }}{% else %}{{ t('pf.prices_never') }}{% endif %}
+      </div>
+      <div style="margin-top:8px;">
+        <form method="post" action="/portafoglio/aggiorna" style="margin:0;">
+          <button type="submit" class="btn sm">{{ t('pf.btn_refresh') }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div class="actions">
     <a href="/portafoglio/nuovo" class="btn primary">{{ t('pf.btn_add') }}</a>
     <a href="/pac" class="btn">{{ t('nav.pac') }}</a>
@@ -24,13 +43,15 @@
           <th>{{ t('th.category') }}</th>
           <th class="num">{{ t('th.pct_target') }}</th>
           <th class="num">{{ t('th.qty') }}</th>
+          <th class="num">{{ t('th.price') }}</th>
           <th class="num">{{ t('th.value') }}</th>
           <th>{{ t('th.last_buy') }}</th>
           <th style="width:1%;">{{ t('th.actions') }}</th>
         </tr>
       </thead>
       <tbody>
-        {% for p in posizioni %}
+        {% for r in vista.righe %}
+        {% set p = r.p %}
         <tr>
           <td>
             <span class="t-ticker">{{ p.ticker or '—' }}</span>
@@ -42,12 +63,20 @@
           <td class="num">
             {% if p.is_fisso %}
               <span class="pill gray">{{ t('pf.fixed_month', eur=(p.importo_fisso | eur)) }}</span>
-            {% else %}
-              {{ p.pct_target | pct }}
-            {% endif %}
+            {% else %}{{ p.pct_target | pct }}{% endif %}
           </td>
           <td class="num">{{ p.quantita | qty }}</td>
-          <td class="num">{{ p.valore_posseduto | eur if p.valore_posseduto is not none else '—' }}</td>
+          <td class="num">
+            {% if r.prezzo_eur is not none %}
+              {{ r.prezzo_eur | eur }}
+              {% if r.q and r.q.currency and r.q.currency != 'EUR' %}
+                <br><span class="faint" style="font-size:11px;">{{ r.q.price | qty }} {{ r.q.currency }} · {{ r.q.source }}</span>
+              {% endif %}
+            {% else %}
+              <span class="faint">{{ t('pf.unavailable') }}</span>
+            {% endif %}
+          </td>
+          <td class="num">{{ r.valore | eur if r.valore is not none else '—' }}</td>
           <td>{{ p.data_ultimo_acquisto.strftime('%d/%m/%Y') if p.data_ultimo_acquisto else '—' }}</td>
           <td class="num">
             <div style="display:flex; gap:6px;">
@@ -65,12 +94,14 @@
         <tr>
           <td>{{ t('pf.total_alloc') }}</td>
           <td></td>
-          <td class="num" style="color:{{ '#1a7f37' if riepilogo.target_ok else '#cf222e' }};">
-            {{ riepilogo.somma_target | pct }}
-          </td>
-          <td colspan="4"></td>
+          <td class="num" style="color:{{ '#1a7f37' if riepilogo.target_ok else '#cf222e' }};">{{ riepilogo.somma_target | pct }}</td>
+          <td></td><td></td>
+          <td class="num">{{ vista.totale | eur if vista.ha_totale else '' }}</td>
+          <td colspan="2"></td>
         </tr>
       </tfoot>
     </table>
   </div>
+
+  <p class="faint" style="font-size:12px; margin-top:12px;">{{ t('pf.prices_note') }}</p>
 {% endblock %}

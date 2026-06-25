@@ -9,7 +9,7 @@ from shared.db import SessionLocal
 from shared.templating import templates
 from shared.parsing import to_float, to_date
 from portfolio.models import Position, TIPO_ETF, TIPO_AZIONE
-from portfolio import service
+from portfolio import service, market
 
 router = APIRouter()
 
@@ -18,9 +18,15 @@ router = APIRouter()
 def elenco(request: Request):
     return templates.TemplateResponse(request, "portfolio_positions.html", {
         "active": "portafoglio",
-        "posizioni": service.lista_posizioni(),
+        "vista": service.vista_portafoglio(),
         "riepilogo": service.riepilogo(),
     })
+
+
+@router.post("/portafoglio/aggiorna")
+def aggiorna_prezzi():
+    market.refresh_all()
+    return RedirectResponse("/portafoglio", status_code=303)
 
 
 @router.get("/portafoglio/nuovo", response_class=HTMLResponse)

@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from shared.db import SessionLocal
 from portfolio.models import Position
+from portfolio import market
 
 
 def lista_posizioni() -> list[Position]:
@@ -70,17 +71,58 @@ def calcola_pac(importo_mensile: float) -> dict:
     }
 
 
+def _valore_riga(p, prezzo_eur):
+    """Valore di una posizione: quantita x prezzo (live) se possibile, altrimenti
+    il valore inserito a mano. None se non si sa."""
+    if prezzo_eur is not None and p.quantita:
+        return round(prezzo_eur * p.quantita, 2)
+    if p.valore_posseduto:
+        return round(p.valore_posseduto, 2)
+    return None
+
+
+def vista_portafoglio() -> dict:
+    """Posizioni arricchite con prezzo corrente (in euro) e valore, piu' il totale.
+
+    I prezzi arrivano dalla cache locale (aggiornata da market.refresh_all). Se un
+    prezzo non c'e', la riga lo segnala: niente valori inventati.
+    """
+    posizioni = lista_posizioni()
+    qmap = market.quotes_map()
+    righe = []
+    totale = 0.0
+    for p in posizioni:
+        q = qmap.get((p.ticker or "").upper())
+        prezzo_eur = q.price_eur if (q and q.ok) else None
+        valore = _valore_riga(p, prezzo_eur)
+        if valore:
+            totale += valore
+        righe.append({"p": p, "q": q, "prezzo_eur": prezzo_eur, "valore": valore})
+    ultimo = market.last_update()
+    return {
+        "righe": righe,
+        "totale": round(totale, 2),
+        "ha_totale": totale > 0,
+        "ultimo_agg": market.fmt_ts(ultimo),
+        "n_prezzi": sum(1 for r in righe if r["prezzo_eur"] is not None),
+        "n_ticker": sum(1 for p in posizioni if (p.ticker or "").strip()),
+    }
+
+
 def riepilogo() -> dict:
-    """Numeri di sintesi per la dashboard (Fase 1: solo cio' che e' offline)."""
+    """Numeri di sintesi per la dashboard."""
     posizioni = lista_posizioni()
     a_pct = [p for p in posizioni if not p.is_fisso]
-    valore = sum(p.valore_posseduto or 0 for p in posizioni)
+    vista = vista_portafoglio()
     return {
         "n_posizioni": len(posizioni),
         "n_etf": sum(1 for p in posizioni if p.tipo == "ETF"),
         "n_azioni": sum(1 for p in posizioni if p.tipo == "Azione"),
         "somma_target": round(sum(p.pct_target for p in a_pct), 4),
         "target_ok": abs(sum(p.pct_target for p in a_pct) - 100.0) < 0.01,
-        "valore_posseduto": round(valore, 2),
-        "ha_valori": valore > 0,
+        "valore_totale": vista["totale"],
+        "ha_valori": vista["ha_totale"],
+        "ultimo_agg": vista["ultimo_agg"],
+        "n_prezzi": vista["n_prezzi"],
+        "n_ticker": vista["n_ticker"],
     }
