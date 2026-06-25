@@ -37,8 +37,8 @@ Passo 2.
 - Se **non resta nulla di critico** → salta il Passo 3 e vai al **Passo 4b**
   (conferma ✅ "tutto tranquillo").
 
-## Passo 3 — Analizza i critici (max 3)
-Per i candidati critici (al massimo 3, i più rilevanti) compila i campi come nel
+## Passo 3 — Analizza i critici (max 5)
+Per i candidati critici (al massimo 5, i più rilevanti) compila i campi come nel
 report: `titolo` (italiano semplice e poco tecnico), `tipo_evento, riassunto, impatto{breve,medio,lungo}, confidenza, tag,
 fonti, rilevanza`. Le **fonti (testata + link) sono obbligatorie** per ogni voce.
 L'`impatto` ha valori di **una sola parola** (positivo/neutro/negativo), mai frasi.
