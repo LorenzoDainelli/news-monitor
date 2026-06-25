@@ -95,11 +95,13 @@ tipo evento × magnitudo/sorpresa × recenza × quanto tocca direttamente il tit
 `peso`/`priorita` del titolo. Bande: **70-100 critico** (→ avviso event-check) ·
 **50-69 importante** (→ entra nei report) · **<50 sotto soglia** (scarta).
 
-## Passo 4 — Decidi se inviare e seleziona le TOP 5
-- Ordina i candidati per `rilevanza` decrescente e **seleziona le prime 5**: sono
-  le uniche che vanno nell'email. Gli eventuali candidati oltre la 5ª restano
-  fuori (non marcarli `seen`): verranno rivalutati alla run successiva o
-  decadranno dalla finestra di 36h. Così l'email resta focalizzata (max 5).
+## Passo 4 — Decidi se inviare e seleziona le TOP (max da settings)
+- Ordina i candidati per `rilevanza` decrescente e **seleziona le prime N**, dove
+  `N = max_notizie_email` (da `settings.yaml`). Se i candidati sopra soglia sono
+  **meno di N, mostrali tutti** (non inventare notizie per riempire). Sono le uniche
+  che vanno nell'email. Gli eventuali candidati oltre la N-esima restano fuori (non
+  marcarli `seen`): verranno rivalutati alla run successiva o decadranno dalla
+  finestra di 36h.
 - `test_mode: true` → invia sempre (oggetto con `[PROVA]`); se nessun candidato,
   manda un'email di prova diagnostica breve (titoli cercati, candidati, soglia).
 - `test_mode: false` e nessun candidato >= soglia → **NON inviare**. Vai al Passo 6.
@@ -122,8 +124,8 @@ sia lo script a costruire l'email.
      ]
    }
    ```
-   - `items` = le 5 voci selezionate (ordinate per rilevanza). In `test_mode` senza
-     candidati: `items: []` e compila `diagnostic`.
+   - `items` = le voci selezionate (al massimo `max_notizie_email`, ordinate per
+     rilevanza). In `test_mode` senza candidati: `items: []` e compila `diagnostic`.
 2. Renderizza e invia (la chiave è in variabile d'ambiente):
    ```bash
    python scripts/render_email.py --data-file report.json --out out.html

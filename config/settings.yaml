@@ -15,6 +15,10 @@ soglia_rilevanza_globale: 50
 # immediato solo per eventi critici con rilevanza >= questa soglia.
 soglia_evento_critico: 70
 
+# Numero massimo di notizie nel report giornaliero (le piu' rilevanti). Se i
+# candidati sopra soglia sono meno, ne mostra meno (non riempie a forza).
+max_notizie_email: 10
+
 fuso_orario: Europe/Rome
 
 # normale | vacanza  (in 'vacanza' passano solo gli eventi critici)
