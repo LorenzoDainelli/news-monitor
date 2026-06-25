@@ -19,6 +19,7 @@ from portfolio import seed
 from portfolio import service as pf_service
 from portfolio.routes import router as portfolio_router
 from shared.settings_routes import router as settings_router
+from shared.prefs_routes import router as prefs_router
 
 # --- preparazione database (una tantum) ---
 Base.metadata.create_all(bind=engine)
@@ -29,6 +30,7 @@ app = FastAPI(title=APP_NAME)
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
 app.include_router(portfolio_router)
 app.include_router(settings_router)
+app.include_router(prefs_router)
 
 
 @app.get("/", response_class=HTMLResponse)

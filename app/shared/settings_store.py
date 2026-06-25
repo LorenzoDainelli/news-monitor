@@ -12,12 +12,12 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from shared.db import Base, SessionLocal
 
-# Elenco delle chiavi/opzioni riconosciute, con etichetta leggibile e se è un segreto.
-# 'secret' = mostrata mascherata nell'interfaccia e mai loggata.
+# Elenco delle chiavi/opzioni riconosciute. 'tkey' = chiave di traduzione (i18n)
+# dell'etichetta; 'secret' = mostrata mascherata nell'interfaccia e mai loggata.
 KNOWN_SETTINGS = {
-    "gemini_api_key":  {"label": "Chiave API Google Gemini (agente AI)", "secret": True},
-    "finnhub_api_key": {"label": "Chiave API Finnhub (notizie/analisti)", "secret": True},
-    "fmp_api_key":     {"label": "Chiave API Financial Modeling Prep", "secret": True},
+    "gemini_api_key":  {"tkey": "set.key_gemini", "secret": True},
+    "finnhub_api_key": {"tkey": "set.key_finnhub", "secret": True},
+    "fmp_api_key":     {"tkey": "set.key_fmp", "secret": True},
 }
 
 

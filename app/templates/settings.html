@@ -1,48 +1,68 @@
 {% extends "base.html" %}
-{% block title %}Impostazioni — Finanza personale{% endblock %}
+{% block title %}{{ t('nav.settings') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
-  <div class="page-title">Impostazioni</div>
-  <p class="page-sub">
-    Chiavi API per sbloccare funzioni extra. L'app funziona anche senza:
-    le chiavi restano <strong>solo sul tuo PC</strong> e non finiscono mai su GitHub.
-  </p>
+  <div class="page-title">{{ t('nav.settings') }}</div>
+  <p class="page-sub">{{ t('set.subtitle') }}</p>
 
-  {% if salvato %}<div class="note ok">✓ Impostazioni salvate.</div>{% endif %}
+  {% if salvato %}<div class="note ok">{{ t('set.saved') }}</div>{% endif %}
 
-  <div class="note info">
-    🔒 Le chiavi sono salvate nel database locale (<code>app/data/finanza.db</code>), escluso dal backup online.
-    Non vengono mai mostrate in chiaro né registrate nei log. Per ora nessuna è obbligatoria.
+  <!-- Aspetto e lingua -->
+  <div class="card navy">
+    <div class="card-h">{{ t('set.appearance_h') }}</div>
+    <div class="row2" style="margin-top:8px;">
+      <div class="field" style="margin-bottom:0;">
+        <label>{{ t('set.theme_label') }}</label>
+        <form method="post" action="/preferenze">
+          <input type="hidden" name="next" value="/impostazioni">
+          <select name="theme" onchange="this.form.submit()">
+            <option value="light" {{ 'selected' if theme=='light' else '' }}>{{ t('theme.light') }}</option>
+            <option value="dark" {{ 'selected' if theme=='dark' else '' }}>{{ t('theme.dark') }}</option>
+          </select>
+        </form>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>{{ t('lang.label') }}</label>
+        <form method="post" action="/preferenze">
+          <input type="hidden" name="next" value="/impostazioni">
+          <select name="lang" onchange="this.form.submit()">
+            {% for code, native in LANGS %}
+            <option value="{{ code }}" {{ 'selected' if code==lang else '' }}>{{ native }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+    </div>
   </div>
+
+  <div class="note info">{{ t('set.security_note') }}</div>
 
   <form class="form" method="post" action="/impostazioni">
     {% for v in voci %}
     <div class="field">
-      <label>{{ v.label }}</label>
+      <label>{{ t(v.tkey) }}</label>
       {% if v.presente %}
-        <div class="muted" style="font-size:13px; margin-bottom:6px;">
-          Attuale: <strong>{{ v.mascherato }}</strong> · presente ✓
-        </div>
+        <div class="muted" style="font-size:13px; margin-bottom:6px;">{{ t('set.current', masked=v.mascherato) }}</div>
       {% endif %}
       <input type="text" name="{{ v.chiave }}" autocomplete="off"
-             placeholder="{{ 'lascia vuoto per non modificarla' if v.presente else 'incolla qui la chiave' }}">
+             placeholder="{{ t('set.ph_keep') if v.presente else t('set.ph_new') }}">
       {% if v.presente %}
         <label class="hint" style="display:flex; gap:6px; align-items:center; margin-top:6px; font-weight:400;">
-          <input type="checkbox" name="clear_{{ v.chiave }}" style="width:auto;"> rimuovi questa chiave
+          <input type="checkbox" name="clear_{{ v.chiave }}" style="width:auto;"> {{ t('set.remove_key') }}
         </label>
       {% endif %}
     </div>
     {% endfor %}
 
     <div class="actions" style="margin-bottom:0;">
-      <button type="submit" class="btn primary">Salva</button>
-      <a href="/" class="btn">Torna alla dashboard</a>
+      <button type="submit" class="btn primary">{{ t('set.save') }}</button>
+      <a href="/" class="btn">{{ t('set.back_dashboard') }}</a>
     </div>
   </form>
 
   <div class="card navy" style="margin-top:20px;">
-    <div class="card-h">A cosa servono</div>
-    <p style="margin:0 0 6px;"><strong>Gemini</strong> (gratis su aistudio.google.com): attiverà l'agente AI — Fase 4.</p>
-    <p style="margin:0 0 6px;"><strong>Finnhub</strong> (free tier): notizie e giudizi degli analisti — Fase 2.</p>
-    <p style="margin:0;"><strong>Financial Modeling Prep</strong>: dati avanzati opzionali — più avanti.</p>
+    <div class="card-h">{{ t('set.what_h') }}</div>
+    <p style="margin:0 0 6px;">{{ t('set.gemini_for') }}</p>
+    <p style="margin:0 0 6px;">{{ t('set.finnhub_for') }}</p>
+    <p style="margin:0;">{{ t('set.fmp_for') }}</p>
   </div>
 {% endblock %}

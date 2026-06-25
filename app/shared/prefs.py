@@ -1,0 +1,29 @@
+"""Preferenze dell'interfaccia: tema (chiaro/scuro) e lingua.
+
+Salvate nel database locale (tabella delle impostazioni). Per ora valgono per
+tutta l'app; quando ci sarà il login diventeranno per-utente (vedi auth.py).
+"""
+from shared.settings_store import get_setting, set_setting
+from shared.i18n import LANG_CODES, DEFAULT_LANG
+
+VALID_THEMES = ("light", "dark")
+
+
+def get_theme() -> str:
+    v = get_setting("ui_theme", "light")
+    return v if v in VALID_THEMES else "light"
+
+
+def set_theme(value: str) -> None:
+    if value in VALID_THEMES:
+        set_setting("ui_theme", value)
+
+
+def get_lang() -> str:
+    v = get_setting("ui_lang", DEFAULT_LANG)
+    return v if v in LANG_CODES else DEFAULT_LANG
+
+
+def set_lang(value: str) -> None:
+    if value in LANG_CODES:
+        set_setting("ui_lang", value)

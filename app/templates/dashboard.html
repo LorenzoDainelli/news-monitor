@@ -1,53 +1,48 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — Finanza personale{% endblock %}
+{% block title %}{{ t('nav.dashboard') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
-  <div class="page-title">Dashboard</div>
-  <p class="page-sub">Panoramica del tuo sistema. Le sezioni si attivano una alla volta, fase per fase.</p>
+  <div class="page-title">{{ t('nav.dashboard') }}</div>
+  <p class="page-sub">{{ t('dash.subtitle') }}</p>
 
   <div class="grid">
     <div class="stat">
-      <div class="k">Posizioni in portafoglio</div>
+      <div class="k">{{ t('dash.stat_positions') }}</div>
       <div class="v">{{ r.n_posizioni }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">
-        {{ r.n_etf }} ETF · {{ r.n_azioni }} azioni
-      </div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('dash.etf_stocks', etf=r.n_etf, stocks=r.n_azioni) }}</div>
     </div>
     <div class="stat {{ 'ok' if r.target_ok else 'warn' }}">
-      <div class="k">Totale % target</div>
+      <div class="k">{{ t('dash.stat_target') }}</div>
       <div class="v">{{ r.somma_target | pct }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">
-        {% if r.target_ok %}✓ allocazione completa (100%){% else %}⚠ non fa 100%, controlla{% endif %}
+        {{ t('dash.target_ok') if r.target_ok else t('dash.target_warn') }}
       </div>
     </div>
     <div class="stat">
-      <div class="k">Valore posseduto inserito</div>
-      <div class="v {{ '' if r.ha_valori else 'small' }}">
-        {{ r.valore_posseduto | eur if r.ha_valori else '—' }}
-      </div>
+      <div class="k">{{ t('dash.stat_value') }}</div>
+      <div class="v {{ '' if r.ha_valori else 'small' }}">{{ r.valore_posseduto | eur if r.ha_valori else '—' }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">
-        {% if not r.ha_valori %}da compilare quando vuoi{% else %}somma dei valori inseriti a mano{% endif %}
+        {{ t('dash.value_todo') if not r.ha_valori else t('dash.value_sum') }}
       </div>
     </div>
   </div>
 
   <div class="card navy" style="margin-top:20px;">
-    <div class="card-h">Stato di costruzione</div>
-    <div class="card-title">Cosa è già pronto e cosa arriva</div>
-    <p style="margin:0 0 10px;">
-      Stai usando la <strong>Fase 1</strong>: gestione del portafoglio e calcolatore PAC, tutto offline.
-    </p>
+    <div class="card-h">{{ t('dash.build_h') }}</div>
+    <div class="card-title">{{ t('dash.build_title') }}</div>
+    <p style="margin:0 0 10px;">{{ t('dash.build_using') }}</p>
     <div>
-      <span class="pill green">✓ Portafoglio (posizioni)</span>
-      <span class="pill green">✓ Calcolatore PAC</span>
-      <span class="pill gray">Prezzi & dati di mercato — Fase 2</span>
-      <span class="pill gray">Finanze (entrate/uscite) — Fase 3</span>
-      <span class="pill gray">Agente AI — Fase 4</span>
-      <span class="pill gray">Notizie — Fase 5</span>
+      <span class="pill green">{{ t('dash.pill_portfolio') }}</span>
+      <span class="pill green">{{ t('dash.pill_pac') }}</span>
+      <span class="pill green">{{ t('dash.pill_theme') }}</span>
+      <span class="pill gray">{{ t('dash.pill_prices') }}</span>
+      <span class="pill gray">{{ t('dash.pill_finance') }}</span>
+      <span class="pill gray">{{ t('dash.pill_ai') }}</span>
+      <span class="pill gray">{{ t('dash.pill_news') }}</span>
     </div>
   </div>
 
   <div class="actions">
-    <a href="/portafoglio" class="btn primary">Vai al portafoglio</a>
-    <a href="/pac" class="btn">Apri il calcolatore PAC</a>
+    <a href="/portafoglio" class="btn primary">{{ t('dash.btn_portfolio') }}</a>
+    <a href="/pac" class="btn">{{ t('dash.btn_pac') }}</a>
   </div>
 {% endblock %}

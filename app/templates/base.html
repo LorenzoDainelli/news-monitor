@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="{{ lang }}" data-theme="{{ theme }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Finanza personale{% endblock %}</title>
+  <title>{% block title %}{{ t('app.name') }}{% endblock %}</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="brand">📊 Finanza personale <span class="dot">uso privato</span></div>
+      <div class="brand">📊 {{ t('app.name') }} <span class="dot">{{ t('brand.private') }}</span></div>
       <nav class="nav">
-        <a href="/" class="{{ 'active' if active=='home' else '' }}">Dashboard</a>
-        <a href="/portafoglio" class="{{ 'active' if active=='portafoglio' else '' }}">Portafoglio</a>
-        <a href="/pac" class="{{ 'active' if active=='pac' else '' }}">Calcolatore PAC</a>
-        <a class="disabled">Finanze <span class="soon">presto</span></a>
-        <a class="disabled">Notizie <span class="soon">presto</span></a>
-        <a href="/impostazioni" class="{{ 'active' if active=='impostazioni' else '' }}">Impostazioni</a>
+        <a href="/" class="{{ 'active' if active=='home' else '' }}">{{ t('nav.dashboard') }}</a>
+        <a href="/portafoglio" class="{{ 'active' if active=='portafoglio' else '' }}">{{ t('nav.portfolio') }}</a>
+        <a href="/pac" class="{{ 'active' if active=='pac' else '' }}">{{ t('nav.pac') }}</a>
+        <a class="disabled">{{ t('nav.finance') }} <span class="soon">{{ t('nav.soon') }}</span></a>
+        <a class="disabled">{{ t('nav.news') }} <span class="soon">{{ t('nav.soon') }}</span></a>
+        <a href="/impostazioni" class="{{ 'active' if active=='impostazioni' else '' }}">{{ t('nav.settings') }}</a>
       </nav>
+      <div class="prefs">
+        <form method="post" action="/preferenze">
+          <input type="hidden" name="next" value="{{ cur_path }}">
+          <select class="lang-select" name="lang" onchange="this.form.submit()" aria-label="{{ t('lang.label') }}">
+            {% for code, native in LANGS %}
+            <option value="{{ code }}" {{ 'selected' if code==lang else '' }}>{{ native }}</option>
+            {% endfor %}
+          </select>
+        </form>
+        <form method="post" action="/preferenze">
+          <input type="hidden" name="next" value="{{ cur_path }}">
+          <input type="hidden" name="theme" value="{{ 'dark' if theme=='light' else 'light' }}">
+          <button type="submit" class="theme-btn" title="{{ t('theme.toggle') }}">{{ '🌙' if theme=='light' else '☀️' }}</button>
+        </form>
+      </div>
     </div>
   </header>
 
@@ -25,12 +40,8 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="disclaimer">
-    Strumento <strong>personale</strong> di informazione e organizzazione, <strong>non</strong>
-    un consiglio finanziario e <strong>non</strong> un segnale operativo di acquisto/vendita.
-    I dati e le analisi servono a capire, non a dire cosa fare: la decisione resta sempre tua.
-    Eventuali analisi generate dall'AI sono etichettate come tali e accompagnate da un livello
-    di confidenza. I valori non disponibili restano vuoti, mai inventati.
-  </footer>
+  <footer class="disclaimer">{{ t('disclaimer.text') }}</footer>
+
+  <script src="/static/app.js"></script>
 </body>
 </html>

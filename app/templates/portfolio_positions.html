@@ -1,21 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Portafoglio — Finanza personale{% endblock %}
+{% block title %}{{ t('nav.portfolio') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
-  <div class="page-title">Portafoglio</div>
-  <p class="page-sub">Le tue posizioni e l'allocazione target. Aggiungi, modifica ed elimina tutto da qui.</p>
+  <div class="page-title">{{ t('nav.portfolio') }}</div>
+  <p class="page-sub">{{ t('pf.subtitle') }}</p>
 
   {% if not riepilogo.target_ok %}
-    <div class="note warn">
-      ⚠ La somma delle % target fa <strong>{{ riepilogo.somma_target | pct }}</strong>, non 100%.
-      Va benissimo mentre stai sistemando le quote — il calcolatore PAC te lo ricorderà.
-    </div>
+    <div class="note warn">{{ t('pf.warn_not100', pct=(riepilogo.somma_target | pct)) }}</div>
   {% endif %}
 
   <div class="actions">
-    <a href="/portafoglio/nuovo" class="btn primary">+ Aggiungi posizione</a>
-    <a href="/pac" class="btn">Calcolatore PAC</a>
+    <a href="/portafoglio/nuovo" class="btn primary">{{ t('pf.btn_add') }}</a>
+    <a href="/pac" class="btn">{{ t('nav.pac') }}</a>
     <span class="muted" style="font-size:13px;">
-      {{ riepilogo.n_posizioni }} posizioni · {{ riepilogo.n_etf }} ETF · {{ riepilogo.n_azioni }} azioni
+      {{ t('pf.count', n=riepilogo.n_posizioni, etf=riepilogo.n_etf, stocks=riepilogo.n_azioni) }}
     </span>
   </div>
 
@@ -23,13 +20,13 @@
     <table>
       <thead>
         <tr>
-          <th>Titolo</th>
-          <th>Categoria / Tema</th>
-          <th class="num">% Target</th>
-          <th class="num">Quantità</th>
-          <th class="num">Valore</th>
-          <th>Ultimo acquisto</th>
-          <th style="width:1%;">Azioni</th>
+          <th>{{ t('th.title') }}</th>
+          <th>{{ t('th.category') }}</th>
+          <th class="num">{{ t('th.pct_target') }}</th>
+          <th class="num">{{ t('th.qty') }}</th>
+          <th class="num">{{ t('th.value') }}</th>
+          <th>{{ t('th.last_buy') }}</th>
+          <th style="width:1%;">{{ t('th.actions') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -37,14 +34,14 @@
         <tr>
           <td>
             <span class="t-ticker">{{ p.ticker or '—' }}</span>
-            <span class="t-type">· {{ p.tipo }}</span><br>
+            <span class="t-type">· {{ t('type.etf') if p.tipo == 'ETF' else t('type.stock') }}</span><br>
             <span>{{ p.nome }}</span>
-            {% if p.isin %}<br><span class="faint" style="font-size:12px;">ISIN {{ p.isin }}</span>{% endif %}
+            {% if p.isin %}<br><span class="faint" style="font-size:12px;">{{ t('pf.isin', isin=p.isin) }}</span>{% endif %}
           </td>
-          <td>{{ p.categoria or '—' }}</td>
+          <td>{{ t.category(p.categoria) or '—' }}</td>
           <td class="num">
             {% if p.is_fisso %}
-              <span class="pill gray">{{ p.importo_fisso | eur }}/mese fisso</span>
+              <span class="pill gray">{{ t('pf.fixed_month', eur=(p.importo_fisso | eur)) }}</span>
             {% else %}
               {{ p.pct_target | pct }}
             {% endif %}
@@ -54,10 +51,10 @@
           <td>{{ p.data_ultimo_acquisto.strftime('%d/%m/%Y') if p.data_ultimo_acquisto else '—' }}</td>
           <td class="num">
             <div style="display:flex; gap:6px;">
-              <a href="/portafoglio/{{ p.id }}/modifica" class="btn sm">Modifica</a>
+              <a href="/portafoglio/{{ p.id }}/modifica" class="btn sm">{{ t('btn.edit') }}</a>
               <form method="post" action="/portafoglio/{{ p.id }}/elimina"
-                    onsubmit="return confirm('Eliminare «{{ p.nome }}»? L\'operazione non è reversibile.');">
-                <button type="submit" class="btn sm danger">Elimina</button>
+                    class="js-confirm" data-msg="{{ t('pf.confirm_delete') }}">
+                <button type="submit" class="btn sm danger">{{ t('btn.delete') }}</button>
               </form>
             </div>
           </td>
@@ -66,7 +63,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td>Totale allocazione (esclusi gli importi fissi)</td>
+          <td>{{ t('pf.total_alloc') }}</td>
           <td></td>
           <td class="num" style="color:{{ '#1a7f37' if riepilogo.target_ok else '#cf222e' }};">
             {{ riepilogo.somma_target | pct }}

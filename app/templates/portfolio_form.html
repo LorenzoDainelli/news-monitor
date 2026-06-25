@@ -1,85 +1,80 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Modifica' if p else 'Nuova' }} posizione — Finanza personale{% endblock %}
+{% block title %}{{ t('form.title_edit') if p else t('form.title_new') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
-  <div class="page-title">{{ 'Modifica posizione' if p else 'Nuova posizione' }}</div>
-  <p class="page-sub">
-    {% if p %}Stai modificando «{{ p.nome }}».{% else %}Aggiungi un titolo al portafoglio.{% endif %}
-  </p>
+  <div class="page-title">{{ t('form.title_edit') if p else t('form.title_new') }}</div>
+  <p class="page-sub">{{ t('form.sub_edit', name=p.nome) if p else t('form.sub_new') }}</p>
 
   <form class="form" method="post" action="/portafoglio/salva">
     {% if p %}<input type="hidden" name="pos_id" value="{{ p.id }}">{% endif %}
 
     <div class="field">
-      <label>Nome del titolo *</label>
-      <input type="text" name="nome" required value="{{ p.nome if p else '' }}"
-             placeholder="es. iShares Core MSCI World UCITS ETF">
+      <label>{{ t('form.name') }}</label>
+      <input type="text" name="nome" required value="{{ p.nome if p else '' }}" placeholder="{{ t('form.ph_name') }}">
     </div>
 
     <div class="row3">
       <div class="field">
-        <label>Tipo</label>
+        <label>{{ t('form.type') }}</label>
         <select name="tipo">
-          {% for t in tipi %}
-          <option value="{{ t }}" {{ 'selected' if p and p.tipo==t else '' }}>{{ t }}</option>
-          {% endfor %}
+          <option value="ETF" {{ 'selected' if p and p.tipo=='ETF' else '' }}>{{ t('type.etf') }}</option>
+          <option value="Azione" {{ 'selected' if p and p.tipo=='Azione' else '' }}>{{ t('type.stock') }}</option>
         </select>
       </div>
       <div class="field">
-        <label>Ticker</label>
+        <label>{{ t('form.ticker') }}</label>
         <input type="text" name="ticker" value="{{ p.ticker if p else '' }}" placeholder="es. IWDA">
       </div>
       <div class="field">
-        <label>ISIN</label>
+        <label>{{ t('form.isin') }}</label>
         <input type="text" name="isin" value="{{ p.isin if p else '' }}" placeholder="es. IE00B4L5Y983">
       </div>
     </div>
 
     <div class="field">
-      <label>Categoria / Tema</label>
-      <input type="text" name="categoria" value="{{ p.categoria if p else '' }}"
-             placeholder="es. Azionario globale, Semiconduttori, Difesa…">
+      <label>{{ t('th.category') }}</label>
+      <input type="text" name="categoria" value="{{ p.categoria if p else '' }}" placeholder="{{ t('form.ph_category') }}">
     </div>
 
     <div class="row2">
       <div class="field">
-        <label>% Target</label>
+        <label>{{ t('th.pct_target') }}</label>
         <input type="text" name="pct_target" value="{{ p.pct_target if p else '' }}" placeholder="es. 2,5">
-        <div class="hint">Quota obiettivo nel portafoglio. La somma di tutte dovrebbe fare 100%.</div>
+        <div class="hint">{{ t('form.hint_pct') }}</div>
       </div>
       <div class="field">
-        <label>Importo fisso mensile (€) — opzionale</label>
+        <label>{{ t('form.fixed') }}</label>
         <input type="text" name="importo_fisso"
                value="{{ p.importo_fisso if p and p.importo_fisso is not none else '' }}" placeholder="es. 1">
-        <div class="hint">Solo per titoli a importo fisso (es. Take-Two 1€/mese). Lascia vuoto altrimenti.</div>
+        <div class="hint">{{ t('form.hint_fixed') }}</div>
       </div>
     </div>
 
     <div class="row3">
       <div class="field">
-        <label>Quantità posseduta</label>
+        <label>{{ t('form.qty') }}</label>
         <input type="text" name="quantita"
-               value="{{ p.quantita if p and p.quantita is not none else '' }}" placeholder="opzionale">
+               value="{{ p.quantita if p and p.quantita is not none else '' }}" placeholder="{{ t('form.ph_optional') }}">
       </div>
       <div class="field">
-        <label>Valore posseduto (€)</label>
+        <label>{{ t('form.value') }}</label>
         <input type="text" name="valore_posseduto"
-               value="{{ p.valore_posseduto if p and p.valore_posseduto is not none else '' }}" placeholder="opzionale">
+               value="{{ p.valore_posseduto if p and p.valore_posseduto is not none else '' }}" placeholder="{{ t('form.ph_optional') }}">
       </div>
       <div class="field">
-        <label>Data ultimo acquisto</label>
+        <label>{{ t('form.last_buy') }}</label>
         <input type="date" name="data_ultimo_acquisto"
                value="{{ p.data_ultimo_acquisto.isoformat() if p and p.data_ultimo_acquisto else '' }}">
       </div>
     </div>
 
     <div class="field">
-      <label>Note</label>
-      <textarea name="note" rows="2" placeholder="appunti personali…">{{ p.note if p else '' }}</textarea>
+      <label>{{ t('form.notes') }}</label>
+      <textarea name="note" rows="2" placeholder="{{ t('form.ph_notes') }}">{{ p.note if p else '' }}</textarea>
     </div>
 
     <div class="actions" style="margin-bottom:0;">
-      <button type="submit" class="btn primary">{{ 'Salva modifiche' if p else 'Aggiungi posizione' }}</button>
-      <a href="/portafoglio" class="btn">Annulla</a>
+      <button type="submit" class="btn primary">{{ t('form.save_edit') if p else t('form.add') }}</button>
+      <a href="/portafoglio" class="btn">{{ t('form.cancel') }}</a>
     </div>
   </form>
 {% endblock %}

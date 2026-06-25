@@ -20,7 +20,7 @@ def impostazioni(request: Request, salvato: int = 0):
         valore = store.get_setting(chiave, "")
         voci.append({
             "chiave": chiave,
-            "label": meta["label"],
+            "tkey": meta["tkey"],
             "secret": meta.get("secret", False),
             "presente": bool(valore.strip()),
             "mascherato": store.masked(valore) if meta.get("secret") else valore,
