@@ -92,8 +92,8 @@ Ricorda: l'impatto è **analisi qualitativa**, non una previsione, mai un consig
 
 ### Rubrica `rilevanza` (0-100)
 tipo evento × magnitudo/sorpresa × recenza × quanto tocca direttamente il titolo ×
-`peso`/`priorita` del titolo. Bande: 80-100 critico · 60-79 importante ·
-40-59 da report · <40 rumore (scarta).
+`peso`/`priorita` del titolo. Bande: **70-100 critico** (→ avviso event-check) ·
+**50-69 importante** (→ entra nei report) · **<50 sotto soglia** (scarta).
 
 ## Passo 4 — Decidi se inviare e seleziona le TOP 5
 - Ordina i candidati per `rilevanza` decrescente e **seleziona le prime 5**: sono

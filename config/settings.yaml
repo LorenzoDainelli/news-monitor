@@ -9,11 +9,11 @@ email:
 
 # Soglia di rilevanza globale (0-100): sotto questa, la notizia non entra nel
 # report. Le soglie per-titolo in portfolio.yaml hanno la precedenza.
-soglia_rilevanza_globale: 60
+soglia_rilevanza_globale: 50
 
 # Soglia per gli EVENT-CHECK (routine leggere intraday): inviano un avviso
 # immediato solo per eventi critici con rilevanza >= questa soglia.
-soglia_evento_critico: 80
+soglia_evento_critico: 70
 
 fuso_orario: Europe/Rome
 

@@ -12,7 +12,7 @@ Struttura attesa del JSON (vedi prompts/report.md):
 {
   "date": "22 giugno 2026",
   "test_mode": true,
-  "diagnostic": {"titoli_cercati": 27, "candidati": 0, "soglia": 60},  # opz.
+  "diagnostic": {"titoli_cercati": 27, "candidati": 0, "soglia": 50},  # opz.
   "items": [
     {"ticker":"SPCX", "tickers":["SPCX"], "also":"Tocca anche GOOG: ...",
      "tipo_evento":"IPO / NEWS AZIENDALE", "rilevanza":85,
@@ -83,9 +83,9 @@ def _rel_badge(score) -> str:
         s = int(score)
     except (TypeError, ValueError):
         s = 0
-    if s >= 80:
+    if s >= 70:  # critico (soglia event-check)
         bg, col = "#ffebe9", "#cf222e"
-    elif s >= 70:
+    elif s >= 50:  # importante (entra nei report)
         bg, col = "#fff3cd", "#9a6700"
     else:
         bg, col = "#eaeef2", "#57606a"
