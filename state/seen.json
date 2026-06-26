@@ -801,6 +801,86 @@
       "tipo_evento": "upgrade/downgrade analisti",
       "url": "https://finnhub.io/api/news?id=c725310b2dc9bca47053adadb14dea13ca726809d1ada1dbefb06c217fa7e6e6",
       "data_invio": "2026-06-25T17:10:51+00:00"
+    },
+    {
+      "id": "ko-irs-20b-tax-2026",
+      "ticker": "KO",
+      "titolo": "Coca-Cola in appello federale: l'IRS chiede 20 miliardi di dollari per operazioni intercompany",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=f0b22db983878dec449c07a3eb3ed25b905357fa05fcd8b6d90939e94a2bfa71",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "iran-cargo-ship-jun26",
+      "ticker": "SHEL",
+      "titolo": "L'Iran spara contro una nave mercantile nel Golfo: nuova escalation secondo funzionari USA",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPb1JqTWo2bzlJWXAwR2pkVTMyRVpTZkotam9lUlBxMzhyZ1FRM195WWlpay1nemFSX0kxTU9reDJVRnZQYm5QbTVxMUtsajZkVllBZUxaVUQ3YWJWSnRQYVZDX1QzQjhZdjV4Yjh2c1F0N2dvNnNrWXJ0YS1ZNU1HNXRyNmlxM2FycnBNUFVaQWExTVBNY2JIb1JaMDh4WWJPTmRF?oc=5",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "nato-summit-ankara-jul26",
+      "ticker": "NATO",
+      "titolo": "Vertice NATO in Turchia a luglio: spesa europea per la difesa +20% nel 2025, obiettivo 5% del PIL entro il 2035",
+      "tipo_evento": "macro tematica",
+      "url": "https://www.washingtontimes.com/news/2026/jun/25/bigger-defense-spending-top-agenda-upcoming-nato-summit-turkey/",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "nflx-omnicom-ai-ads",
+      "ticker": "NFLX",
+      "titolo": "Netflix lancia un'alleanza pubblicitaria AI con Omnicom Media per ottimizzare le campagne sullo streaming",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=bd1c07aa56bff3253bdde81ac6622c5cca80e1faffa05f451b78c0f64c63b799",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "ai-energy-bottleneck-jun26",
+      "ticker": "MSFT",
+      "titolo": "L'AI si scontra con un nuovo ostacolo: la rete elettrica non tiene il passo con i data center",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=ef228ba605a777189ebae1e3652b46a3b0b62a848454b6a1fb81e2573e81e729",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "asml-europe-chip-war",
+      "ticker": "ASML",
+      "titolo": "L'Europa resiste alla guerra dei chip di Washington: ASML al centro del braccio di ferro geopolitico",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=499730d917f1f4474aeadf1e938b552fcc088858391349fd45dd88e492b496da",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "ko-mann-leadership-jun26",
+      "ticker": "KO",
+      "titolo": "Coca-Cola: Jennifer Mann lascia il ruolo di responsabile del mercato nordamericano",
+      "tipo_evento": "cambio CEO/management",
+      "url": "https://finnhub.io/api/news?id=cf540529d342c3b39d39bea895fa27bd4bea3d0ed604d5e92f997bc36afbd9d1",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "pltr-burry-short-trim-jun26",
+      "ticker": "PLTR",
+      "titolo": "Michael Burry riduce le sue scommesse ribassiste su Palantir dopo un crollo del 40% dal picco 2026",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=c3845e8f81aea609f7c8f8a4c1019195919a986c15ad8d42368e5915000fd2d0",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "nukl-datacenter-energy-jun26",
+      "ticker": "NUKL",
+      "titolo": "La domanda di data center AI spinge il nucleare: i centri di calcolo potrebbero coprire il 12% dei consumi elettrici USA entro il 2028",
+      "tipo_evento": "macro tematica",
+      "url": "https://247wallst.com/investing/2026/06/01/load-up-on-nuclear-before-the-data-center-energy-race-accelerates-these-3-etfs-cover-reactors-uranium-and-smart-grid/",
+      "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "wmt-tariff-refunds-jun26",
+      "ticker": "WMT",
+      "titolo": "Walmart e altri retailer iniziano a ricevere i rimborsi sui dazi pagati, ma l'impatto sui titoli resta limitato",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=3fdff2cd51bdffc5e00eaded9af52684adad70a72fb8a4751aa2b6300ac55256",
+      "data_invio": "2026-06-26T05:10:00+00:00"
     }
   ]
 }
