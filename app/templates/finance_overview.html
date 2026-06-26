@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ t('nav.finance') }} — {{ t('app.name') }}{% endblock %}
+{% block content %}
+  <div class="page-title">{{ t('nav.finance') }}</div>
+  <p class="page-sub">{{ t('fin.subtitle') }}</p>
+
+  <div class="grid">
+    <div class="stat ok"><div class="k">{{ t('fin.total_patrimony') }}</div><div class="v">{{ saldi.totale | eur }}</div></div>
+    <div class="stat"><div class="k">{{ t('fin.month_income') }}</div><div class="v small" style="color:#1a7f37;">{{ riep.entrate | eur }}</div></div>
+    <div class="stat"><div class="k">{{ t('fin.month_expense') }}</div><div class="v small" style="color:#cf222e;">{{ riep.uscite | eur }}</div></div>
+    <div class="stat {{ 'ok' if riep.saldo >= 0 else 'warn' }}"><div class="k">{{ t('fin.month_balance') }}</div><div class="v small">{{ riep.saldo | eur }}</div></div>
+  </div>
+
+  <div class="card navy" style="margin-top:18px;">
+    <div class="card-h">{{ t('fin.wallet') }}</div>
+    <div class="grid">
+      {% for r in saldi.righe %}
+      <div class="stat"><div class="k">{{ r.w.nome }} <span class="faint">· {{ t('wtype.' ~ r.w.tipo) }}</span></div><div class="v small">{{ r.saldo | eur }}</div></div>
+      {% endfor %}
+    </div>
+    <div class="actions" style="margin-top:12px;margin-bottom:0;">
+      <a href="/finanze/portafogli" class="btn sm">{{ t('fin.manage_wallets') }}</a>
+      <a href="/finanze/categorie" class="btn sm">{{ t('fin.manage_categories') }}</a>
+      <a href="/finanze/movimenti" class="btn sm">{{ t('fin.all_movements') }}</a>
+    </div>
+  </div>
+
+  <div style="margin-top:18px;">
+    <div class="page-title" style="font-size:18px;">{{ t('fin.add_movement') }}</div>
+    <p class="page-sub" style="font-size:13px;"><span class="ai-label">{{ t('fin.ai_note') }}</span></p>
+    {% include "finance_movement_form.html" %}
+  </div>
+
+  {% if riep.spese_categoria %}
+  <div class="card" style="margin-top:18px;">
+    <div class="card-h">{{ t('fin.expenses_by_cat') }}</div>
+    {% for s in riep.spese_categoria %}
+    <div style="margin:6px 0;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;"><span>{{ s.nome }}</span><span class="muted">{{ s.tot | eur }}</span></div>
+      <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;"><div style="height:9px;width:{{ s.perc }}%;background:#cf222e;"></div></div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div style="margin:18px 0 8px;"><span class="card-h" style="color:var(--navy);">{{ t('fin.recent') }}</span></div>
+  {% include "finance_movements_table.html" %}
+{% endblock %}

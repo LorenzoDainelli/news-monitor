@@ -17,16 +17,20 @@ from shared.templating import templates
 import shared.settings_store          # noqa: F401  -> tabella shared_settings
 import portfolio.models               # noqa: F401  -> tabella portfolio_positions
 from portfolio import market          # noqa: F401  -> tabella portfolio_quotes
+import finance.models                 # noqa: F401  -> tabelle finance_*
 
 from portfolio import seed
 from portfolio import service as pf_service
 from portfolio.routes import router as portfolio_router
+from finance import service as fin_service
+from finance.routes import router as finance_router
 from shared.settings_routes import router as settings_router
 from shared.prefs_routes import router as prefs_router
 
 # --- preparazione database (una tantum) ---
 Base.metadata.create_all(bind=engine)
 seed.seed_if_empty()
+fin_service.seed_wallets_if_empty()
 
 
 # --- aggiornamento prezzi all'apertura, in background (non blocca l'avvio) ---
@@ -45,6 +49,7 @@ threading.Thread(target=_refresh_prezzi_bg, daemon=True).start()
 app = FastAPI(title=APP_NAME)
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
 app.include_router(portfolio_router)
+app.include_router(finance_router)
 app.include_router(settings_router)
 app.include_router(prefs_router)
 

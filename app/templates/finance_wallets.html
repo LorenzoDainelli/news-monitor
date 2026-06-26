@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ t('fin.manage_wallets') }} — {{ t('app.name') }}{% endblock %}
+{% block content %}
+  <div class="actions" style="margin-bottom:10px;"><a href="/finanze" class="btn sm">← {{ t('nav.finance') }}</a></div>
+  <div class="page-title">{{ t('fin.manage_wallets') }}</div>
+
+  <div class="table-wrap" style="margin-bottom:18px;">
+    <table>
+      <thead><tr><th>{{ t('fin.wallet_name') }}</th><th>{{ t('fin.wallet_type') }}</th><th class="num">{{ t('fin.balance') }}</th><th style="width:1%;"></th></tr></thead>
+      <tbody>
+      {% for r in saldi.righe %}
+        <tr>
+          <td>{{ r.w.nome }}</td>
+          <td>{{ t('wtype.' ~ r.w.tipo) }}</td>
+          <td class="num">{{ r.saldo | eur }}</td>
+          <td class="num"><div style="display:flex;gap:6px;">
+            <a href="/finanze/portafogli/{{ r.w.id }}/modifica" class="btn sm">{{ t('btn.edit') }}</a>
+            <form method="post" action="/finanze/portafogli/{{ r.w.id }}/elimina" class="js-confirm" data-msg="{{ t('fin.confirm_delete_mov') }}"><button type="submit" class="btn sm danger">{{ t('btn.delete') }}</button></form>
+          </div></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      <tfoot><tr><td>{{ t('fin.total_patrimony') }}</td><td></td><td class="num">{{ saldi.totale | eur }}</td><td></td></tr></tfoot>
+    </table>
+  </div>
+
+  <div class="page-title" style="font-size:18px;">{{ t('fin.edit_wallet') if edit else t('fin.add_wallet') }}</div>
+  <form class="form" method="post" action="/finanze/portafogli/salva">
+    {% if edit %}<input type="hidden" name="wid" value="{{ edit.id }}">{% endif %}
+    <div class="row2">
+      <div class="field"><label>{{ t('fin.wallet_name') }}</label><input type="text" name="nome" required value="{{ edit.nome if edit else '' }}"></div>
+      <div class="field"><label>{{ t('fin.wallet_type') }}</label>
+        <select name="tipo">{% for tp in tipi %}<option value="{{ tp }}" {{ 'selected' if edit and edit.tipo==tp else '' }}>{{ t('wtype.' ~ tp) }}</option>{% endfor %}</select>
+      </div>
+    </div>
+    <div class="field"><label>{{ t('fin.opening_balance') }}</label><input type="text" name="saldo_iniziale" value="{{ edit.saldo_iniziale if edit else '0' }}"></div>
+    <div class="field"><label>{{ t('form.notes') }}</label><input type="text" name="note" value="{{ edit.note if edit else '' }}"></div>
+    <div class="actions" style="margin-bottom:0;">
+      <button type="submit" class="btn primary">{{ t('fin.save') }}</button>
+      {% if edit %}<a href="/finanze/portafogli" class="btn">{{ t('form.cancel') }}</a>{% endif %}
+    </div>
+  </form>
+{% endblock %}

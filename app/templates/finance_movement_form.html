@@ -1,0 +1,43 @@
+<form class="form" method="post" action="/finanze/movimenti/salva">
+  <input type="hidden" name="next" value="{{ cur_path }}">
+  <div class="row3">
+    <div class="field">
+      <label>{{ t('fin.type') }}</label>
+      <select name="tipo">
+        <option value="uscita">{{ t('fin.uscita') }}</option>
+        <option value="entrata">{{ t('fin.entrata') }}</option>
+        <option value="trasferimento">{{ t('fin.trasferimento') }}</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>{{ t('fin.amount') }}</label>
+      <input type="text" name="importo" placeholder="0,00" required>
+    </div>
+    <div class="field">
+      <label>{{ t('fin.date') }}</label>
+      <input type="datetime-local" name="data" value="{{ oggi }}">
+    </div>
+  </div>
+  <div class="row3">
+    <div class="field">
+      <label>{{ t('fin.wallet_from') }}</label>
+      <select name="wallet_id">{% for w in wallets %}<option value="{{ w.id }}">{{ w.nome }}</option>{% endfor %}</select>
+    </div>
+    <div class="field">
+      <label>{{ t('fin.wallet_to') }}</label>
+      <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}">{{ w.nome }}</option>{% endfor %}</select>
+      <div class="hint">{{ t('fin.wallet_to_hint') }}</div>
+    </div>
+    <div class="field">
+      <label>{{ t('fin.category') }}</label>
+      <input type="text" name="categoria" list="catlist" autocomplete="off">
+      <datalist id="catlist">{% for c in categorie %}<option value="{{ c.nome }}">{% endfor %}</datalist>
+      <div class="hint">{{ t('fin.category_hint') }}</div>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>{{ t('fin.method') }}</label><input type="text" name="metodo"></div>
+    <div class="field"><label>{{ t('fin.description') }}</label><input type="text" name="descrizione"></div>
+  </div>
+  <button type="submit" class="btn primary">{{ t('fin.save') }}</button>
+</form>
