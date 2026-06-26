@@ -897,6 +897,86 @@
       "tipo_evento": "APPROVAZIONE NORMATIVA",
       "url": "https://finnhub.io/api/news?id=4a4c63e05d2585fa92f9a744fd499153a8a9b4cc554880ecdf0cb5b5efd5fba9",
       "data_invio": "2026-06-26"
+    },
+    {
+      "id": "amgn-tavneos-ema-revoca-20260626",
+      "ticker": "AMGN",
+      "titolo": "L'EMA rischia di revocare l'autorizzazione europea di Tavneos di Amgen",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=697be9a0bbdfd62ad3a98d6d254809b54fed16eba256c9ba51b67caeb1cc1d46",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "aapl-china-iphone-sellin-19-20260626",
+      "ticker": "AAPL",
+      "titolo": "Vendite iPhone in Cina giù del 19%: UBS taglia le aspettative per il trimestre di giugno",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=c1ded3eb065e0f42796d1853f63d3bc6424ece241e71a108c83caa021a4ed19e",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "jnj-scotus-roundup-talco-20260626",
+      "ticker": "JNJ",
+      "titolo": "Sentenza SCOTUS sul Roundup (Bayer): possibile scudo per il contenzioso talco di J&J",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=c01e8635a6b3c4916ec59375b07a81ffb4f6aaf73bf6fbcb651c9f89f3d2234c",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "ttwo-gta6-preorder-7999-20260626",
+      "ticker": "TTWO",
+      "titolo": "GTA 6 apre i pre-order a 79,99 dollari senza multiplayer al lancio: azione Take-Two cede il 2,8%",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=46cc28fff8b6f7bf6bf0621deeb2cebf45184b1bb880053c490b0ab1e9967b35",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "spacex-ai-pivot-nvda-intc-20260626",
+      "ticker": "NVDA,SPCX,INTC",
+      "titolo": "SpaceX si espande nell'AI: analisti vedono un potenziale boost per Nvidia e Intel",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=3121684a30011f588c350f52da3f0df3392b0ccb43bf9eed98da0424ff26f396",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "msft-openai-ipo-2027-gpt56-20260626",
+      "ticker": "MSFT",
+      "titolo": "OpenAI rinvia l'IPO al 2027 e rallenta GPT-5.6 per pressioni governative: incertezza su Microsoft",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=69085ae6aba3869b57eeb4c317397bda0e1e21067d3be6d4e80e49a955443c36",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "sndk-wdc-memoria-rally-cooling-20260626",
+      "ticker": "SNDK,WDC",
+      "titolo": "Il rally della memoria si raffredda: SanDisk e Western Digital cedono il 7%",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=ed3f8d6d98fb37bbf17bc76006032426c89bdff07fa028077656c75fe32dc643",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "pltr-software-rotation-rimbalzo-20260626",
+      "ticker": "PLTR",
+      "titolo": "Palantir interrompe sette sessioni negative grazie alla rotazione verso il software",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=f780541b2acc86532bcc74b9793e0e61098e9be9d7bfc1390444f1b6a159c512",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "goog-amzn-robotaxi-nhtsa-rollback-20260626",
+      "ticker": "GOOG,AMZN",
+      "titolo": "USA allentano i requisiti per i robotaxi: vantaggio per Waymo (Alphabet) e Zoox (Amazon)",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=8f5106206abacd688e2d524847f238c7e874905876fb7f2620511bd7423b7126",
+      "data_invio": "2026-06-26T17:15:00+00:00"
+    },
+    {
+      "id": "amzn-aws-gpu-pricing-power-20260626",
+      "ticker": "AMZN",
+      "titolo": "Amazon testa prezzi più alti per le GPU cloud: possibile boost per i ricavi AWS",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=a0f0b19c24fc4cb2c96ee507b9a1922c5ac449c4aec7f8f95aed1062bed1bc4e",
+      "data_invio": "2026-06-26T17:15:00+00:00"
     }
   ]
 }
