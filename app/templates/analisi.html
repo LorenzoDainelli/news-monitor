@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ t('analisi.title') }} — {{ t('app.name') }}{% endblock %}
+{% block content %}
+  <div class="page-title">{{ t('analisi.title') }}</div>
+  <p class="page-sub">{{ t('analisi.subtitle') }} <span class="ai-label">{{ t('analisi.ai_descr') }}</span></p>
+
+  <!-- sintesi -->
+  <div class="grid">
+    <div class="stat {{ 'warn' if lt.tech_alert else 'ok' }}">
+      <div class="k">{{ t('analisi.tech_conc') }}</div>
+      <div class="v">{{ lt.tech | pct }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('analisi.tech_alert') if lt.tech_alert else t('analisi.tech_ok') }}</div>
+    </div>
+    <div class="stat">
+      <div class="k">{{ t('analisi.div_yield') }}</div>
+      <div class="v">{{ lt.div_yield | pct if lt.div_yield is not none else '—' }}</div>
+    </div>
+    <div class="stat">
+      <div class="k">{{ t('analisi.diversification') }}</div>
+      <div class="v">{{ lt.eff_holdings }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('analisi.div_hint') }}</div>
+    </div>
+  </div>
+
+  <!-- esposizione settoriale -->
+  <div class="card navy" style="margin-top:18px;">
+    <div class="card-h">{{ t('analisi.sector_exposure') }}</div>
+    <div class="muted" style="font-size:12px;margin-bottom:10px;">{{ t('analisi.sector_note', cop=lt.coperto, tot=lt.totale_target) }}</div>
+    {% if lt.settori %}
+      {% for s in lt.settori %}
+      <div style="margin:6px 0;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:2px;">
+          <span>{{ t.sector(s.key) }}</span><span class="muted">{{ s.pct | pct }}</span>
+        </div>
+        <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;">
+          <div style="height:9px;width:{{ s.pct }}%;background:var(--navy);"></div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="faint">{{ t('pf.unavailable') }}</div>
+    {% endif %}
+    <p class="faint" style="font-size:12px;margin-top:12px;">{{ t('analisi.geo_note') }}</p>
+  </div>
+
+  <!-- metriche di rischio -->
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h">{{ t('analisi.risk_h') }}</div>
+    {% if risk %}
+      <div class="grid" style="margin-top:8px;">
+        <div class="stat"><div class="k">{{ t('analisi.vol') }}</div><div class="v">{{ risk.vol | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.vol_hint') }}</div></div>
+        <div class="stat warn"><div class="k">{{ t('analisi.mdd') }}</div><div class="v" style="color:#cf222e;">{{ risk.mdd | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.mdd_hint') }}</div></div>
+        <div class="stat"><div class="k">{{ t('analisi.sharpe') }}</div><div class="v">{{ risk.sharpe if risk.sharpe is not none else '—' }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.sharpe_hint') }}</div></div>
+        <div class="stat"><div class="k">{{ t('analisi.beta') }}</div><div class="v">{{ risk.beta if risk.beta is not none else '—' }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.beta_hint') }}</div></div>
+      </div>
+      <p class="faint" style="font-size:12px;margin-top:10px;">{{ t('analisi.risk_meta', n=risk.n, weeks=risk.weeks, when=risk.when) }}</p>
+    {% else %}
+      <div class="note info">{{ t('analisi.risk_none') }} {{ t('analisi.risk_note') }}</div>
+    {% endif %}
+    <form method="post" action="/analisi/rischio" style="margin-top:8px;">
+      <button type="submit" class="btn">{{ t('analisi.btn_recompute') if risk else t('analisi.btn_compute') }}</button>
+    </form>
+  </div>
+{% endblock %}

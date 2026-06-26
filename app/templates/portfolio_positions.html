@@ -55,8 +55,12 @@
         <tr>
           <td>
             <span class="t-ticker">{{ p.ticker or '—' }}</span>
-            <span class="t-type">· {{ t('type.etf') if p.tipo == 'ETF' else t('type.stock') }}</span><br>
-            <span>{{ p.nome }}</span>
+            <span class="t-type">· {{ t('type.etf') if p.tipo == 'ETF' else t('type.stock') }}</span>
+            {% if p.tipo == 'ETF' and p.ticker %}
+              <button type="button" class="btn sm" style="padding:1px 7px;margin-left:6px;font-size:12px;" data-holdings="{{ p.id }}">{{ t('pf.holdings_toggle') }} ▾</button>
+            {% endif %}
+            <br>
+            <a href="/portafoglio/{{ p.id }}">{{ p.nome }}</a>
             {% if p.isin %}<br><span class="faint" style="font-size:12px;">{{ t('pf.isin', isin=p.isin) }}</span>{% endif %}
           </td>
           <td>{{ t.category(p.categoria) or '—' }}</td>
@@ -88,6 +92,11 @@
             </div>
           </td>
         </tr>
+        {% if p.tipo == 'ETF' and p.ticker %}
+        <tr class="holdings-row" id="hr-{{ p.id }}" style="display:none;">
+          <td colspan="8" style="padding:0;"><div class="holdings-box" data-loaded="0"></div></td>
+        </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
       <tfoot>

@@ -1,0 +1,25 @@
+{% if fund and fund.holdings %}
+<div style="padding:12px 16px; background:var(--row); border-top:1px solid var(--border);">
+  <div class="muted" style="font-size:12px; margin-bottom:8px;">{{ t('detail.holdings_partial') }}</div>
+  <div class="row2" style="gap:18px;">
+    <div>
+      <div class="card-h">{{ t('detail.holdings') }}</div>
+      <table style="font-size:13px;">
+        <tbody>
+          {% for h in fund.holdings %}
+          <tr><td>{{ h.name or h.symbol }}</td><td class="num">{{ h.weight | pct }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if fund.sectors %}
+    <div>
+      <div class="card-h">{{ t('detail.sectors') }}</div>
+      <div>{% for s in fund.sectors %}<span class="pill">{{ t.sector(s.name) }} · {{ s.weight | pct }}</span>{% endfor %}</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="faint" style="padding:12px 16px; background:var(--row); border-top:1px solid var(--border);">{{ t('pf.unavailable') }}</div>
+{% endif %}

@@ -9,9 +9,24 @@ from shared.db import SessionLocal
 from shared.templating import templates
 from shared.parsing import to_float, to_date
 from portfolio.models import Position, TIPO_ETF, TIPO_AZIONE
-from portfolio import service, market
+from portfolio import service, market, analytics
 
 router = APIRouter()
+
+
+@router.get("/analisi", response_class=HTMLResponse)
+def analisi(request: Request):
+    return templates.TemplateResponse(request, "analisi.html", {
+        "active": "analisi",
+        "lt": analytics.look_through(),
+        "risk": analytics.get_cached_risk(),
+    })
+
+
+@router.post("/analisi/rischio")
+def calcola_rischio():
+    analytics.compute_risk()
+    return RedirectResponse("/analisi", status_code=303)
 
 
 @router.get("/portafoglio", response_class=HTMLResponse)
@@ -108,4 +123,34 @@ def pac(request: Request, importo: str = "500"):
         "active": "pac",
         "r": service.calcola_pac(importo_val),
         "importo_input": importo,
+    })
+
+
+@router.get("/portafoglio/{pos_id}/holdings", response_class=HTMLResponse)
+def holdings_fragment(request: Request, pos_id: int):
+    """Frammento HTML con le holdings dell'ETF (per la tendina cliccabile)."""
+    with SessionLocal() as db:
+        p = db.get(Position, pos_id)
+    fund = None
+    if p and (p.ticker or "").strip():
+        fund = market.get_fundamentals(p.ticker, tipo=p.tipo)
+    return templates.TemplateResponse(request, "portfolio_holdings_fragment.html", {"fund": fund})
+
+
+@router.get("/portafoglio/{pos_id}", response_class=HTMLResponse)
+def dettaglio(request: Request, pos_id: int):
+    """Scheda di dettaglio di una posizione (ETF: fondo+holdings; azione: profilo)."""
+    with SessionLocal() as db:
+        p = db.get(Position, pos_id)
+    if not p:
+        return RedirectResponse("/portafoglio", status_code=303)
+    q = market.quotes_map().get((p.ticker or "").upper())
+    fund = market.get_fundamentals(p.ticker, tipo=p.tipo) if (p.ticker or "").strip() else None
+    perf = None
+    if (p.ticker or "").strip():
+        closes = market.history_closes(market._yahoo_symbol(p.ticker), "1y", "1wk")
+        if len(closes) >= 2 and closes[0]:
+            perf = round((closes[-1] / closes[0] - 1) * 100, 2)
+    return templates.TemplateResponse(request, "portfolio_detail.html", {
+        "active": "portafoglio", "p": p, "q": q, "fund": fund, "perf": perf,
     })

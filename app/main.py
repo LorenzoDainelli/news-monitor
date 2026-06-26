@@ -34,6 +34,7 @@ def _refresh_prezzi_bg():
     try:
         if market.is_stale():
             market.refresh_all()
+        market.refresh_all_fundamentals()   # holdings/settori/dividendi (cache 24h)
     except Exception:
         pass  # mai far fallire l'avvio per i prezzi: si riproverà
 

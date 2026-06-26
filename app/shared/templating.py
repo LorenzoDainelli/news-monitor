@@ -28,3 +28,4 @@ templates = Jinja2Templates(directory=str(APP_DIR / "templates"),
 templates.env.filters["eur"] = formatting.format_eur
 templates.env.filters["pct"] = formatting.format_pct
 templates.env.filters["qty"] = formatting.format_qty
+templates.env.filters["big"] = formatting.format_compact

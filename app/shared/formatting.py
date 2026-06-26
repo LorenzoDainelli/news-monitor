@@ -25,6 +25,17 @@ def format_pct(value, decimals: int = 2) -> str:
     return f"{s.replace('.', ',')}%"
 
 
+def format_compact(value) -> str:
+    """Numeri grandi in forma compatta: 12,3 mld / 456 mln / 7,8 k."""
+    if value is None:
+        return "—"
+    v = float(value)
+    for div, suf in ((1e12, "T"), (1e9, "mld"), (1e6, "mln"), (1e3, "k")):
+        if abs(v) >= div:
+            return f"{v / div:.1f}".replace(".", ",") + f" {suf}"
+    return f"{v:.0f}"
+
+
 def format_qty(value) -> str:
     """Quantità possedute: fino a 4 decimali, senza zeri inutili (frazioni ETF)."""
     if value is None:

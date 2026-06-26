@@ -102,6 +102,52 @@ STRINGS = {
     "pf.prices_note": {"it": "Prezzi pubblici da Yahoo Finance, aggiornati all'apertura. Valore = quantità × prezzo, dove hai inserito la quantità. Dato non reperibile: «non disponibile», mai inventato.", "en": "Public prices from Yahoo Finance, refreshed on launch. Value = quantity × price, where you entered a quantity. Missing data: «unavailable», never made up.", "es": "Precios públicos de Yahoo Finance, actualizados al abrir. Valor = cantidad × precio, donde hayas introducido la cantidad. Dato no disponible: «no disponible», nunca inventado.", "fr": "Prix publics de Yahoo Finance, actualisés au lancement. Valeur = quantité × prix, là où tu as saisi une quantité. Donnée manquante : « indisponible », jamais inventée.", "de": "Öffentliche Kurse von Yahoo Finance, beim Start aktualisiert. Wert = Menge × Kurs, sofern du eine Menge eingegeben hast. Fehlende Daten: «nicht verfügbar», nie erfunden.", "uk": "Публічні ціни з Yahoo Finance, оновлюються при запуску. Вартість = кількість × ціна, де ти ввів кількість. Відсутні дані: «недоступно», ніколи не вигадані."},
     "dash.stat_pf_value": {"it": "Valore del portafoglio", "en": "Portfolio value", "es": "Valor de la cartera", "fr": "Valeur du portefeuille", "de": "Portfoliowert", "uk": "Вартість портфеля"},
     "dash.value_live": {"it": "da prezzi correnti, dove hai messo le quantità", "en": "from current prices, where you set quantities", "es": "según precios actuales, donde pusiste cantidades", "fr": "selon les prix actuels, où tu as mis les quantités", "de": "aus aktuellen Kursen, wo du Mengen angegeben hast", "uk": "за поточними цінами, де ти вказав кількість"},
+    "pf.holdings_toggle": {"it": "Holdings", "en": "Holdings", "es": "Holdings", "fr": "Positions", "de": "Positionen", "uk": "Активи"},
+    "detail.back": {"it": "← Portafoglio", "en": "← Portfolio", "es": "← Cartera", "fr": "← Portefeuille", "de": "← Portfolio", "uk": "← Портфель"},
+    "detail.fund_data": {"it": "Dati di fondo", "en": "Fund data", "es": "Datos del fondo", "fr": "Données du fonds", "de": "Fondsdaten", "uk": "Дані фонду"},
+    "detail.holdings": {"it": "Holdings (Top 10)", "en": "Holdings (Top 10)", "es": "Holdings (Top 10)", "fr": "Positions (Top 10)", "de": "Positionen (Top 10)", "uk": "Активи (Топ-10)"},
+    "detail.holdings_partial": {"it": "Elenco parziale: le prime 10 posizioni. Le holdings complete non sono reperibili gratuitamente.", "en": "Partial list: the top 10 positions. Full holdings aren't available for free.", "es": "Lista parcial: las 10 primeras posiciones. Las holdings completas no están disponibles gratis.", "fr": "Liste partielle : les 10 premières positions. Les positions complètes ne sont pas disponibles gratuitement.", "de": "Teilliste: die Top-10-Positionen. Vollständige Bestände sind nicht kostenlos verfügbar.", "uk": "Частковий список: топ-10 позицій. Повний склад недоступний безкоштовно."},
+    "detail.sectors": {"it": "Esposizione settoriale", "en": "Sector exposure", "es": "Exposición sectorial", "fr": "Exposition sectorielle", "de": "Sektor-Engagement", "uk": "Секторний розподіл"},
+    "detail.category": {"it": "Categoria", "en": "Category", "es": "Categoría", "fr": "Catégorie", "de": "Kategorie", "uk": "Категорія"},
+    "detail.ter": {"it": "Costo annuo (TER)", "en": "Annual cost (TER)", "es": "Coste anual (TER)", "fr": "Coût annuel (TER)", "de": "Jährliche Kosten (TER)", "uk": "Річна комісія (TER)"},
+    "detail.assets": {"it": "Patrimonio (AUM)", "en": "Assets (AUM)", "es": "Patrimonio (AUM)", "fr": "Encours (AUM)", "de": "Vermögen (AUM)", "uk": "Активи (AUM)"},
+    "detail.div_yield": {"it": "Rendimento da dividendo", "en": "Dividend yield", "es": "Rentabilidad por dividendo", "fr": "Rendement du dividende", "de": "Dividendenrendite", "uk": "Дивідендна дохідність"},
+    "detail.beta": {"it": "Beta (volatilità vs mercato)", "en": "Beta (volatility vs market)", "es": "Beta (volatilidad vs mercado)", "fr": "Bêta (volatilité vs marché)", "de": "Beta (Volatilität vs. Markt)", "uk": "Бета (волатильність до ринку)"},
+    "detail.sector_l": {"it": "Settore", "en": "Sector", "es": "Sector", "fr": "Secteur", "de": "Sektor", "uk": "Сектор"},
+    "detail.industry": {"it": "Industria", "en": "Industry", "es": "Industria", "fr": "Industrie", "de": "Branche", "uk": "Галузь"},
+    "detail.country": {"it": "Paese", "en": "Country", "es": "País", "fr": "Pays", "de": "Land", "uk": "Країна"},
+    "detail.weight": {"it": "Peso", "en": "Weight", "es": "Peso", "fr": "Poids", "de": "Gewicht", "uk": "Вага"},
+    "detail.no_data": {"it": "Dati di dettaglio non disponibili al momento (riprova più tardi).", "en": "Detailed data not available right now (try again later).", "es": "Datos detallados no disponibles ahora (inténtalo más tarde).", "fr": "Données détaillées indisponibles pour l'instant (réessaie plus tard).", "de": "Detaildaten derzeit nicht verfügbar (später erneut versuchen).", "uk": "Детальні дані наразі недоступні (спробуй пізніше)."},
+    "detail.updated": {"it": "Aggiornato: {when}", "en": "Updated: {when}", "es": "Actualizado: {when}", "fr": "Mis à jour : {when}", "de": "Aktualisiert: {when}", "uk": "Оновлено: {when}"},
+    "detail.price_current": {"it": "Prezzo attuale", "en": "Current price", "es": "Precio actual", "fr": "Prix actuel", "de": "Aktueller Kurs", "uk": "Поточна ціна"},
+    "detail.note": {"it": "Nota", "en": "Note", "es": "Nota", "fr": "Note", "de": "Notiz", "uk": "Примітка"},
+    "nav.analisi": {"it": "Analisi", "en": "Analysis", "es": "Análisis", "fr": "Analyse", "de": "Analyse", "uk": "Аналіз"},
+    "analisi.title": {"it": "Analisi & rischio", "en": "Analysis & risk", "es": "Análisis y riesgo", "fr": "Analyse et risque", "de": "Analyse & Risiko", "uk": "Аналіз і ризик"},
+    "analisi.subtitle": {"it": "Fotografia descrittiva del portafoglio: dove sei esposto e quanto oscilla. Non è un consiglio.", "en": "A descriptive snapshot of the portfolio: where you're exposed and how much it swings. Not advice.", "es": "Una foto descriptiva de la cartera: dónde estás expuesto y cuánto oscila. No es un consejo.", "fr": "Un aperçu descriptif du portefeuille : où tu es exposé et combien ça bouge. Pas un conseil.", "de": "Eine beschreibende Momentaufnahme des Portfolios: wo du engagiert bist und wie stark es schwankt. Keine Beratung.", "uk": "Описовий знімок портфеля: де ти маєш експозицію і наскільки він коливається. Не порада."},
+    "analisi.sector_exposure": {"it": "Esposizione settoriale (look-through)", "en": "Sector exposure (look-through)", "es": "Exposición sectorial (look-through)", "fr": "Exposition sectorielle (look-through)", "de": "Sektor-Engagement (Look-Through)", "uk": "Секторна експозиція (наскрізна)"},
+    "analisi.sector_note": {"it": "ETF scomposti nei loro settori, azioni per settore, pesati sulla % target. Copertura dati: {cop}% di {tot}%.", "en": "ETFs broken into their sectors, stocks by sector, weighted by target %. Data coverage: {cop}% of {tot}%.", "es": "ETF desglosados por sectores, acciones por sector, ponderados por % objetivo. Cobertura de datos: {cop}% de {tot}%.", "fr": "ETF décomposés par secteurs, actions par secteur, pondérés par % cible. Couverture des données : {cop}% sur {tot}%.", "de": "ETFs in ihre Sektoren zerlegt, Aktien nach Sektor, gewichtet nach Ziel-%. Datenabdeckung: {cop}% von {tot}%.", "uk": "ETF розкладено за секторами, акції за сектором, зважено за цільовим %. Покриття даних: {cop}% з {tot}%."},
+    "analisi.tech_conc": {"it": "Concentrazione tecnologia", "en": "Technology concentration", "es": "Concentración en tecnología", "fr": "Concentration technologie", "de": "Technologie-Konzentration", "uk": "Концентрація в технологіях"},
+    "analisi.tech_alert": {"it": "⚠ Oltre il 50%: forte concentrazione sul settore tech.", "en": "⚠ Over 50%: heavy concentration in tech.", "es": "⚠ Más del 50%: fuerte concentración en tecnología.", "fr": "⚠ Plus de 50% : forte concentration sur la tech.", "de": "⚠ Über 50%: starke Konzentration im Tech-Sektor.", "uk": "⚠ Понад 50%: висока концентрація в техсекторі."},
+    "analisi.tech_ok": {"it": "Sotto la soglia del 50%.", "en": "Below the 50% threshold.", "es": "Por debajo del umbral del 50%.", "fr": "Sous le seuil de 50%.", "de": "Unter der 50%-Schwelle.", "uk": "Нижче порога 50%."},
+    "analisi.geo_note": {"it": "Esposizione geografica completa (USA/area): richiede i dati paese degli ETF, non gratuiti. In arrivo.", "en": "Full geographic exposure (US/region): needs ETF country data, not free. Coming later.", "es": "Exposición geográfica completa (EE.UU./región): requiere datos por país de los ETF, no gratuitos. Próximamente.", "fr": "Exposition géographique complète (USA/région) : nécessite les données pays des ETF, non gratuites. À venir.", "de": "Vollständiges geografisches Engagement (USA/Region): erfordert Länderdaten der ETFs, nicht kostenlos. Kommt später.", "uk": "Повна географічна експозиція (США/регіон): потребує країнових даних ETF, не безкоштовних. Згодом."},
+    "analisi.div_yield": {"it": "Rendimento da dividendo (stimato)", "en": "Dividend yield (estimated)", "es": "Rentabilidad por dividendo (estimada)", "fr": "Rendement du dividende (estimé)", "de": "Dividendenrendite (geschätzt)", "uk": "Дивідендна дохідність (оцінка)"},
+    "analisi.diversification": {"it": "Diversificazione (titoli equivalenti)", "en": "Diversification (effective holdings)", "es": "Diversificación (posiciones efectivas)", "fr": "Diversification (positions effectives)", "de": "Diversifikation (effektive Positionen)", "uk": "Диверсифікація (ефективні позиції)"},
+    "analisi.div_hint": {"it": "Numero 'effettivo' di posizioni viste le tue %: più alto = più diversificato.", "en": "'Effective' number of positions given your %: higher = more diversified.", "es": "Número 'efectivo' de posiciones según tus %: más alto = más diversificado.", "fr": "Nombre 'effectif' de positions selon tes % : plus élevé = plus diversifié.", "de": "'Effektive' Anzahl Positionen gemäß deinen %: höher = stärker diversifiziert.", "uk": "'Ефективна' кількість позицій за твоїми %: більше = більш диверсифіковано."},
+    "analisi.risk_h": {"it": "Metriche di rischio (ultimo anno)", "en": "Risk metrics (last year)", "es": "Métricas de riesgo (último año)", "fr": "Mesures de risque (1 an)", "de": "Risikokennzahlen (letztes Jahr)", "uk": "Метрики ризику (рік)"},
+    "analisi.risk_note": {"it": "Calcolo pesante su dati settimanali: premi per calcolarle o aggiornarle (qualche secondo).", "en": "Heavy calculation on weekly data: press to compute or refresh (a few seconds).", "es": "Cálculo pesado sobre datos semanales: pulsa para calcular o actualizar (unos segundos).", "fr": "Calcul lourd sur données hebdomadaires : appuie pour calculer ou actualiser (quelques secondes).", "de": "Aufwändige Berechnung auf Wochendaten: drücke zum Berechnen/Aktualisieren (ein paar Sekunden).", "uk": "Важкий розрахунок на тижневих даних: натисни, щоб обчислити або оновити (кілька секунд)."},
+    "analisi.btn_compute": {"it": "Calcola metriche di rischio", "en": "Compute risk metrics", "es": "Calcular métricas de riesgo", "fr": "Calculer les mesures de risque", "de": "Risikokennzahlen berechnen", "uk": "Обчислити метрики ризику"},
+    "analisi.btn_recompute": {"it": "Ricalcola", "en": "Recompute", "es": "Recalcular", "fr": "Recalculer", "de": "Neu berechnen", "uk": "Перерахувати"},
+    "analisi.vol": {"it": "Volatilità annua", "en": "Annual volatility", "es": "Volatilidad anual", "fr": "Volatilité annuelle", "de": "Jährliche Volatilität", "uk": "Річна волатильність"},
+    "analisi.vol_hint": {"it": "Quanto oscilla il portafoglio: più alta = più ballerino.", "en": "How much the portfolio swings: higher = bumpier.", "es": "Cuánto oscila la cartera: más alta = más movida.", "fr": "Combien le portefeuille bouge : plus élevé = plus agité.", "de": "Wie stark das Portfolio schwankt: höher = unruhiger.", "uk": "Наскільки коливається портфель: більше = тряскіше."},
+    "analisi.mdd": {"it": "Massima discesa (drawdown)", "en": "Maximum drawdown", "es": "Máxima caída (drawdown)", "fr": "Perte maximale (drawdown)", "de": "Maximaler Drawdown", "uk": "Максимальна просадка"},
+    "analisi.mdd_hint": {"it": "La peggior caduta dal picco nell'ultimo anno.", "en": "The worst drop from a peak in the last year.", "es": "La peor caída desde un máximo en el último año.", "fr": "La pire chute depuis un pic sur l'année.", "de": "Der schlimmste Rückgang von einem Hoch im letzten Jahr.", "uk": "Найгірше падіння від піку за рік."},
+    "analisi.sharpe": {"it": "Sharpe ratio", "en": "Sharpe ratio", "es": "Ratio de Sharpe", "fr": "Ratio de Sharpe", "de": "Sharpe-Ratio", "uk": "Коефіцієнт Шарпа"},
+    "analisi.sharpe_hint": {"it": "Rendimento per unità di rischio: più alto è meglio.", "en": "Return per unit of risk: higher is better.", "es": "Rentabilidad por unidad de riesgo: más alto es mejor.", "fr": "Rendement par unité de risque : plus c'est élevé, mieux c'est.", "de": "Rendite je Risikoeinheit: höher ist besser.", "uk": "Дохід на одиницю ризику: більше — краще."},
+    "analisi.beta": {"it": "Beta vs MSCI World", "en": "Beta vs MSCI World", "es": "Beta vs MSCI World", "fr": "Bêta vs MSCI World", "de": "Beta vs. MSCI World", "uk": "Бета до MSCI World"},
+    "analisi.beta_hint": {"it": "1 = si muove come il mercato; >1 amplifica, <1 attenua.", "en": "1 = moves with the market; >1 amplifies, <1 dampens.", "es": "1 = se mueve como el mercado; >1 amplifica, <1 amortigua.", "fr": "1 = bouge comme le marché ; >1 amplifie, <1 atténue.", "de": "1 = bewegt sich wie der Markt; >1 verstärkt, <1 dämpft.", "uk": "1 = рухається з ринком; >1 підсилює, <1 пом'якшує."},
+    "analisi.risk_meta": {"it": "Su {n} titoli, {weeks} settimane · {when}", "en": "On {n} holdings, {weeks} weeks · {when}", "es": "Sobre {n} posiciones, {weeks} semanas · {when}", "fr": "Sur {n} positions, {weeks} semaines · {when}", "de": "Auf {n} Positionen, {weeks} Wochen · {when}", "uk": "На {n} позиціях, {weeks} тижнів · {when}"},
+    "analisi.risk_none": {"it": "Metriche non ancora calcolate.", "en": "Metrics not computed yet.", "es": "Métricas aún no calculadas.", "fr": "Mesures pas encore calculées.", "de": "Kennzahlen noch nicht berechnet.", "uk": "Метрики ще не обчислено."},
+    "analisi.ai_descr": {"it": "Analisi automatica e descrittiva, non un consiglio finanziario.", "en": "Automatic, descriptive analysis, not financial advice.", "es": "Análisis automático y descriptivo, no asesoramiento financiero.", "fr": "Analyse automatique et descriptive, pas un conseil financier.", "de": "Automatische, beschreibende Analyse, keine Finanzberatung.", "uk": "Автоматичний описовий аналіз, не фінансова порада."},
 
     # ---- modulo posizione ----
     "form.title_new": {"it": "Nuova posizione", "en": "New position", "es": "Nueva posición", "fr": "Nouvelle position", "de": "Neue Position", "uk": "Нова позиція"},
@@ -203,6 +249,22 @@ CATEGORIES = {
 }
 
 
+# Settori GICS come li nomina Yahoo -> etichette leggibili e tradotte.
+SECTORS = {
+    "realestate": {"it": "Immobiliare", "en": "Real estate", "es": "Inmobiliario", "fr": "Immobilier", "de": "Immobilien", "uk": "Нерухомість"},
+    "consumer_cyclical": {"it": "Consumi ciclici", "en": "Consumer cyclical", "es": "Consumo cíclico", "fr": "Consommation cyclique", "de": "Zyklische Konsumgüter", "uk": "Циклічні товари"},
+    "basic_materials": {"it": "Materiali di base", "en": "Basic materials", "es": "Materiales básicos", "fr": "Matériaux de base", "de": "Grundstoffe", "uk": "Базові матеріали"},
+    "consumer_defensive": {"it": "Consumi difensivi", "en": "Consumer defensive", "es": "Consumo defensivo", "fr": "Consommation défensive", "de": "Defensive Konsumgüter", "uk": "Захисні товари"},
+    "technology": {"it": "Tecnologia", "en": "Technology", "es": "Tecnología", "fr": "Technologie", "de": "Technologie", "uk": "Технології"},
+    "communication_services": {"it": "Comunicazioni", "en": "Communication services", "es": "Comunicaciones", "fr": "Communications", "de": "Kommunikation", "uk": "Комунікації"},
+    "financial_services": {"it": "Finanza", "en": "Financial services", "es": "Servicios financieros", "fr": "Services financiers", "de": "Finanzdienstleistungen", "uk": "Фінанси"},
+    "utilities": {"it": "Utility", "en": "Utilities", "es": "Servicios públicos", "fr": "Services aux collectivités", "de": "Versorger", "uk": "Комунальні послуги"},
+    "industrials": {"it": "Industriali", "en": "Industrials", "es": "Industriales", "fr": "Industrie", "de": "Industrie", "uk": "Промисловість"},
+    "energy": {"it": "Energia", "en": "Energy", "es": "Energía", "fr": "Énergie", "de": "Energie", "uk": "Енергетика"},
+    "healthcare": {"it": "Sanità", "en": "Healthcare", "es": "Salud", "fr": "Santé", "de": "Gesundheit", "uk": "Охорона здоров'я"},
+}
+
+
 def t(key: str, lang: str = DEFAULT_LANG, **kw) -> str:
     entry = STRINGS.get(key)
     if not entry:
@@ -223,10 +285,18 @@ def translate_category(label: str, lang: str = DEFAULT_LANG) -> str:
     return entry.get(lang) or entry.get(DEFAULT_LANG) or label
 
 
+def translate_sector(key: str, lang: str = DEFAULT_LANG) -> str:
+    entry = SECTORS.get((key or "").strip().lower())
+    if not entry:
+        return (key or "").replace("_", " ").title()
+    return entry.get(lang) or entry.get(DEFAULT_LANG) or key
+
+
 def make_translator(lang: str):
     """Crea la funzione t() 'agganciata' alla lingua corrente, per i template."""
     def _t(key, **kw):
         return t(key, lang, **kw)
     _t.lang = lang
     _t.category = lambda label: translate_category(label, lang)
+    _t.sector = lambda key: translate_sector(key, lang)
     return _t

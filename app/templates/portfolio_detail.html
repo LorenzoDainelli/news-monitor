@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}{{ p.nome }} — {{ t('app.name') }}{% endblock %}
+{% block content %}
+  <div class="actions" style="margin-bottom:10px;"><a href="/portafoglio" class="btn sm">{{ t('detail.back') }}</a></div>
+
+  <div class="page-title">{{ p.ticker or p.nome }}</div>
+  <p class="page-sub">
+    {{ p.nome }}
+    <span class="pill gray">{{ t('type.etf') if p.tipo == 'ETF' else t('type.stock') }}</span>
+    {% if p.categoria %}<span class="pill">{{ t.category(p.categoria) }}</span>{% endif %}
+    {% if p.isin %}<br><span class="faint" style="font-size:12px;">{{ t('pf.isin', isin=p.isin) }}</span>{% endif %}
+  </p>
+
+  <div class="grid">
+    <div class="stat">
+      <div class="k">{{ t('detail.price_current') }}</div>
+      <div class="v">
+        {% if q and q.ok and q.price_eur is not none %}{{ q.price_eur | eur }}{% else %}<span class="faint" style="font-size:16px;">{{ t('pf.unavailable') }}</span>{% endif %}
+      </div>
+      {% if q and q.ok and q.currency and q.currency != 'EUR' %}
+        <div class="muted" style="font-size:13px;margin-top:4px;">{{ q.price | qty }} {{ q.currency }} · {{ q.source }}</div>
+      {% endif %}
+    </div>
+    {% if perf is not none %}
+    <div class="stat {{ 'ok' if perf >= 0 else 'warn' }}">
+      <div class="k">12 mesi</div>
+      <div class="v" style="color:{{ '#1a7f37' if perf >= 0 else '#cf222e' }};">{{ '+' if perf >= 0 else '' }}{{ perf | pct }}</div>
+    </div>
+    {% endif %}
+    {% if p.quantita %}
+    <div class="stat">
+      <div class="k">{{ t('th.qty') }} · {{ t('th.value') }}</div>
+      <div class="v small">{{ p.quantita | qty }}{% if q and q.price_eur %} · {{ (q.price_eur * p.quantita) | eur }}{% endif %}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if fund %}
+    {% if p.tipo == 'ETF' %}
+      <div class="card navy" style="margin-top:18px;">
+        <div class="card-h">{{ t('detail.fund_data') }}</div>
+        <div class="grid">
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.category') }}</div><div>{{ fund.category or '—' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.ter') }}</div><div>{{ (fund.expense_ratio * 100) | pct if fund.expense_ratio else '—' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.assets') }}</div><div>{{ fund.total_assets | big }} {{ fund.currency or '' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.div_yield') }}</div><div>{{ (fund.div_yield * 100) | pct if fund.div_yield else '—' }}</div></div>
+        </div>
+      </div>
+
+      {% if fund.holdings %}
+      <div class="card" style="margin-top:16px;">
+        <div class="card-h">{{ t('detail.holdings') }}</div>
+        <div class="muted" style="font-size:12px; margin-bottom:8px;">{{ t('detail.holdings_partial') }}</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>{{ t('th.title') }}</th><th class="num">{{ t('detail.weight') }}</th></tr></thead>
+            <tbody>
+              {% for h in fund.holdings %}
+              <tr><td>{{ h.name or h.symbol }}</td><td class="num">{{ h.weight | pct }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if fund.sectors %}
+      <div class="card" style="margin-top:16px;">
+        <div class="card-h">{{ t('detail.sectors') }}</div>
+        <div>{% for s in fund.sectors %}<span class="pill">{{ t.sector(s.name) }} · {{ s.weight | pct }}</span>{% endfor %}</div>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="card navy" style="margin-top:18px;">
+        <div class="card-h">{{ t('detail.fund_data') }}</div>
+        <div class="grid">
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.sector_l') }}</div><div>{{ fund.sector or '—' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.industry') }}</div><div>{{ fund.industry or '—' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.country') }}</div><div>{{ fund.country or '—' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.div_yield') }}</div><div>{{ (fund.div_yield * 100) | pct if fund.div_yield else '—' }}</div></div>
+          <div><div class="k muted" style="font-size:13px;">{{ t('detail.beta') }}</div><div>{{ fund.beta | qty if fund.beta else '—' }}</div></div>
+        </div>
+      </div>
+    {% endif %}
+    {% if fund._fetched %}<p class="faint" style="font-size:12px;margin-top:10px;">{{ t('detail.updated', when=fund._fetched) }}</p>{% endif %}
+  {% else %}
+    <div class="note info" style="margin-top:18px;">{{ t('detail.no_data') }}</div>
+  {% endif %}
+
+  {% if p.note %}
+  <div class="card" style="margin-top:16px;">
+    <div class="card-h">{{ t('detail.note') }}</div>
+    <div>{{ p.note }}</div>
+  </div>
+  {% endif %}
+{% endblock %}
