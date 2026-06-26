@@ -226,7 +226,7 @@
     var W = this.cw;
     this.parts.push({
       kind: "burn", x: W / 2 + rand(-W * 0.12, W * 0.12), y: this.hillTop() - rand(2, 16),
-      w: 34, h: 18, ang: rand(-0.2, 0.2), burn: 0, life: 0, maxlife: 90
+      w: 34, h: 18, ang: rand(-0.2, 0.2), burn: 0, life: 0, maxlife: 140
     });
   };
   Scene.prototype.spawnFire = function () {
@@ -271,10 +271,17 @@
     var ctx = this.ctx;
     if (p.kind === "note") {
       ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.ang);
-      ctx.fillStyle = p.hue === "gold" ? "#e8c14a" : "#2f9150";
-      rr(ctx, -p.w / 2, -p.h / 2, p.w, p.h, 2.5); ctx.fill();
-      ctx.fillStyle = "rgba(255,255,255,.18)"; ctx.fillRect(-p.w / 2, -p.h * 0.14, p.w, p.h * 0.28);
-      ctx.fillStyle = "rgba(255,255,255,.4)"; ctx.beginPath(); ctx.arc(0, 0, p.h * 0.22, 0, 7); ctx.fill();
+      var w = p.w, h = p.h, gold = p.hue === "gold";
+      // mazzetta: pila di 3 banconote leggermente sfalsate
+      for (var s = 2; s >= 0; s--) {
+        ctx.fillStyle = gold ? (s === 0 ? "#e8c14a" : "#c9a52c") : (s === 0 ? "#2f9150" : "#246f3f");
+        rr(ctx, -w / 2 + s * 1.3, -h / 2 - s * 1.6, w, h, 2.5); ctx.fill();
+      }
+      ctx.fillStyle = "rgba(255,255,255,.16)"; ctx.fillRect(-w / 2, -h * 0.16, w, h * 0.3);
+      ctx.fillStyle = "rgba(255,255,255,.42)"; ctx.beginPath(); ctx.arc(0, -h * 0.02, h * 0.2, 0, 7); ctx.fill();
+      // fascetta di carta della mazzetta
+      ctx.fillStyle = gold ? "#9a6b12" : "#15532c";
+      ctx.fillRect(-w * 0.13, -h / 2 - 5, w * 0.26, h + 7);
       ctx.restore();
     } else if (p.kind === "coin") {
       ctx.save(); ctx.fillStyle = "#e8c14a"; ctx.beginPath();
@@ -308,6 +315,27 @@
     }
   };
 
+  Scene.prototype.drawFlames = function (level) {
+    // corpo del fuoco: lingue di fiamma sovrapposte (rosso->arancio->giallo->bianco)
+    // che ondeggiano: dà il senso di un fuoco vero, oltre alle scintille.
+    var ctx = this.ctx, W = this.cw, baseY = this.hillTop(), cx = W / 2;
+    var tn = performance.now() / 90;
+    var bw = Math.min(W * 0.46, 110) * (0.7 + 0.3 * level);
+    var layers = [["206,44,32", 1.0, 1.0], ["255,120,42", 0.8, 1.35], ["255,206,84", 0.6, 1.7], ["255,248,214", 0.45, 2.3]];
+    ctx.globalCompositeOperation = "lighter";
+    for (var i = 0; i < layers.length; i++) {
+      var a = layers[i][1] * (0.5 + 0.5 * level), spd = layers[i][2];
+      var w = bw * (1 - i * 0.16), hgt = (26 + 34 * level) * (1 - i * 0.12);
+      var wob = Math.sin(tn * spd + i) * (4 + i * 2);
+      ctx.fillStyle = "rgba(" + layers[i][0] + "," + a + ")";
+      ctx.beginPath();
+      ctx.moveTo(cx - w / 2, baseY);
+      ctx.quadraticCurveTo(cx - w / 4 + wob, baseY - hgt * 0.6, cx + wob * 0.6, baseY - hgt);
+      ctx.quadraticCurveTo(cx + w / 4 + wob, baseY - hgt * 0.6, cx + w / 2, baseY);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.globalCompositeOperation = "source-over";
+  };
   Scene.prototype.burst = function (dir, mag) {
     var m = mode(); if (m === "spente") return;
     mag = mag || 1;
@@ -318,7 +346,7 @@
         else this.spawnEffect(i, n, mag);
       }
     } else { // uscita -> fuoco
-      this.emitUntil = performance.now() + (m === "leggere" ? 600 : 1200) * mag;
+      this.emitUntil = performance.now() + (m === "leggere" ? 700 : 1500) * mag;
       if (m !== "leggere") this.spawnBurningNote();
       this.pile = Math.max(0.05, this.pile - 0.07 * mag);
     }
@@ -333,6 +361,7 @@
       if (now < self.emitUntil) {
         var rate = light ? 1 : 3;
         for (var k = 0; k < rate; k++) self.spawnFire();
+        self.drawFlames(light ? 0.55 : 1);
       }
       var alive = 0;
       for (var i = 0; i < self.parts.length; i++) {
