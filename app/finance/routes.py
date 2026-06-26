@@ -65,6 +65,11 @@ def salva_movimento(
             wallet_id=wallet_id, wallet_to_id=wto, categoria_nome=categoria,
             metodo=metodo, descrizione=descrizione)
     dest = next if next.startswith("/finanze") else "/finanze"
+    # autoplay della scena sul portafoglio toccato (il board legge ?play=&dir=)
+    if tipo in (TIPO_ENTRATA, TIPO_USCITA):
+        d = "in" if tipo == TIPO_ENTRATA else "out"
+        sep = "&" if "?" in dest else "?"
+        dest = f"{dest}{sep}play={wallet_id}&dir={d}"
     return RedirectResponse(dest, status_code=303)
 
 

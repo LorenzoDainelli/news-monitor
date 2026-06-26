@@ -4,6 +4,7 @@
 {% block content %}
   <div class="actions" style="margin-bottom:10px;"><a href="/finanze" class="btn sm">← {{ t('nav.finance') }}</a></div>
 
+  {% if saldi.righe %}
   <div class="wboard-wrap">
     <div class="wboard-head">
       <div class="page-title">{{ t('board.title') }}</div>
@@ -17,6 +18,7 @@
     <div class="wboard-note">{{ t('board.hint') }} {{ t('board.preview_note') }}</div>
   </div>
   <script type="application/json" id="wboard-data">[{% for r in saldi.righe %}{% if not loop.first %},{% endif %}{"id":{{ r.w.id }},"nome":{{ r.w.nome|tojson }},"tipo":{{ r.w.tipo|tojson }},"saldo":{{ r.saldo }},"eur":{{ (r.saldo|eur)|tojson }},"tlabel":{{ t('wtype.' ~ r.w.tipo)|tojson }}}{% endfor %}]</script>
+  {% endif %}
 
   <div class="page-title" style="font-size:18px;">{{ t('fin.manage_wallets') }}</div>
 
