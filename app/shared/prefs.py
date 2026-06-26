@@ -7,6 +7,19 @@ from shared.settings_store import get_setting, set_setting
 from shared.i18n import LANG_CODES, DEFAULT_LANG
 
 VALID_THEMES = ("light", "dark")
+# Intensità delle animazioni dei portafogli: piene (esuberanti), leggere, spente.
+VALID_ANIM = ("piene", "leggere", "spente")
+DEFAULT_ANIM = "piene"
+
+
+def get_anim() -> str:
+    v = get_setting("ui_anim", DEFAULT_ANIM)
+    return v if v in VALID_ANIM else DEFAULT_ANIM
+
+
+def set_anim(value: str) -> None:
+    if value in VALID_ANIM:
+        set_setting("ui_anim", value)
 
 
 def get_theme() -> str:

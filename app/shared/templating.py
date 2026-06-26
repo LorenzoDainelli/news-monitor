@@ -18,6 +18,7 @@ def _global_context(request):
         "t": i18n.make_translator(lang),
         "lang": lang,
         "theme": prefs.get_theme(),
+        "anim": prefs.get_anim(),
         "LANGS": i18n.LANGS,
         "cur_path": request.url.path,
     }

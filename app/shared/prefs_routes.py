@@ -15,9 +15,12 @@ def _safe_next(next_url: str) -> str:
 
 
 @router.post("/preferenze")
-def salva_preferenze(theme: str = Form(None), lang: str = Form(None), next: str = Form("/")):
+def salva_preferenze(theme: str = Form(None), lang: str = Form(None),
+                     anim: str = Form(None), next: str = Form("/")):
     if theme:
         prefs.set_theme(theme)
     if lang:
         prefs.set_lang(lang)
+    if anim:
+        prefs.set_anim(anim)
     return RedirectResponse(_safe_next(next), status_code=303)

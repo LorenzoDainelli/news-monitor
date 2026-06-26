@@ -1,8 +1,24 @@
 {% extends "base.html" %}
 {% block title %}{{ t('fin.manage_wallets') }} — {{ t('app.name') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/wallet-board.css">{% endblock %}
 {% block content %}
   <div class="actions" style="margin-bottom:10px;"><a href="/finanze" class="btn sm">← {{ t('nav.finance') }}</a></div>
-  <div class="page-title">{{ t('fin.manage_wallets') }}</div>
+
+  <div class="wboard-wrap">
+    <div class="wboard-head">
+      <div class="page-title">{{ t('board.title') }}</div>
+      <div class="wboard-total">{{ t('fin.total_patrimony') }}: <b>{{ saldi.totale | eur }}</b></div>
+    </div>
+    <div class="wboard" id="wboard"
+         data-share-of="{{ t('board.share_of') }}"
+         data-in="{{ t('board.preview_in') }}"
+         data-out="{{ t('board.preview_out') }}"
+         aria-label="{{ t('board.title') }}"></div>
+    <div class="wboard-note">{{ t('board.hint') }} {{ t('board.preview_note') }}</div>
+  </div>
+  <script type="application/json" id="wboard-data">[{% for r in saldi.righe %}{% if not loop.first %},{% endif %}{"id":{{ r.w.id }},"nome":{{ r.w.nome|tojson }},"tipo":{{ r.w.tipo|tojson }},"saldo":{{ r.saldo }},"eur":{{ (r.saldo|eur)|tojson }},"tlabel":{{ t('wtype.' ~ r.w.tipo)|tojson }}}{% endfor %}]</script>
+
+  <div class="page-title" style="font-size:18px;">{{ t('fin.manage_wallets') }}</div>
 
   <div class="table-wrap" style="margin-bottom:18px;">
     <table>
@@ -41,3 +57,4 @@
     </div>
   </form>
 {% endblock %}
+{% block scripts %}<script src="/static/wallet-board.js"></script>{% endblock %}

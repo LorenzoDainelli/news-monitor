@@ -196,6 +196,17 @@ STRINGS = {
     "wtype.investimento": {"it": "Investimenti", "en": "Investments", "es": "Inversiones", "fr": "Investissements", "de": "Investitionen", "uk": "Інвестиції"},
     "wtype.altro": {"it": "Altro", "en": "Other", "es": "Otro", "fr": "Autre", "de": "Sonstiges", "uk": "Інше"},
 
+    "set.anim_label": {"it": "Animazioni", "en": "Animations", "es": "Animaciones", "fr": "Animations", "de": "Animationen", "uk": "Анімації"},
+    "anim.piene": {"it": "Piene", "en": "Full", "es": "Completas", "fr": "Complètes", "de": "Voll", "uk": "Повні"},
+    "anim.leggere": {"it": "Leggere", "en": "Light", "es": "Ligeras", "fr": "Légères", "de": "Leicht", "uk": "Легкі"},
+    "anim.spente": {"it": "Spente", "en": "Off", "es": "Apagadas", "fr": "Désactivées", "de": "Aus", "uk": "Вимкнені"},
+    "board.title": {"it": "I tuoi portafogli", "en": "Your wallets", "es": "Tus carteras", "fr": "Tes portefeuilles", "de": "Deine Geldbeutel", "uk": "Твої гаманці"},
+    "board.hint": {"it": "Ogni portafoglio è grande quanto pesa sul patrimonio. Tocca una tessera per rivederne la scena.", "en": "Each wallet is as big as its share of your wealth. Tap a tile to replay its scene.", "es": "Cada cartera es tan grande como su peso en tu patrimonio. Toca una pieza para repetir su escena.", "fr": "Chaque portefeuille est grand comme sa part de ton patrimoine. Touche une tuile pour rejouer sa scène.", "de": "Jeder Geldbeutel ist so groß wie sein Anteil am Vermögen. Tippe eine Kachel an, um die Szene erneut abzuspielen.", "uk": "Кожен гаманець завеликий, як його частка в статках. Торкнись плитки, щоб повторити сцену."},
+    "board.share_of": {"it": "del patrimonio", "en": "of your wealth", "es": "del patrimonio", "fr": "du patrimoine", "de": "des Vermögens", "uk": "статків"},
+    "board.preview_in": {"it": "Anteprima entrata", "en": "Preview income", "es": "Vista previa de ingreso", "fr": "Aperçu d'une entrée", "de": "Vorschau Einnahme", "uk": "Перегляд надходження"},
+    "board.preview_out": {"it": "Anteprima uscita", "en": "Preview expense", "es": "Vista previa de gasto", "fr": "Aperçu d'une dépense", "de": "Vorschau Ausgabe", "uk": "Перегляд витрати"},
+    "board.preview_note": {"it": "Le anteprime non modificano i tuoi dati.", "en": "Previews don't change your data.", "es": "Las vistas previas no cambian tus datos.", "fr": "Les aperçus ne modifient pas tes données.", "de": "Vorschauen ändern deine Daten nicht.", "uk": "Перегляди не змінюють твої дані."},
+
     # ---- modulo posizione ----
     "form.title_new": {"it": "Nuova posizione", "en": "New position", "es": "Nueva posición", "fr": "Nouvelle position", "de": "Neue Position", "uk": "Нова позиція"},
     "form.title_edit": {"it": "Modifica posizione", "en": "Edit position", "es": "Editar posición", "fr": "Modifier la position", "de": "Position bearbeiten", "uk": "Редагувати позицію"},
