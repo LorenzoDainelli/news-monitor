@@ -881,6 +881,14 @@
       "tipo_evento": "macro",
       "url": "https://finnhub.io/api/news?id=3fdff2cd51bdffc5e00eaded9af52684adad70a72fb8a4751aa2b6300ac55256",
       "data_invio": "2026-06-26T05:10:00+00:00"
+    },
+    {
+      "id": "meta_whatsapp_shah_20260626",
+      "ticker": "META",
+      "titolo": "Kunal Shah nuovo direttore globale di WhatsApp",
+      "tipo_evento": "leadership_change",
+      "url": "https://finnhub.io/api/news?id=3f2b67e69304d7f641e4af813675df0627593537d46a9cb2e94d6cabca985861",
+      "data_invio": "2026-06-26T10:17:51Z"
     }
   ]
 }
