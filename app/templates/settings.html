@@ -59,6 +59,50 @@
     </div>
   </form>
 
+  <!-- Agente AI -->
+  <div class="card navy" style="margin-top:20px;">
+    <div class="card-h">{{ t('set.ai_h') }}</div>
+    <p style="margin:0 0 10px;">{{ t('set.ai_intro') }}</p>
+
+    {% if ai_configured %}
+      <div class="note ok">{{ t('set.ai_status_on') }}</div>
+    {% else %}
+      <div class="note warn">{{ t('set.ai_status_off') }}<br>
+        <span class="muted" style="font-size:13px;">{{ t('set.ai_get_key') }}</span>
+      </div>
+    {% endif %}
+
+    {% if ai_test == 'ok' %}<div class="note ok">{{ t('set.ai_test_ok') }}</div>
+    {% elif ai_test == 'err' %}<div class="note err">{{ t('set.ai_test_err') }}</div>
+    {% elif ai_test == 'nokey' %}<div class="note warn">{{ t('set.ai_test_nokey') }}</div>
+    {% endif %}
+
+    <form class="form" method="post" action="/impostazioni/ai">
+      <div class="row2">
+        <div class="field" style="margin-bottom:0;">
+          <label>{{ t('set.ai_model') }}</label>
+          <input type="text" name="modello" value="{{ ai_model }}" autocomplete="off">
+          <div class="hint">{{ t('set.ai_model_hint') }}</div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>{{ t('set.ai_mode') }}</label>
+          <select name="modalita">
+            {% for m in MODES %}
+            <option value="{{ m }}" {{ 'selected' if m==ai_mode else '' }}>{{ t('set.ai_mode_' ~ m) }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:14px; margin-bottom:0;">
+        <button type="submit" class="btn primary">{{ t('set.ai_save') }}</button>
+      </div>
+    </form>
+
+    <form method="post" action="/impostazioni/ai/test" style="margin-top:10px;">
+      <button type="submit" class="btn">{{ t('set.ai_test_btn') }}</button>
+    </form>
+  </div>
+
   <div class="card navy" style="margin-top:20px;">
     <div class="card-h">{{ t('set.what_h') }}</div>
     <p style="margin:0 0 6px;">{{ t('set.gemini_for') }}</p>

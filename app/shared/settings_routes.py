@@ -9,12 +9,13 @@ from fastapi.responses import RedirectResponse, HTMLResponse
 
 from shared.templating import templates
 from shared import settings_store as store
+from shared import ai
 
 router = APIRouter()
 
 
 @router.get("/impostazioni", response_class=HTMLResponse)
-def impostazioni(request: Request, salvato: int = 0):
+def impostazioni(request: Request, salvato: int = 0, ai_test: str = ""):
     voci = []
     for chiave, meta in store.KNOWN_SETTINGS.items():
         valore = store.get_setting(chiave, "")
@@ -28,7 +29,26 @@ def impostazioni(request: Request, salvato: int = 0):
     return templates.TemplateResponse(request, "settings.html", {
         "active": "impostazioni",
         "voci": voci, "salvato": bool(salvato),
+        "ai_configured": ai.is_configured(),
+        "ai_model": ai.get_model(),
+        "ai_mode": ai.get_mode(),
+        "ai_test": ai_test,
+        "MODES": ai.MODES,
     })
+
+
+@router.post("/impostazioni/ai")
+def salva_ai(modello: str = Form(""), modalita: str = Form("")):
+    ai.set_model(modello)
+    ai.set_mode(modalita)
+    return RedirectResponse("/impostazioni?salvato=1", status_code=303)
+
+
+@router.post("/impostazioni/ai/test")
+def prova_ai():
+    ok, detail = ai.test_connection()
+    esito = "ok" if ok else ("nokey" if detail == "no_key" else "err")
+    return RedirectResponse(f"/impostazioni?ai_test={esito}", status_code=303)
 
 
 @router.post("/impostazioni")
