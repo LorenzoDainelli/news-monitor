@@ -889,6 +889,14 @@
       "tipo_evento": "leadership_change",
       "url": "https://finnhub.io/api/news?id=3f2b67e69304d7f641e4af813675df0627593537d46a9cb2e94d6cabca985861",
       "data_invio": "2026-06-26T10:17:51Z"
+    },
+    {
+      "id": "lly_jaypirca_chmp_20260626",
+      "ticker": "LLY",
+      "titolo": "Approvazione EU per Jaypirca di Eli Lilly",
+      "tipo_evento": "APPROVAZIONE NORMATIVA",
+      "url": "https://finnhub.io/api/news?id=4a4c63e05d2585fa92f9a744fd499153a8a9b4cc554880ecdf0cb5b5efd5fba9",
+      "data_invio": "2026-06-26"
     }
   ]
 }
