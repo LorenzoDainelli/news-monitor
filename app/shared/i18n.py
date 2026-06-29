@@ -51,6 +51,23 @@ STRINGS = {
         "uk": "Особистий інструмент інформування та організації, а не фінансова порада і не сигнал на купівлю/продаж. Дані й аналітика допомагають зрозуміти, а не вказують, що робити: рішення завжди за тобою. Будь-яка згенерована ШІ аналітика позначається як така й супроводжується рівнем впевненості. Недоступні значення залишаються порожніми, їх ніколи не вигадують.",
     },
 
+    # ---- notizie (Fase 5) ----
+    "news.subtitle": {"it": "Le notizie dal tuo monitoraggio titoli, con impatto stimato e livello di confidenza.", "en": "News from your stock monitor, with estimated impact and confidence level.", "es": "Noticias de tu monitor de valores, con impacto estimado y nivel de confianza.", "fr": "Les actualités de ton suivi de titres, avec impact estimé et niveau de confiance.", "de": "Nachrichten aus deinem Aktien-Monitor, mit geschätzter Wirkung und Konfidenzniveau.", "uk": "Новини з твого моніторингу акцій, з оцінкою впливу та рівнем впевненості."},
+    "news.updated": {"it": "Aggiornato al", "en": "Updated", "es": "Actualizado al", "fr": "Mis à jour le", "de": "Aktualisiert am", "uk": "Оновлено"},
+    "news.count": {"it": "notizie", "en": "news items", "es": "noticias", "fr": "actualités", "de": "Nachrichten", "uk": "новин"},
+    "news.empty": {"it": "Nessuna notizia disponibile al momento. Il monitoraggio le aggiorna durante la giornata.", "en": "No news available right now. The monitor updates them through the day.", "es": "No hay noticias disponibles por ahora. El monitor las actualiza durante el día.", "fr": "Aucune actualité pour le moment. Le moniteur les met à jour au fil de la journée.", "de": "Derzeit keine Nachrichten. Der Monitor aktualisiert sie im Laufe des Tages.", "uk": "Наразі новин немає. Монітор оновлює їх протягом дня."},
+    "news.source": {"it": "Fonte", "en": "Source", "es": "Fuente", "fr": "Source", "de": "Quelle", "uk": "Джерело"},
+    "news.confidence": {"it": "Confidenza", "en": "Confidence", "es": "Confianza", "fr": "Confiance", "de": "Konfidenz", "uk": "Впевненість"},
+    "news.horizon_short": {"it": "Breve", "en": "Short", "es": "Corto", "fr": "Court", "de": "Kurz", "uk": "Корот."},
+    "news.horizon_medium": {"it": "Medio", "en": "Medium", "es": "Medio", "fr": "Moyen", "de": "Mittel", "uk": "Серед."},
+    "news.horizon_long": {"it": "Lungo", "en": "Long", "es": "Largo", "fr": "Long", "de": "Lang", "uk": "Довг."},
+    "impact.positivo": {"it": "Positivo", "en": "Positive", "es": "Positivo", "fr": "Positif", "de": "Positiv", "uk": "Позитивний"},
+    "impact.neutro": {"it": "Neutro", "en": "Neutral", "es": "Neutro", "fr": "Neutre", "de": "Neutral", "uk": "Нейтральний"},
+    "impact.negativo": {"it": "Negativo", "en": "Negative", "es": "Negativo", "fr": "Négatif", "de": "Negativ", "uk": "Негативний"},
+    "conf.bassa": {"it": "bassa", "en": "low", "es": "baja", "fr": "faible", "de": "niedrig", "uk": "низька"},
+    "conf.media": {"it": "media", "en": "medium", "es": "media", "fr": "moyenne", "de": "mittel", "uk": "середня"},
+    "conf.alta": {"it": "alta", "en": "high", "es": "alta", "fr": "élevée", "de": "hoch", "uk": "висока"},
+
     # ---- dashboard ----
     "dash.subtitle": {"it": "Panoramica del tuo sistema. Le sezioni si attivano una alla volta, fase per fase.", "en": "Overview of your system. Sections come online one at a time, phase by phase.", "es": "Resumen de tu sistema. Las secciones se activan una a una, fase por fase.", "fr": "Vue d'ensemble de ton système. Les sections s'activent une à une, phase par phase.", "de": "Überblick über dein System. Die Bereiche werden nach und nach freigeschaltet, Phase für Phase.", "uk": "Огляд твоєї системи. Розділи вмикаються по черзі, фаза за фазою."},
     "dash.stat_positions": {"it": "Posizioni in portafoglio", "en": "Positions in portfolio", "es": "Posiciones en cartera", "fr": "Positions en portefeuille", "de": "Positionen im Portfolio", "uk": "Позиції в портфелі"},

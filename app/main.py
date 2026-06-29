@@ -26,6 +26,7 @@ from finance import service as fin_service
 from finance.routes import router as finance_router
 from shared.settings_routes import router as settings_router
 from shared.prefs_routes import router as prefs_router
+from news.routes import router as news_router
 
 # --- preparazione database (una tantum) ---
 Base.metadata.create_all(bind=engine)
@@ -52,6 +53,7 @@ app.include_router(portfolio_router)
 app.include_router(finance_router)
 app.include_router(settings_router)
 app.include_router(prefs_router)
+app.include_router(news_router)
 
 
 @app.get("/", response_class=HTMLResponse)
