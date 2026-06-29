@@ -44,11 +44,26 @@ def salva_ai(modello: str = Form(""), modalita: str = Form("")):
     return RedirectResponse("/impostazioni?salvato=1", status_code=303)
 
 
+def _esito_test(ok: bool, detail: str) -> str:
+    """Traduce l'esito grezzo di test_connection in un codice per l'interfaccia."""
+    if ok:
+        return "ok"
+    d = (detail or "").lower()
+    if d == "no_key":
+        return "nokey"
+    if "401" in d or "403" in d:
+        return "badkey"      # chiave non valida
+    if "429" in d:
+        return "rate"        # limite di richieste raggiunto (free tier)
+    if d == "rete":
+        return "net"         # nessuna connessione
+    return "err"
+
+
 @router.post("/impostazioni/ai/test")
 def prova_ai():
     ok, detail = ai.test_connection()
-    esito = "ok" if ok else ("nokey" if detail == "no_key" else "err")
-    return RedirectResponse(f"/impostazioni?ai_test={esito}", status_code=303)
+    return RedirectResponse(f"/impostazioni?ai_test={_esito_test(ok, detail)}", status_code=303)
 
 
 @router.post("/impostazioni")

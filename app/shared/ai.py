@@ -17,10 +17,13 @@ Claude si innestano qui senza toccare il resto. La chiave sta solo in locale
 (database), mai nei log né nell'URL (passata via header).
 """
 import json
+import re
 import urllib.error
 import urllib.request
+from datetime import datetime
 
 from shared import settings_store as store
+from shared import privacy
 
 DEFAULT_MODEL = "gemini-2.0-flash"        # modello gratuito; modificabile in Impostazioni
 DEFAULT_FALLBACK = "gemini-2.0-flash-lite"  # ripiego se i limiti del principale sono esauriti
@@ -63,11 +66,12 @@ def is_configured() -> bool:
     return store.has_key("gemini_api_key")
 
 
-def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20) -> str:
+def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20, _model: str = None) -> str:
     key = store.get_setting("gemini_api_key", "").strip()
     if not key:
         raise RuntimeError("no_key")
-    url = ENDPOINT.format(model=get_model())
+    model = _model or get_model()
+    url = ENDPOINT.format(model=model)
     body = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "systemInstruction": {"parts": [{"text": system}]},
@@ -76,8 +80,15 @@ def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20) -> str:
     req = urllib.request.Request(
         url, data=json.dumps(body).encode("utf-8"), method="POST",
         headers={"Content-Type": "application/json", "x-goog-api-key": key})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        data = json.loads(r.read())
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        # Modello non trovato/ritirato (es. un nome vecchio salvato): ripiega UNA
+        # volta sul modello di default, così l'agente non si rompe da solo.
+        if e.code == 404 and _model is None and model != DEFAULT_MODEL:
+            return _call(prompt, system, timeout, _model=DEFAULT_MODEL)
+        raise
     cands = data.get("candidates") or []
     if not cands:
         raise ValueError("risposta vuota")
@@ -99,3 +110,131 @@ def test_connection() -> tuple[bool, str]:
         return (False, "rete")
     except Exception as e:
         return (False, type(e).__name__)
+
+
+# ============================================================================
+#  Funzioni dell'agente (Fase 4, parte 2): linguaggio naturale + analisi
+# ============================================================================
+
+def _extract_json(txt: str) -> dict:
+    """Estrae il primo oggetto JSON da una risposta del modello.
+
+    Tollera i recinti ```json ... ``` e testo prima/dopo: prende dalla prima
+    graffa aperta all'ultima chiusa.
+    """
+    s = (txt or "").strip()
+    if s.startswith("```"):
+        s = s.strip("`")
+        nl = s.find("\n")
+        if nl != -1 and s[:nl].strip().lower() in ("json", ""):
+            s = s[nl + 1:]
+    a, b = s.find("{"), s.rfind("}")
+    if a == -1 or b == -1 or b < a:
+        raise ValueError("nessun JSON nella risposta")
+    return json.loads(s[a:b + 1])
+
+
+def _match_wallet(nome, wallets):
+    """Abbina il nome di portafoglio proposto dall'AI a un wallet reale (id)."""
+    n = str(nome or "").strip().lower()
+    if not n:
+        return None
+    for w in wallets:                      # match esatto
+        if w.nome.lower() == n:
+            return w.id
+    for w in wallets:                      # match parziale (es. "carta" -> "Carta di credito")
+        if n in w.nome.lower() or w.nome.lower() in n:
+            return w.id
+    return None
+
+
+def _norm_date(val, oggi):
+    s = str(val or "").strip()[:10]
+    return s if re.match(r"^\d{4}-\d{2}-\d{2}$", s) else oggi
+
+
+def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
+    """Trasforma una frase ('ieri 20€ di benzina con la carta') in una BOZZA di
+    movimento da far CONFERMARE all'utente. NON salva nulla.
+
+    Privacy: il testo è ripulito (IBAN/carte/nome) prima di inviarlo all'AI.
+    Ritorna un dict 'proposta': {ok, tipo, importo, categoria, wallet_id,
+    wallet_to_id, data, data_local, descrizione, confidenza, testo} oppure
+    {ok: False, error}.
+    """
+    if not is_configured():
+        return {"ok": False, "error": "no_key"}
+    testo = (testo or "").strip()
+    if not testo:
+        return {"ok": False, "error": "vuoto"}
+    oggi = oggi or datetime.utcnow().strftime("%Y-%m-%d")
+    nomi_w = [w.nome for w in wallets]
+    nomi_c = [c.nome for c in categorie]
+    pulito = privacy.scrub_text(testo)
+    prompt = (
+        "Estrai UN movimento finanziario dalla frase dell'utente e rispondi SOLO "
+        "con un oggetto JSON valido, senza testo prima o dopo, con QUESTE chiavi:\n"
+        '{"tipo":"uscita|entrata|trasferimento","importo":<numero in euro>,'
+        '"categoria":"<breve>","wallet":"<nome o vuoto>","wallet_to":"<nome o vuoto>",'
+        '"data":"YYYY-MM-DD","descrizione":"<breve>","confidenza":"bassa|media|alta"}\n'
+        f"Oggi è {oggi}. Risolvi le date relative (es. 'ieri', 'lunedì scorso') in data "
+        "assoluta; se non è indicata, usa oggi.\n"
+        f"Portafogli disponibili (per 'wallet'/'wallet_to' copia il NOME ESATTO più adatto, "
+        f"oppure lascia vuoto): {nomi_w}\n"
+        f"Categorie già esistenti (riusane una se calza, altrimenti proponine una breve "
+        f"e chiara): {nomi_c}\n"
+        "'wallet_to' va valorizzato solo per i trasferimenti. Se non è chiaramente un "
+        "movimento di denaro, metti importo 0 e confidenza bassa.\n"
+        f'Frase: "{pulito}"'
+    )
+    try:
+        raw = _call(prompt, timeout=20)
+        data = _extract_json(raw)
+    except Exception as e:
+        return {"ok": False, "error": type(e).__name__}
+
+    tipo = str(data.get("tipo", "")).lower().strip()
+    if tipo not in ("entrata", "uscita", "trasferimento"):
+        tipo = "uscita"
+    try:
+        importo = round(abs(float(str(data.get("importo", 0)).replace(",", "."))), 2)
+    except (TypeError, ValueError):
+        importo = 0.0
+    conf = str(data.get("confidenza", "")).lower()
+    conf = "alta" if "alt" in conf else "bassa" if "bass" in conf else "media"
+    d = _norm_date(data.get("data"), oggi)
+    return {
+        "ok": True,
+        "tipo": tipo,
+        "importo": importo,
+        "categoria": str(data.get("categoria", "")).strip()[:120],
+        "wallet_id": _match_wallet(data.get("wallet"), wallets),
+        "wallet_to_id": _match_wallet(data.get("wallet_to"), wallets) if tipo == "trasferimento" else None,
+        "data": d,
+        "data_local": d + "T12:00",        # per <input type=datetime-local>
+        "descrizione": str(data.get("descrizione", "")).strip()[:200],
+        "confidenza": conf,
+        "testo": testo,
+    }
+
+
+def analizza_finanze(contesto: str) -> dict:
+    """Analisi DESCRITTIVA delle finanze a partire da un riassunto già aggregato
+    e anonimo (nessun nome/carta/IBAN). Ritorna {ok, testo} oppure {ok:False, error}.
+    """
+    if not is_configured():
+        return {"ok": False, "error": "no_key"}
+    prompt = (
+        "Questi sono dati AGGREGATI e anonimi delle finanze personali dell'utente "
+        "(nessun dato sensibile). Fai un'analisi DESCRITTIVA in italiano semplice, "
+        "3-5 frasi: cosa salta all'occhio, eventuali sbilanciamenti tra le categorie di "
+        "spesa, l'andamento entrate/uscite tra i mesi. Vietato dare consigli su cosa "
+        "comprare/vendere o su come investire: descrivi soltanto i fatti. Chiudi con una "
+        "riga finale 'Confidenza: bassa|media|alta'.\n\n"
+        + privacy.scrub_text(contesto)
+    )
+    try:
+        txt = _call(prompt, timeout=25)
+    except Exception as e:
+        return {"ok": False, "error": type(e).__name__}
+    return {"ok": True, "testo": (txt or "").strip()}

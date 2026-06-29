@@ -20,6 +20,7 @@
   --ok-bg:#e6f4ea; --ok-bd:#b7e0c4; --ok-tx:#0f5a26;
   --err-bg:#ffebe9; --err-bd:#f3c2c4; --err-tx:#86161e;
   --info-bg:#eef2f7; --info-bd:#d6dee8;
+  --ai:#5a3ec8; --ai-bg:#efeaff; --ai-bd:#d8ccff;
 }
 [data-theme="dark"]{
   --navy:#4a6aa5;
@@ -36,6 +37,7 @@
   --ok-bg:#10261a; --ok-bd:#1f5132; --ok-tx:#56d364;
   --err-bg:#2a1515; --err-bd:#5c2326; --err-tx:#ff7b72;
   --info-bg:#131c2b; --info-bd:#26344a;
+  --ai:#b3a4f5; --ai-bg:#1b1638; --ai-bd:#332a5e;
 }
 
 *{box-sizing:border-box;}
@@ -165,5 +167,12 @@ input:focus, select:focus, textarea:focus{outline:none; border-color:var(--navy)
 /* ---------- piè di pagina / disclaimer ---------- */
 .disclaimer{max-width:1080px; margin:8px auto 30px; padding:14px 20px 0;
   font-size:12px; color:var(--faint); line-height:1.5; border-top:1px solid var(--border);}
-.ai-label{display:inline-block; font-size:11px; font-weight:700; color:#5a3ec8;
-  background:#efeaff; border-radius:8px; padding:2px 8px; letter-spacing:.3px;}
+.ai-label{display:inline-block; font-size:11px; font-weight:700; color:var(--ai);
+  background:var(--ai-bg); border:1px solid var(--ai-bd); border-radius:8px;
+  padding:2px 8px; letter-spacing:.3px;}
+/* ---------- agente AI: box "scrivi a parole" + output analisi ---------- */
+.ai-box{border-left:4px solid var(--ai);}
+.ai-box .ai-label{margin-bottom:8px;}
+.ai-out{background:var(--surface-alt); border:1px solid var(--border);
+  border-left:3px solid var(--ai); border-radius:8px; padding:12px 14px;
+  font-size:14px; line-height:1.55; color:var(--text);}

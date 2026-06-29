@@ -84,6 +84,9 @@
     {% endif %}
 
     {% if ai_test == 'ok' %}<div class="note ok">{{ t('set.ai_test_ok') }}</div>
+    {% elif ai_test == 'badkey' %}<div class="note err">{{ t('set.ai_test_badkey') }}</div>
+    {% elif ai_test == 'rate' %}<div class="note warn">{{ t('set.ai_test_rate') }}</div>
+    {% elif ai_test == 'net' %}<div class="note warn">{{ t('set.ai_test_net') }}</div>
     {% elif ai_test == 'err' %}<div class="note err">{{ t('set.ai_test_err') }}</div>
     {% elif ai_test == 'nokey' %}<div class="note warn">{{ t('set.ai_test_nokey') }}</div>
     {% endif %}

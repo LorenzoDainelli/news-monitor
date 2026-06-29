@@ -1,0 +1,16 @@
+{# Box "scrivi a parole": l'AI interpreta e precompila il modulo sotto.
+   Si attiva solo con la chiave Gemini; senza chiave invita a Impostazioni. #}
+{% if ai_on %}
+<form class="form ai-box" method="post" action="/finanze/ai/parse">
+  <input type="hidden" name="next" value="{{ cur_path }}">
+  <label class="ai-label" style="display:block; margin-bottom:6px;">✨ {{ t('fin.ai_box_title') }}</label>
+  <div style="display:flex; gap:8px; align-items:stretch; flex-wrap:wrap;">
+    <input type="text" name="testo" placeholder="{{ t('fin.ai_box_ph') }}" autocomplete="off"
+           style="flex:1; min-width:240px;" required>
+    <button type="submit" class="btn primary">{{ t('fin.ai_box_btn') }}</button>
+  </div>
+  <div class="hint" style="margin-top:6px;">{{ t('fin.ai_box_hint') }}</div>
+</form>
+{% else %}
+<div class="note info">✨ {{ t('fin.ai_box_off') }} <a href="/impostazioni">{{ t('fin.ai_box_off_link') }}</a></div>
+{% endif %}

@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from shared.templating import templates
 from shared.parsing import to_float, to_datetime
+from shared import ai
 from finance import service
 from finance.models import TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO, TIPI_WALLET
 
@@ -16,11 +17,9 @@ def _oggi_local():
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
 
 
-# ------------------------------ panoramica ------------------------------
-@router.get("/finanze", response_class=HTMLResponse)
-def panoramica(request: Request):
+def _ctx_panoramica() -> dict:
     now = datetime.utcnow()
-    return templates.TemplateResponse(request, "finance_overview.html", {
+    return {
         "active": "finanze",
         "saldi": service.saldi(),
         "riep": service.riepilogo_mese(now.year, now.month),
@@ -29,21 +28,32 @@ def panoramica(request: Request):
         "categorie": service.categorie(),
         "tipi": (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO),
         "oggi": _oggi_local(),
-    })
+        "ai_on": ai.is_configured(),
+    }
 
 
-# ------------------------------ movimenti ------------------------------
-@router.get("/finanze/movimenti", response_class=HTMLResponse)
-def movimenti(request: Request):
-    now = datetime.utcnow()
-    return templates.TemplateResponse(request, "finance_transactions.html", {
+def _ctx_movimenti() -> dict:
+    return {
         "active": "finanze",
         "movimenti": service.lista_movimenti(limit=300),
         "wallets": service.wallets(),
         "categorie": service.categorie(),
         "tipi": (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO),
         "oggi": _oggi_local(),
-    })
+        "ai_on": ai.is_configured(),
+    }
+
+
+# ------------------------------ panoramica ------------------------------
+@router.get("/finanze", response_class=HTMLResponse)
+def panoramica(request: Request):
+    return templates.TemplateResponse(request, "finance_overview.html", _ctx_panoramica())
+
+
+# ------------------------------ movimenti ------------------------------
+@router.get("/finanze/movimenti", response_class=HTMLResponse)
+def movimenti(request: Request):
+    return templates.TemplateResponse(request, "finance_transactions.html", _ctx_movimenti())
 
 
 @router.post("/finanze/movimenti/salva")
@@ -78,6 +88,54 @@ def elimina_movimento(tid: int, next: str = Form("/finanze")):
     service.elimina_movimento(tid)
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
+
+
+# ------------------------------ agente AI (Fase 4) ------------------------------
+@router.post("/finanze/ai/parse", response_class=HTMLResponse)
+def ai_parse(request: Request, testo: str = Form(""), next: str = Form("/finanze/movimenti")):
+    """Interpreta una frase ('ieri 20€ di benzina con la carta') e mostra il modulo
+    movimenti PRECOMPILATO. Non salva nulla: la conferma resta all'utente."""
+    ctx = _ctx_movimenti()
+    ctx["proposta"] = ai.parse_movimento(testo, ctx["wallets"], ctx["categorie"])
+    # il modulo precompilato deve tornare a una pagina GET reale dopo il salvataggio
+    # (cur_path qui sarebbe /finanze/ai/parse, che non ha una GET)
+    ctx["next_url"] = "/finanze/movimenti"
+    return templates.TemplateResponse(request, "finance_transactions.html", ctx)
+
+
+def _mesi_indietro(now, k):
+    y, m = now.year, now.month - k
+    while m <= 0:
+        m += 12
+        y -= 1
+    return y, m
+
+
+def _contesto_finanze() -> str:
+    """Riassunto AGGREGATO e anonimo degli ultimi 3 mesi per l'analisi AI.
+    Niente nomi/carte/IBAN: solo totali e categorie."""
+    now = datetime.utcnow()
+    righe = []
+    for k in (2, 1, 0):
+        y, m = _mesi_indietro(now, k)
+        r = service.riepilogo_mese(y, m)
+        cat = "; ".join(f"{c['nome']}: {c['tot']:.0f}€" for c in r["spese_categoria"][:6]) or "nessuna"
+        righe.append(
+            f"Mese {y}-{m:02d}: entrate {r['entrate']:.0f}€, uscite {r['uscite']:.0f}€, "
+            f"saldo {r['saldo']:.0f}€. Spese principali per categoria: {cat}.")
+    sal = service.saldi()
+    righe.append(f"Patrimonio totale attuale: {sal['totale']:.0f}€ distribuito su "
+                 f"{len(sal['righe'])} portafogli.")
+    return "\n".join(righe)
+
+
+@router.post("/finanze/ai/analisi", response_class=HTMLResponse)
+def ai_analisi(request: Request):
+    """Analisi descrittiva del mese (dati aggregati e anonimi). Mostra il risultato
+    in panoramica, con confidenza e disclaimer."""
+    ctx = _ctx_panoramica()
+    ctx["analisi"] = ai.analizza_finanze(_contesto_finanze())
+    return templates.TemplateResponse(request, "finance_overview.html", ctx)
 
 
 # ------------------------------ portafogli ------------------------------

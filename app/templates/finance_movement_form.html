@@ -1,43 +1,58 @@
+{% if proposta is defined and proposta %}
+  {% if proposta.ok %}
+    <div class="note ok" style="margin-bottom:10px;">✨ {{ t('fin.ai_prop_ok') }}
+      <span class="muted">({{ t('news.confidence') }}: {{ t('conf.' ~ proposta.confidenza) }})</span></div>
+  {% elif proposta.error == 'no_key' %}
+    <div class="note warn" style="margin-bottom:10px;">{{ t('fin.ai_box_off') }}
+      <a href="/impostazioni">{{ t('fin.ai_box_off_link') }}</a></div>
+  {% else %}
+    <div class="note err" style="margin-bottom:10px;">{{ t('fin.ai_prop_err') }}</div>
+  {% endif %}
+{% endif %}
+{% set p = proposta if (proposta is defined and proposta and proposta.ok) else None %}
 <form class="form" method="post" action="/finanze/movimenti/salva">
-  <input type="hidden" name="next" value="{{ cur_path }}">
+  <input type="hidden" name="next" value="{{ next_url if (next_url is defined and next_url) else cur_path }}">
   <div class="row3">
     <div class="field">
       <label>{{ t('fin.type') }}</label>
       <select name="tipo">
-        <option value="uscita">{{ t('fin.uscita') }}</option>
-        <option value="entrata">{{ t('fin.entrata') }}</option>
-        <option value="trasferimento">{{ t('fin.trasferimento') }}</option>
+        <option value="uscita" {{ 'selected' if p and p.tipo=='uscita' else '' }}>{{ t('fin.uscita') }}</option>
+        <option value="entrata" {{ 'selected' if p and p.tipo=='entrata' else '' }}>{{ t('fin.entrata') }}</option>
+        <option value="trasferimento" {{ 'selected' if p and p.tipo=='trasferimento' else '' }}>{{ t('fin.trasferimento') }}</option>
       </select>
     </div>
     <div class="field">
       <label>{{ t('fin.amount') }}</label>
-      <input type="text" name="importo" placeholder="0,00" required>
+      <input type="text" name="importo" placeholder="0,00" required
+             value="{{ ('%.2f'|format(p.importo))|replace('.', ',') if (p and p.importo) else '' }}">
     </div>
     <div class="field">
       <label>{{ t('fin.date') }}</label>
-      <input type="datetime-local" name="data" value="{{ oggi }}">
+      <input type="datetime-local" name="data" value="{{ p.data_local if p else oggi }}">
     </div>
   </div>
   <div class="row3">
     <div class="field">
       <label>{{ t('fin.wallet_from') }}</label>
-      <select name="wallet_id">{% for w in wallets %}<option value="{{ w.id }}">{{ w.nome }}</option>{% endfor %}</select>
+      <select name="wallet_id">{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
     </div>
     <div class="field">
       <label>{{ t('fin.wallet_to') }}</label>
-      <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}">{{ w.nome }}</option>{% endfor %}</select>
+      <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_to_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
       <div class="hint">{{ t('fin.wallet_to_hint') }}</div>
     </div>
     <div class="field">
       <label>{{ t('fin.category') }}</label>
-      <input type="text" name="categoria" list="catlist" autocomplete="off">
+      <input type="text" name="categoria" list="catlist" autocomplete="off"
+             value="{{ p.categoria if p else '' }}">
       <datalist id="catlist">{% for c in categorie %}<option value="{{ c.nome }}">{% endfor %}</datalist>
       <div class="hint">{{ t('fin.category_hint') }}</div>
     </div>
   </div>
   <div class="row2">
     <div class="field"><label>{{ t('fin.method') }}</label><input type="text" name="metodo"></div>
-    <div class="field"><label>{{ t('fin.description') }}</label><input type="text" name="descrizione"></div>
+    <div class="field"><label>{{ t('fin.description') }}</label><input type="text" name="descrizione"
+        value="{{ p.descrizione if p else '' }}"></div>
   </div>
   <button type="submit" class="btn primary">{{ t('fin.save') }}</button>
 </form>
