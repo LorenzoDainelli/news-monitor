@@ -1041,6 +1041,70 @@
       "tipo_evento": "upgrade/downgrade analisti",
       "url": "https://finnhub.io/api/news?id=d0cde8e491d83b7eea7f1cfad4c944fd32d596aac82c2d015fc37595bc64eb20",
       "data_invio": "2026-06-29T05:10:00+00:00"
+    },
+    {
+      "id": "goog-dow-jones-2026-06-29",
+      "ticker": "GOOG",
+      "titolo": "Alphabet entra nel Dow Jones: il principale indice USA punta sul tech",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=aac797d1562359441c68ea7904a1f8811c4b997bdba2987c8ccae4eab704a3f4",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "sndk-wdc-memory-split-2026-06-29",
+      "ticker": "SNDK",
+      "titolo": "Settore memoria diviso: SanDisk cede il 7%, Western Digital sale del 6% nella stessa seduta",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=0502ecf1c048e69a4c5c7cae567bfe906882f071cdd93e8afdbedccc123f762f",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "pltr-nvda-sovereign-ai-2026-06-29",
+      "ticker": "PLTR",
+      "titolo": "Palantir sale del 4,6% su un accordo sovereign AI con NVIDIA",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=b9429507f826e1bb6fd7a5cbdd3a195d26a17133d097bb44d6acc234e3c487ab",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "orcl-msft-dan-ives-oversold-2026-06-29",
+      "ticker": "ORCL",
+      "titolo": "Wedbush: Microsoft e Oracle sono «decisamente ipervendute», attesa inversione in 6-9 mesi",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=39f4dce493f007da1720a629e7e0684669fb8872722c85ea6868ce685dabbd60",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "asml-euv-china-denial-2026-06-29",
+      "ticker": "ASML",
+      "titolo": "ASML smentisce la vendita di strumenti EUV alla Cina: scontro aperto sulle esportazioni",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=66589bd7f84b08a09dc844ccef256d2e73f1a43d787b03ceec183169d1654f10",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "lly-ath-medicare-zepbound-2026-06-29",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly tocca un nuovo massimo storico: accesso Medicare a 50 dollari al mese per Zepbound",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=388fcf6dadc86ecd1512d77453adb904d121387200cd730d5085356763d5d64f",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "intc-bytedance-cpu-2026-06-29",
+      "ticker": "INTC",
+      "titolo": "ByteDance punta alla CPU proprietaria per l'AI: produzione di massa nella seconda metà del 2027",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=111cc67f2c99bf2823a09b0bda957c9950a5f7d2c55bf001127f9a37e55e4644",
+      "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "aapl-india-antitrust-2026-06-29",
+      "ticker": "AAPL",
+      "titolo": "Apple contro l'antitrust indiano: «Avete copiato le accuse dei concorrenti»",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=986c247cdcfc56c121fd3f8fd47fc0842fffb10450356cd64eec3083f6a8bf0b",
+      "data_invio": "2026-06-29T17:11:57Z"
     }
   ]
 }
