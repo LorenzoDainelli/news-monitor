@@ -1679,6 +1679,156 @@
       "rilevanza": 50,
       "titolo": "Apple contro l'antitrust indiano: «Avete copiato le accuse dei concorrenti»",
       "url": "https://finnhub.io/api/news?id=986c247cdcfc56c121fd3f8fd47fc0842fffb10450356cd64eec3083f6a8bf0b"
+    },
+    {
+      "id": "ssnlf-dram-price-fixing-lawsuit",
+      "ticker": "SSNLF",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "Samsung, SK Hynix e Micron accusati di aver manipolato i prezzi dei chip DRAM",
+      "url": "https://finnhub.io/api/news?id=ffa93ea5e244d17e19f800f8a9eff931503bd503be4f7911a758e75dd82f5741"
+    },
+    {
+      "id": "avgo-openai-jalapeno-accelerator",
+      "ticker": "AVGO",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Broadcom e OpenAI lanciano Jalapeño, il primo acceleratore AI custom di OpenAI",
+      "url": "https://finnhub.io/api/news?id=582dfbd10d3f655e03e40dbf0d9de39f15356b5906e66b25078f951dd6b8aebc"
+    },
+    {
+      "id": "meta-us-online-safety-bill-minori",
+      "ticker": "META",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "La Camera USA approva una legge sulla sicurezza online dei minori: il Senato potrebbe essere ancora più duro",
+      "url": "https://finnhub.io/api/news?id=40385b726a519bb84831d8a8f4de0b9075122012703d100dbf4e2aa02f335839"
+    },
+    {
+      "id": "wdc-sndk-analisti-55pct-upside",
+      "ticker": "WDC",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Analisti alzano i target su Western Digital e SanDisk: potenziale di rialzo del 55% grazie alla domanda AI",
+      "url": "https://finnhub.io/api/news?id=5ed2a5bdae398f01206a1d3d9fcd081151f4960adfb15650b9830a111b80d662"
+    },
+    {
+      "id": "aapl-prezzi-ipad-macbook-chip-shortage",
+      "ticker": "AAPL",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "negativo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Apple alza i prezzi di iPad e MacBook per la crisi globale dei chip di memoria",
+      "url": "https://finnhub.io/api/news?id=707ddeb1f86d7ea8c3bb020425d83d265281e6e77fab72d1d04da303e2457dd2"
+    },
+    {
+      "id": "goog-strong-buy-drawdown-90b-equity",
+      "ticker": "GOOG",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Alphabet promossa a 'Strong Buy': la correzione del 15% è un'opportunità, il CapEx coperto da raccolta da 90 miliardi",
+      "url": "https://finnhub.io/api/news?id=0fe4865f5a7e3b19ccaec415f195df5ca6099b8da1e67b24cb2ae3bc18618315"
+    },
+    {
+      "id": "tsm-corea-sud-520b-ai-plan-nuove-fab",
+      "ticker": "TSM",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "La Corea del Sud annuncia un piano AI da 520 miliardi di dollari: Samsung e SK Hynix costruiranno quattro nuove fabbriche di chip",
+      "url": "https://finnhub.io/api/news?id=29f308af332235dcc41a72ffd62ef42873cc33e807e9709f5ff028e89b83bac7"
+    },
+    {
+      "id": "amzn-prime-day-strong-adobe-data",
+      "ticker": "AMZN",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "titolo": "Prime Day Amazon più forte del previsto: il titolo sale del 4% sui dati Adobe",
+      "url": "https://finnhub.io/api/news?id=3f9cf9ed6966faaf33dfeea5c414d894d6d5f9fe4e382f07e9a6ce766bcbba66"
+    },
+    {
+      "id": "spcx-starlink-telecom-pressure-vz-t",
+      "ticker": "SPCX",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 57,
+      "titolo": "Starlink mette sotto pressione Verizon e AT&T: i titoli telecom cedono per la minaccia del satellite SpaceX",
+      "url": "https://finnhub.io/api/news?id=3c3f0ec54c1064a808bfdfe8b6f8bc6ee46735d677d132f6d9d3a2993b9d4668"
+    },
+    {
+      "id": "nflx-charter-spectrum-app-store",
+      "ticker": "NFLX",
+      "data": "2026-06-30T05:12:50Z",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Netflix sbarca nell'App Store di Charter Spectrum: nuova intesa per allargare la distribuzione USA",
+      "url": "https://finnhub.io/api/news?id=426d6b190722f508f50866808175457391a3f8dcae8fcd0e2b1e0fd6b8cd5597"
     }
   ]
 }

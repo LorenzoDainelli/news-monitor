@@ -1105,6 +1105,86 @@
       "tipo_evento": "legale/regolatorio",
       "url": "https://finnhub.io/api/news?id=986c247cdcfc56c121fd3f8fd47fc0842fffb10450356cd64eec3083f6a8bf0b",
       "data_invio": "2026-06-29T17:11:57Z"
+    },
+    {
+      "id": "ssnlf-dram-price-fixing-lawsuit",
+      "ticker": "SSNLF",
+      "titolo": "Samsung, SK Hynix e Micron accusati di aver manipolato i prezzi dei chip DRAM",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=ffa93ea5e244d17e19f800f8a9eff931503bd503be4f7911a758e75dd82f5741",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "avgo-openai-jalapeno-accelerator",
+      "ticker": "AVGO",
+      "titolo": "Broadcom e OpenAI lanciano Jalapeño, il primo acceleratore AI custom di OpenAI",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=582dfbd10d3f655e03e40dbf0d9de39f15356b5906e66b25078f951dd6b8aebc",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "meta-us-online-safety-bill-minori",
+      "ticker": "META",
+      "titolo": "La Camera USA approva una legge sulla sicurezza online dei minori: il Senato potrebbe essere ancora più duro",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=40385b726a519bb84831d8a8f4de0b9075122012703d100dbf4e2aa02f335839",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "wdc-sndk-analisti-55pct-upside",
+      "ticker": "WDC",
+      "titolo": "Analisti alzano i target su Western Digital e SanDisk: potenziale di rialzo del 55% grazie alla domanda AI",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=5ed2a5bdae398f01206a1d3d9fcd081151f4960adfb15650b9830a111b80d662",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "aapl-prezzi-ipad-macbook-chip-shortage",
+      "ticker": "AAPL",
+      "titolo": "Apple alza i prezzi di iPad e MacBook per la crisi globale dei chip di memoria",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=707ddeb1f86d7ea8c3bb020425d83d265281e6e77fab72d1d04da303e2457dd2",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "goog-strong-buy-drawdown-90b-equity",
+      "ticker": "GOOG",
+      "titolo": "Alphabet promossa a 'Strong Buy': la correzione del 15% è un'opportunità, il CapEx coperto da raccolta da 90 miliardi",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=0fe4865f5a7e3b19ccaec415f195df5ca6099b8da1e67b24cb2ae3bc18618315",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "tsm-corea-sud-520b-ai-plan-nuove-fab",
+      "ticker": "TSM",
+      "titolo": "La Corea del Sud annuncia un piano AI da 520 miliardi di dollari: Samsung e SK Hynix costruiranno quattro nuove fabbriche di chip",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=29f308af332235dcc41a72ffd62ef42873cc33e807e9709f5ff028e89b83bac7",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "amzn-prime-day-strong-adobe-data",
+      "ticker": "AMZN",
+      "titolo": "Prime Day Amazon più forte del previsto: il titolo sale del 4% sui dati Adobe",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=3f9cf9ed6966faaf33dfeea5c414d894d6d5f9fe4e382f07e9a6ce766bcbba66",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "spcx-starlink-telecom-pressure-vz-t",
+      "ticker": "SPCX",
+      "titolo": "Starlink mette sotto pressione Verizon e AT&T: i titoli telecom cedono per la minaccia del satellite SpaceX",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=3c3f0ec54c1064a808bfdfe8b6f8bc6ee46735d677d132f6d9d3a2993b9d4668",
+      "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "nflx-charter-spectrum-app-store",
+      "ticker": "NFLX",
+      "titolo": "Netflix sbarca nell'App Store di Charter Spectrum: nuova intesa per allargare la distribuzione USA",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=426d6b190722f508f50866808175457391a3f8dcae8fcd0e2b1e0fd6b8cd5597",
+      "data_invio": "2026-06-30T05:12:50Z"
     }
   ]
 }
