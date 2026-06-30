@@ -1185,6 +1185,30 @@
       "tipo_evento": "prodotto",
       "url": "https://finnhub.io/api/news?id=426d6b190722f508f50866808175457391a3f8dcae8fcd0e2b1e0fd6b8cd5597",
       "data_invio": "2026-06-30T05:12:50Z"
+    },
+    {
+      "id": "goog-copyright-2026-06-30",
+      "ticker": "GOOG",
+      "titolo": "Google per leggi AI più permissive",
+      "tipo_evento": "regulatory",
+      "url": "https://finnhub.io/api/news?id=3ed661c98d0bf640c2a860ad365a5c0a25d5713908ea37e5325241019d8dec07",
+      "data_invio": "2026-06-30T09:10:00Z"
+    },
+    {
+      "id": "aapl-china-chip-2026-06-30",
+      "ticker": "AAPL",
+      "titolo": "Apple chiede approvazione chip cinese vietato",
+      "tipo_evento": "supply-chain",
+      "url": "https://finnhub.io/api/news?id=f59b1217bf629ed16628e27626d161b2b54b3bd844af2ba250ff68c8717b4c51",
+      "data_invio": "2026-06-30T09:10:00Z"
+    },
+    {
+      "id": "avgo-insider-2026-06-30",
+      "ticker": "AVGO",
+      "titolo": "Broadcom co-founder vende 720 milioni di dollari di titoli",
+      "tipo_evento": "insider-selling",
+      "url": "https://finnhub.io/api/news?id=33dab215b632be18343ab9ff83a9bb4a584099970ca3c964ce9477b4922c3a53",
+      "data_invio": "2026-06-30T09:10:00Z"
     }
   ]
 }
