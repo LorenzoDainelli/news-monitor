@@ -24,7 +24,7 @@
     {% if perf is not none %}
     <div class="stat {{ 'ok' if perf >= 0 else 'warn' }}">
       <div class="k">12 mesi</div>
-      <div class="v" style="color:{{ '#1a7f37' if perf >= 0 else '#cf222e' }};">{{ '+' if perf >= 0 else '' }}{{ perf | pct }}</div>
+      <div class="v" style="color:{{ 'var(--pos)' if perf >= 0 else 'var(--neg)' }};">{{ '+' if perf >= 0 else '' }}{{ perf | pct }}</div>
     </div>
     {% endif %}
     {% if p.quantita %}

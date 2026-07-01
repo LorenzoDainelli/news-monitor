@@ -103,7 +103,7 @@
         <tr>
           <td>{{ t('pf.total_alloc') }}</td>
           <td></td>
-          <td class="num" style="color:{{ '#1a7f37' if riepilogo.target_ok else '#cf222e' }};">{{ riepilogo.somma_target | pct }}</td>
+          <td class="num" style="color:{{ 'var(--pos)' if riepilogo.target_ok else 'var(--neg)' }};">{{ riepilogo.somma_target | pct }}</td>
           <td></td><td></td>
           <td class="num">{{ vista.totale | eur if vista.ha_totale else '' }}</td>
           <td colspan="2"></td>

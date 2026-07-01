@@ -17,7 +17,7 @@
         {{ t('dash.target_ok') if r.target_ok else t('dash.target_warn') }}
       </div>
     </div>
-    <div class="stat">
+    <div class="stat hero">
       <div class="k">{{ t('dash.stat_pf_value') }}</div>
       <div class="v {{ '' if r.ha_valori else 'small' }}">{{ r.valore_totale | eur if r.ha_valori else '—' }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">

@@ -8,20 +8,20 @@
   <div class="muted" style="font-size:13px;margin-bottom:12px;">{{ cards|length }} {{ t('news.count') }}</div>
   {% for c in cards %}
   <div class="card" style="border-left:5px solid {{ c.bordo }};margin-bottom:14px;">
-    <div style="font-size:12px;color:var(--navy);font-weight:700;text-transform:uppercase;letter-spacing:.4px;">
+    <div style="font-size:12px;color:var(--accent-strong);font-weight:700;text-transform:uppercase;letter-spacing:.4px;">
       {{ c.tipo_evento }}
       {% if c.rilevanza != "" %}<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:700;color:{{ c.rel_col }};background:{{ c.rel_bg }};margin-left:6px;">{{ c.rilevanza }}/100</span>{% endif %}
     </div>
-    <div style="font-size:17px;font-weight:700;color:var(--navy);margin:6px 0;">{% if c.ticker %}{{ c.ticker }} — {% endif %}{{ c.titolo }}</div>
+    <div style="font-size:17px;font-weight:700;color:var(--ink);margin:6px 0;">{% if c.ticker %}{{ c.ticker }} — {% endif %}{{ c.titolo }}</div>
     <div style="margin:8px 0;">
       {% for p in c.impatti %}
       <span style="display:inline-block;padding:4px 8px;border-radius:12px;margin:2px 4px 2px 0;font-size:13px;white-space:nowrap;color:{{ p.color }};background:{{ p.bg }};">{{ t('news.horizon_' ~ p.hk) }} {{ p.arrow }} {{ t('impact.' ~ p.vw) }}</span>
       {% endfor %}
-      <span style="display:inline-block;padding:4px 8px;border-radius:12px;margin:2px 4px 2px 0;font-size:13px;color:#3a3f45;background:#eef1f4;">{{ t('news.confidence') }}: {{ t('conf.' ~ c.confidenza) }}</span>
+      <span style="display:inline-block;padding:4px 8px;border-radius:12px;margin:2px 4px 2px 0;font-size:13px;color:var(--muted);background:var(--neutral-bg);">{{ t('news.confidence') }}: {{ t('conf.' ~ c.confidenza) }}</span>
     </div>
     <div class="muted" style="font-size:13px;">
       {% if c.data %}{{ c.data }}{% endif %}
-      {% if c.url %} · <a href="{{ c.url }}" target="_blank" rel="noopener" style="color:#0969da;text-decoration:none;">{{ t('news.source') }}</a>{% endif %}
+      {% if c.url %} · <a href="{{ c.url }}" target="_blank" rel="noopener" style="color:var(--link);text-decoration:none;">{{ t('news.source') }}</a>{% endif %}
     </div>
   </div>
   {% endfor %}

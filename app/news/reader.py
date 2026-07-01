@@ -15,9 +15,9 @@ PREDICTIONS = STATE_DIR / "predictions.json"
 
 # Stesso linguaggio visivo delle email (vedi scripts/render_email.py)
 _IMPACT = {
-    "positivo": ("▲", "#1a7f37", "#e6f4ea"),  # ▲ verde
-    "neutro":   ("=",      "#57606a", "#eaeef2"),
-    "negativo": ("▼", "#cf222e", "#ffebe9"),  # ▼ rosso
+    "positivo": ("▲", "#1E9E5A", "#E2F5EA"),  # ▲ verde (MyMoney --pos)
+    "neutro":   ("=",      "#7C8370", "#ECEFE3"),  # grigio caldo (--neutral)
+    "negativo": ("▼", "#E2474A", "#FCE9E9"),  # ▼ rosso (MyMoney --neg)
 }
 
 
@@ -44,10 +44,10 @@ def _overall_color(imp: dict) -> str:
     vals = [_norm_impact((imp or {}).get(k)) for k in ("breve", "medio", "lungo")]
     pos, neg = vals.count("positivo"), vals.count("negativo")
     if pos > neg:
-        return "#1a7f37"
+        return "#1E9E5A"
     if neg > pos:
-        return "#cf222e"
-    return "#8b949e"
+        return "#E2474A"
+    return "#7C8370"
 
 
 def _rel_colors(score):
@@ -57,10 +57,10 @@ def _rel_colors(score):
     except (TypeError, ValueError):
         s = 0
     if s >= 70:
-        return "#ffebe9", "#cf222e"
+        return "#FCE9E9", "#E2474A"
     if s >= 50:
-        return "#fff3cd", "#9a6700"
-    return "#eaeef2", "#57606a"
+        return "#FEF4C4", "#A37F10"
+    return "#ECEFE3", "#7C8370"
 
 
 def _load_items():
