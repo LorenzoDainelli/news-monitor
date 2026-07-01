@@ -1289,6 +1289,86 @@
       "tipo_evento": "macro tematica",
       "url": "https://www.tradingview.com/news/zacks:9c34a012d094b:0-defense-etfs-to-gain-as-the-us-iran-war-stokes-global-tension/",
       "data_invio": "2026-06-30T18:20:00+00:00"
+    },
+    {
+      "id": "goog-gemini-capacity-limits-20260701",
+      "ticker": "GOOG",
+      "titolo": "Google raziona l'accesso a Gemini AI per i clienti cloud: capacità di calcolo al limite",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=4114a0172c018d5df8405c4b168a22dddea4d0d1fa1969ed5aea6252baa31aaa",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "amgn-ema-revoca-tavneos-20260701",
+      "ticker": "AMGN",
+      "titolo": "L'EMA europea raccomanda la revoca dell'approvazione di Tavneos (avacopan) per Amgen",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=6732d90f14b871e755b5c2cb0f55c931a095b07864a64a0872cef0a7ebe9824d",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "meta-addiction-lawsuit-states-20260701",
+      "ticker": "META",
+      "titolo": "Un giudice federale permette a 29 procuratori statali USA di procedere con la causa sull'addiction da social di Meta",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=20891d56b15cd60f9bd31641e3f6918f742319761cc9a3070509405a21a73e96",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "spcx-nasdaq100-entry-july7-20260701",
+      "ticker": "SPCX",
+      "titolo": "SpaceX entra nel Nasdaq-100 il 7 luglio: acquisti automatici dagli ETF e fondi indicizzati in arrivo",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=7d4a12cc207c8043b4441f2d8cb29aa0990136b5c3a1717d1f3b009c123a2dba",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "ukrn-saab-gripen-ukraine-20260701",
+      "ticker": "UKRN",
+      "titolo": "Saab firma un contratto da 2,54 miliardi con l'Ucraina per i caccia Gripen: uno dei più grandi deal di armamenti in Europa",
+      "tipo_evento": "macro tematica",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPVXJlbHk5dlJaTjNCbzVhX3RDS1R2SFh0ajQ4UVJDRkJXa3ZTTm1HVWFBNzE5OXhPY2RwV3VZRHJweXA3aF85TjktQzlhZGh3NFZyc0pEM1NxSTlHQzZYZUdTMkUyZzZ1TjBwaU5QTWo4SmNPZzBUT09pU1FuZ2djZ1VtcF9rN2c1d3F1NFVrRXRhWklwb2NMU3dyclg4NmMxOUdvcW55OWJtUVJhWVBPaW5HZTY5TGF0cTNnZG9BSQ?oc=5",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "goog-korea-antitrust-android-20260701",
+      "ticker": "GOOG",
+      "titolo": "L'antitrust sudcoreano accusa Google di abuso di posizione dominante nel Play Store Android",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=b24e2add5b4878f69bcdae76a3283aa079a9df8947061993cf1463692a08438d",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "shel-deepwater-talos-20260701",
+      "ticker": "SHEL",
+      "titolo": "Shell cede asset petroliferi in acque profonde nel Golfo del Messico a Talos Energy per 850 milioni di dollari",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=a9301f4ea7ed7ca1182b14638b4d0f157e745260524e0e0f142909fb68b4450a",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "intc-7pct-rally-sentiment-20260701",
+      "ticker": "INTC",
+      "titolo": "Intel rimbalza del 7,2% trainata dall'ottimismo sul settore semiconduttori",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=43b1e6754b8979dbac5bee8587da3a10f7c46246c10712b0eca09f41734d2213",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "asml-tsm-cowos-mizuho-20260701",
+      "ticker": "ASML",
+      "titolo": "Mizuho alza le previsioni di capacità CoWoS di TSMC a 140.000 unità/mese: la domanda AI supera le attese",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=18ec5e7aa553c65291b40a0f96c96690976bc0d59a76822cc67266edbf07996d",
+      "data_invio": "2026-07-01T05:10:00+00:00"
+    },
+    {
+      "id": "avgo-broadcom-dip-analysts-20260701",
+      "ticker": "AVGO",
+      "titolo": "Dopo un calo del 20% dai massimi, gli analisti indicano Broadcom come opportunità di acquisto",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=b6e84a941e70a136a2835c5408402e412b8d38dea6f3584b1d1b50b9fdb2860d",
+      "data_invio": "2026-07-01T05:10:00+00:00"
     }
   ]
 }
