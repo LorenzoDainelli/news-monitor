@@ -2069,6 +2069,126 @@
       "rilevanza": 53,
       "titolo": "Mizuho alza le previsioni di capacità CoWoS di TSMC a 140.000 unità/mese: la domanda AI supera le attese",
       "url": "https://finnhub.io/api/news?id=18ec5e7aa553c65291b40a0f96c96690976bc0d59a76822cc67266edbf07996d"
+    },
+    {
+      "id": "asml-guidance-rialzo-2026-07-01",
+      "ticker": "ASML",
+      "data": "2026-07-01",
+      "tipo_evento": "revisione guidance",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 78,
+      "titolo": "ASML alza le previsioni di ricavi: la domanda AI supera le aspettative",
+      "url": "https://finnhub.io/api/news?id=a3b96be8a4430027dd73734fa71f324732ad938924a969cc83cf280e21a80fbe"
+    },
+    {
+      "id": "meta-cloud-ai-compute-2026-07-01",
+      "ticker": "META",
+      "data": "2026-07-01",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 67,
+      "titolo": "Meta lancia un'unità cloud per vendere capacità AI in eccesso a clienti esterni",
+      "url": "https://finnhub.io/api/news?id=5bdf103e3edd5cf5196983e506eb978bd1ee5f6845039bbff96094779d58c2fb"
+    },
+    {
+      "id": "lly-china-probe-2026-07-01",
+      "ticker": "LLY",
+      "data": "2026-07-01",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "Il Congresso USA apre un'indagine di sicurezza sui trial clinici di Eli Lilly in Cina",
+      "url": "https://finnhub.io/api/news?id=523b2956383e6b450ea7788c809b0fecf4cdb1c62186fa4f1ed46aa648ec5426"
+    },
+    {
+      "id": "goog-svezia-antitrust-klarna-2026-07-01",
+      "ticker": "GOOG",
+      "data": "2026-07-01",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Tribunale svedese condanna Google a pagare quasi 2 miliardi di dollari a PriceRunner (Klarna)",
+      "url": "https://finnhub.io/api/news?id=89a4d60721c5ffaaa4fcdf2dde32af7ac19f206e93ee8ad973a1296755ed82da"
+    },
+    {
+      "id": "sndk-wdc-pullback-2026-07-01",
+      "ticker": "SNDK",
+      "data": "2026-07-01",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 57,
+      "titolo": "I titoli della memoria cedono forte: SanDisk -10%, Western Digital -7%, Micron -8%",
+      "url": "https://finnhub.io/api/news?id=5602af116afd1b4f9931300c26ecf75ddcd8fc168415dd23402f6a7e842ef7f7"
+    },
+    {
+      "id": "ko-marriott-partnership-2026-07-01",
+      "ticker": "KO",
+      "data": "2026-07-01",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Coca-Cola diventa il fornitore globale di bevande per tutte le strutture Marriott",
+      "url": "https://finnhub.io/api/news?id=698bb10a92e16730738407e9394725bd8508e04b70b884a511ec7ede173c9425"
+    },
+    {
+      "id": "nato-uk-spesa-difesa-2026-07-01",
+      "ticker": "NATO",
+      "data": "2026-07-01",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Il Regno Unito potenzia la spesa militare di quasi 20 miliardi di dollari: rialzo per i titoli difesa europei",
+      "url": "https://www.cnbc.com/2026/07/01/defense-stocks-uk-investment-plan-gilts-bae-systems.html"
+    },
+    {
+      "id": "spcx-dan-ives-ai-play-2026-07-01",
+      "ticker": "SPCX",
+      "data": "2026-07-01",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "Wedbush (Dan Ives): SpaceX sembra cara ma potrebbe diventare «uno dei migliori titoli AI»",
+      "url": "https://finnhub.io/api/news?id=345678e88b2b9b41a7097737020e9c1c3e269321fcce29dd66520883e42be6f3"
     }
   ]
 }
