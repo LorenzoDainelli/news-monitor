@@ -10,7 +10,7 @@
       <tr>
         <td>{{ m.t.data.strftime('%d/%m/%Y %H:%M') }}</td>
         <td><span class="pill {{ 'green' if tt=='entrata' else 'red' if tt=='uscita' else 'gray' }}">{{ t('fin.' ~ tt) }}</span></td>
-        <td class="num" style="color:{{ '#1a7f37' if tt=='entrata' else '#cf222e' if tt=='uscita' else 'inherit' }};">
+        <td class="num" style="color:{{ 'var(--pos)' if tt=='entrata' else 'var(--neg)' if tt=='uscita' else 'inherit' }};">
           {{ '+' if tt=='entrata' else ('−' if tt=='uscita' else '') }}{{ m.t.importo | eur }}
         </td>
         <td>{{ m.wallet }}{% if m.wallet_to %} → {{ m.wallet_to }}{% endif %}</td>

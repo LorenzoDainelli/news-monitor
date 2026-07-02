@@ -7,8 +7,8 @@
 
   <div class="grid">
     <div class="stat ok"><div class="k">{{ t('fin.total_patrimony') }}</div><div class="v">{{ saldi.totale | eur }}</div></div>
-    <div class="stat"><div class="k">{{ t('fin.month_income') }}</div><div class="v small" style="color:#1a7f37;">{{ riep.entrate | eur }}</div></div>
-    <div class="stat"><div class="k">{{ t('fin.month_expense') }}</div><div class="v small" style="color:#cf222e;">{{ riep.uscite | eur }}</div></div>
+    <div class="stat"><div class="k">{{ t('fin.month_income') }}</div><div class="v small" style="color:var(--pos);">{{ riep.entrate | eur }}</div></div>
+    <div class="stat"><div class="k">{{ t('fin.month_expense') }}</div><div class="v small" style="color:var(--neg);">{{ riep.uscite | eur }}</div></div>
     <div class="stat {{ 'ok' if riep.saldo >= 0 else 'warn' }}"><div class="k">{{ t('fin.month_balance') }}</div><div class="v small">{{ riep.saldo | eur }}</div></div>
   </div>
 
@@ -63,13 +63,13 @@
     {% for s in riep.spese_categoria %}
     <div style="margin:6px 0;">
       <div style="display:flex;justify-content:space-between;font-size:13px;"><span>{{ s.nome }}</span><span class="muted">{{ s.tot | eur }}</span></div>
-      <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;"><div style="height:9px;width:{{ s.perc }}%;background:#cf222e;"></div></div>
+      <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;"><div style="height:9px;width:{{ s.perc }}%;background:var(--accent-2);"></div></div>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <div style="margin:18px 0 8px;"><span class="card-h" style="color:var(--navy);">{{ t('fin.recent') }}</span></div>
+  <div style="margin:18px 0 8px;"><span class="card-h">{{ t('fin.recent') }}</span></div>
   {% include "finance_movements_table.html" %}
 {% endblock %}
 {% block scripts %}<script src="/static/wallet-board.js"></script>{% endblock %}

@@ -35,7 +35,7 @@
     </div>
     <div class="stat {{ 'warn' if r.scostamento != 0 else 'ok' }}">
       <div class="k">{{ t('pac.stat_round') }}</div>
-      <div class="v small" style="color:{{ '#cf222e' if r.scostamento != 0 else '#1a7f37' }};">{{ r.scostamento | eur }}</div>
+      <div class="v small" style="color:{{ 'var(--neg)' if r.scostamento != 0 else 'var(--pos)' }};">{{ r.scostamento | eur }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('pac.stat_round_sub') }}</div>
     </div>
   </div>
@@ -74,7 +74,7 @@
         <tr>
           <td>{{ t('common.total') }}</td>
           <td></td>
-          <td class="num" style="color:{{ '#1a7f37' if r.pct_ok else '#cf222e' }};">{{ r.somma_pct | pct }}</td>
+          <td class="num" style="color:{{ 'var(--pos)' if r.pct_ok else 'var(--neg)' }};">{{ r.somma_pct | pct }}</td>
           <td class="num">{{ r.totale_mensile | eur }}</td>
         </tr>
       </tfoot>

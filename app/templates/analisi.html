@@ -33,7 +33,7 @@
           <span>{{ t.sector(s.key) }}</span><span class="muted">{{ s.pct | pct }}</span>
         </div>
         <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;">
-          <div style="height:9px;width:{{ s.pct }}%;background:var(--navy);"></div>
+          <div style="height:9px;width:{{ s.pct }}%;background:var(--accent);"></div>
         </div>
       </div>
       {% endfor %}
@@ -49,7 +49,7 @@
     {% if risk %}
       <div class="grid" style="margin-top:8px;">
         <div class="stat"><div class="k">{{ t('analisi.vol') }}</div><div class="v">{{ risk.vol | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.vol_hint') }}</div></div>
-        <div class="stat warn"><div class="k">{{ t('analisi.mdd') }}</div><div class="v" style="color:#cf222e;">{{ risk.mdd | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.mdd_hint') }}</div></div>
+        <div class="stat warn"><div class="k">{{ t('analisi.mdd') }}</div><div class="v" style="color:var(--neg);">{{ risk.mdd | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.mdd_hint') }}</div></div>
         <div class="stat"><div class="k">{{ t('analisi.sharpe') }}</div><div class="v">{{ risk.sharpe if risk.sharpe is not none else '—' }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.sharpe_hint') }}</div></div>
         <div class="stat"><div class="k">{{ t('analisi.beta') }}</div><div class="v">{{ risk.beta if risk.beta is not none else '—' }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.beta_hint') }}</div></div>
       </div>

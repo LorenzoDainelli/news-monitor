@@ -13,11 +13,12 @@ from shared.config import APP_DIR
 STATE_DIR = APP_DIR.parent / "state"
 PREDICTIONS = STATE_DIR / "predictions.json"
 
-# Stesso linguaggio visivo delle email (vedi scripts/render_email.py)
+# Impatto -> (freccia, classe .pill del design system). I COLORI vivono nel CSS
+# (light/dark), qui usiamo solo le classi: niente hex fissi -> temi coerenti.
 _IMPACT = {
-    "positivo": ("▲", "#1a7f37", "#e6f4ea"),  # ▲ verde
-    "neutro":   ("=",      "#57606a", "#eaeef2"),
-    "negativo": ("▼", "#cf222e", "#ffebe9"),  # ▼ rosso
+    "positivo": ("▲", "green"),  # .pill.green -> var(--pos)
+    "neutro":   ("=", "gray"),   # .pill.gray  -> grigio neutro
+    "negativo": ("▼", "red"),    # .pill.red   -> var(--neg)
 }
 
 
@@ -39,28 +40,30 @@ def _norm_conf(val) -> str:
     return "media"
 
 
-def _overall_color(imp: dict) -> str:
-    """Colore del bordo card secondo l'impatto netto (verde/rosso/grigio)."""
+def _overall_class(imp: dict) -> str:
+    """Variante .card dal rail di sinistra secondo l'impatto netto:
+    'green' (pos) / 'red' (neg) / '' (neutro, card liscia). Il colore è nel CSS."""
     vals = [_norm_impact((imp or {}).get(k)) for k in ("breve", "medio", "lungo")]
     pos, neg = vals.count("positivo"), vals.count("negativo")
     if pos > neg:
-        return "#1a7f37"
+        return "green"
     if neg > pos:
-        return "#cf222e"
-    return "#8b949e"
+        return "red"
+    return ""
 
 
-def _rel_colors(score):
-    """Sfondo/testo del badge rilevanza (allineato alle soglie: 70 critico, 50 report)."""
+def _rel_class(score) -> str:
+    """Classe .badge per la rilevanza (soglie INVARIATE: 70 critico, 50 report).
+    high=critico (rosso) · mid=report (giallo) · low=info (grigio). Colori nel CSS."""
     try:
         s = int(score)
     except (TypeError, ValueError):
         s = 0
     if s >= 70:
-        return "#ffebe9", "#cf222e"
+        return "high"
     if s >= 50:
-        return "#fff3cd", "#9a6700"
-    return "#eaeef2", "#57606a"
+        return "mid"
+    return "low"
 
 
 def _load_items():
@@ -82,21 +85,19 @@ def news_cards(limit: int = 30):
         impatti = []
         for hk, key in (("short", "breve"), ("medium", "medio"), ("long", "lungo")):
             vw = _norm_impact(imp.get(key))
-            arrow, color, bg = _IMPACT[vw]
-            impatti.append({"hk": hk, "vw": vw, "arrow": arrow, "color": color, "bg": bg})
-        rel_bg, rel_col = _rel_colors(it.get("rilevanza"))
+            arrow, pill = _IMPACT[vw]
+            impatti.append({"hk": hk, "vw": vw, "arrow": arrow, "pill": pill})
         cards.append({
             "ticker": it.get("ticker", ""),
             "titolo": it.get("titolo", ""),
             "tipo_evento": it.get("tipo_evento", ""),
             "rilevanza": it.get("rilevanza", ""),
-            "rel_bg": rel_bg,
-            "rel_col": rel_col,
+            "rel_class": _rel_class(it.get("rilevanza")),
             "confidenza": _norm_conf(it.get("confidenza")),
             "data": str(it.get("data", ""))[:10],
             "url": it.get("url", ""),
             "impatti": impatti,
-            "bordo": _overall_color(imp),
+            "bordo_class": _overall_class(imp),
         })
     return cards
 
