@@ -1545,6 +1545,54 @@
       "tipo_evento": "macro tematica",
       "url": "https://finnhub.io/api/news?id=6a3044b06ab9af4115b5fe67b63e5259e38b67d7748df60dbab25b79f4ffd56d",
       "data_invio": "2026-07-02T05:05:00+00:00"
+    },
+    {
+      "id": "amgn-roche-kras-fase3-luglio2026",
+      "ticker": "AMGN",
+      "titolo": "Farmaco Roche batte Amgen in uno studio di fase 3 sul cancro al polmone",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=876c3db4f0d604dedad75b16adaa36eb7e43046ddc12b8b5a496ca3d3a61c3bb",
+      "data_invio": "2026-07-02T17:10:00+00:00"
+    },
+    {
+      "id": "ttwo-gta6-vendite-luglio2026",
+      "ticker": "TTWO",
+      "titolo": "GTA 6 parte bene: vendite forti per Take-Two, analista ribadisce Buy a 293 dollari",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=df3c2a83b672f037750b3163225bd569a0db2fc2ebea66788329db1dd96063c6",
+      "data_invio": "2026-07-02T17:10:00+00:00"
+    },
+    {
+      "id": "msft-frontier-company-ai-luglio2026",
+      "ticker": "MSFT",
+      "titolo": "Microsoft crea una nuova divisione AI da 2,5 miliardi per la consulenza enterprise",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=55624a44aff6eb8c6211e811e18f6c95a0be550898a08f731f430fd28386a46c",
+      "data_invio": "2026-07-02T17:10:00+00:00"
+    },
+    {
+      "id": "jpm-ai-chief-pensione-luglio2026",
+      "ticker": "JPM",
+      "titolo": "JPMorgan: la responsabile della strategia AI lascia a fine anno, il CTO prende le redini",
+      "tipo_evento": "cambio CEO/management",
+      "url": "https://finnhub.io/api/news?id=f43d07bf4ac386860547d38abc54e61a00480ee4528540ab32e6685fdc4becea",
+      "data_invio": "2026-07-02T17:10:00+00:00"
+    },
+    {
+      "id": "spcx-daiwa-initiation-luglio2026",
+      "ticker": "SPCX",
+      "titolo": "Daiwa avvia la copertura di SpaceX con Neutrale e target a 175 dollari",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=da6191deb4485a35264a60622c483eef587f9c6ca1e655348453041cb776d5dd",
+      "data_invio": "2026-07-02T17:10:00+00:00"
+    },
+    {
+      "id": "goog-meta-anthropic-global-luglio2026",
+      "ticker": "GOOG",
+      "titolo": "USA tolgono le restrizioni all'export per Anthropic: nuova pressione competitiva su Google e Meta",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=712fd5d981e4ea610f9eb8efc132417eb0626e629a19616f17a57f9a5adb23d7",
+      "data_invio": "2026-07-02T17:10:00+00:00"
     }
   ]
 }

@@ -2339,6 +2339,96 @@
       "rilevanza": 53,
       "titolo": "Investimenti statali massicci nella memoria HBM: rischio di eccesso di offerta dopo il 2030",
       "url": "https://finnhub.io/api/news?id=6a3044b06ab9af4115b5fe67b63e5259e38b67d7748df60dbab25b79f4ffd56d"
+    },
+    {
+      "id": "amgn-roche-kras-fase3-luglio2026",
+      "ticker": "AMGN",
+      "data": "2026-07-02T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Farmaco Roche batte Amgen in uno studio di fase 3 sul cancro al polmone",
+      "url": "https://finnhub.io/api/news?id=876c3db4f0d604dedad75b16adaa36eb7e43046ddc12b8b5a496ca3d3a61c3bb"
+    },
+    {
+      "id": "ttwo-gta6-vendite-luglio2026",
+      "ticker": "TTWO",
+      "data": "2026-07-02T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "GTA 6 parte bene: vendite forti per Take-Two, analista ribadisce Buy a 293 dollari",
+      "url": "https://finnhub.io/api/news?id=df3c2a83b672f037750b3163225bd569a0db2fc2ebea66788329db1dd96063c6"
+    },
+    {
+      "id": "msft-frontier-company-ai-luglio2026",
+      "ticker": "MSFT",
+      "data": "2026-07-02T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Microsoft crea una nuova divisione AI da 2,5 miliardi per la consulenza enterprise",
+      "url": "https://finnhub.io/api/news?id=55624a44aff6eb8c6211e811e18f6c95a0be550898a08f731f430fd28386a46c"
+    },
+    {
+      "id": "jpm-ai-chief-pensione-luglio2026",
+      "ticker": "JPM",
+      "data": "2026-07-02T17:10:00+00:00",
+      "tipo_evento": "cambio CEO/management",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 54,
+      "titolo": "JPMorgan: la responsabile della strategia AI lascia a fine anno, il CTO prende le redini",
+      "url": "https://finnhub.io/api/news?id=f43d07bf4ac386860547d38abc54e61a00480ee4528540ab32e6685fdc4becea"
+    },
+    {
+      "id": "spcx-daiwa-initiation-luglio2026",
+      "ticker": "SPCX",
+      "data": "2026-07-02T17:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 53,
+      "titolo": "Daiwa avvia la copertura di SpaceX con Neutrale e target a 175 dollari",
+      "url": "https://finnhub.io/api/news?id=da6191deb4485a35264a60622c483eef587f9c6ca1e655348453041cb776d5dd"
+    },
+    {
+      "id": "goog-meta-anthropic-global-luglio2026",
+      "ticker": "GOOG",
+      "data": "2026-07-02T17:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "USA tolgono le restrizioni all'export per Anthropic: nuova pressione competitiva su Google e Meta",
+      "url": "https://finnhub.io/api/news?id=712fd5d981e4ea610f9eb8efc132417eb0626e629a19616f17a57f9a5adb23d7"
     }
   ]
 }
