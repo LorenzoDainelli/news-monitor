@@ -2189,6 +2189,156 @@
       "rilevanza": 52,
       "titolo": "Wedbush (Dan Ives): SpaceX sembra cara ma potrebbe diventare «uno dei migliori titoli AI»",
       "url": "https://finnhub.io/api/news?id=345678e88b2b9b41a7097737020e9c1c3e269321fcce29dd66520883e42be6f3"
+    },
+    {
+      "id": "goog-eu-android-fine-20260702",
+      "ticker": "GOOG",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 68,
+      "titolo": "La Corte di Giustizia UE si pronuncia sulla multa record da 4,1 miliardi per Android",
+      "url": "https://finnhub.io/api/news?id=e6f4142f6ce4d893ada1c816715f7c6e64993f82bf5e4257ddbcaddebb7bd614"
+    },
+    {
+      "id": "pltr-surge-93pct-20260702",
+      "ticker": "PLTR",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "Palantir sale del 9,3% in seduta: mercato premia la scommessa AI enterprise",
+      "url": "https://finnhub.io/api/news?id=ef99bb6f994d7fe6a12c6d314ed894f1e84616b1f3bdb66cc73454dd432b6fa6"
+    },
+    {
+      "id": "spcx-ai-device-wsj-20260702",
+      "ticker": "SPCX",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "SpaceX avrebbe mostrato agli investitori un prototipo di dispositivo AI: Musk smentisce il WSJ",
+      "url": "https://finnhub.io/api/news?id=e2067a7adaa76c7e67aa64d817fe3f4184c810f36ab8b68c70c34fc227f50cfd"
+    },
+    {
+      "id": "nflx-52wk-low-rebound-20260702",
+      "ticker": "NFLX",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "Netflix rimbalza del 3,8% dai minimi annuali: smentita l'acquisizione da NBCUniversal",
+      "url": "https://finnhub.io/api/news?id=960e9178c978c0840da7016d1bbe7278c3fba2711560ac1591ecfca32e71cf46"
+    },
+    {
+      "id": "jnj-tecvayli-eu-20260702",
+      "ticker": "JNJ",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "J&J ottiene via libera in Europa per Tecvayli contro il mieloma multiplo",
+      "url": "https://finnhub.io/api/news?id=8d1382cd210a15e47704403828aa99de9dce5b7455ea1992f9139623fa1c0f0e"
+    },
+    {
+      "id": "msft-workforce-cut-20260702",
+      "ticker": "MSFT",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Microsoft annuncia un nuovo ciclo di tagli al personale legati alla ristrutturazione AI",
+      "url": "https://finnhub.io/api/news?id=3ab49290e348c30392c9e52db2583bc21b20c3658af74aafaff8cdfa82141b15"
+    },
+    {
+      "id": "nato-iran-ceasefire-doha-20260702",
+      "ticker": "NATO",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "titolo": "Trattative USA-Iran a Doha avanzano positivamente: tregua in vista, petrolio giù per il terzo giorno",
+      "url": "https://www.cnn.com/2026/07/01/world/live-news/iran-war-trump"
+    },
+    {
+      "id": "aapl-2027-roadmap-20260702",
+      "ticker": "AAPL",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 57,
+      "titolo": "Apple pianifica una lineup rinnovata per il 2027: nuovo iPad Pro e MacBook Pro entry-level ridisegnato",
+      "url": "https://finnhub.io/api/news?id=33fabf81a0225fb59c5f88194e39e2176eb39da80420441223dbbe21146513f3"
+    },
+    {
+      "id": "amzn-trainium-external-20260702",
+      "ticker": "AMZN",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Amazon prepara la vendita dei chip AI Trainium a clienti esterni ad AWS",
+      "url": "https://finnhub.io/api/news?id=9eea8535de31c1265d94218acfcd7b39677d1ee969ae1e2a1b870a785220455f"
+    },
+    {
+      "id": "ssnlf-hbm-capex-oversupply-20260702",
+      "ticker": "SSNLF",
+      "data": "2026-07-02T05:05:00+00:00",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 53,
+      "titolo": "Investimenti statali massicci nella memoria HBM: rischio di eccesso di offerta dopo il 2030",
+      "url": "https://finnhub.io/api/news?id=6a3044b06ab9af4115b5fe67b63e5259e38b67d7748df60dbab25b79f4ffd56d"
     }
   ]
 }
