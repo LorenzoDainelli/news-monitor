@@ -2489,6 +2489,66 @@
       "rilevanza": 70,
       "titolo": "Samsung in trattativa con Anthropic per produrre chip AI personalizzati",
       "url": "https://finnhub.io/api/news?id=879b2ada384861c7d4466f096c16bff8c83ee479ee8fcba9d7de1809eaa75469"
+    },
+    {
+      "id": "meta-samsung-chip-ai-6b",
+      "ticker": "META",
+      "data": "2026-07-03T17:07:19+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 68,
+      "titolo": "Meta in trattativa con Samsung per un accordo chip AI da 6,5 miliardi di dollari",
+      "url": "https://finnhub.io/api/news?id=4eee4b12ce9350535b013fa3f8e7251415c28d680b0b4bddc2c4be40e1f249ad"
+    },
+    {
+      "id": "macro-payroll-giugno-57k",
+      "ticker": "MACRO",
+      "data": "2026-07-03T17:07:19+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Occupazione USA a giugno: 57.000 nuovi posti, metà delle attese — pressione tassi in calo",
+      "url": "https://finnhub.io/api/news?id=aa77597b141cf2bf2762dc4ae18230dee476a25be96b7856ce9db7c1481d34a5"
+    },
+    {
+      "id": "nflx-omnicom-ai-ad-partnership",
+      "ticker": "NFLX",
+      "data": "2026-07-03T17:07:19+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "titolo": "Netflix balza del 9,5% dopo l'accordo pubblicitario AI con Omnicom",
+      "url": "https://finnhub.io/api/news?id=129de8ed6e8ac1f98e1af8d6a14180646d28676b23ab7005ad5179b8e838a159"
+    },
+    {
+      "id": "spcx-amazon-leo-390-satelliti",
+      "ticker": "SPCX",
+      "data": "2026-07-03T17:07:19+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "Il rivale di Starlink targato Amazon supera 390 satelliti: servizio internet atteso entro fine 2026",
+      "url": "https://finnhub.io/api/news?id=1235b1231c1a3aec1665cdf62773221915da07469e8ff4b743cf9aa52a7d0446"
     }
   ]
 }
