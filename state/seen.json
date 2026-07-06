@@ -1785,6 +1785,86 @@
       "tipo_evento": "macro tematica",
       "url": "https://finnhub.io/api/news?id=81c952079183dd1deca1e516594039557366d90ca5513e44a4b1c3836a310228",
       "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "msft-taglio-4800-xbox-20260706",
+      "ticker": "MSFT",
+      "titolo": "Microsoft taglia 4.800 posti e ristruttura Xbox",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=ba62a50e4163b3b6c68c49b119675cacdfe39299aee9f9ed6d81f695d232f21c",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "avgo-aapl-chip-deal-2031-20260706",
+      "ticker": "AVGO",
+      "titolo": "Broadcom estende l'accordo di fornitura chip con Apple fino al 2031",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=99dcddd5bdb5e6a73f8245c6488c4e317d5726550ab7843f793c9ecc8930195d",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "spcx-supply-unlock-40pct-20260706",
+      "ticker": "SPCX",
+      "titolo": "SpaceX: la quota negoziabile potrebbe passare dal 4% al 40% delle azioni entro dicembre",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=333b3c296a207961cbf40e212a19d5fdc5551bea874fc3460d68ee7b4a2c7285",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "spcx-starmind-constellation-20260706",
+      "ticker": "SPCX",
+      "titolo": "SpaceX svela il piano per 'Starmind': una costellazione satellitare basata sull'AI",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=290a0fdec53bd7928aee6ae0cabad70dc26ab1619edc2f5880e0701f4476a0fd",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "meta-rotation-to-goog-20260706",
+      "ticker": "META",
+      "titolo": "Wall Street vende Meta e compra Google: META cede circa il 10% nelle ultime sedute",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=f0949ce3ea5dafe3c4ce90a05ce5ebf35b74333ae4e1f7836bb7afdca99cef10",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "sndk-bics10-production-20260706",
+      "ticker": "SNDK",
+      "titolo": "SanDisk avvia la produzione della flash NAND di decima generazione (BiCS10, 332 layer)",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=6082e67e3f0d748c4eeb13ac6de922989fac5698136176c07bc1decb837c0e58",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "orcl-defense-crusoe-piper-20260706",
+      "ticker": "ORCL",
+      "titolo": "Oracle espande la rete difesa con 10 nuovi partner e firma con Crusoe AI; Piper Sandler difende il titolo prima degli utili",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=f6cb98acb625908c6028baa8d48a48266ea69ddd83e641977fbf70072647e529",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "ibm-bofa-target-q2-20260706",
+      "ticker": "IBM",
+      "titolo": "BofA alza il target di prezzo di IBM e prevede un Q2 solido con guidance 2026 in lieve rialzo",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=903c321f1661e41087212023caf08c15b3e49ebb663005e18ad0f4ad335462cb",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "asml-skhynix-ipo-28bn-20260706",
+      "ticker": "ASML",
+      "titolo": "SK Hynix lancia un'IPO da 28 miliardi di dollari sul Nasdaq: i proventi finanzieranno nuove fabbriche e acquisti di attrezzature ASML",
+      "tipo_evento": "macro tematica",
+      "url": "https://finnhub.io/api/news?id=ea66c60a0b6dade8cec46503f55d167e5e2b0c986d517f87bf53cabe0720d1cb",
+      "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "intc-price-hike-50-20260706",
+      "ticker": "INTC",
+      "titolo": "Intel aumenta i prezzi dei chip fino a 50 dollari citando le 'dinamiche di mercato'",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=c494e6706a91a668506399ca12b49420621b79eb5643ca92784eab5302ef49cd",
+      "data_invio": "2026-07-06T17:10:00+00:00"
     }
   ]
 }

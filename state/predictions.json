@@ -2654,6 +2654,156 @@
       "rilevanza": 54,
       "titolo": "Semiconduttori H1 2026: potente rimonta nel Q2 dopo un Q1 difficile",
       "url": "https://finnhub.io/api/news?id=81c952079183dd1deca1e516594039557366d90ca5513e44a4b1c3836a310228"
+    },
+    {
+      "id": "msft-taglio-4800-xbox-20260706",
+      "ticker": "MSFT",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "Microsoft taglia 4.800 posti e ristruttura Xbox",
+      "url": "https://finnhub.io/api/news?id=ba62a50e4163b3b6c68c49b119675cacdfe39299aee9f9ed6d81f695d232f21c"
+    },
+    {
+      "id": "avgo-aapl-chip-deal-2031-20260706",
+      "ticker": "AVGO",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "Broadcom estende l'accordo di fornitura chip con Apple fino al 2031",
+      "url": "https://finnhub.io/api/news?id=99dcddd5bdb5e6a73f8245c6488c4e317d5726550ab7843f793c9ecc8930195d"
+    },
+    {
+      "id": "spcx-supply-unlock-40pct-20260706",
+      "ticker": "SPCX",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 71,
+      "titolo": "SpaceX: la quota negoziabile potrebbe passare dal 4% al 40% delle azioni entro dicembre",
+      "url": "https://finnhub.io/api/news?id=333b3c296a207961cbf40e212a19d5fdc5551bea874fc3460d68ee7b4a2c7285"
+    },
+    {
+      "id": "spcx-starmind-constellation-20260706",
+      "ticker": "SPCX",
+      "data": "2026-07-06",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 69,
+      "titolo": "SpaceX svela il piano per 'Starmind': una costellazione satellitare basata sull'AI",
+      "url": "https://finnhub.io/api/news?id=290a0fdec53bd7928aee6ae0cabad70dc26ab1619edc2f5880e0701f4476a0fd"
+    },
+    {
+      "id": "meta-rotation-to-goog-20260706",
+      "ticker": "META",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Wall Street vende Meta e compra Google: META cede circa il 10% nelle ultime sedute",
+      "url": "https://finnhub.io/api/news?id=f0949ce3ea5dafe3c4ce90a05ce5ebf35b74333ae4e1f7836bb7afdca99cef10"
+    },
+    {
+      "id": "sndk-bics10-production-20260706",
+      "ticker": "SNDK",
+      "data": "2026-07-06",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "SanDisk avvia la produzione della flash NAND di decima generazione (BiCS10, 332 layer)",
+      "url": "https://finnhub.io/api/news?id=6082e67e3f0d748c4eeb13ac6de922989fac5698136176c07bc1decb837c0e58"
+    },
+    {
+      "id": "orcl-defense-crusoe-piper-20260706",
+      "ticker": "ORCL",
+      "data": "2026-07-06",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 64,
+      "titolo": "Oracle espande la rete difesa con 10 nuovi partner e firma con Crusoe AI; Piper Sandler difende il titolo prima degli utili",
+      "url": "https://finnhub.io/api/news?id=f6cb98acb625908c6028baa8d48a48266ea69ddd83e641977fbf70072647e529"
+    },
+    {
+      "id": "ibm-bofa-target-q2-20260706",
+      "ticker": "IBM",
+      "data": "2026-07-06",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "BofA alza il target di prezzo di IBM e prevede un Q2 solido con guidance 2026 in lieve rialzo",
+      "url": "https://finnhub.io/api/news?id=903c321f1661e41087212023caf08c15b3e49ebb663005e18ad0f4ad335462cb"
+    },
+    {
+      "id": "asml-skhynix-ipo-28bn-20260706",
+      "ticker": "ASML",
+      "data": "2026-07-06",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "SK Hynix lancia un'IPO da 28 miliardi di dollari sul Nasdaq: i proventi finanzieranno nuove fabbriche e acquisti di attrezzature ASML",
+      "url": "https://finnhub.io/api/news?id=ea66c60a0b6dade8cec46503f55d167e5e2b0c986d517f87bf53cabe0720d1cb"
+    },
+    {
+      "id": "intc-price-hike-50-20260706",
+      "ticker": "INTC",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "Intel aumenta i prezzi dei chip fino a 50 dollari citando le 'dinamiche di mercato'",
+      "url": "https://finnhub.io/api/news?id=c494e6706a91a668506399ca12b49420621b79eb5643ca92784eab5302ef49cd"
     }
   ]
 }
