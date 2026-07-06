@@ -1,0 +1,31 @@
+/* =========================================================================
+   MyMoney — SPACING & LAYOUT TOKENS  (4px base grid)
+   ========================================================================= */
+:root {
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+
+  /* page layout */
+  --wrap-max: 1140px;     /* content column (was 1080) */
+  --wrap-pad: 24px;       /* horizontal page padding (desktop) */
+  --wrap-pad-mobile: 16px;
+  --topbar-h: 64px;
+
+  /* component rhythm */
+  --gap-card:   16px;     /* gap between stacked cards / grid items */
+  --pad-card:   20px;     /* default card padding */
+  --pad-card-lg:24px;
+  --pad-cell:   12px;     /* table cell padding (v) */
+  --pad-cell-x: 14px;     /* table cell padding (h) */
+}
