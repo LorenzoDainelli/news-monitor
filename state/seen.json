@@ -1705,6 +1705,86 @@
       "tipo_evento": "prodotto",
       "url": "https://finnhub.io/api/news?id=1235b1231c1a3aec1665cdf62773221915da07469e8ff4b743cf9aa52a7d0446",
       "data_invio": "2026-07-03T17:07:19+00:00"
+    },
+    {
+      "id": "orcl-worst-month-1990",
+      "ticker": "ORCL",
+      "titolo": "Oracle crolla del 35% a giugno: il mese peggiore dal 1990",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=79e86940dea5574a33f094d058e1dbcc36a74fbb9c0829826180c6930f195f74",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "spcx-nasdaq100-quiet-period",
+      "ticker": "SPCX",
+      "titolo": "SpaceX esce dal periodo di silenzio post-IPO ed entra nel Nasdaq 100",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=a16525ed99c60f90accce500e5e005d8e06ebe6fb775797f2cb80065f26cf4e8",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "ko-north-america-chief-resigns",
+      "ticker": "KO",
+      "titolo": "Coca-Cola: il responsabile del Nord America si dimette, il CFO prende le redini ad interim",
+      "tipo_evento": "cambio CEO/management",
+      "url": "https://finnhub.io/api/news?id=3893e58b71ec3d9f38a713acbc60bb9a488d30e7db3e0c2d728611090829e20f",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "msft-bigtech-electricity-3t",
+      "ticker": "MSFT",
+      "titolo": "Big Tech spende 3 trilioni di dollari per garantirsi l'energia necessaria all'AI",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=4e9e7c60088a15b355261a9db5e50c59ddb6715d6558b1fc7834f2239b24637e",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "sndk-wdc-memory-rebound-samsung",
+      "ticker": "SNDK",
+      "titolo": "Titoli memoria USA rimbalzano dopo la svendita; occhi puntati sui risultati Samsung la prossima settimana",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=dabeecbfdadd0e951a94216f041ccad29e244cdd20095e96cf60786d86fcb099",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "wdc-bofa-pt-raise",
+      "ticker": "WDC",
+      "titolo": "BofA alza il prezzo obiettivo di Western Digital",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=07da0768a370dab1696a4a2066d385411b2cf9463b877c538610196b168c26d4",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "lly-cancer-drug-china-license",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly cede in licenza un farmaco oncologico a un partner cinese",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=394e6d817f0f1e1d3946ce3afe40d22f68f5826a5a03b1edfbb7d09670ef8155",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "nflx-q2-earnings-july16",
+      "ticker": "NFLX",
+      "titolo": "Netflix annuncia i risultati del Q2 per il 16 luglio: tre metriche chiave sotto osservazione",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=5c7b524bf929c11abc7618065e412cb9bf7314ea5f42157da74572be5d7e9862",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "msft-copilot-unified-app",
+      "ticker": "MSFT",
+      "titolo": "Microsoft unifica tutti i chatbot Copilot AI in un'unica app",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=61f8d94c355578761a5a62c70e6a775a81351cf973e61ed90380680d15d1c82c",
+      "data_invio": "2026-07-06T05:10:00+00:00"
+    },
+    {
+      "id": "semis-h1-2026-recap-asml-tsm-avgo",
+      "ticker": "ASML",
+      "titolo": "Semiconduttori H1 2026: potente rimonta nel Q2 dopo un Q1 difficile",
+      "tipo_evento": "macro tematica",
+      "url": "https://finnhub.io/api/news?id=81c952079183dd1deca1e516594039557366d90ca5513e44a4b1c3836a310228",
+      "data_invio": "2026-07-06T05:10:00+00:00"
     }
   ]
 }

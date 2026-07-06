@@ -2549,6 +2549,111 @@
       "rilevanza": 52,
       "titolo": "Il rivale di Starlink targato Amazon supera 390 satelliti: servizio internet atteso entro fine 2026",
       "url": "https://finnhub.io/api/news?id=1235b1231c1a3aec1665cdf62773221915da07469e8ff4b743cf9aa52a7d0446"
+    },
+    {
+      "id": "orcl-worst-month-1990",
+      "ticker": "ORCL",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 80,
+      "titolo": "Oracle crolla del 35% a giugno: il mese peggiore dal 1990",
+      "url": "https://finnhub.io/api/news?id=79e86940dea5574a33f094d058e1dbcc36a74fbb9c0829826180c6930f195f74"
+    },
+    {
+      "id": "spcx-nasdaq100-quiet-period",
+      "ticker": "SPCX",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 73,
+      "titolo": "SpaceX esce dal periodo di silenzio post-IPO ed entra nel Nasdaq 100",
+      "url": "https://finnhub.io/api/news?id=a16525ed99c60f90accce500e5e005d8e06ebe6fb775797f2cb80065f26cf4e8"
+    },
+    {
+      "id": "msft-bigtech-electricity-3t",
+      "ticker": "MSFT",
+      "data": "2026-07-06",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Big Tech spende 3 trilioni di dollari per garantirsi l'energia necessaria all'AI",
+      "url": "https://finnhub.io/api/news?id=4e9e7c60088a15b355261a9db5e50c59ddb6715d6558b1fc7834f2239b24637e"
+    },
+    {
+      "id": "sndk-wdc-memory-rebound-samsung",
+      "ticker": "SNDK",
+      "data": "2026-07-06",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 58,
+      "titolo": "Titoli memoria USA rimbalzano dopo la svendita; occhi puntati sui risultati Samsung la prossima settimana",
+      "url": "https://finnhub.io/api/news?id=dabeecbfdadd0e951a94216f041ccad29e244cdd20095e96cf60786d86fcb099"
+    },
+    {
+      "id": "wdc-bofa-pt-raise",
+      "ticker": "WDC",
+      "data": "2026-07-06",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 57,
+      "titolo": "BofA alza il prezzo obiettivo di Western Digital",
+      "url": "https://finnhub.io/api/news?id=07da0768a370dab1696a4a2066d385411b2cf9463b877c538610196b168c26d4"
+    },
+    {
+      "id": "msft-copilot-unified-app",
+      "ticker": "MSFT",
+      "data": "2026-07-06",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Microsoft unifica tutti i chatbot Copilot AI in un'unica app",
+      "url": "https://finnhub.io/api/news?id=61f8d94c355578761a5a62c70e6a775a81351cf973e61ed90380680d15d1c82c"
+    },
+    {
+      "id": "semis-h1-2026-recap-asml-tsm-avgo",
+      "ticker": "ASML",
+      "data": "2026-07-06",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 54,
+      "titolo": "Semiconduttori H1 2026: potente rimonta nel Q2 dopo un Q1 difficile",
+      "url": "https://finnhub.io/api/news?id=81c952079183dd1deca1e516594039557366d90ca5513e44a4b1c3836a310228"
     }
   ]
 }
