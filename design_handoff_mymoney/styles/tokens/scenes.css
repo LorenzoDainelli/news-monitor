@@ -1,0 +1,136 @@
+/* =========================================================================
+   MyMoney — SCENE TOKENS  (animazioni Finanze)
+   -------------------------------------------------------------------------
+   Colori del "mondo dentro il box" per le scene vive di Finanze
+   (Contanti, Carte, Conti Bancari, Investimenti): cielo/stage, base,
+   fuoco, fumo, brace. NON sono UI: sono fotografia di scena.
+   Le banconote riusano le scale lime/yellow — nessun token proprio.
+   Chiaro = default (:root); [data-theme="dark"] ribalta in cinematografico.
+   ========================================================================= */
+
+:root {
+  /* stage: carta calda in luce diurna, integrata con l'app */
+  --scene-sky-top:  #FBFDF4;                    /* @kind color */
+  --scene-sky-bot:  #ECF2DC;                    /* @kind color */
+  --scene-sky-glow: rgba(166, 218, 71, .22);    /* @kind color */
+  --scene-base-glow: rgba(111, 163, 28, .16);   /* @kind color */
+  --scene-floor:    rgba(65, 94, 22, .14);      /* @kind color */
+
+  /* ombreggiatura del mucchio (strati di banconote stipate) */
+  --scene-pile-shade: rgba(60, 84, 20, .34);    /* @kind color */
+  --scene-pile-rim:   rgba(255, 255, 255, .70); /* @kind color */
+
+  /* fuoco (rimozione / brucia): caldo e credibile */
+  --scene-fire-core:  #FFF7D6;                  /* @kind color */
+  --scene-fire-inner: #FCE06A;                  /* @kind color */
+  --scene-fire-mid:   #FF7A28;                  /* @kind color */
+  --scene-fire-outer: #E23A1E;                  /* @kind color */
+  --scene-fire-deep:  #8E1B08;                  /* @kind color */
+  --scene-fire-glow:  rgba(255, 150, 50, .50);  /* @kind color */
+  --scene-ember:      #FFC24A;                  /* @kind color */
+  --scene-smoke:      rgba(70, 62, 50, .40);    /* @kind color */
+  --scene-ash:        #4A443C;                  /* @kind color */
+
+  /* --- Conti Bancari: caveau (acciaio) + materiali fisici (lingotti d'oro) --- */
+  /* l'acciaio del caveau si ribalta col tema; l'oro dei lingotti è FISICO:
+     hue costante, solo lievi ritocchi di luminosità per scena. */
+  --scene-vault-wall-1: #D3D8CD;                /* @kind color */  /* acciaio alto */
+  --scene-vault-wall-2: #ADB3A5;                /* @kind color */  /* acciaio basso */
+  --scene-vault-floor:  #979E8C;                /* @kind color */
+  --scene-vault-door:   #C4C9BE;                /* @kind color */
+  --scene-vault-door-2: #A1A798;                /* @kind color */
+  --scene-vault-bolt:   #7E8576;                /* @kind color */
+  --scene-vault-rim:    rgba(255, 255, 255, .80);/* @kind color */
+  --scene-vault-shadow: rgba(40, 52, 26, .30);  /* @kind color */
+  --scene-vault-spot:   rgba(255, 241, 196, .55);/* @kind color */ /* faretto caldo */
+  --scene-gold-0:  #B87814;                     /* @kind color */  /* oro base */
+  --scene-gold-1:  #EBB840;                     /* @kind color */  /* oro faccia */
+  --scene-gold-2:  #FFE49A;                     /* @kind color */  /* oro top */
+  --scene-gold-edge:  #7A4E0C;                  /* @kind color */
+  --scene-gold-shine: #FFFCEF;                  /* @kind color */
+
+  /* --- Investimenti: albero a due rami (ETF + Azioni) --------------------- */
+  /* La corteccia è materiale FISICO (bruni caldi, hue costante, solo la luce
+     si ribalta col tema). La chioma è on-brand: scala PISTACCHIO/LIME come
+     verde vivo + accenti GIALLO PASTELLO. L'accetta è acciaio + manico legno. */
+  --scene-tree-bark-0:  #4A3418;                /* @kind color */  /* corteccia in ombra */
+  --scene-tree-bark-1:  #6E4E28;                /* @kind color */  /* corteccia media */
+  --scene-tree-bark-2:  #8E6B3C;                /* @kind color */  /* corteccia illuminata */
+  --scene-tree-bark-hi: #B79463;                /* @kind color */  /* rim di luce sul tronco */
+  --scene-tree-cut:     #E8D6A6;                /* @kind color */  /* legno fresco del taglio */
+  --scene-tree-leaf-0:  #557C18;                /* @kind color */  /* fogliame in ombra (lime-700) */
+  --scene-tree-leaf-1:  #6FA31C;                /* @kind color */  /* fogliame medio (lime-600) */
+  --scene-tree-leaf-2:  #8FC72B;                /* @kind color */  /* fogliame chiaro (lime-500) */
+  --scene-tree-leaf-3:  #A6DA47;                /* @kind color */  /* fogliame in luce ★ (lime-400) */
+  --scene-tree-bud:     #C7E88A;                /* @kind color */  /* germoglio nuovo (lime-200/300) */
+  --scene-tree-leaf-gold:  #F9DA5B;             /* @kind color */  /* foglia accento giallo ★ (yellow-300) */
+  --scene-tree-leaf-gold2: #F0C62F;             /* @kind color */  /* accento giallo scuro (yellow-400) */
+  --scene-tree-vein:    rgba(30, 46, 8, .30);   /* @kind color */  /* nervature */
+  --scene-tree-grow-glow: rgba(166, 218, 71, .55); /* @kind color */ /* bagliore della crescita */
+  --scene-tree-mound:   #6E7A4C;                /* @kind color */  /* zolla erbosa alla base */
+  --scene-tree-mound-2: #4E5A32;                /* @kind color */
+  --scene-tree-axe-steel: #CDD2C6;              /* @kind color */  /* testa dell'accetta */
+  --scene-tree-axe-edge:  #F4F7F0;              /* @kind color */  /* filo lucido */
+  --scene-tree-axe-dark:  #7E8576;              /* @kind color */  /* ombra della lama */
+  --scene-tree-axe-wood:  #7A5326;              /* @kind color */  /* manico in legno */
+}
+
+[data-theme="dark"] {
+  --scene-sky-top:  #12160E;
+  --scene-sky-bot:  #080A06;
+  --scene-sky-glow: rgba(166, 218, 71, .16);
+  --scene-base-glow: rgba(166, 218, 71, .20);
+  --scene-floor:    rgba(0, 0, 0, .55);
+
+  --scene-pile-shade: rgba(0, 0, 0, .55);
+  --scene-pile-rim:   rgba(228, 246, 199, .55);
+
+  --scene-fire-core:  #FFFBEC;
+  --scene-fire-inner: #FFE87A;
+  --scene-fire-mid:   #FF8A34;
+  --scene-fire-outer: #F0491F;
+  --scene-fire-deep:  #6E1404;
+  --scene-fire-glow:  rgba(255, 150, 50, .60);
+  --scene-ember:      #FFD36B;
+  --scene-smoke:      rgba(20, 18, 14, .55);
+  --scene-ash:        #2A251F;
+
+  /* Conti Bancari: caveau notturno cinematografico + materiali */
+  --scene-vault-wall-1: #2B2F27;
+  --scene-vault-wall-2: #171B13;
+  --scene-vault-floor:  #0E1209;
+  --scene-vault-door:   #262A22;
+  --scene-vault-door-2: #171B14;
+  --scene-vault-bolt:   #3B4034;
+  --scene-vault-rim:    rgba(210, 232, 180, .42);
+  --scene-vault-shadow: rgba(0, 0, 0, .60);
+  --scene-vault-spot:   rgba(255, 236, 172, .42);
+  --scene-gold-0:  #9A5F10;
+  --scene-gold-1:  #E4AE3A;
+  --scene-gold-2:  #FFDC86;
+  --scene-gold-edge:  #5E3C08;
+  --scene-gold-shine: #FFFBEC;
+
+  /* Investimenti: bosco notturno — corteccia più cupa, chioma lime che
+     resta vivida (come da filosofia palette), accetta più fredda. */
+  --scene-tree-bark-0:  #23180B;
+  --scene-tree-bark-1:  #43301A;
+  --scene-tree-bark-2:  #654A2A;
+  --scene-tree-bark-hi: #8E6B3C;
+  --scene-tree-cut:     #C9B884;
+  --scene-tree-leaf-0:  #3E6414;
+  --scene-tree-leaf-1:  #557C18;
+  --scene-tree-leaf-2:  #7CB22E;
+  --scene-tree-leaf-3:  #A6DA47;
+  --scene-tree-bud:     #BCE470;
+  --scene-tree-leaf-gold:  #F9DA5B;
+  --scene-tree-leaf-gold2: #F0C62F;
+  --scene-tree-vein:    rgba(8, 16, 2, .40);
+  --scene-tree-grow-glow: rgba(166, 218, 71, .60);
+  --scene-tree-mound:   #2E3A1C;
+  --scene-tree-mound-2: #1A2210;
+  --scene-tree-axe-steel: #AEB4A6;
+  --scene-tree-axe-edge:  #E4E8DE;
+  --scene-tree-axe-dark:  #3B4034;
+  --scene-tree-axe-wood:  #5E3C18;
+}

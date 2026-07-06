@@ -1,0 +1,13 @@
+/* =========================================================================
+   MyMoney — RADIUS TOKENS
+   Premium, softly rounded. Cards ~18px, controls ~10–12px, pills full.
+   ========================================================================= */
+:root {
+  --r-xs:   6px;
+  --r-sm:   10px;   /* inputs, small buttons */
+  --r-md:   12px;   /* buttons */
+  --r-lg:   18px;   /* cards, panels, table-wrap */
+  --r-xl:   24px;   /* hero / AI panel */
+  --r-2xl:  32px;
+  --r-pill: 999px;  /* pills, badges, nav active */
+}
