@@ -2804,6 +2804,96 @@
       "rilevanza": 62,
       "titolo": "Intel aumenta i prezzi dei chip fino a 50 dollari citando le 'dinamiche di mercato'",
       "url": "https://finnhub.io/api/news?id=c494e6706a91a668506399ca12b49420621b79eb5643ca92784eab5302ef49cd"
+    },
+    {
+      "id": "meta-youth-safety-1400b-penalties",
+      "ticker": "META",
+      "data": "2026-07-07",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 80,
+      "titolo": "Quattro stati USA chiedono 1.400 miliardi di sanzioni a Meta nel processo sulla sicurezza dei minori",
+      "url": "https://finnhub.io/api/news?id=18bb1249560dc41b00f738f53e288adda82bba8366f60dfbfa40a4e63ad05a44"
+    },
+    {
+      "id": "sndk-14pct-drop-ai-memory-cracking",
+      "ticker": "SNDK",
+      "data": "2026-07-07",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 75,
+      "titolo": "SanDisk crolla del 14% in un giorno: il mercato si chiede se il boom delle memorie AI stia scricchiolando",
+      "url": "https://finnhub.io/api/news?id=67cf8682d4687f3a7249d7b9e75b939f2b8c8f25eb61843485ed3b9e6f61a1ef"
+    },
+    {
+      "id": "ssnlf-samsung-q2-1800pct-profit",
+      "ticker": "SSNLF",
+      "data": "2026-07-07",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "Samsung: risultati preliminari Q2 con utile operativo +1.800% — ma il titolo scende dopo l'annuncio",
+      "url": "https://finnhub.io/api/news?id=2e7771f3312c7264d1b5931fb67abf337c783c2db211f267a1cecddd73c137a4"
+    },
+    {
+      "id": "iran-missiles-hormuz-trump-ultimatum",
+      "ticker": "SHEL",
+      "data": "2026-07-07",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Iran lancia missili su navi commerciali nello Stretto di Hormuz; Trump: accordo o 'finiremo il lavoro'",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPUVFSZk5WeEJaVV96QWl0TDFIZDJUNWFlNTVkNERLdkxfYlVuY2paaS1KbkFHaDB6dkpEeVQ0ZXlLLW1RTXlBTmN2XzBPaklObVJ1VzdpWkFVTDhIYWFNbWlRdDVWZDJkZF9BY0FlNmJHaDBPbmY5ZTVDMEw3M0ozbjN5N2ljem83ZVBQZ3BhUEc4VTZBYmNZVnBiTVFoWUJUdml0dEdOUVYtMG02VEJKQUhMaUZSSnJuWmc?oc=5"
+    },
+    {
+      "id": "amzn-aws-1b-forward-deployed-engineers",
+      "ticker": "AMZN",
+      "data": "2026-07-07",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 58,
+      "titolo": "Amazon Web Services investe 1 miliardo di dollari in ingegneri AI integrati direttamente nei clienti enterprise",
+      "url": "https://finnhub.io/api/news?id=f1b08d5b333c28a0e523d097b481f61c64631ad64563115e610706e98e5b52b6"
+    },
+    {
+      "id": "pltr-nvda-sovereign-ai-us-government",
+      "ticker": "PLTR",
+      "data": "2026-07-07",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Palantir e Nvidia portano l'AI sovrana al governo USA con modelli open source",
+      "url": "https://finnhub.io/api/news?id=0e3cbf453958ce83fabf7a65986e41fe2791e2ffebb97aed4fc2f1f316e66f05"
     }
   ]
 }

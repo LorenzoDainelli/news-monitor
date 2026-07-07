@@ -1865,6 +1865,86 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=c494e6706a91a668506399ca12b49420621b79eb5643ca92784eab5302ef49cd",
       "data_invio": "2026-07-06T17:10:00+00:00"
+    },
+    {
+      "id": "meta-youth-safety-1400b-penalties",
+      "ticker": "META",
+      "titolo": "Quattro stati USA chiedono 1.400 miliardi di sanzioni a Meta nel processo sulla sicurezza dei minori",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=18bb1249560dc41b00f738f53e288adda82bba8366f60dfbfa40a4e63ad05a44",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "sndk-14pct-drop-ai-memory-cracking",
+      "ticker": "SNDK",
+      "titolo": "SanDisk crolla del 14% in un giorno: il mercato si chiede se il boom delle memorie AI stia scricchiolando",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=67cf8682d4687f3a7249d7b9e75b939f2b8c8f25eb61843485ed3b9e6f61a1ef",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "ssnlf-samsung-q2-1800pct-profit",
+      "ticker": "SSNLF",
+      "titolo": "Samsung: risultati preliminari Q2 con utile operativo +1.800% — ma il titolo scende dopo l'annuncio",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=2e7771f3312c7264d1b5931fb67abf337c783c2db211f267a1cecddd73c137a4",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "iran-missiles-hormuz-trump-ultimatum",
+      "ticker": "SHEL",
+      "titolo": "Iran lancia missili su navi commerciali nello Stretto di Hormuz; Trump: accordo o 'finiremo il lavoro'",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPUVFSZk5WeEJaVV96QWl0TDFIZDJUNWFlNTVkNERLdkxfYlVuY2paaS1KbkFHaDB6dkpEeVQ0ZXlLLW1RTXlBTmN2XzBPaklObVJ1VzdpWkFVTDhIYWFNbWlRdDVWZDJkZF9BY0FlNmJHaDBPbmY5ZTVDMEw3M0ozbjN5N2ljem83ZVBQZ3BhUEc4VTZBYmNZVnBiTVFoWUJUdml0dEdOUVYtMG02VEJKQUhMaUZSSnJuWmc?oc=5",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "ibm-surge-ism-services-pmi",
+      "ticker": "IBM",
+      "titolo": "IBM e titoli di servizi balzano dopo dati PMI solidi: l'economia dei servizi USA continua a espandersi",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=76d5cc8d03f903da760a81030eb1a3c408336c5303e3ac359c7b94c9567f5dfa",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "amzn-aws-1b-forward-deployed-engineers",
+      "ticker": "AMZN",
+      "titolo": "Amazon Web Services investe 1 miliardo di dollari in ingegneri AI integrati direttamente nei clienti enterprise",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=f1b08d5b333c28a0e523d097b481f61c64631ad64563115e610706e98e5b52b6",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "aapl-china-memory-exemption-niles",
+      "ticker": "AAPL",
+      "titolo": "Analista: Apple in buona posizione per ottenere dalla Cina un'esenzione sulle restrizioni alle memorie AI",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=2d6f55e5237ce910eac93838d5f2df6e5de61b1db5655af191892a6d5db6a98b",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "wmt-trump-price-cuts-gas-accusation",
+      "ticker": "WMT",
+      "titolo": "Walmart taglia i prezzi su ordine di Trump ma affronta accuse di aver gonfiato il prezzo della benzina",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=ba7bb7a574b744d427d039a017c20a5091db120ecffb4e9264bc3bd2a7af2a87",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "intc-syntiant-ipo-nasdaq",
+      "ticker": "INTC",
+      "titolo": "Syntiant, startup AI chip finanziata da Intel, deposita la domanda di IPO sul Nasdaq",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=21d6a894f8ddd78fcb4fc100d054caaa78765ffec11516d3cff176f0a1bec634",
+      "data_invio": "2026-07-07T05:10:00+00:00"
+    },
+    {
+      "id": "pltr-nvda-sovereign-ai-us-government",
+      "ticker": "PLTR",
+      "titolo": "Palantir e Nvidia portano l'AI sovrana al governo USA con modelli open source",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=0e3cbf453958ce83fabf7a65986e41fe2791e2ffebb97aed4fc2f1f316e66f05",
+      "data_invio": "2026-07-07T05:10:00+00:00"
     }
   ]
 }
