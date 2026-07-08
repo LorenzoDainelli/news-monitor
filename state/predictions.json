@@ -2804,6 +2804,81 @@
       "rilevanza": 62,
       "titolo": "Intel aumenta i prezzi dei chip fino a 50 dollari citando le 'dinamiche di mercato'",
       "url": "https://finnhub.io/api/news?id=c494e6706a91a668506399ca12b49420621b79eb5643ca92784eab5302ef49cd"
+    },
+    {
+      "id": "samsung-q2-selloff-chip-20260708",
+      "ticker": "SSNLF",
+      "data": "2026-07-08T05:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 78,
+      "titolo": "Samsung riporta un trimestre record ma delude le aspettative: sell-off a catena nei chip",
+      "url": "https://finnhub.io/api/news?id=164858cd6ac91be1761a488b26a2906f4c30d909f210f251eb499205489c2fbf"
+    },
+    {
+      "id": "lly-record-high-20260708",
+      "ticker": "LLY",
+      "data": "2026-07-08T05:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Eli Lilly raggiunge un nuovo massimo storico: Wall Street si fa ancora più ottimista",
+      "url": "https://finnhub.io/api/news?id=fc165123b8f5c5e56d10a592305f6c60639b04a3d8419f0acb89ef15cfd4b4b"
+    },
+    {
+      "id": "amgn-recalls-enbrel-20260708",
+      "ticker": "AMGN",
+      "data": "2026-07-08T05:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Amgen avvia richiami volontari di Corlanor e Sensipar; un giudice blocca intanto il tetto di prezzo su Enbrel",
+      "url": "https://finnhub.io/api/news?id=4ab3ef6ff1126cf165b77a351fd1ead442295ca99d8f5f60aa888748bc037095"
+    },
+    {
+      "id": "shel-q2-guidance-oil-iran-20260708",
+      "ticker": "SHEL",
+      "data": "2026-07-08T05:10:00+00:00",
+      "tipo_evento": "revisione guidance",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Shell alza le previsioni di produzione Q2 (gas, upstream, LNG) mentre il petrolio sale per l'Iran",
+      "url": "https://finnhub.io/api/news?id=c852be3c4033fe83293aedcefd6759310132f3f7070f62c9fef81e8e6aac0366"
+    },
+    {
+      "id": "orcl-ai-warning-customers-20260708",
+      "ticker": "ORCL",
+      "data": "2026-07-08T05:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Allarme AI per Oracle: alcuni clienti data center potrebbero non riuscire a onorare i contratti",
+      "url": "https://finnhub.io/api/news?id=80268fe12003b0a15257665f4bba1e034332ec99617f44a692cce7d523643c9a"
     }
   ]
 }
