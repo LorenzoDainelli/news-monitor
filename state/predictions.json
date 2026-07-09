@@ -3029,6 +3029,141 @@
       "rilevanza": 52,
       "titolo": "IBM e Red Hat ampliano Lightwell con nuove offerte per l'open source in era AI",
       "url": "https://finnhub.io/api/news?id=d2e6ae40a9b90b4e33a7152092827e8c946f56a30295b70083a323756e7f4027"
+    },
+    {
+      "id": "goog-berkshire-20b-alphabet-20260709",
+      "ticker": "GOOG",
+      "data": "2026-07-09",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Berkshire Hathaway punta oltre 20 miliardi su Alphabet: il successore di Buffett fa la scommessa più audace dell'era post-Buffett",
+      "url": "https://finnhub.io/api/news?id=6d7eab5b4e2847874c665326cbdfc4069e598ac03ef5ab4f58e8a37a18354569"
+    },
+    {
+      "id": "nato-iran-escalation-ceasefire-over-20260709",
+      "ticker": "NATO",
+      "data": "2026-07-09",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 68,
+      "titolo": "USA-Iran: cessate il fuoco ufficialmente 'finito' — attacchi su oltre 90 obiettivi, petrolio Brent +6%",
+      "url": "https://www.cnn.com/2026/07/08/world/live-news/iran-war-nato-summit-ukraine-trump"
+    },
+    {
+      "id": "nvda-lost-1t-value-ai-low-20260709",
+      "ticker": "NVDA",
+      "data": "2026-07-09",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 67,
+      "titolo": "Nvidia ai minimi dall'inizio del boom AI: persi oltre 1.000 miliardi di capitalizzazione dai massimi, i rivali avanzano",
+      "url": "https://finnhub.io/api/news?id=bbb38537c01d8be774edc057405a3b07ac23398707f31c59814c3e28df11e818"
+    },
+    {
+      "id": "meta-zuckerberg-ai-agents-not-accelerated-20260709",
+      "ticker": "META",
+      "data": "2026-07-09",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Zuckerberg ammette che gli agenti AI 'non hanno davvero accelerato': Meta scende del 5%",
+      "url": "https://finnhub.io/api/news?id=f6f495357dfe2ccbcb4e58e164d17f471d1ab677da8789749f6cd7ba31e52dae"
+    },
+    {
+      "id": "meta-130b-datacenters-blocked-20260709",
+      "ticker": "META",
+      "data": "2026-07-09",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "130 miliardi di data center AI bloccati negli USA in un solo trimestre: i piani di espansione dei big tech rischiano ritardi",
+      "url": "https://finnhub.io/api/news?id=72fc1ab799f6643f47988997e294f65b761e4041561877792d055aa8de5dc257"
+    },
+    {
+      "id": "pltr-rally-stops-ft-political-concerns-20260709",
+      "ticker": "PLTR",
+      "data": "2026-07-09",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "Il rally del 25% di Palantir si ferma: il Financial Times solleva preoccupazioni sui legami politici dell'azienda",
+      "url": "https://finnhub.io/api/news?id=4fcd36f20d18d591f21c3741be4d964dda6abb13e08edb9e0df4f593454defb7"
+    },
+    {
+      "id": "intc-apple-intel-chip-deal-20260709",
+      "ticker": "INTC",
+      "data": "2026-07-09",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Apple e Intel: potenziale accordo chip è strategicamente sensato ma la produzione potrebbe arrivare tra anni",
+      "url": "https://finnhub.io/api/news?id=b4b53ddc72fbca52dfc2d5277e2c8467f104d38e631778cd3331dc69a288670a"
+    },
+    {
+      "id": "wdc-memory-bear-market-20260709",
+      "ticker": "WDC",
+      "data": "2026-07-09",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Tutti i titoli delle memorie (Western Digital, SanDisk, Micron) ora in bear market: oltre -20% dai massimi recenti",
+      "url": "https://finnhub.io/api/news?id=ad6437eaf266ea2bff41c3bac9535a586a1a3e9da48b4328f62cfbbbbfcb14d8"
+    },
+    {
+      "id": "aapl-emmy-89-nominations-20260709",
+      "ticker": "AAPL",
+      "data": "2026-07-09",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 52,
+      "titolo": "Apple TV+ record: 89 nomination agli Emmy 2026, nomination nelle categorie principali per cinque serie",
+      "url": "https://finnhub.io/api/news?id=7e25aa53bb4e4b4ec91e6156b533261be0f7248dacc3159481c913e5bf3dfa17"
     }
   ]
 }
