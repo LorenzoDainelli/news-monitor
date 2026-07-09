@@ -3029,6 +3029,81 @@
       "rilevanza": 52,
       "titolo": "IBM e Red Hat ampliano Lightwell con nuove offerte per l'open source in era AI",
       "url": "https://finnhub.io/api/news?id=d2e6ae40a9b90b4e33a7152092827e8c946f56a30295b70083a323756e7f4027"
+    },
+    {
+      "id": "sndk-meta-flash-deal-20260709",
+      "ticker": "SNDK",
+      "data": "2026-07-09T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 82,
+      "titolo": "SanDisk: contratto pluriennale confermato con Meta per la fornitura di flash storage",
+      "url": "https://finnhub.io/api/news?id=c0f055af89bdeaa32014b9581c3bda98f4dd9fdf7f9b1f7ba4deaee88703b7fd"
+    },
+    {
+      "id": "intc-crash-21pct-20260709",
+      "ticker": "INTC",
+      "data": "2026-07-09T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 75,
+      "titolo": "Intel perde il 21% in sette sedute: tre pressioni simultanee colpiscono il rally",
+      "url": "https://finnhub.io/api/news?id=94fc54c1e7584201c6b1078c7ded185dd52ce887c575dbdd48d098fca92e3fe8"
+    },
+    {
+      "id": "spcx-drop-26pct-20260709",
+      "ticker": "SPCX",
+      "data": "2026-07-09T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "SpaceX: il titolo cede il 26% dai massimi post-IPO, Musk perde lo status di trilionario",
+      "url": "https://finnhub.io/api/news?id=c05b01a8a457b82a3ff79b7c1a6f15d2a5549c44e2957fd2a96b1dd09c375b7c"
+    },
+    {
+      "id": "lly-novonordisk-wegovy-pill-20260709",
+      "ticker": "LLY",
+      "data": "2026-07-09T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Novo Nordisk lancia la pillola Wegovy e riapre la competizione con Eli Lilly nell'obesità",
+      "url": "https://finnhub.io/api/news?id=840cbddb211ad3a61dbdba03223eb2cf874f8da5b0b48f025699b494ac5f7406"
+    },
+    {
+      "id": "avgo-meta-ai-chip-20260709",
+      "ticker": "AVGO",
+      "data": "2026-07-09T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 63,
+      "titolo": "Meta sviluppa chip AI proprietario: Broadcom sale, Meta scende",
+      "url": "https://finnhub.io/api/news?id=9364b87717b6cec294113a9d8b3a7e005dee9fbcfa8742cee73e06c509e322f3"
     }
   ]
 }

@@ -2025,6 +2025,86 @@
       "tipo_evento": "prodotto",
       "url": "https://finnhub.io/api/news?id=d2e6ae40a9b90b4e33a7152092827e8c946f56a30295b70083a323756e7f4027",
       "data_invio": "2026-07-08T17:10:00+00:00"
+    },
+    {
+      "id": "sndk-meta-flash-deal-20260709",
+      "ticker": "SNDK",
+      "titolo": "SanDisk: contratto pluriennale confermato con Meta per la fornitura di flash storage",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=c0f055af89bdeaa32014b9581c3bda98f4dd9fdf7f9b1f7ba4deaee88703b7fd",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "intc-crash-21pct-20260709",
+      "ticker": "INTC",
+      "titolo": "Intel perde il 21% in sette sedute: tre pressioni simultanee colpiscono il rally",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=94fc54c1e7584201c6b1078c7ded185dd52ce887c575dbdd48d098fca92e3fe8",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "spcx-drop-26pct-20260709",
+      "ticker": "SPCX",
+      "titolo": "SpaceX: il titolo cede il 26% dai massimi post-IPO, Musk perde lo status di trilionario",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=c05b01a8a457b82a3ff79b7c1a6f15d2a5549c44e2957fd2a96b1dd09c375b7c",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "iran-escalation-nato-20260709",
+      "ticker": "NATO",
+      "titolo": "Iran attacca basi USA nel Golfo e in Giordania: escalation militare con 10 missili balistici",
+      "tipo_evento": "macro tematica",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOU0l1cEJNcjlUQjVYcXFjUVViTThKdnVqSGJMTUpEM2Jqem5HUGJyN1VvcEtyQUdrUnFBYWFhNXB3aEFUX2RmRHhCbXJxQ1JhX1Y1RXVyZUp3TXFlY1RFRXpLMWxHQnlQa3Q2OU1wekRWOEY4dGVzNVhQMnhYd1gyVEM0c080bUdGY01KNGJ2RW01MnlQMER1Q21EeUNfME1TVTh2aFk3TFZqMnpnOFowUzhmMWpXdUVHTmJtaXE1VkU",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "lly-novonordisk-wegovy-pill-20260709",
+      "ticker": "LLY",
+      "titolo": "Novo Nordisk lancia la pillola Wegovy e riapre la competizione con Eli Lilly nell'obesità",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=840cbddb211ad3a61dbdba03223eb2cf874f8da5b0b48f025699b494ac5f7406",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "avgo-meta-ai-chip-20260709",
+      "ticker": "AVGO",
+      "titolo": "Meta sviluppa chip AI proprietario: Broadcom sale, Meta scende",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=9364b87717b6cec294113a9d8b3a7e005dee9fbcfa8742cee73e06c509e322f3",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "jpm-q2-outlook-20260709",
+      "ticker": "JPM",
+      "titolo": "JPMorgan Chase: Wall Street pubblica le stime consenso per il Q2 2026 in attesa dei risultati",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=7b3a4dcbfdec6b449219e57bcb619c762cfd9690a64767eebb9fb00f9c49bdf0",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "amd-300b-meta-gpu-20260709",
+      "ticker": "NVDA",
+      "titolo": "AMD sigla accordo da 300 miliardi con Meta: 6 gigawatt di GPU nei data center AI",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=d3bb1cfca101b20447c7ad06ec5143e5364387eac9fcfc380f7d76639698fa5b",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "ttwo-earnings-date-q1fy27-20260709",
+      "ticker": "TTWO",
+      "titolo": "Take-Two Interactive: risultati Q1 FY27 annunciati per il 7 agosto 2026",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=6315ac1ab2545762505555f57521d972db83d458245f84136d3a3e90ced53b3a",
+      "data_invio": "2026-07-09T17:10:00+00:00"
+    },
+    {
+      "id": "msft-citi-cio-survey-20260709",
+      "ticker": "MSFT",
+      "titolo": "Microsoft confermata primo fornitore AI tra i CIO secondo il sondaggio trimestrale Citi",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=4f6692b4ec83cc102fdeb3adfa8983bb0291dc514f758680342bc83acf6906b5",
+      "data_invio": "2026-07-09T17:10:00+00:00"
     }
   ]
 }
