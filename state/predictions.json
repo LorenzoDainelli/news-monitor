@@ -3029,6 +3029,111 @@
       "rilevanza": 52,
       "titolo": "IBM e Red Hat ampliano Lightwell con nuove offerte per l'open source in era AI",
       "url": "https://finnhub.io/api/news?id=d2e6ae40a9b90b4e33a7152092827e8c946f56a30295b70083a323756e7f4027"
+    },
+    {
+      "id": "orcl-sp-downgrade-bbb",
+      "ticker": "ORCL",
+      "data": "2026-07-10",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "Oracle declassata da S&P a BBB-: il peso di 160 miliardi di debiti",
+      "url": "https://finnhub.io/api/news?id=dbffcb0dab5a7294f1984a418018e3689c5fc8e395192de3045c6d5485e6d212"
+    },
+    {
+      "id": "amzn-leo-broadband-launch",
+      "ticker": "AMZN",
+      "data": "2026-07-10",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Amazon lancia Leo Broadband: 396 satelliti operativi, sfida diretta a Starlink",
+      "url": "https://finnhub.io/api/news?id=a47182602bf40df66c189b124eef5ab342cd5976c2f44171c9efd52e7e525b53"
+    },
+    {
+      "id": "nflx-live-tv-pivot",
+      "ticker": "NFLX",
+      "data": "2026-07-10",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Netflix valuta canali live e bundle mentre l'engagement degli utenti rallenta",
+      "url": "https://finnhub.io/api/news?id=ee5a44177a70ccc104e7f20808e3b099a471f1ab0d57519129bea7c12cddc9b7"
+    },
+    {
+      "id": "sndk-skhynix-ipo-rally",
+      "ticker": "SNDK",
+      "data": "2026-07-10",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 63,
+      "titolo": "SK Hynix quota 26,5 miliardi sul Nasdaq: SanDisk e Western Digital festeggiano",
+      "url": "https://finnhub.io/api/news?id=da69f1110406925c67198610a47dbe840ffd9e2285b4c83da51d6b6029d4fa9a"
+    },
+    {
+      "id": "avgo-apple-30b-commitment",
+      "ticker": "AVGO",
+      "data": "2026-07-10",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Apple impegna 30 miliardi per i chip Broadcom; AVGO a un passo dai 2 trilioni di capitalizzazione",
+      "url": "https://finnhub.io/api/news?id=e048d03ce2c7086035dbb8ade85258b96e6e0d4c669df8be57027870b247e7e3"
+    },
+    {
+      "id": "lly-glp1-record-alzheimer",
+      "ticker": "LLY",
+      "data": "2026-07-10",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "GLP-1 ai massimi di adozione e nuovi dati Alzheimer: Eli Lilly su due fronti",
+      "url": "https://finnhub.io/api/news?id=6cc6c5f38488037e60e08c1d2aae9752974b3b3dc318b6fd86f9fde0597446d1"
+    },
+    {
+      "id": "ssnlf-dram-oversupply-hold",
+      "ticker": "SSNLF",
+      "data": "2026-07-10",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "Ciclo DRAM a rischio eccesso di offerta: avviata raccomandazione Hold su Samsung",
+      "url": "https://finnhub.io/api/news?id=c1e733518f92e2548bfcf2d1a75feb000af4b826ace22001a81df44ba3da4fad"
     }
   ]
 }
