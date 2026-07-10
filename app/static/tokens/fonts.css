@@ -1,0 +1,10 @@
+/* =========================================================================
+   MyMoney — Webfonts
+   Geist (modern grotesque) for text + Geist Mono for tickers/ISIN/code.
+   Loaded from Google Fonts. NOTE: substitution — the brief asked for an
+   "Inter/Geist-like" grotesque; Geist is the chosen family. If you want
+   fully self-hosted/offline fonts, drop the .woff2 files in assets/fonts/
+   and replace this @import with @font-face rules.
+   The @import MUST stay the first statement in this file (CSS rule).
+   ========================================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap');

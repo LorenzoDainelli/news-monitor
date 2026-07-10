@@ -138,19 +138,50 @@ def _refresh_one(ticker: str) -> None:
 
 
 def refresh_all() -> int:
-    """Aggiorna i prezzi di tutti i ticker del portafoglio. Ritorna quanti ok."""
+    """Aggiorna i prezzi di tutti i ticker del portafoglio. Ritorna quanti ok.
+
+    Nello stesso giro calcola anche la performance a ~12 mesi di ogni titolo
+    (chiusure settimanali) e la salva come snapshot: la dashboard la legge dalla
+    cache senza fare chiamate di rete a ogni apertura."""
     _FX_CACHE.clear()
     with SessionLocal() as db:
-        tickers = [p.ticker.strip() for p in db.query(Position).all() if p.ticker.strip()]
-    visti, ok = set(), 0
+        tickers = [(p.ticker or "").strip() for p in db.query(Position).all()
+                   if (p.ticker or "").strip()]
+    visti = set()
+    perf = {}
     for tk in tickers:
         if tk.upper() in visti:
             continue
         visti.add(tk.upper())
         _refresh_one(tk)
+        closes = history_closes(_yahoo_symbol(tk), "1y", "1wk")
+        if len(closes) >= 2 and closes[0]:
+            perf[tk.upper()] = round((closes[-1] / closes[0] - 1) * 100, 2)
+    _save_perf_snapshot(perf)
     with SessionLocal() as db:
         ok = db.query(Quote).filter(Quote.ok.is_(True)).count()
     return ok
+
+
+def _save_perf_snapshot(perf: dict) -> None:
+    from shared import settings_store
+    try:
+        settings_store.set_setting("perf12m_snapshot", json.dumps(
+            {"when": datetime.utcnow().isoformat(), "perf": perf}))
+    except Exception:
+        pass  # lo snapshot è un extra: mai far fallire l'aggiornamento prezzi
+
+
+def get_perf_snapshot() -> dict:
+    """{TICKER: perf% ~12 mesi} dall'ultimo refresh_all. {} se mai calcolato."""
+    from shared import settings_store
+    raw = settings_store.get_setting("perf12m_snapshot", "")
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw).get("perf", {}) or {}
+    except json.JSONDecodeError:
+        return {}
 
 
 # ----------------------------- lettura/cache ------------------------------
@@ -175,7 +206,7 @@ def is_stale(max_age_min: int = 360) -> bool:
 def fmt_ts(dt) -> str | None:
     if not dt:
         return None
-    return (dt + ROME_OFFSET).strftime("%d/%m %H:%M")
+    return (dt + ROME_OFFSET).strftime("%d/%m · %H:%M")
 
 
 # =========================================================================
@@ -261,6 +292,7 @@ def _normalize(r: dict) -> dict:
         "expense_ratio": _rawv(fees.get("annualReportExpenseRatio")),
         "div_yield": _rawv(sd.get("yield")) or _rawv(sd.get("dividendYield")) or _rawv(sd.get("trailingAnnualDividendYield")),
         "beta": _rawv(sd.get("beta")) or _rawv(sd.get("beta3Year")),
+        "pe": _rawv(sd.get("trailingPE")),
         "sector": ap.get("sector"),
         "industry": ap.get("industry"),
         "country": ap.get("country"),
@@ -315,6 +347,21 @@ def get_fundamentals(ticker: str, max_age_h: int = 24, tipo: str = "") -> dict |
     return None
 
 
+def get_fundamentals_cached(ticker: str) -> dict | None:
+    """Fondamentali SOLO dalla cache locale (mai HTTP): per le pagine che non
+    devono bloccarsi (dashboard). L'aggiornamento avviene in background."""
+    key = (ticker or "").strip().upper()
+    if not key:
+        return None
+    with SessionLocal() as db:
+        f = db.get(Fundamentals, key)
+    if f and f.ok and f.data:
+        d = json.loads(f.data)
+        d["_fetched"] = fmt_ts(f.fetched_at)
+        return d
+    return None
+
+
 def refresh_all_fundamentals(max_age_h: int = 24) -> None:
     """Scarica/aggiorna i fondamentali di tutti i ticker (per look-through e rischio)."""
     with SessionLocal() as db:
@@ -339,5 +386,19 @@ def history_closes(symbol: str, rng: str = "1y", interval: str = "1wk") -> list:
         res = json.loads(_http(url))["chart"]["result"][0]
         closes = res["indicators"]["quote"][0]["close"]
         return [c for c in closes if c is not None]
+    except Exception:
+        return []
+
+
+def history_series(symbol: str, rng: str = "1y", interval: str = "1d") -> list:
+    """Serie storica (timestamp, chiusura) per il grafico del patrimonio.
+    Lista di coppie (epoch_sec, close); [] se non disponibile."""
+    try:
+        url = (f"https://query1.finance.yahoo.com/v8/finance/chart/"
+               f"{urllib.parse.quote(symbol)}?range={rng}&interval={interval}")
+        res = json.loads(_http(url))["chart"]["result"][0]
+        ts = res.get("timestamp") or []
+        closes = res["indicators"]["quote"][0]["close"]
+        return [(t, c) for t, c in zip(ts, closes) if c is not None]
     except Exception:
         return []

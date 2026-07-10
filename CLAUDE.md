@@ -31,5 +31,9 @@ aumentarlo** e **onestà intellettuale**.
 - **Efficienza**: tieni i passi snelli, non sprecare budget di utilizzo.
 
 ## Stile output (email)
-- HTML pulito e responsive. Palette esecutiva: navy (`#1a2b4a`) e grigi, sfondo
-  chiaro, alta leggibilità. Sobrio, niente fronzoli.
+- HTML pulito e responsive. Palette **MyMoney Design System** (la stessa della
+  web app): lime pistacchio `#A6DA47` (header, con testo scuro `#1B2A05` sopra),
+  neutri caldi, sfondo chiaro `#F4F6EF`, alta leggibilità. Sobrio, niente fronzoli.
+- Il design è centralizzato in `app/emails/render.py` (usato da
+  `scripts/render_email.py`): per cambiare l'aspetto delle email si modifica QUEL
+  file, non l'HTML dentro le routine.

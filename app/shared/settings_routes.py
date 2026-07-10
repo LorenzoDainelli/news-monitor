@@ -76,4 +76,9 @@ async def salva(request: Request):
             store.set_setting(chiave, "")
         elif nuovo:
             store.set_setting(chiave, nuovo)
+    # la card "Agente AI" (freeze) salva chiave+modello+modalità con un solo bottone
+    if "modello" in form:
+        ai.set_model((form.get("modello") or "").strip())
+    if "modalita" in form:
+        ai.set_mode((form.get("modalita") or "").strip())
     return RedirectResponse("/impostazioni?salvato=1", status_code=303)

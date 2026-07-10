@@ -1,38 +1,82 @@
 <!DOCTYPE html>
+{# Shell dell'app — allineata 1:1 a design_reference/index.html (freeze v1.0):
+   UN solo foglio di stile (styles.css → @import token + mymoney.css),
+   data-theme/data-anim sul root, topbar con icone, footer disclaimer. #}
+{% from "_icons.html" import icon %}
 <html lang="{{ lang }}" data-theme="{{ theme }}" data-anim="{{ anim }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ t('app.name') }}{% endblock %}</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/static/styles.css?v={{ V }}">
+  <style>
+    /* interactive affordances for the new click targets (tokens only) — dal freeze */
+    .mm-rowbtn, .mm-titlebtn { transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+    .mm-rowbtn:hover { background: var(--hover) !important; }
+    .mm-titlebtn:hover .mm-titlename { color: var(--ink); }
+    .mm-titlebtn:hover .t-ticker { color: var(--accent-strong); }
+    .mm-titlebtn:focus-visible, .mm-rowbtn:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--r-sm); }
+    .mm-rangebtn:hover { border-color: var(--border-strong) !important; color: var(--ink) !important; }
+    .mm-aibtn { transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+    .mm-aibtn:hover { background: var(--ai) !important; color: #fff !important; border-color: var(--ai) !important; }
+    .mm-grid-3, .mm-grid-2 { display: grid; gap: 12px; }
+    .mm-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .mm-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 900px) { .mm-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .mm-grid-3, .mm-grid-2 { grid-template-columns: 1fr; } }
+    .mm-wallets { grid-template-columns: repeat(5, 1fr); }
+    @media (max-width: 1000px) { .mm-wallets { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .mm-wallets { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px) { .mm-wallets { grid-template-columns: 1fr; } }
+    /* Finance wallet cards (simple mode): distinct box + hover reveal of details */
+    .mm-wallet { position: relative; overflow: hidden; transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
+    .mm-wallet:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+    .mm-wallet .mm-reveal { max-height: 44px; opacity: 1; margin-top: 10px; overflow: hidden; }
+    /* Sortable table headers: click = asc/desc (app.js); freccia di stato */
+    th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+    th.sortable:hover { color: var(--ink); }
+    th.sortable::after { content: "↕"; margin-left: 5px; font-size: 10px; opacity: .38; }
+    th.sortable.asc::after { content: "↑"; opacity: .9; }
+    th.sortable.desc::after { content: "↓"; opacity: .9; }
+    /* Even hero-stat row (hero + 3 supporting): no lonely wrap, consistent heights */
+    .mm-stats4 { grid-template-columns: 1.7fr 1fr 1fr; }
+    .mm-stats4 > .stat.hero { grid-column: auto; }
+    @media (max-width: 900px){ .mm-stats4 { grid-template-columns: repeat(2, 1fr); } .mm-stats4 > .stat.hero { grid-column: 1 / -1; } }
+    @media (max-width: 560px){ .mm-stats4 { grid-template-columns: 1fr; } .mm-stats4 > .stat.hero { grid-column: auto; } }
+  </style>
   {% block head %}{% endblock %}
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="brand">📊 {{ t('app.name') }} <span class="dot">{{ t('brand.private') }}</span></div>
+      <div class="brand">
+        <span class="logo" aria-hidden="true" style="font-weight:800;font-size:15px;color:var(--on-accent);">M</span>
+        {{ t('app.name') }}
+      </div>
       <nav class="nav">
-        <a href="/" class="{{ 'active' if active=='home' else '' }}">{{ t('nav.dashboard') }}</a>
-        <a href="/portafoglio" class="{{ 'active' if active=='portafoglio' else '' }}">{{ t('nav.portfolio') }}</a>
-        <a href="/pac" class="{{ 'active' if active=='pac' else '' }}">{{ t('nav.pac') }}</a>
-        <a href="/analisi" class="{{ 'active' if active=='analisi' else '' }}">{{ t('nav.analisi') }}</a>
-        <a href="/finanze" class="{{ 'active' if active=='finanze' else '' }}">{{ t('nav.finance') }}</a>
-        <a href="/notizie" class="{{ 'active' if active=='notizie' else '' }}">{{ t('nav.news') }}</a>
-        <a href="/impostazioni" class="{{ 'active' if active=='impostazioni' else '' }}">{{ t('nav.settings') }}</a>
+        <a href="/" class="{{ 'active' if active=='home' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('dashboard', 15) }}{{ t('nav.dashboard') }}</span></a>
+        <a href="/portafoglio" class="{{ 'active' if active=='portafoglio' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('portfolio', 15) }}{{ t('nav.portfolio') }}</span></a>
+        <a href="/pac" class="{{ 'active' if active=='pac' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('pac', 15) }}{{ t('nav.pac') }}</span></a>
+        <a href="/analisi" class="{{ 'active' if active=='analisi' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('analisi', 15) }}{{ t('nav.analisi') }}</span></a>
+        <a href="/finanze" class="{{ 'active' if active=='finanze' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('finanze', 15) }}{{ t('nav.finance') }}</span></a>
+        <a href="/notizie" class="{{ 'active' if active=='notizie' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('notizie', 15) }}{{ t('nav.news') }}</span></a>
+        <a href="/impostazioni" class="{{ 'active' if active=='impostazioni' else '' }}"><span style="display:inline-flex;gap:6px;align-items:center;">{{ icon('impostazioni', 15) }}{{ t('nav.settings') }}</span></a>
       </nav>
       <div class="prefs">
         <form method="post" action="/preferenze">
           <input type="hidden" name="next" value="{{ cur_path }}">
           <select class="lang-select" name="lang" onchange="this.form.submit()" aria-label="{{ t('lang.label') }}">
             {% for code, native in LANGS %}
-            <option value="{{ code }}" {{ 'selected' if code==lang else '' }}>{{ native }}</option>
+            <option value="{{ code }}" {{ 'selected' if code==lang else '' }} title="{{ native }}">{{ code | upper }}</option>
             {% endfor %}
           </select>
         </form>
         <form method="post" action="/preferenze">
           <input type="hidden" name="next" value="{{ cur_path }}">
           <input type="hidden" name="theme" value="{{ 'dark' if theme=='light' else 'light' }}">
-          <button type="submit" class="theme-btn" title="{{ t('theme.toggle') }}">{{ '🌙' if theme=='light' else '☀️' }}</button>
+          <button type="submit" class="theme-btn" title="{{ t('theme.toggle') }}">{{ icon('moon' if theme=='light' else 'sun', 17) }}</button>
         </form>
       </div>
     </div>
@@ -44,7 +88,7 @@
 
   <footer class="disclaimer">{{ t('disclaimer.text') }}</footer>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v={{ V }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

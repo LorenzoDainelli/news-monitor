@@ -3,24 +3,31 @@
 Importato da tutte le pagine, cosi' lo stile e i filtri (€, %, quantita') sono
 identici ovunque.
 """
+import time
+
 from fastapi.templating import Jinja2Templates
 
 from shared.config import APP_DIR
 from shared import formatting
 from shared import i18n, prefs
 
+# versione degli asset statici: cambia a ogni avvio, così CSS/JS aggiornati
+# non restano bloccati nella cache euristica del browser (?v=... nei link)
+ASSET_V = str(int(time.time()))
+
 
 def _global_context(request):
     """Inietta in OGNI pagina: traduttore (t), lingua e tema correnti, elenco lingue
     e il percorso corrente (per tornare qui dopo aver cambiato lingua/tema)."""
-    lang = prefs.get_lang()
+    ui = prefs.get_ui()          # tema+lingua+animazioni in una sola query
     return {
-        "t": i18n.make_translator(lang),
-        "lang": lang,
-        "theme": prefs.get_theme(),
-        "anim": prefs.get_anim(),
+        "t": i18n.make_translator(ui["lang"]),
+        "lang": ui["lang"],
+        "theme": ui["theme"],
+        "anim": ui["anim"],
         "LANGS": i18n.LANGS,
         "cur_path": request.url.path,
+        "V": ASSET_V,
     }
 
 

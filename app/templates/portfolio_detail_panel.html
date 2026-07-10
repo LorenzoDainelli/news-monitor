@@ -1,16 +1,12 @@
 {# ============================================================================
-   Dettaglio posizione — PAGINA intera (per URL diretto / senza JS).
-   L'apertura normale è il DRAWER sopra il portafoglio (portfolio_detail_panel
-   via ?panel=1, vedi app.js). Il corpo è condiviso: _position_detail_body.
+   Dettaglio posizione — contenuto del DRAWER (PositionDetail.jsx): header
+   sticky con ticker + pill + ISIN + bottone X, poi il corpo condiviso.
+   Restituito da GET /portafoglio/{id}?panel=1 e iniettato da app.js
+   nell'aside scorrevole. NIENTE base.html: è un frammento.
    ============================================================================ #}
-{% extends "base.html" %}
 {% from "_icons.html" import icon %}
-{% block title %}{{ p.nome }} — {{ t('app.name') }}{% endblock %}
-{% block content %}
-  <div class="actions" style="margin-bottom:10px;"><a href="/portafoglio" class="btn sm ghost">{{ icon('back', 15) }} {{ t('detail.back') }}</a></div>
-
-  {# ---------- header (come il drawer del freeze) ---------- #}
-  <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;">
+<div style="position:sticky;top:0;z-index:2;background:var(--glass-bg-strong,var(--surface));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 20px;">
+  <div style="display:flex;align-items:flex-start;gap:12px;">
     <div style="flex:1;min-width:0;">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <span class="t-ticker" style="font-size:var(--text-2xl);letter-spacing:var(--ls-tight);">{{ p.ticker or p.nome }}</span>
@@ -20,8 +16,10 @@
       <div style="color:var(--muted);margin-top:2px;">{{ p.nome }}</div>
       {% if p.isin %}<div class="faint" style="font-family:var(--font-mono);font-size:12px;margin-top:4px;">ISIN {{ p.isin }}</div>{% endif %}
     </div>
-    <a href="/portafoglio/{{ p.id }}/modifica" class="btn ghost icon-only" aria-label="{{ t('btn.edit') }}" title="{{ t('btn.edit') }}">{{ icon('edit', 18) }}</a>
+    <a href="/portafoglio/{{ p.id }}/modifica" class="btn ghost icon-only" aria-label="{{ t('btn.edit') }}" title="{{ t('btn.edit') }}">{{ icon('edit', 16) }}</a>
+    <button type="button" class="btn ghost icon-only" data-drawer-close aria-label="{{ t('pf.btn_close') }}">{{ icon('x', 18) }}</button>
   </div>
-
+</div>
+<div style="padding:18px 20px 28px;">
   {% include "_position_detail_body.html" %}
-{% endblock %}
+</div>

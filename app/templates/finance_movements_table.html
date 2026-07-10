@@ -1,25 +1,37 @@
+{# Tabella movimenti (design freeze): Data · Tipo (pill) · Importo con segno ·
+   Portafoglio · Categoria · Descrizione · cestino con conferma INLINE.
+   Header cliccabili = ordinamento asc/desc lato client (app.js, th.sortable);
+   il server consegna già tutto in ordine di data e ora decrescenti. #}
+{% from "_icons.html" import icon %}
 <div class="table-wrap">
   <table>
     <thead><tr>
-      <th>{{ t('fin.date') }}</th><th>{{ t('fin.type') }}</th><th class="num">{{ t('fin.amount') }}</th>
-      <th>{{ t('fin.wallet') }}</th><th>{{ t('fin.category') }}</th><th>{{ t('fin.description') }}</th><th style="width:1%;"></th>
+      <th class="sortable desc" data-type="text">{{ t('fin.date') }}</th>
+      <th class="sortable" data-type="text">{{ t('fin.type') }}</th>
+      <th class="num sortable" data-type="num">{{ t('fin.amount') }}</th>
+      <th class="sortable" data-type="text">{{ t('fin.wallet') }}</th>
+      <th class="sortable" data-type="text">{{ t('fin.category') }}</th>
+      <th class="sortable" data-type="text">{{ t('fin.description') }}</th>
+      <th style="width:1%;"></th>
     </tr></thead>
     <tbody>
     {% for m in movimenti %}
       {% set tt = m.t.tipo %}
       <tr>
-        <td>{{ m.t.data.strftime('%d/%m/%Y %H:%M') }}</td>
-        <td><span class="pill {{ 'green' if tt=='entrata' else 'red' if tt=='uscita' else 'gray' }}">{{ t('fin.' ~ tt) }}</span></td>
-        <td class="num" style="color:{{ 'var(--pos)' if tt=='entrata' else 'var(--neg)' if tt=='uscita' else 'inherit' }};">
+        <td data-s="{{ m.t.data.isoformat() }}"><span class="muted">{{ m.t.data.strftime('%d/%m') }} · {{ m.t.data.strftime('%H:%M') }}</span></td>
+        <td data-s="{{ t('fin.' ~ tt) }}"><span class="pill {{ 'green' if tt=='entrata' else 'red' if tt=='uscita' else 'gray' }}">{{ t('fin.' ~ tt) }}</span></td>
+        <td class="num {{ 'pos' if tt=='entrata' else 'neg' if tt=='uscita' else '' }}" style="font-weight:600;"
+            data-s="{{ m.t.importo if tt=='entrata' else (0 - m.t.importo) if tt=='uscita' else m.t.importo }}">
           {{ '+' if tt=='entrata' else ('−' if tt=='uscita' else '') }}{{ m.t.importo | eur }}
         </td>
         <td>{{ m.wallet }}{% if m.wallet_to %} → {{ m.wallet_to }}{% endif %}</td>
-        <td>{{ m.categoria or '—' }}</td>
+        <td><span class="muted">{{ m.categoria or '—' }}</span></td>
         <td>{{ m.t.descrizione or '—' }}{% if m.t.metodo %} <span class="faint">· {{ m.t.metodo }}</span>{% endif %}</td>
         <td class="num">
-          <form method="post" action="/finanze/movimenti/{{ m.t.id }}/elimina" class="js-confirm" data-msg="{{ t('fin.confirm_delete_mov') }}">
+          <form method="post" action="/finanze/movimenti/{{ m.t.id }}/elimina" class="js-confirm"
+                data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:0;">
             <input type="hidden" name="next" value="{{ cur_path }}">
-            <button type="submit" class="btn sm danger">{{ t('btn.delete') }}</button>
+            <button type="submit" class="btn sm danger icon-only" aria-label="{{ t('btn.delete') }}" title="{{ t('btn.delete') }}">{{ icon('trash', 15) }}</button>
           </form>
         </td>
       </tr>

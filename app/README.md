@@ -1,9 +1,9 @@
-# App finanza personale (locale)
+# MyMoney — App finanza personale (locale)
 
-Applicazione personale che unisce **portafoglio investimenti** e (in arrivo)
-**finanze personali**, con un agente AI condiviso. Gira in locale sul PC, gratis,
-e si apre nel browser. Vive nello stesso repo del news-monitor, ma è separata:
-il robot-notizie continua a girare per conto suo nel cloud, l'app lo leggerà soltanto.
+Applicazione personale che unisce **portafoglio investimenti** e **finanze
+personali**, con un agente AI condiviso (Gemini, opzionale). Gira in locale sul
+PC, gratis, e si apre nel browser. Vive nello stesso repo del news-monitor, ma è
+separata: il robot-notizie gira per conto suo nel cloud e l'app lo legge soltanto.
 
 ## Come si avvia
 Doppio click su **`Avvia-Finanza.bat`** (nella cartella sopra a questa).
@@ -13,17 +13,21 @@ Doppio click su **`Avvia-Finanza.bat`** (nella cartella sopra a questa).
 
 Serve solo **Python 3** già installato (verificato: 3.11). Nessun'altra installazione.
 
-## Cosa c'è adesso (Fase 1)
-- **Portafoglio**: 36 titoli + Take-Two precaricati; aggiungi/modifica/elimina da interfaccia.
-- **Calcolatore PAC**: ripartisce l'importo mensile per % target, con controlli su 100% e arrotondamenti.
-- **Impostazioni**: inserimento chiavi API (opzionali), salvate solo in locale.
-- Tutto **offline**: nessun dato da internet in questa fase.
+## Cosa c'è
+- **Dashboard**: patrimonio con grafico per periodo (1G→MAX), spesa media, saldo
+  del mese, migliori/peggiori, dividendi stimati, notizie dal monitor, punto
+  della settimana (AI) ed esposizione per settore.
+- **Portafoglio**: posizioni con prezzi live (Yahoo), dettaglio in pannello
+  (fondamentali, holdings, analisi AI), tabella ordinabile.
+- **PAC**: ripartisce l'importo mensile per % target, ricalcolo live.
+- **Analisi**: look-through, settori, geografia, valute, metriche di rischio, spiegazioni ✨AI.
+- **Finanze**: conti e carte reali (AIB, Hype, Revolut, Trade Republic, contanti,
+  PAC), movimenti con inserimento anche in linguaggio naturale (AI), sintesi del mese.
+- **Notizie**: le card del news-monitor, aggiornate da GitHub a ogni avvio.
+- **Impostazioni**: aspetto, lingua (6), agente AI Gemini. La chiave resta solo in locale.
 
-## Prossime fasi
-2. Prezzi e dati di mercato (yfinance + Stooq, Finnhub free) · dashboard look-through · metriche di rischio.
-3. Finanze personali: portafogli, entrate/uscite, trasferimenti, categorie.
-4. Agente AI condiviso (Gemini) con filtro privacy per sezione.
-5. Sezione Notizie: legge il report del news-monitor con le stesse card delle email.
+A ogni avvio l'app aggiorna da sola, in background: notizie, prezzi,
+fondamentali e la serie del grafico del patrimonio.
 
 ## Struttura
 ```
@@ -31,15 +35,17 @@ app/
   main.py            avvio FastAPI, collega le pagine
   run.py             fa partire il server e apre il browser
   requirements.txt   librerie (gratuite)
-  shared/            database, config, stile, impostazioni, formattazione
-  portfolio/         posizioni, precarico, calcolatore PAC
-  finance/           (Fase 3)
-  templates/         pagine HTML (stile delle email)
-  static/            style.css (il linguaggio visivo navy/grigi)
+  shared/            database, config, i18n, impostazioni, agente AI
+  portfolio/         posizioni, prezzi/fondamentali, analisi, PAC, patrimonio
+  finance/           conti, categorie, movimenti, sintesi del mese
+  news/              lettura del news-monitor (sola lettura)
+  emails/            layout condiviso delle email del monitor
+  templates/         pagine HTML (design system MyMoney)
+  static/            styles.css + tokens/ + mymoney.css (design freeze v1.0)
   data/              database locale + chiavi  ← MAI su GitHub (.gitignore)
 ```
 
 ## Privacy
 - I dati finanziari e le chiavi API stanno **solo** in `app/data/` (escluso dal repo).
 - Il server ascolta solo su `127.0.0.1` (il PC stesso), non è esposto alla rete.
-- Nessun dato esce dal PC finché non attiverai l'agente AI (e anche allora con filtro privacy).
+- All'agente AI arrivano solo dati aggregati e anonimi (mai ISIN, quantità o IBAN).

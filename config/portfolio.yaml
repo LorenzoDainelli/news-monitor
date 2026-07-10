@@ -9,8 +9,8 @@
 #   borsa            mercato/quotazione di riferimento
 #   peso             peso in portafoglio (%)
 #   priorita         alta | bassa   (alta = passerà anche dagli event-check;
-#                    NB: non ancora attiva — gli event-check arrivano in Fase 4.
-#                    Per ora TUTTO è coperto dai due report giornalieri.)
+#                    (alta = coperta anche dagli event-check infragiornalieri;
+#                    tutto il resto passa dai report giornalieri)
 #   tag              etichette tematiche per filtrare
 
 titoli:
@@ -28,7 +28,7 @@ titoli:
     nome: iShares Core S&P 500 UCITS ETF USD (Acc)
     tipo: etf
     borsa: Borsa Italiana/Xetra
-    peso: 5.5
+    peso: 6
     priorita: bassa
     tag: [USA, large-cap, core]
   - isin: IE00B53SZB19
@@ -36,7 +36,7 @@ titoli:
     nome: iShares Nasdaq 100 UCITS ETF (Acc)
     tipo: etf
     borsa: Borsa Italiana/Xetra
-    peso: 2.5
+    peso: 2
     priorita: bassa
     tag: [USA, tech, growth]
   - isin: IE00BK5BR626
@@ -118,7 +118,7 @@ titoli:
     nome: SpaceX
     tipo: azione
     borsa: NASDAQ                # IPO 12 giugno 2026, ticker SPCX
-    peso: 2.75
+    peso: 2
     priorita: alta
     tag: [spazio, difesa]
   - isin: US67066G1040
@@ -126,7 +126,7 @@ titoli:
     nome: NVIDIA
     tipo: azione
     borsa: NASDAQ
-    peso: 2.5
+    peso: 3
     priorita: alta
     tag: [semiconduttori, AI]
   - isin: US8740391003
@@ -134,7 +134,7 @@ titoli:
     nome: Taiwan Semiconductor (TSMC)
     tipo: azione
     borsa: NYSE (ADR)
-    peso: 2.5
+    peso: 3
     priorita: alta
     tag: [semiconduttori]
   - isin: US5949181045
@@ -142,7 +142,7 @@ titoli:
     nome: Microsoft
     tipo: azione
     borsa: NASDAQ
-    peso: 2.25
+    peso: 2
     priorita: alta
     tag: [tech, cloud, AI]
   - isin: US02079K3059
@@ -150,7 +150,7 @@ titoli:
     nome: Alphabet (Google) Class C
     tipo: azione
     borsa: NASDAQ
-    peso: 2.25
+    peso: 2
     priorita: alta
     tag: [tech, AI, pubblicita]
   - isin: US11135F1012
@@ -174,15 +174,15 @@ titoli:
     nome: Oracle
     tipo: azione
     borsa: NYSE
-    peso: 1.75
+    peso: 1
     priorita: alta
     tag: [tech, cloud, database]
-  - isin: ""                  # SanDisk (SNDK) — ISIN da confermare dopo lo spin-off
+  - isin: US80004C2008
     ticker: SNDK
     nome: SanDisk
     tipo: azione
     borsa: NASDAQ
-    peso: 1
+    peso: 2
     priorita: alta
     tag: [hardware, storage, memorie]
   - isin: US9581021055
@@ -190,7 +190,7 @@ titoli:
     nome: Western Digital
     tipo: azione
     borsa: NASDAQ
-    peso: 0.75
+    peso: 2
     priorita: alta
     tag: [hardware, storage]
   - isin: US0378331005
@@ -198,7 +198,7 @@ titoli:
     nome: Apple
     tipo: azione
     borsa: NASDAQ
-    peso: 1.5
+    peso: 2
     priorita: alta
     tag: [tech, hardware, AI]
   - isin: US7960508882
@@ -206,7 +206,7 @@ titoli:
     nome: Samsung Electronics (GDR)
     tipo: azione
     borsa: OTC / Corea (005930.KS)
-    peso: 1.5
+    peso: 1
     priorita: alta
     tag: [semiconduttori, hardware]
   - isin: US69608A1088
@@ -214,7 +214,7 @@ titoli:
     nome: Palantir Technologies
     tipo: azione
     borsa: NASDAQ
-    peso: 1.5
+    peso: 1
     priorita: alta
     tag: [software, AI, difesa]
   - isin: US46625H1005
@@ -222,7 +222,7 @@ titoli:
     nome: JPMorgan Chase
     tipo: azione
     borsa: NYSE
-    peso: 1.25
+    peso: 1
     priorita: alta
     tag: [banche, finanza]
   - isin: US5324571083
@@ -230,7 +230,7 @@ titoli:
     nome: Eli Lilly
     tipo: azione
     borsa: NYSE
-    peso: 1.25
+    peso: 1
     priorita: alta
     tag: [farma, salute]
   - isin: US0311621009
@@ -238,7 +238,7 @@ titoli:
     nome: Amgen
     tipo: azione
     borsa: NASDAQ
-    peso: 1.25
+    peso: 1
     priorita: alta
     tag: [farma, biotech]
   - isin: US0231351067
@@ -305,19 +305,11 @@ titoli:
     peso: 1
     priorita: alta
     tag: [farma, salute]
-  - isin: US42328H1095
-    ticker: HLIO
-    nome: Helios Technologies
-    tipo: azione
-    borsa: NYSE
-    peso: 1
-    priorita: alta
-    tag: [industriale, componentistica]
   - isin: US8740541094
     ticker: TTWO
     nome: Take-Two Interactive
     tipo: azione
     borsa: NASDAQ
-    peso: 0.3      # PAC ~1 euro/mese
+    peso: 1
     priorita: alta
     tag: [gaming, media]

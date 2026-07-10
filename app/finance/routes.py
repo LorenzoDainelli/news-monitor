@@ -1,4 +1,6 @@
-"""Pagine delle finanze: panoramica, movimenti, portafogli, categorie."""
+"""Pagine delle finanze: la panoramica è l'unica pagina (card portafogli,
+movimento nuovo, sintesi del mese, TUTTI i movimenti)."""
+import json
 from datetime import datetime
 
 from fastapi import APIRouter, Request, Form
@@ -6,41 +8,43 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 
 from shared.templating import templates
 from shared.parsing import to_float, to_datetime
-from shared import ai
+from shared import ai, settings_store
 from finance import service
-from finance.models import TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO, TIPI_WALLET
+from finance.models import TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO
 
 router = APIRouter()
 
 
 def _oggi_local():
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
+    # ora LOCALE del PC (l'app è locale): utcnow() precompilava il form 1-2 ore indietro
+    return datetime.now().strftime("%Y-%m-%dT%H:%M")
+
+
+def _lettura_ai_salvata():
+    """L'ultima 'lettura AI' delle finanze, se generata (persistente)."""
+    raw = settings_store.get_setting("fin_ai", "")
+    if not raw:
+        return None
+    try:
+        saved = json.loads(raw)
+        return {"text": saved.get("text", ""), "conf": saved.get("conf", "media")}
+    except json.JSONDecodeError:
+        return None
 
 
 def _ctx_panoramica() -> dict:
-    now = datetime.utcnow()
+    now = datetime.now()
     return {
         "active": "finanze",
         "saldi": service.saldi(),
         "riep": service.riepilogo_mese(now.year, now.month),
-        "movimenti": service.lista_movimenti(limit=8),
+        "movimenti": service.lista_movimenti(),      # TUTTI, data desc
         "wallets": service.wallets(),
         "categorie": service.categorie(),
         "tipi": (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO),
         "oggi": _oggi_local(),
         "ai_on": ai.is_configured(),
-    }
-
-
-def _ctx_movimenti() -> dict:
-    return {
-        "active": "finanze",
-        "movimenti": service.lista_movimenti(limit=300),
-        "wallets": service.wallets(),
-        "categorie": service.categorie(),
-        "tipi": (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO),
-        "oggi": _oggi_local(),
-        "ai_on": ai.is_configured(),
+        "lettura_ai": _lettura_ai_salvata(),
     }
 
 
@@ -48,12 +52,6 @@ def _ctx_movimenti() -> dict:
 @router.get("/finanze", response_class=HTMLResponse)
 def panoramica(request: Request):
     return templates.TemplateResponse(request, "finance_overview.html", _ctx_panoramica())
-
-
-# ------------------------------ movimenti ------------------------------
-@router.get("/finanze/movimenti", response_class=HTMLResponse)
-def movimenti(request: Request):
-    return templates.TemplateResponse(request, "finance_transactions.html", _ctx_movimenti())
 
 
 @router.post("/finanze/movimenti/salva")
@@ -75,11 +73,6 @@ def salva_movimento(
             wallet_id=wallet_id, wallet_to_id=wto, categoria_nome=categoria,
             metodo=metodo, descrizione=descrizione)
     dest = next if next.startswith("/finanze") else "/finanze"
-    # autoplay della scena sul portafoglio toccato (il board legge ?play=&dir=)
-    if tipo in (TIPO_ENTRATA, TIPO_USCITA):
-        d = "in" if tipo == TIPO_ENTRATA else "out"
-        sep = "&" if "?" in dest else "?"
-        dest = f"{dest}{sep}play={wallet_id}&dir={d}"
     return RedirectResponse(dest, status_code=303)
 
 
@@ -92,15 +85,15 @@ def elimina_movimento(tid: int, next: str = Form("/finanze")):
 
 # ------------------------------ agente AI (Fase 4) ------------------------------
 @router.post("/finanze/ai/parse", response_class=HTMLResponse)
-def ai_parse(request: Request, testo: str = Form(""), next: str = Form("/finanze/movimenti")):
+def ai_parse(request: Request, testo: str = Form(""), next: str = Form("/finanze")):
     """Interpreta una frase ('ieri 20€ di benzina con la carta') e mostra il modulo
     movimenti PRECOMPILATO. Non salva nulla: la conferma resta all'utente."""
-    ctx = _ctx_movimenti()
+    ctx = _ctx_panoramica()
     ctx["proposta"] = ai.parse_movimento(testo, ctx["wallets"], ctx["categorie"])
     # il modulo precompilato deve tornare a una pagina GET reale dopo il salvataggio
     # (cur_path qui sarebbe /finanze/ai/parse, che non ha una GET)
-    ctx["next_url"] = "/finanze/movimenti"
-    return templates.TemplateResponse(request, "finance_transactions.html", ctx)
+    ctx["next_url"] = "/finanze"
+    return templates.TemplateResponse(request, "finance_overview.html", ctx)
 
 
 def _mesi_indietro(now, k):
@@ -114,7 +107,7 @@ def _mesi_indietro(now, k):
 def _contesto_finanze() -> str:
     """Riassunto AGGREGATO e anonimo degli ultimi 3 mesi per l'analisi AI.
     Niente nomi/carte/IBAN: solo totali e categorie."""
-    now = datetime.utcnow()
+    now = datetime.now()
     righe = []
     for k in (2, 1, 0):
         y, m = _mesi_indietro(now, k)
@@ -129,74 +122,13 @@ def _contesto_finanze() -> str:
     return "\n".join(righe)
 
 
-@router.post("/finanze/ai/analisi", response_class=HTMLResponse)
-def ai_analisi(request: Request):
-    """Analisi descrittiva del mese (dati aggregati e anonimi). Mostra il risultato
-    in panoramica, con confidenza e disclaimer."""
-    ctx = _ctx_panoramica()
-    ctx["analisi"] = ai.analizza_finanze(_contesto_finanze())
-    return templates.TemplateResponse(request, "finance_overview.html", ctx)
-
-
-# ------------------------------ portafogli ------------------------------
-@router.get("/finanze/portafogli", response_class=HTMLResponse)
-def portafogli(request: Request):
-    return templates.TemplateResponse(request, "finance_wallets.html", {
-        "active": "finanze", "saldi": service.saldi(), "tipi": TIPI_WALLET, "edit": None,
-    })
-
-
-@router.get("/finanze/portafogli/{wid}/modifica", response_class=HTMLResponse)
-def portafoglio_modifica(request: Request, wid: int):
-    w = service.get_wallet(wid)
-    if not w:
-        return RedirectResponse("/finanze/portafogli", status_code=303)
-    return templates.TemplateResponse(request, "finance_wallets.html", {
-        "active": "finanze", "saldi": service.saldi(), "tipi": TIPI_WALLET, "edit": w,
-    })
-
-
-@router.post("/finanze/portafogli/salva")
-def salva_portafoglio(wid: str = Form(""), nome: str = Form(...), tipo: str = Form("altro"),
-                      saldo_iniziale: str = Form("0"), note: str = Form("")):
-    si = to_float(saldo_iniziale, 0.0) or 0.0
-    tipo = tipo if tipo in TIPI_WALLET else "altro"
-    if wid.strip().isdigit():
-        service.aggiorna_wallet(int(wid), nome, tipo, si, note)
-    else:
-        service.crea_wallet(nome, tipo, si, note)
-    return RedirectResponse("/finanze/portafogli", status_code=303)
-
-
-@router.post("/finanze/portafogli/{wid}/elimina")
-def elimina_portafoglio(wid: int):
-    service.elimina_wallet(wid)
-    return RedirectResponse("/finanze/portafogli", status_code=303)
-
-
-# ------------------------------ categorie ------------------------------
-@router.get("/finanze/categorie", response_class=HTMLResponse)
-def categorie(request: Request):
-    return templates.TemplateResponse(request, "finance_categories.html", {
-        "active": "finanze", "categorie": service.categorie(),
-    })
-
-
-@router.post("/finanze/categorie/{cid}/rinomina")
-def rinomina_categoria(cid: int, nome: str = Form(...)):
-    if nome.strip():
-        service.rinomina_categoria(cid, nome)
-    return RedirectResponse("/finanze/categorie", status_code=303)
-
-
-@router.post("/finanze/categorie/{cid}/unisci")
-def unisci_categoria(cid: int, a_id: str = Form("")):
-    if a_id.strip().isdigit():
-        service.unisci_categorie(cid, int(a_id))
-    return RedirectResponse("/finanze/categorie", status_code=303)
-
-
-@router.post("/finanze/categorie/{cid}/elimina")
-def elimina_categoria(cid: int):
-    service.elimina_categoria(cid)
-    return RedirectResponse("/finanze/categorie", status_code=303)
+@router.post("/finanze/ai/analisi")
+def ai_analisi():
+    """Analisi descrittiva del mese (dati aggregati e anonimi): la genera,
+    la SALVA (resta visibile come 'Lettura AI') e torna in panoramica."""
+    res = ai.analizza_finanze(_contesto_finanze())
+    if res.get("ok"):
+        settings_store.set_setting("fin_ai", json.dumps({
+            "text": res["text"], "conf": res.get("conf", "media"),
+            "when": datetime.now().isoformat(timespec="minutes")}))
+    return RedirectResponse("/finanze", status_code=303)

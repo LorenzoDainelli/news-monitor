@@ -3,15 +3,18 @@
 Crea le tabelle, precarica il portafoglio la prima volta, collega le pagine.
 Si avvia con run.py (o col doppio click su Avvia-Finanza.bat).
 """
+import json
 import threading
+from datetime import datetime
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from shared.config import APP_DIR, APP_NAME
 from shared.db import Base, engine
 from shared.templating import templates
+from shared import ai, settings_store
 
 # Importa i modelli PRIMA di create_all, cosi' le tabelle vengono registrate.
 import shared.settings_store          # noqa: F401  -> tabella shared_settings
@@ -19,32 +22,41 @@ import portfolio.models               # noqa: F401  -> tabella portfolio_positio
 from portfolio import market          # noqa: F401  -> tabella portfolio_quotes
 import finance.models                 # noqa: F401  -> tabelle finance_*
 
-from portfolio import seed
+from portfolio import seed, analytics, wealth
 from portfolio import service as pf_service
 from portfolio.routes import router as portfolio_router
 from finance import service as fin_service
-from finance.routes import router as finance_router
+from finance.routes import router as finance_router, _contesto_finanze
 from shared.settings_routes import router as settings_router
 from shared.prefs_routes import router as prefs_router
+from news import reader
 from news.routes import router as news_router
 
 # --- preparazione database (una tantum) ---
 Base.metadata.create_all(bind=engine)
+fin_service.migra_schema()             # colonne nuove su DB esistenti (es. colore)
+seed.migra_schema()                    # idem per il portafoglio (es. nome_breve)
 seed.seed_if_empty()
+seed.applica_nomi_brevi()              # nomi corti degli ETF anche su DB già popolati
 fin_service.seed_wallets_if_empty()
+fin_service.assicura_wallet_brand()    # conti/carte reali (AIB, Hype, Revolut, TR), mai generici
 
 
-# --- aggiornamento prezzi all'apertura, in background (non blocca l'avvio) ---
-def _refresh_prezzi_bg():
+# --- a OGNI avvio aggiorna TUTTI i dati, in background (non blocca l'avvio) ---
+def _refresh_dati_bg():
     try:
-        if market.is_stale():
-            market.refresh_all()
-        market.refresh_all_fundamentals()   # holdings/settori/dividendi (cache 24h)
+        reader.refresh_from_origin()        # notizie: ultimo stato dal repo GitHub
     except Exception:
-        pass  # mai far fallire l'avvio per i prezzi: si riproverà
+        pass
+    try:
+        market.refresh_all()                # prezzi live, sempre
+        market.refresh_all_fundamentals()   # holdings/settori/dividendi (cache 24h)
+        wealth.get_cached()                 # serie del grafico patrimonio
+    except Exception:
+        pass  # mai far fallire l'avvio per i dati: si riproverà
 
 
-threading.Thread(target=_refresh_prezzi_bg, daemon=True).start()
+threading.Thread(target=_refresh_dati_bg, daemon=True).start()
 
 # --- app web ---
 app = FastAPI(title=APP_NAME)
@@ -56,9 +68,126 @@ app.include_router(prefs_router)
 app.include_router(news_router)
 
 
+# --------------------------- dashboard (design MyMoney) ---------------------------
+def _dashboard_ctx() -> dict:
+    """Contesto della dashboard (design freeze v1.0): hero (patrimonio, spesa
+    media, saldo), grafico patrimonio per range, migliori/peggiori, notizie,
+    dividendi, punto della settimana AI, esposizione per settore."""
+    vista = pf_service.vista_portafoglio()
+    sal = fin_service.saldi()
+    now = datetime.now()
+    riep = fin_service.riepilogo_mese(now.year, now.month)
+    inv_tot = vista["totale"]
+    liq = sal["totale"]
+    snapshot = market.get_perf_snapshot()
+
+    # perf ~12 mesi degli investimenti: media pesata sui titoli con storia nota
+    num = den = 0.0
+    for r in vista["righe"]:
+        p = r["p"]
+        pf = snapshot.get((p.ticker or "").upper())
+        if pf is None:
+            continue
+        w = r["valore"] or (p.pct_target if not p.is_fisso else 0)
+        if not w:
+            continue
+        num += w * pf
+        den += w
+    inv_perf = round(num / den, 2) if den else None
+    gain12m = None
+    if inv_perf is not None and inv_tot:
+        gain12m = round(inv_tot * (inv_perf / 100) / (1 + inv_perf / 100), 2)
+
+    # migliori e peggiori del portafoglio (2 + 2, click → dettaglio)
+    movers = []
+    if snapshot:
+        rows = [(r["p"], snapshot.get((r["p"].ticker or "").upper())) for r in vista["righe"]]
+        rows = [(p, pf) for p, pf in rows if pf is not None]
+        rows.sort(key=lambda x: x[1], reverse=True)
+        sel = rows[:2] + [x for x in rows[-2:] if x not in rows[:2]]
+        movers = [{"id": p.id, "tk": p.ticker, "name": p.nome_vista, "pl": pf} for p, pf in sel]
+
+    # dividendi: reddito stimato dai rendimenti reali (solo coi valori inseriti)
+    dividendi = None
+    if vista["ha_totale"]:
+        div_rows, div_tot = [], 0.0
+        for r in vista["righe"]:
+            p = r["p"]
+            if not r["valore"] or not (p.ticker or "").strip():
+                continue
+            f = market.get_fundamentals_cached(p.ticker)
+            if f and f.get("div_yield"):
+                annuo = r["valore"] * f["div_yield"]
+                div_tot += annuo
+                div_rows.append({"id": p.id, "tk": p.ticker, "annuo": round(annuo, 2)})
+        if div_tot > 0:
+            div_rows.sort(key=lambda x: -x["annuo"])
+            dividendi = {
+                "annuo": round(div_tot, 2),
+                "mese": round(div_tot / 12, 2),
+                "resa": round(div_tot / inv_tot * 100, 2) if inv_tot else None,
+                "top": div_rows[:3],
+                "top_max": div_rows[0]["annuo"] if div_rows else 1.0,
+            }
+
+    # esposizione per settore: look-through dalla sola cache (mai HTTP qui)
+    settori = []
+    try:
+        settori = analytics.look_through(cached_only=True)["settori"][:7]
+    except Exception:
+        pass
+
+    ai_read = None
+    raw = settings_store.get_setting("dash_ai", "")
+    if raw:
+        try:
+            saved = json.loads(raw)
+            ai_read = {"text": saved.get("text", ""), "conf": saved.get("conf", "media")}
+        except json.JSONDecodeError:
+            pass
+
+    news = [{"ticker": c["ticker"], "titolo": c["titolo"],
+             "tipo": c["tipo_evento"] or "news", "fonte": c["fonte"],
+             "data": c["data_it"], "rilevanza": int(c["rilevanza"] or 0)}
+            for c in reader.news_cards(limit=3)]
+
+    # grafico del patrimonio: serie per range dalla cache (rebuild in background)
+    w = wealth.get_cached()
+
+    return {
+        "patrimonio": round(inv_tot + liq, 2),
+        "perf12m": inv_perf, "gain12m": gain12m, "updated": vista["ultimo_agg"],
+        "spesa_media": round(riep["uscite"] / 30, 2),
+        "saldo_mese": riep["saldo"], "entrate": riep["entrate"], "uscite": riep["uscite"],
+        "movers": movers, "dividendi": dividendi, "settori": settori,
+        "wealth": (w or {}).get("ranges") or {},
+        "ai": ai_read, "news": news,
+        "ai_on": ai.is_configured(),
+    }
+
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(request, "dashboard.html", {
         "active": "home",
-        "r": pf_service.riepilogo(),
+        "d": _dashboard_ctx(),
     })
+
+
+@app.post("/dashboard/ai")
+def dashboard_ai():
+    """Genera 'il punto della settimana' (dati aggregati e anonimi) e lo salva."""
+    contesto = _contesto_finanze()
+    try:
+        lt = analytics.look_through()
+        settori = ", ".join(f"{s['key']} {s['pct']}%" for s in lt["settori"][:6])
+        contesto += (f"\nPortafoglio investimenti: {lt['n_titoli']} titoli; "
+                     f"settori principali: {settori or 'n/d'}.")
+    except Exception:
+        pass  # senza look-through l'analisi resta valida sui soli dati finanze
+    res = ai.punto_settimana(contesto)
+    if res.get("ok"):
+        settings_store.set_setting("dash_ai", json.dumps({
+            "text": res["text"], "conf": res["conf"],
+            "when": datetime.now().isoformat(timespec="minutes")}))
+    return RedirectResponse("/", status_code=303)

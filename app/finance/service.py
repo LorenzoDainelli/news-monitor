@@ -8,29 +8,90 @@ l'agente AI (Fase 4): qui l'inserimento e' manuale e strutturato.
 """
 from datetime import datetime
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
-from shared.db import SessionLocal
+from shared.db import SessionLocal, engine
 from finance.models import (Wallet, Category, Transaction,
                             TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO)
 
-# Portafogli tipici precaricati la prima volta (li puoi rinominare/eliminare).
+# Viola ufficiale AIB (Pantone 520 C) — la "strisciolina" brand della card.
+AIB_COLORE = "#632874"
+
+# Conti e carte REALI, mai generici (richiesta utente): nome -> (tipo, accento
+# brand). I colori di Hype/Revolut/Trade Republic sono copiati 1:1 dal design
+# (design_reference/data.js: accent '#12B3A6' / '#5B5BD6' / '#334155').
+WALLET_BRAND = {
+    "AIB": ("conto", AIB_COLORE),
+    "Hype": ("carta", "#12B3A6"),
+    "Revolut": ("carta", "#5B5BD6"),
+    "Trade Republic": ("carta", "#334155"),
+}
+
+# Wallet generici delle prime versioni, da togliere: via se mai usati,
+# archiviati (dati preservati) se hanno movimenti o un saldo di apertura.
+WALLET_GENERICI = ("Carta di credito", "Conto corrente")
+
+# Portafogli precaricati la prima volta (li puoi rinominare/eliminare).
 SEED_WALLETS = [
-    ("Contanti", "contanti"),
-    ("Carta di credito", "carta"),
-    ("Conto corrente", "conto"),
-    ("PAC investimenti", "investimento"),
+    ("Contanti", "contanti", ""),
+    ("Hype", "carta", WALLET_BRAND["Hype"][1]),
+    ("Revolut", "carta", WALLET_BRAND["Revolut"][1]),
+    ("Trade Republic", "carta", WALLET_BRAND["Trade Republic"][1]),
+    ("AIB", "conto", AIB_COLORE),
+    ("PAC investimenti", "investimento", ""),
 ]
+
+
+def migra_schema():
+    """Colonne aggiunte dopo la prima release: create_all non altera le tabelle
+    esistenti, quindi le aggiungiamo qui (idempotente, SQLite)."""
+    with engine.connect() as c:
+        cols = [r[1] for r in c.execute(text("PRAGMA table_info(finance_wallets)"))]
+        if cols and "colore" not in cols:
+            c.execute(text("ALTER TABLE finance_wallets ADD COLUMN colore VARCHAR(20) DEFAULT ''"))
+            c.commit()
 
 
 def seed_wallets_if_empty() -> int:
     with SessionLocal() as db:
         if db.query(Wallet).first() is not None:
             return 0
-        for i, (nome, tipo) in enumerate(SEED_WALLETS):
-            db.add(Wallet(nome=nome, tipo=tipo, saldo_iniziale=0.0, ordine=i))
+        for i, (nome, tipo, colore) in enumerate(SEED_WALLETS):
+            db.add(Wallet(nome=nome, tipo=tipo, saldo_iniziale=0.0, ordine=i,
+                          colore=colore))
         db.commit()
         return len(SEED_WALLETS)
+
+
+def assicura_wallet_brand() -> None:
+    """Allinea i portafogli ai conti/carte REALI anche su un DB già popolato:
+    crea quelli brand che mancano (AIB, Hype, Revolut, Trade Republic, con il
+    loro accento), completa il colore se assente e toglie i generici 'Carta di
+    credito' / 'Conto corrente' (eliminati se mai usati, altrimenti archiviati
+    così nessun movimento va perso)."""
+    with SessionLocal() as db:
+        per_nome = {(w.nome or "").strip().lower(): w for w in db.query(Wallet).all()}
+        ultimo = db.query(Wallet).order_by(Wallet.ordine.desc()).first()
+        ordine = (ultimo.ordine + 1) if ultimo else 0
+        for nome, (tipo, colore) in WALLET_BRAND.items():
+            w = per_nome.get(nome.lower())
+            if w is None:
+                db.add(Wallet(nome=nome, tipo=tipo, saldo_iniziale=0.0,
+                              ordine=ordine, colore=colore))
+                ordine += 1
+            elif not (w.colore or "").strip():
+                w.colore = colore
+        for nome in WALLET_GENERICI:
+            w = per_nome.get(nome.lower())
+            if w is None or w.archiviato:
+                continue
+            usato = db.query(Transaction).filter(
+                (Transaction.wallet_id == w.id) | (Transaction.wallet_to_id == w.id)).first()
+            if usato or (w.saldo_iniziale or 0.0):
+                w.archiviato = True
+            else:
+                db.delete(w)
+        db.commit()
 
 
 # ------------------------------ wallet ------------------------------
@@ -60,51 +121,18 @@ def _saldi_map(db) -> dict:
 
 
 def saldi():
-    """Lista (wallet, saldo) per i wallet attivi, piu' il patrimonio totale."""
+    """Lista (wallet, saldo) per i wallet attivi, piu' il patrimonio totale.
+    Ordine delle card: saldo decrescente, ma il PAC (tipo 'investimento')
+    resta SEMPRE per ultimo, come richiesto."""
     with SessionLocal() as db:
         smap = _saldi_map(db)
         ws = list(db.execute(
             select(Wallet).where(Wallet.archiviato.is_(False)).order_by(Wallet.ordine, Wallet.id)
         ).scalars().all())
     righe = [{"w": w, "saldo": round(smap.get(w.id, 0.0), 2)} for w in ws]
+    righe.sort(key=lambda r: (r["w"].tipo == "investimento", -r["saldo"]))
     totale = round(sum(r["saldo"] for r in righe), 2)
     return {"righe": righe, "totale": totale}
-
-
-def crea_wallet(nome, tipo, saldo_iniziale, note=""):
-    with SessionLocal() as db:
-        ultimo = db.query(Wallet).order_by(Wallet.ordine.desc()).first()
-        db.add(Wallet(nome=nome.strip(), tipo=tipo, saldo_iniziale=saldo_iniziale or 0.0,
-                      note=note.strip(), ordine=(ultimo.ordine + 1) if ultimo else 0))
-        db.commit()
-
-
-def aggiorna_wallet(wid, nome, tipo, saldo_iniziale, note=""):
-    with SessionLocal() as db:
-        w = db.get(Wallet, wid)
-        if w:
-            w.nome, w.tipo, w.saldo_iniziale, w.note = nome.strip(), tipo, saldo_iniziale or 0.0, note.strip()
-            db.commit()
-
-
-def elimina_wallet(wid):
-    """Elimina un wallet solo se non ha movimenti; altrimenti lo archivia."""
-    with SessionLocal() as db:
-        usato = db.query(Transaction).filter(
-            (Transaction.wallet_id == wid) | (Transaction.wallet_to_id == wid)).first()
-        w = db.get(Wallet, wid)
-        if not w:
-            return
-        if usato:
-            w.archiviato = True
-        else:
-            db.delete(w)
-        db.commit()
-
-
-def get_wallet(wid):
-    with SessionLocal() as db:
-        return db.get(Wallet, wid)
 
 
 # ------------------------------ categorie ------------------------------
@@ -131,37 +159,6 @@ def _get_or_create_categoria(db, nome, kind=""):
     return c.id
 
 
-def rinomina_categoria(cid, nuovo_nome):
-    with SessionLocal() as db:
-        c = db.get(Category, cid)
-        if c:
-            c.nome = nuovo_nome.strip()
-            db.commit()
-
-
-def unisci_categorie(da_id, a_id):
-    """Sposta i movimenti dalla categoria 'da' alla 'a' e archivia 'da'."""
-    if da_id == a_id:
-        return
-    with SessionLocal() as db:
-        db.query(Transaction).filter(Transaction.category_id == da_id).update(
-            {Transaction.category_id: a_id})
-        c = db.get(Category, da_id)
-        if c:
-            c.archiviato = True
-        db.commit()
-
-
-def elimina_categoria(cid):
-    with SessionLocal() as db:
-        db.query(Transaction).filter(Transaction.category_id == cid).update(
-            {Transaction.category_id: None})
-        c = db.get(Category, cid)
-        if c:
-            db.delete(c)
-        db.commit()
-
-
 # ------------------------------ movimenti ------------------------------
 def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
                    categoria_nome="", metodo="", descrizione=""):
@@ -171,7 +168,7 @@ def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
             cat_id = _get_or_create_categoria(
                 db, categoria_nome, "entrata" if tipo == TIPO_ENTRATA else "uscita")
         db.add(Transaction(
-            tipo=tipo, data=data or datetime.utcnow(), importo=abs(importo or 0.0),
+            tipo=tipo, data=data or datetime.now(), importo=abs(importo or 0.0),
             wallet_id=wallet_id,
             wallet_to_id=wallet_to_id if tipo == TIPO_TRASFERIMENTO else None,
             category_id=cat_id if tipo != TIPO_TRASFERIMENTO else None,
@@ -187,7 +184,9 @@ def elimina_movimento(tid):
             db.commit()
 
 
-def lista_movimenti(limit=100, mese=None, anno=None):
+def lista_movimenti(limit=None, mese=None, anno=None):
+    """Movimenti ordinati per data e ora decrescenti; senza `limit` li
+    restituisce TUTTI (la tabella in pagina mostra l'intero registro)."""
     with SessionLocal() as db:
         wn = {w.id: w.nome for w in db.query(Wallet).all()}
         cn = {c.id: c.nome for c in db.query(Category).all()}
@@ -195,7 +194,9 @@ def lista_movimenti(limit=100, mese=None, anno=None):
         if anno and mese:
             start, end = _range_mese(anno, mese)
             q = q.where(Transaction.data >= start, Transaction.data < end)
-        rows = list(db.execute(q.limit(limit)).scalars().all())
+        if limit:
+            q = q.limit(limit)
+        rows = list(db.execute(q).scalars().all())
     return [{
         "t": t,
         "wallet": wn.get(t.wallet_id, "—"),
@@ -208,6 +209,73 @@ def _range_mese(anno, mese):
     start = datetime(anno, mese, 1)
     end = datetime(anno + (1 if mese == 12 else 0), 1 if mese == 12 else mese + 1, 1)
     return start, end
+
+
+def _liquidita_walk():
+    """Base (saldi di apertura dei wallet attivi) + effetti ordinati per data
+    dei movimenti reali sulla liquidità. Nessuna stima: solo il registro."""
+    with SessionLocal() as db:
+        attivi = {w.id for w in db.query(Wallet).filter(Wallet.archiviato.is_(False)).all()}
+        base = sum(w.saldo_iniziale or 0.0 for w in db.query(Wallet).all()
+                   if w.id in attivi)
+        txs = [(t.data, t.tipo, t.importo or 0.0, t.wallet_id, t.wallet_to_id)
+               for t in db.query(Transaction).all()]
+
+    def effetto(tipo, imp, wid, wto):
+        e = 0.0
+        if tipo == TIPO_ENTRATA and wid in attivi:
+            e += imp
+        elif tipo == TIPO_USCITA and wid in attivi:
+            e -= imp
+        elif tipo == TIPO_TRASFERIMENTO:
+            if wid in attivi:
+                e -= imp
+            if wto in attivi:
+                e += imp
+        return e
+
+    txs.sort(key=lambda x: x[0])
+    return base, [(d, effetto(tp, imp, wid, wto)) for d, tp, imp, wid, wto in txs]
+
+
+def liquidita_alle_date(dates) -> list[float]:
+    """Liquidità totale (wallet attivi) a ciascuna delle date indicate (ordinate
+    crescenti), ricostruita dai movimenti: usata dal grafico del patrimonio."""
+    base, effetti = _liquidita_walk()
+    out, cum, i = [], base, 0
+    for b in dates:
+        while i < len(effetti) and effetti[i][0] < b:
+            cum += effetti[i][1]
+            i += 1
+        out.append(round(cum, 2))
+    return out
+
+
+def prima_data_movimento():
+    """Data del primo movimento registrato (None se il registro è vuoto)."""
+    with SessionLocal() as db:
+        t = db.query(Transaction).order_by(Transaction.data).first()
+        return t.data if t else None
+
+
+def serie_liquidita_12m() -> list[float]:
+    """Liquidità totale (wallet attivi) a fine di ognuno degli ultimi 12 mesi,
+    RICOSTRUITA dai movimenti reali. Ultimo punto = oggi. Niente stime."""
+    now = datetime.now()
+    bounds = []
+    for k in range(11, 0, -1):
+        y, m = _mesi_indietro_ym(now, k - 1)   # inizio del mese successivo al k-esimo
+        bounds.append(datetime(y, m, 1))
+    bounds.append(now)
+    return liquidita_alle_date(bounds)
+
+
+def _mesi_indietro_ym(now, k):
+    y, m = now.year, now.month - k
+    while m <= 0:
+        m += 12
+        y -= 1
+    return y, m
 
 
 def riepilogo_mese(anno, mese):

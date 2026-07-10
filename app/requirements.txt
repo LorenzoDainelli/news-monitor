@@ -1,6 +1,6 @@
 # Dipendenze dell'app finanza personale (tutte gratuite, installate in locale).
-# Fase 0+1: solo il necessario per far girare l'interfaccia offline.
-# Le librerie per i dati di mercato (yfinance, ecc.) arriveranno in Fase 2.
+# Il necessario per far girare l'app in locale; i dati di mercato
+# arrivano via HTTP (Yahoo Finance), senza librerie aggiuntive.
 fastapi>=0.110
 uvicorn[standard]>=0.29
 jinja2>=3.1

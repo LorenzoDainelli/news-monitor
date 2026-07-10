@@ -23,10 +23,10 @@ Leggi `config/settings.yaml`, `config/portfolio.yaml`, `state/seen.json`,
   nessuna voce di `seen.json` negli ultimi 7 giorni. Raggruppali per tipo e usa il
   `quiet = {"azioni": [nomi], "etf": [nomi brevi]}`.
   **Azioni**: usa il `nome`. **ETF**: usa SEMPRE questi nomi brevi (mai il ticker) —
-  IWDA=Core MSCI World, CSPX=S&P 500, CNDX=Nasdaq 100, VHYL=High Dividend,
-  XDWH=World Health Care, NATO=Future of Defence, NUKL=Uranio & Nucleare,
-  XDWM=World Materials, GIFL=Global Infrastructure, UKRN=Ukraine Reconstruction,
-  HEAL=Healthcare Innovation.
+  IWDA=Global ETF, CSPX=S&P 500, CNDX=Nasdaq 100, VHYL=Dividend ETF,
+  XDWH=Pharmaceutical ETF, NATO=Defense ETF, NUKL=Nuclear & Uranium ETF,
+  XDWM=Materials ETF, GIFL=Infrastructure ETF, UKRN=Ukraine Reconstruction ETF,
+  HEAL=MedTech ETF.
 
 ## Passo 3 — Costruisci `report.json` e invia
 Struttura (stessa del report, con i campi extra `note` e `quiet`):

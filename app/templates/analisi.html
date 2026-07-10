@@ -1,57 +1,61 @@
+{# ============================================================================
+   Analisi (design MyMoney): sintesi → rischio → diversificazione/stile →
+   settori/look-through. Ogni metrica ha il bottone ✨ che apre un popup con
+   l'analisi qualitativa dell'agente (POST /analisi/ai). Valori mancanti = "—".
+   ============================================================================ #}
 {% extends "base.html" %}
 {% block title %}{{ t('analisi.title') }} — {{ t('app.name') }}{% endblock %}
+
+{% macro aibtn(label, value) -%}
+  {%- if ai_on %}<button type="button" class="mm-aibtn" data-label="{{ label }}" data-value="{{ value }}" aria-label="{{ t('an.ai_title') }}" title="{{ t('an.ai_title') }}" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;cursor:pointer;border:1px solid var(--ai-bd);background:var(--ai-bg);color:var(--ai);border-radius:999px;flex:none;padding:0;font-size:12px;">✨</button>{% endif -%}
+{%- endmacro %}
+
+{% macro metric(label, value, sub='', tone='') -%}
+  <div style="border:1px solid var(--border);border-radius:var(--r-md);padding:13px 14px;background:var(--surface);display:flex;flex-direction:column;gap:2px;min-width:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <span class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ label }}</span>
+      {{ aibtn(label, value) }}
+    </div>
+    <div class="num" style="font-size:var(--text-xl);font-weight:800;letter-spacing:var(--ls-tight);color:{{ 'var(--neg)' if tone=='warn' else 'var(--pos)' if tone=='ok' else 'var(--ink)' }};">{{ value }}</div>
+    {% if sub %}<div class="faint" style="font-size:12px;">{{ sub }}</div>{% endif %}
+  </div>
+{%- endmacro %}
+
+{% macro sechead(eyebrow, title) -%}
+  <div style="margin-bottom:12px;">
+    <div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:700;">{{ eyebrow }}</div>
+    <div class="card-title" style="margin:2px 0 0;">{{ title }}</div>
+  </div>
+{%- endmacro %}
+
 {% block content %}
-  <div class="page-title">{{ t('analisi.title') }}</div>
-  <p class="page-sub">{{ t('analisi.subtitle') }} <span class="ai-label">{{ t('analisi.ai_descr') }}</span></p>
+  <div class="page-title">{{ t('analisi.title') }} <span class="ai-label" style="vertical-align:middle;">look-through</span></div>
+  <p class="page-sub">{{ t('analisi.subtitle') }}{% if ai_on %} · <span class="muted">{{ t('an.ai_hint') }}</span>{% endif %}</p>
 
-  <!-- sintesi -->
-  <div class="grid">
-    <div class="stat {{ 'warn' if lt.tech_alert else 'ok' }}">
-      <div class="k">{{ t('analisi.tech_conc') }}</div>
-      <div class="v">{{ lt.tech | pct }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('analisi.tech_alert') if lt.tech_alert else t('analisi.tech_ok') }}</div>
-    </div>
-    <div class="stat">
-      <div class="k">{{ t('analisi.div_yield') }}</div>
-      <div class="v">{{ lt.div_yield | pct if lt.div_yield is not none else '—' }}</div>
-    </div>
-    <div class="stat">
-      <div class="k">{{ t('analisi.diversification') }}</div>
-      <div class="v">{{ lt.eff_holdings }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('analisi.div_hint') }}</div>
+  {# ---------- Sintesi ---------- #}
+  <div class="card" style="margin-top:4px;">
+    {{ sechead(t('an.sintesi_h'), t('an.sintesi_t')) }}
+    <div class="mm-grid-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;">
+      {{ metric(t('an.valore'), (an.valore_totale | eur) if an.valore_totale is not none else '—') }}
+      {{ metric(t('an.perf'), ('+' if an.perf12m >= 0 else '') ~ (an.perf12m | pct) if an.perf12m is not none else '—', '', ('ok' if an.perf12m >= 0 else 'warn') if an.perf12m is not none else '') }}
+      {{ metric(t('an.divyield'), (an.div_yield | pct) if an.div_yield is not none else '—') }}
+      {% if an.div_income is not none %}{{ metric(t('an.divincome'), an.div_income | eur, t('an.divincome_sub')) }}{% endif %}
+      {{ metric(t('an.ter'), (an.ter | pct) if an.ter is not none else '—', t('an.ter_sub')) }}
+      {{ metric(t('an.eff'), (lt.eff_holdings | qty) if lt.eff_holdings else '—', t('an.eff_sub')) }}
     </div>
   </div>
 
-  <!-- esposizione settoriale -->
-  <div class="card navy" style="margin-top:18px;">
-    <div class="card-h">{{ t('analisi.sector_exposure') }}</div>
-    <div class="muted" style="font-size:12px;margin-bottom:10px;">{{ t('analisi.sector_note', cop=lt.coperto, tot=lt.totale_target) }}</div>
-    {% if lt.settori %}
-      {% for s in lt.settori %}
-      <div style="margin:6px 0;">
-        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:2px;">
-          <span>{{ t.sector(s.key) }}</span><span class="muted">{{ s.pct | pct }}</span>
-        </div>
-        <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;">
-          <div style="height:9px;width:{{ s.pct }}%;background:var(--accent);"></div>
-        </div>
-      </div>
-      {% endfor %}
-    {% else %}
-      <div class="faint">{{ t('pf.unavailable') }}</div>
-    {% endif %}
-    <p class="faint" style="font-size:12px;margin-top:12px;">{{ t('analisi.geo_note') }}</p>
-  </div>
-
-  <!-- metriche di rischio -->
+  {# ---------- Rischio ---------- #}
   <div class="card" style="margin-top:16px;">
-    <div class="card-h">{{ t('analisi.risk_h') }}</div>
+    {{ sechead(t('an.rischio_h'), t('an.rischio_t')) }}
     {% if risk %}
-      <div class="grid" style="margin-top:8px;">
-        <div class="stat"><div class="k">{{ t('analisi.vol') }}</div><div class="v">{{ risk.vol | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.vol_hint') }}</div></div>
-        <div class="stat warn"><div class="k">{{ t('analisi.mdd') }}</div><div class="v" style="color:var(--neg);">{{ risk.mdd | pct }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.mdd_hint') }}</div></div>
-        <div class="stat"><div class="k">{{ t('analisi.sharpe') }}</div><div class="v">{{ risk.sharpe if risk.sharpe is not none else '—' }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.sharpe_hint') }}</div></div>
-        <div class="stat"><div class="k">{{ t('analisi.beta') }}</div><div class="v">{{ risk.beta if risk.beta is not none else '—' }}</div><div class="muted" style="font-size:12px;margin-top:4px;">{{ t('analisi.beta_hint') }}</div></div>
+      <div class="mm-grid-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;">
+        {{ metric(t('analisi.vol'), risk.vol | pct, t('analisi.vol_hint')) }}
+        {{ metric(t('analisi.mdd'), risk.mdd | pct, t('analisi.mdd_hint'), 'warn') }}
+        {{ metric(t('analisi.sharpe'), risk.sharpe if risk.sharpe is not none else '—', t('analisi.sharpe_hint')) }}
+        {{ metric(t('analisi.beta'), risk.beta if risk.beta is not none else '—', t('analisi.beta_hint')) }}
+        {% if risk.var95m is defined and risk.var95m is not none %}{{ metric(t('an.var'), '−' ~ (risk.var95m | pct), t('an.var_sub'), 'warn') }}{% endif %}
+        {% if risk.r2 is defined and risk.r2 is not none %}{{ metric(t('an.r2'), risk.r2 | pct, t('an.r2_sub')) }}{% endif %}
       </div>
       <p class="faint" style="font-size:12px;margin-top:10px;">{{ t('analisi.risk_meta', n=risk.n, weeks=risk.weeks, when=risk.when) }}</p>
     {% else %}
@@ -61,4 +65,161 @@
       <button type="submit" class="btn">{{ t('analisi.btn_recompute') if risk else t('analisi.btn_compute') }}</button>
     </form>
   </div>
+
+  {# ---------- Diversificazione + Stile ---------- #}
+  <div class="row2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px;align-items:stretch;">
+    <div class="card" style="margin:0;">
+      {{ sechead(t('an.divers_h'), t('an.divers_t')) }}
+      <div class="mm-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+        {{ metric(t('analisi.tech_conc'), lt.tech | pct, t('analisi.tech_alert') if lt.tech_alert else t('analisi.tech_ok'), 'warn' if lt.tech_alert else 'ok') }}
+        {{ metric(t('an.top5'), (an.top5 | pct) if an.top5 is not none else '—', t('an.top5_sub')) }}
+        {{ metric(t('an.top1'), (an.top1 | pct) if an.top1 is not none else '—', an.top1_tk) }}
+        {{ metric(t('an.nsett'), lt.settori | length, t('an.nsett_sub')) }}
+      </div>
+    </div>
+    <div class="card" style="margin:0;">
+      {{ sechead(t('an.stile_h'), t('an.stile_t')) }}
+      {% if an.quota_etf is not none %}
+      {% set etfq = an.quota_etf %}
+      <div style="display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;">
+        <div title="{{ t('an.etf_core') }} · {{ etfq }}%" style="width:{{ etfq }}%;background:var(--accent);"></div>
+        <div title="{{ t('an.azioni') }} · {{ (100 - etfq) | round(1) }}%" style="width:{{ (100 - etfq) | round(1) }}%;background:var(--surface-alt);"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;">
+        <div style="display:flex;align-items:center;gap:7px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--accent);flex:none;"></span><span class="muted" style="font-size:12px;flex:1;">{{ t('an.etf_core') }}</span><span class="num" style="font-size:12px;font-weight:600;">{{ etfq | pct }}</span></div>
+        <div style="display:flex;align-items:center;gap:7px;"><span style="width:9px;height:9px;border-radius:2px;background:var(--surface-alt);flex:none;"></span><span class="muted" style="font-size:12px;flex:1;">{{ t('an.azioni') }}</span><span class="num" style="font-size:12px;font-weight:600;">{{ (100 - etfq) | round(1) | pct }}</span></div>
+      </div>
+      {% else %}<div class="faint">{{ t('pf.unavailable') }}</div>{% endif %}
+    </div>
+  </div>
+
+  {# ---------- Settori + Look-through ---------- #}
+  <div class="row2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px;align-items:stretch;">
+    <div class="card" style="margin:0;">
+      {{ sechead(t('an.compos_h'), t('analisi.sector_exposure')) }}
+      {% if lt.settori %}
+      <div style="display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;">
+        {% for s in lt.settori %}<div title="{{ t.sector(s.key) }} · {{ s.pct }}%" style="width:{{ s.pct }}%;background:color-mix(in oklab, var(--accent) {{ [100 - loop.index0 * 13, 18] | max }}%, var(--surface-alt));"></div>{% endfor %}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;">
+        {% for s in lt.settori %}
+        <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+          <span style="width:9px;height:9px;border-radius:2px;background:color-mix(in oklab, var(--accent) {{ [100 - loop.index0 * 13, 18] | max }}%, var(--surface-alt));flex:none;"></span>
+          <span class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">{{ t.sector(s.key) }}</span>
+          <span class="num" style="font-size:12px;font-weight:600;color:var(--ink);">{{ s.pct | pct }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="muted" style="font-size:12px;margin-top:10px;">{{ t('analisi.sector_note', cop=lt.coperto, tot=lt.totale_target) }}</div>
+      {% else %}<div class="faint">{{ t('pf.unavailable') }}</div>{% endif %}
+    </div>
+    <div class="card" style="margin:0;">
+      {{ sechead(t('an.look_h'), t('an.look_t')) }}
+      {% if an.look %}
+      {% for r in an.look %}
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;min-width:0;">
+        <span style="flex:0 0 auto;max-width:120px;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.n }}</span>
+        <div style="flex:1;height:7px;background:var(--surface-alt);border-radius:999px;overflow:hidden;"><div style="height:100%;width:{{ (r.w / an.look_max * 100) | round(1) }}%;background:var(--accent);border-radius:999px;"></div></div>
+        <span class="num muted" style="flex:0 0 44px;text-align:right;font-size:11px;">{{ r.w | pct }}</span>
+      </div>
+      {% endfor %}
+      <p class="faint" style="font-size:12px;margin-top:8px;">{{ t('an.look_note') }}</p>
+      {% else %}<div class="faint">{{ t('pf.unavailable') }}</div>{% endif %}
+    </div>
+  </div>
+
+  {# ---------- Geografia + Valuta ---------- #}
+  <div class="row2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px;align-items:stretch;">
+    <div class="card" style="margin:0;">
+      {{ sechead(t('an.geo_h'), t('an.geo_t')) }}
+      {% if an.geo %}
+      <div style="display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;">
+        {% for g in an.geo %}<div title="{{ g.n }} · {{ g.w }}%" style="width:{{ g.w }}%;background:color-mix(in oklab, var(--accent) {{ [100 - loop.index0 * 13, 18] | max }}%, var(--surface-alt));"></div>{% endfor %}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;">
+        {% for g in an.geo %}
+        <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+          <span style="width:9px;height:9px;border-radius:2px;background:color-mix(in oklab, var(--accent) {{ [100 - loop.index0 * 13, 18] | max }}%, var(--surface-alt));flex:none;"></span>
+          <span class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">{{ g.n }}</span>
+          <span class="num" style="font-size:12px;font-weight:600;color:var(--ink);">{{ g.w | pct(0) }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="faint" style="font-size:12px;margin-top:12px;">{{ t('an.geo_note', pct=(an.geo_coverage | pct)) }}</p>
+      {% else %}<div class="faint">{{ t('pf.unavailable') }}</div>{% endif %}
+    </div>
+    <div class="card" style="margin:0;">
+      {{ sechead(t('an.val_h'), t('an.val_t')) }}
+      {% if an.valute %}
+      <div style="display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;">
+        {% for v in an.valute %}<div title="{{ v.n }} · {{ v.w }}%" style="width:{{ v.w }}%;background:color-mix(in oklab, var(--accent) {{ [100 - loop.index0 * 13, 18] | max }}%, var(--surface-alt));"></div>{% endfor %}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;">
+        {% for v in an.valute %}
+        <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+          <span style="width:9px;height:9px;border-radius:2px;background:color-mix(in oklab, var(--accent) {{ [100 - loop.index0 * 13, 18] | max }}%, var(--surface-alt));flex:none;"></span>
+          <span class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">{{ v.n }}</span>
+          <span class="num" style="font-size:12px;font-weight:600;color:var(--ink);">{{ v.w | pct(0) }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="faint" style="font-size:12px;margin-top:12px;">{{ t('an.val_note') }}</p>
+      {% else %}<div class="faint">{{ t('pf.unavailable') }}</div>{% endif %}
+    </div>
+  </div>
+
+  <p class="faint" style="font-size:12px;margin-top:16px;">{{ t('an.footer') }}</p>
+
+  {# ---------- modal ✨ (vanilla JS) ---------- #}
+  {% if ai_on %}
+  <div id="ai-modal" role="dialog" aria-modal="true" style="display:none;position:fixed;inset:0;z-index:70;padding:20px;">
+    <div id="ai-modal-bg" style="position:absolute;inset:0;background:rgba(20,26,12,.4);backdrop-filter:blur(2px);"></div>
+    <div style="position:relative;width:min(460px,96vw);margin:10vh auto 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <span class="ai-label">✨ {{ t('an.ai_title') }}</span>
+        <button type="button" id="ai-modal-x" aria-label="×" style="display:grid;place-items:center;width:30px;height:30px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;">×</button>
+      </div>
+      <div class="muted" id="ai-modal-label" style="font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-top:14px;"></div>
+      <div class="num" id="ai-modal-value" style="font-size:var(--text-2xl);font-weight:800;letter-spacing:var(--ls-tight);color:var(--ink);line-height:1.1;"></div>
+      <p id="ai-modal-text" class="muted" style="margin:12px 0 0;line-height:var(--lh-relaxed);"></p>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+        <span class="pill gray" id="ai-modal-conf" style="text-transform:none;"></span>
+        <span class="faint" style="font-size:12px;">{{ t('an.ai_disc') }}</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if ai_on %}
+<script>
+(function () {
+  var modal = document.getElementById('ai-modal');
+  if (!modal) return;
+  var lbl = document.getElementById('ai-modal-label'), val = document.getElementById('ai-modal-value'),
+      txt = document.getElementById('ai-modal-text'), conf = document.getElementById('ai-modal-conf');
+  function close() { modal.style.display = 'none'; }
+  document.getElementById('ai-modal-x').addEventListener('click', close);
+  document.getElementById('ai-modal-bg').addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.mm-aibtn');
+    if (!b) return;
+    lbl.textContent = b.dataset.label; val.textContent = b.dataset.value;
+    txt.textContent = {{ t('an.ai_wait') | tojson }}; conf.textContent = '…';
+    modal.style.display = 'block';
+    var fd = new FormData();
+    fd.append('label', b.dataset.label); fd.append('valore', b.dataset.value);
+    fetch('/analisi/ai', { method: 'POST', body: fd })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.ok) { txt.textContent = j.text; conf.textContent = {{ t('dash.conf') | tojson }} + ': ' + j.conf; }
+        else { txt.textContent = {{ t('an.ai_err') | tojson }}; conf.textContent = '—'; }
+      })
+      .catch(function () { txt.textContent = {{ t('an.ai_err') | tojson }}; conf.textContent = '—'; });
+  });
+})();
+</script>
+{% endif %}
 {% endblock %}

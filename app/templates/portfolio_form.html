@@ -7,9 +7,16 @@
   <form class="form" method="post" action="/portafoglio/salva">
     {% if p %}<input type="hidden" name="pos_id" value="{{ p.id }}">{% endif %}
 
-    <div class="field">
-      <label>{{ t('form.name') }}</label>
-      <input type="text" name="nome" required value="{{ p.nome if p else '' }}" placeholder="{{ t('form.ph_name') }}">
+    <div class="row2">
+      <div class="field">
+        <label>{{ t('form.name') }}</label>
+        <input type="text" name="nome" required value="{{ p.nome if p else '' }}" placeholder="{{ t('form.ph_name') }}">
+      </div>
+      <div class="field">
+        <label>{{ t('form.short_name') }}</label>
+        <input type="text" name="nome_breve" value="{{ p.nome_breve if p else '' }}" placeholder="{{ t('form.ph_optional') }}">
+        <div class="hint">{{ t('form.hint_short') }}</div>
+      </div>
     </div>
 
     <div class="row3">

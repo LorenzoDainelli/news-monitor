@@ -1,21 +1,51 @@
-"""Precarico del portafoglio iniziale (36 asset = 100% + Take-Two a importo fisso).
+"""Precarico del portafoglio iniziale (37 asset, somma target = 100%).
 
-Fonte delle percentuali: l'allocazione target indicata dall'utente.
+Fonte delle percentuali: l'allocazione target indicata dall'utente
+(aggiornata il 10/07/2026: niente più importi fissi, solo percentuali).
 Fonte di ticker/ISIN: l'anagrafica gia' verificata in config/portfolio.yaml del
 news-monitor (cosi' la lista e' scritta una volta sola).
 
 I dati di DETTAGLIO (prezzi, AUM, TER, holdings...) NON sono qui e NON vanno mai
-inventati: arriveranno dalle fonti dati in Fase 2. Qui c'e' solo l'anagrafica.
+inventati: arrivano dalle fonti dati. Qui c'e' solo l'anagrafica.
 """
-from shared.db import SessionLocal
+from sqlalchemy import text
+
+from shared.db import SessionLocal, engine
 from portfolio.models import Position, TIPO_ETF, TIPO_AZIONE
+
+# Nomi CORTI per le tabelle (scelti dall'utente, senza la parola "ETF"):
+# il nome ufficiale completo resta in `nome` e compare nella scheda di dettaglio.
+NOMI_BREVI = {
+    "IWDA": "Global",
+    "CSPX": "S&P 500",
+    "CNDX": "Nasdaq 100",
+    "VHYL": "Dividend",
+    "XDWH": "Pharmaceutical",
+    "NATO": "Defense",
+    "NUKL": "Nuclear & Uranium",
+    "XDWM": "Materials",
+    "GIFL": "Infrastructure",
+    "UKRN": "Ukraine Reconstruction",
+    "HEAL": "MedTech",
+}
+
+
+def migra_schema():
+    """Colonne aggiunte dopo la prima release (create_all non altera le tabelle
+    esistenti): idempotente, SQLite."""
+    with engine.connect() as c:
+        cols = [r[1] for r in c.execute(text("PRAGMA table_info(portfolio_positions)"))]
+        if cols and "nome_breve" not in cols:
+            c.execute(text("ALTER TABLE portfolio_positions ADD COLUMN nome_breve VARCHAR(80) DEFAULT ''"))
+            c.commit()
+
 
 # (nome, tipo, categoria, ticker, isin, pct_target, importo_fisso, note)
 SEED = [
     # ===================== ETF (somma 60%) =====================
     ("iShares Core MSCI World UCITS ETF USD (Acc)", TIPO_ETF, "Azionario globale", "IWDA", "IE00B4L5Y983", 20.0, None, ""),
-    ("iShares Core S&P 500 UCITS ETF USD (Acc)", TIPO_ETF, "Azionario USA", "CSPX", "IE00B5BMR087", 5.5, None, ""),
-    ("iShares Nasdaq 100 UCITS ETF (Acc)", TIPO_ETF, "Tech USA", "CNDX", "IE00B53SZB19", 2.5, None, ""),
+    ("iShares Core S&P 500 UCITS ETF USD (Acc)", TIPO_ETF, "Azionario USA", "CSPX", "IE00B5BMR087", 6.0, None, ""),
+    ("iShares Nasdaq 100 UCITS ETF (Acc)", TIPO_ETF, "Tech USA", "CNDX", "IE00B53SZB19", 2.0, None, ""),
     ("Vanguard FTSE All-World High Dividend Yield UCITS ETF (Acc)", TIPO_ETF, "Dividendi globali", "VHYL", "IE00BK5BR626", 6.0, None, ""),
     ("Xtrackers MSCI World Health Care UCITS ETF 1C", TIPO_ETF, "Sanita'", "XDWH", "IE00BM67HK77", 4.0, None, ""),
     ("HANetf Future of Defence UCITS ETF (NATO)", TIPO_ETF, "Difesa", "NATO", "IE000OJ5TQP4", 4.0, None, ""),
@@ -27,23 +57,24 @@ SEED = [
 
     # ===================== AZIONI (somma 40%) =====================
     ("ASML Holding", TIPO_AZIONE, "Semiconduttori", "ASML", "NL0010273215", 3.0, None, ""),
-    ("SpaceX", TIPO_AZIONE, "Spazio & difesa", "SPCX", "US84615Q1031", 2.75, None,
-     "Neo-quotata su Nasdaq dal 12 giugno 2026: alta volatilita' post-IPO. "
-     "Annotare qui la scadenza del lock-up quando nota."),
-    ("NVIDIA", TIPO_AZIONE, "Semiconduttori / AI", "NVDA", "US67066G1040", 2.5, None, ""),
-    ("Taiwan Semiconductor (TSMC)", TIPO_AZIONE, "Semiconduttori", "TSM", "US8740391003", 2.5, None, ""),
-    ("Microsoft", TIPO_AZIONE, "Tech / Cloud", "MSFT", "US5949181045", 2.25, None, ""),
-    ("Alphabet (Google)", TIPO_AZIONE, "Tech / Internet", "GOOG", "US02079K3059", 2.25, None, ""),
+    ("NVIDIA", TIPO_AZIONE, "Semiconduttori / AI", "NVDA", "US67066G1040", 3.0, None, ""),
+    ("Taiwan Semiconductor (TSMC)", TIPO_AZIONE, "Semiconduttori", "TSM", "US8740391003", 3.0, None, ""),
+    ("Microsoft", TIPO_AZIONE, "Tech / Cloud", "MSFT", "US5949181045", 2.0, None, ""),
+    ("Alphabet (Google)", TIPO_AZIONE, "Tech / Internet", "GOOG", "US02079K3059", 2.0, None, ""),
     ("Broadcom", TIPO_AZIONE, "Semiconduttori", "AVGO", "US11135F1012", 2.0, None, ""),
     ("Intel", TIPO_AZIONE, "Semiconduttori", "INTC", "US4581401001", 2.0, None, ""),
-    ("Oracle", TIPO_AZIONE, "Tech / Cloud", "ORCL", "US68389X1054", 1.75, None, ""),
-    ("SanDisk (Western Digital)", TIPO_AZIONE, "Hardware / Storage", "WDC", "US9581021055", 1.75, None, ""),
-    ("Apple", TIPO_AZIONE, "Tech / Hardware", "AAPL", "US0378331005", 1.5, None, ""),
-    ("Samsung Electronics", TIPO_AZIONE, "Tech / Hardware", "SSNLF", "US7960508882", 1.5, None, ""),
-    ("Palantir Technologies", TIPO_AZIONE, "Software / AI", "PLTR", "US69608A1088", 1.5, None, ""),
-    ("JPMorgan Chase", TIPO_AZIONE, "Finanza / Banche", "JPM", "US46625H1005", 1.25, None, ""),
-    ("Eli Lilly", TIPO_AZIONE, "Farmaceutica", "LLY", "US5324571083", 1.25, None, ""),
-    ("Amgen", TIPO_AZIONE, "Farmaceutica / Biotech", "AMGN", "US0311621009", 1.25, None, ""),
+    ("SpaceX", TIPO_AZIONE, "Spazio & difesa", "SPCX", "US84615Q1031", 2.0, None,
+     "Neo-quotata su Nasdaq dal 12 giugno 2026: alta volatilita' post-IPO. "
+     "Annotare qui la scadenza del lock-up quando nota."),
+    ("Apple", TIPO_AZIONE, "Tech / Hardware", "AAPL", "US0378331005", 2.0, None, ""),
+    ("SanDisk", TIPO_AZIONE, "Hardware / Storage", "SNDK", "US80004C2008", 2.0, None, ""),
+    ("Western Digital", TIPO_AZIONE, "Hardware / Storage", "WDC", "US9581021055", 2.0, None, ""),
+    ("Oracle", TIPO_AZIONE, "Tech / Cloud", "ORCL", "US68389X1054", 1.0, None, ""),
+    ("Samsung Electronics", TIPO_AZIONE, "Tech / Hardware", "SSNLF", "US7960508882", 1.0, None, ""),
+    ("Palantir Technologies", TIPO_AZIONE, "Software / AI", "PLTR", "US69608A1088", 1.0, None, ""),
+    ("JPMorgan Chase", TIPO_AZIONE, "Finanza / Banche", "JPM", "US46625H1005", 1.0, None, ""),
+    ("Eli Lilly", TIPO_AZIONE, "Farmaceutica", "LLY", "US5324571083", 1.0, None, ""),
+    ("Amgen", TIPO_AZIONE, "Farmaceutica / Biotech", "AMGN", "US0311621009", 1.0, None, ""),
     ("Amazon", TIPO_AZIONE, "Tech / E-commerce", "AMZN", "US0231351067", 1.0, None, ""),
     ("Meta Platforms", TIPO_AZIONE, "Tech / Social", "META", "US30303M1027", 1.0, None, ""),
     ("Walmart", TIPO_AZIONE, "Retail / Consumi", "WMT", "US9311421039", 1.0, None, ""),
@@ -52,12 +83,23 @@ SEED = [
     ("IBM", TIPO_AZIONE, "Tech / Cloud", "IBM", "US4592001014", 1.0, None, ""),
     ("Shell", TIPO_AZIONE, "Energia", "SHEL", "GB00BP6MXD84", 1.0, None, ""),
     ("Johnson & Johnson", TIPO_AZIONE, "Farmaceutica / Salute", "JNJ", "US4781601046", 1.0, None, ""),
-    ("Helios Technologies", TIPO_AZIONE, "Industriale", "HLIO", "US42328H1095", 1.0, None, ""),
-
-    # ============ Asset a importo FISSO (fuori dal 100%) ============
-    ("Take-Two Interactive", TIPO_AZIONE, "Gaming / Media", "TTWO", "US87482X1090", 0.0, 1.0,
-     "Gestita a importo fisso: 1 €/mese. La % implicita dipende dall'importo PAC."),
+    ("Take-Two Interactive", TIPO_AZIONE, "Gaming / Media", "TTWO", "US8740541094", 1.0, None, ""),
 ]
+
+
+def applica_nomi_brevi() -> int:
+    """Compila `nome_breve` (solo se vuoto) per i ticker noti: così anche un DB
+    già popolato riceve i nomi corti, senza sovrascrivere personalizzazioni."""
+    with SessionLocal() as db:
+        n = 0
+        for p in db.query(Position).all():
+            breve = NOMI_BREVI.get((p.ticker or "").upper(), "")
+            if breve and not (p.nome_breve or "").strip():
+                p.nome_breve = breve
+                n += 1
+        if n:
+            db.commit()
+        return n
 
 
 def seed_if_empty() -> int:
@@ -71,8 +113,40 @@ def seed_if_empty() -> int:
             return 0
         for i, (nome, tipo, cat, ticker, isin, pct, fisso, note) in enumerate(SEED):
             db.add(Position(
-                nome=nome, tipo=tipo, categoria=cat, ticker=ticker, isin=isin,
+                nome=nome, nome_breve=NOMI_BREVI.get(ticker, ""), tipo=tipo,
+                categoria=cat, ticker=ticker, isin=isin,
                 pct_target=pct, importo_fisso=fisso, note=note, ordine=i,
             ))
         db.commit()
         return len(SEED)
+
+
+def allinea_al_seed() -> dict:
+    """Allinea il DB al SEED per ISIN: aggiorna target/anagrafica, aggiunge le
+    posizioni nuove, rimuove quelle non più in lista. PRESERVA i dati personali
+    (quantità, valore posseduto, data ultimo acquisto, note dell'utente).
+    Da usare quando l'utente comunica un nuovo portafoglio target."""
+    per_isin = {isin: (nome, tipo, cat, ticker, pct, fisso, note)
+                for nome, tipo, cat, ticker, isin, pct, fisso, note in SEED}
+    agg = nuovi = rimossi = 0
+    with SessionLocal() as db:
+        esistenti = {(p.isin or "").upper(): p for p in db.query(Position).all()}
+        for i, (nome, tipo, cat, ticker, isin, pct, fisso, note) in enumerate(SEED):
+            p = esistenti.get(isin.upper())
+            if p is None:
+                db.add(Position(nome=nome, nome_breve=NOMI_BREVI.get(ticker, ""),
+                                tipo=tipo, categoria=cat, ticker=ticker,
+                                isin=isin, pct_target=pct, importo_fisso=fisso,
+                                note=note, ordine=i))
+                nuovi += 1
+            else:
+                p.nome, p.tipo, p.categoria, p.ticker = nome, tipo, cat, ticker
+                p.nome_breve = NOMI_BREVI.get(ticker, "")
+                p.pct_target, p.importo_fisso, p.ordine = pct, fisso, i
+                agg += 1
+        for isin, p in esistenti.items():
+            if isin not in {k.upper() for k in per_isin}:
+                db.delete(p)
+                rimossi += 1
+        db.commit()
+    return {"aggiornate": agg, "nuove": nuovi, "rimosse": rimossi}

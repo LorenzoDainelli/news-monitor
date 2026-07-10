@@ -1,7 +1,7 @@
 """Impostazioni dell'app salvate nel database locale (coppie chiave-valore).
 
-Qui dentro finiscono anche le CHIAVI API (Gemini, Finnhub, ...). Stanno solo nel
-file del database sul tuo PC, che NON viene mai caricato su GitHub (.gitignore).
+Qui dentro finiscono anche le CHIAVI API (es. Gemini). Stanno solo nel file del
+database sul tuo PC, che NON viene mai caricato su GitHub (.gitignore).
 Mai hardcoded, mai stampate nei log.
 
 Funziona anche del tutto senza chiavi: le funzioni extra si sbloccano quando una
@@ -16,8 +16,6 @@ from shared.db import Base, SessionLocal
 # dell'etichetta; 'secret' = mostrata mascherata nell'interfaccia e mai loggata.
 KNOWN_SETTINGS = {
     "gemini_api_key":  {"tkey": "set.key_gemini", "secret": True},
-    "finnhub_api_key": {"tkey": "set.key_finnhub", "secret": True},
-    "fmp_api_key":     {"tkey": "set.key_fmp", "secret": True},
 }
 
 
@@ -47,6 +45,13 @@ def set_setting(chiave: str, valore: str) -> None:
 def all_settings() -> dict:
     with SessionLocal() as db:
         rows = db.execute(select(Setting)).scalars().all()
+        return {r.chiave: r.valore for r in rows}
+
+
+def get_many(chiavi) -> dict:
+    """Piu' impostazioni in UNA query (per il contesto di ogni pagina)."""
+    with SessionLocal() as db:
+        rows = db.execute(select(Setting).where(Setting.chiave.in_(list(chiavi)))).scalars().all()
         return {r.chiave: r.valore for r in rows}
 
 
