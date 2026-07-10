@@ -1,0 +1,32 @@
+/* =========================================================================
+   MyMoney — LIQUID GLASS TOKENS  (Apple-style translucency)
+   -------------------------------------------------------------------------
+   How to build a glass surface (exact recipe — see design-system.md):
+     background: var(--glass-bg);
+     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+     border: 1px solid var(--glass-border);
+     box-shadow: var(--glass-shadow), var(--sheen-top);
+   Use on: topbar, hero/primary cards, the AI panel. NOT on dense tables
+   or body text backgrounds (contrast).
+   ========================================================================= */
+:root {
+  --glass-bg:        rgba(255,255,255,.55);
+  --glass-bg-strong: rgba(255,255,255,.72);
+  --glass-bg-tint:   rgba(166,218,71,.10);   /* lime-tinted glass */
+  --glass-border:    rgba(255,255,255,.65);  /* luminous top edge */
+  --glass-hairline:  rgba(24,40,10,.08);     /* outer definition */
+  --glass-blur:      18px;
+  --glass-blur-sm:   10px;
+  --glass-blur-lg:   28px;
+  --glass-saturate:  180%;
+  --glass-shadow:    0 10px 36px -10px rgba(40,60,20,.22);
+}
+
+[data-theme="dark"] {
+  --glass-bg:        rgba(24,30,18,.55);
+  --glass-bg-strong: rgba(26,32,20,.74);
+  --glass-bg-tint:   rgba(166,218,71,.07);
+  --glass-border:    rgba(255,255,255,.10);
+  --glass-hairline:  rgba(0,0,0,.45);
+  --glass-shadow:    0 12px 40px -12px rgba(0,0,0,.62);
+}
