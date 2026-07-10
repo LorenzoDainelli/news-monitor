@@ -2,8 +2,8 @@
 .env
 *.env
 
-# Impostazioni locali di Claude Code (non vanno nel repo condiviso/cloud)
-.claude/settings.local.json
+# File locali di Claude Code (impostazioni, worktree, launch): mai nel repo
+.claude/
 __pycache__/
 *.pyc
 out.html

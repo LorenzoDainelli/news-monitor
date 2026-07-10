@@ -6,20 +6,42 @@ confidenza e rilevanza) e prepariamo card pronte da mostrare, nello stesso stile
 visivo delle email. **Sola lettura**: l'app non modifica nulla del robot.
 """
 import json
+import subprocess
+import urllib.parse
 
 from shared.config import APP_DIR
 
 # state/ sta alla radice del repo, un livello sopra app/
 STATE_DIR = APP_DIR.parent / "state"
 PREDICTIONS = STATE_DIR / "predictions.json"
+# copia scaricata da GitHub (origin/main) all'avvio: il robot committa lì
+REMOTE_CACHE = APP_DIR / "data" / "news_remote.json"
 
 # Impatto -> (freccia, classe .pill del design system). I COLORI vivono nel CSS
 # (light/dark), qui usiamo solo le classi: niente hex fissi -> temi coerenti.
+# Frecce come nel design freeze: ↗ positivo · → neutro · ↘ negativo.
 _IMPACT = {
-    "positivo": ("▲", "green"),  # .pill.green -> var(--pos)
-    "neutro":   ("=", "gray"),   # .pill.gray  -> grigio neutro
-    "negativo": ("▼", "red"),    # .pill.red   -> var(--neg)
+    "positivo": ("↗", "green"),  # .pill.green -> var(--pos)
+    "neutro":   ("→", "gray"),   # .pill.gray  -> grigio neutro
+    "negativo": ("↘", "red"),    # .pill.red   -> var(--neg)
 }
+
+
+def _host(url: str) -> str:
+    """Nome della testata dal dominio (design: '04/07 · Reuters')."""
+    try:
+        host = urllib.parse.urlsplit(url or "").netloc
+        return host[4:] if host.startswith("www.") else host
+    except ValueError:
+        return ""
+
+
+def _data_breve(iso: str) -> str:
+    """'2026-07-04' -> '04/07' (formato del design)."""
+    s = str(iso or "")[:10]
+    if len(s) == 10 and s[4] == "-" and s[7] == "-":
+        return f"{s[8:10]}/{s[5:7]}"
+    return s
 
 
 def _norm_impact(val) -> str:
@@ -66,12 +88,48 @@ def _rel_class(score) -> str:
     return "low"
 
 
-def _load_items():
+def refresh_from_origin() -> bool:
+    """Scarica l'ultima versione delle notizie dal repo GitHub: il robot nel
+    cloud committa `state/predictions.json` su origin/main, quindi all'avvio
+    facciamo `git fetch` e leggiamo il file DA origin/main (il working tree e i
+    tuoi file locali NON vengono toccati). Se git o la rete mancano, si resta
+    sui dati locali: mai far fallire l'app per questo."""
+    repo = str(APP_DIR.parent)
     try:
-        with open(PREDICTIONS, "r", encoding="utf-8") as fh:
+        subprocess.run(["git", "-C", repo, "fetch", "origin", "main", "--quiet"],
+                       check=True, timeout=30, capture_output=True)
+        out = subprocess.run(
+            ["git", "-C", repo, "show", "origin/main:state/predictions.json"],
+            check=True, timeout=15, capture_output=True)
+        data = json.loads(out.stdout.decode("utf-8"))
+        if not isinstance(data.get("items"), list):
+            return False
+        REMOTE_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        REMOTE_CACHE.write_text(json.dumps(data, ensure_ascii=False),
+                                encoding="utf-8")
+        return True
+    except Exception:
+        return False
+
+
+def _read_items(path):
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
             return json.load(fh).get("items", [])
     except (OSError, json.JSONDecodeError):
         return []
+
+
+def _load_items():
+    """Notizie locali (state/) e scaricate da GitHub: vince il set più recente."""
+    locali = _read_items(PREDICTIONS)
+    remote = _read_items(REMOTE_CACHE)
+
+    def ultima(items):
+        return max((str(it.get("data", ""))[:10] for it in items if it.get("data")),
+                   default="")
+
+    return remote if ultima(remote) >= ultima(locali) and remote else locali
 
 
 def news_cards(limit: int = 30):
@@ -95,7 +153,9 @@ def news_cards(limit: int = 30):
             "rel_class": _rel_class(it.get("rilevanza")),
             "confidenza": _norm_conf(it.get("confidenza")),
             "data": str(it.get("data", ""))[:10],
+            "data_it": _data_breve(it.get("data")),
             "url": it.get("url", ""),
+            "fonte": _host(it.get("url", "")),
             "impatti": impatti,
             "bordo_class": _overall_class(imp),
         })
@@ -103,6 +163,11 @@ def news_cards(limit: int = 30):
 
 
 def latest_date() -> str:
-    """Data della notizia più recente (per l'etichetta 'aggiornato al')."""
+    """Data della notizia più recente, in gg/mm/aaaa (etichetta 'aggiornato')."""
     ds = [str(it.get("data", ""))[:10] for it in _load_items() if it.get("data")]
-    return max(ds) if ds else ""
+    if not ds:
+        return ""
+    s = max(ds)
+    if len(s) == 10 and s[4] == "-" and s[7] == "-":
+        return f"{s[8:10]}/{s[5:7]}/{s[0:4]}"
+    return s

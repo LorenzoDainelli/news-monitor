@@ -1,78 +1,72 @@
-# Monitor titoli — sistema personale di notizie ed earnings
+# MyMoney — finanza personale + monitor titoli
 
-Strumento personale che monitora un portfolio di titoli, cerca le notizie rilevanti
-durante l'esecuzione di una **Routine di Claude Code** (nel cloud Anthropic) e invia
-un report via **email** — solo se c'è qualcosa di rilevante.
+Un unico progetto personale, in un unico repo **privato**, con due componenti che
+condividono dati e design:
 
-Filosofia: **ridurre il rumore** e **onestà intellettuale**. Nessun segnale
-operativo, nessuna previsione di prezzo; analisi qualitative con disclaimer e
-livello di confidenza.
+1. **Web app MyMoney** (`app/`) — app locale e gratuita per il PC: portafoglio
+   investimenti con prezzi live, finanze personali (conti e carte reali, movimenti),
+   PAC, analisi, notizie e un agente AI opzionale (Gemini). Design system "MyMoney"
+   (lime pistacchio + neutri caldi, tema chiaro/scuro, 6 lingue).
+2. **News-monitor** (radice del repo) — robot che gira nel **cloud** (Routine di
+   Claude Code, PC spento OK): monitora il portafoglio, filtra le notizie rilevanti
+   e invia report via **email** con lo stesso design della web app.
 
-> **Stato: FASE 1** — un titolo, un'email di prova, per validare l'idraulica
-> (invio email + accesso di rete + scrittura dello stato). Le altre funzionalità
-> arrivano nelle fasi successive.
+Cosa condividono:
+- **Anagrafica titoli**: `config/portfolio.yaml` (robot) e `app/portfolio/seed.py`
+  (app) descrivono lo stesso portafoglio (37 posizioni, somma target 100%).
+- **Design email**: l'HTML delle email è generato da `app/emails/render.py`
+  (palette MyMoney); `scripts/render_email.py` è solo l'ingresso CLI per il robot.
+- **Stato**: il robot committa le notizie analizzate in `state/predictions.json`;
+  l'app le scarica da GitHub a ogni avvio e le mostra nella sezione Notizie.
 
-## Come funziona (in breve)
-1. Una Routine schedulata parte nel cloud (PC spento OK).
-2. Clona questo repo (config + prompt + stato).
-3. Segue `prompts/report.md`: cerca notizie, filtra, deduplica, riassume.
-4. Se c'è qualcosa di rilevante (o se `test_mode: true`), invia l'email via Resend.
-5. Aggiorna lo stato (`state/`) e fa `git commit` per ricordarsene alla run dopo.
-
-## Struttura del repo
-```
-CLAUDE.md              regole sempre attive (mai segnali operativi, disclaimer, ...)
-config/
-  portfolio.yaml       i titoli monitorati (Fase 1: uno solo)
-  settings.yaml        destinatario, mittente, soglie, test_mode
-prompts/
-  report.md            istruzioni passo-passo della routine
-scripts/
-  send_email.py        invio email via API Resend (solo stdlib, nessuna dipendenza)
-state/
-  seen.json            notizie già inviate (deduplicazione/idempotenza)
-  runlog.ndjson        una riga per run (audit + health-check)
-```
+Filosofia (regole in `CLAUDE.md`): **ridurre il rumore, non aumentarlo** e
+**onestà intellettuale**. Nessun segnale operativo ("compra/vendi"), nessuna
+previsione di prezzo; analisi qualitative con fonti citate, disclaimer e livello
+di confidenza dichiarato (bassa/media/alta).
 
 ---
 
-## Setup una tantum
+## La web app (locale)
 
-### 1) Repo GitHub privato
-Crea un repo **privato** e carica questi file (`git init`, commit, push, oppure
-`gh repo create`). Privato = portfolio e ISIN restano riservati.
+Doppio click su **`Avvia-Finanza.bat`** → si apre il browser su `127.0.0.1:8000`.
+Dettagli, struttura e privacy in **`app/README.md`**.
 
-### 2) Chiave Resend
-- Crea un account su https://resend.com e genera una **API key**.
-- Avvio rapido: con il mittente `onboarding@resend.dev` Resend consente l'invio
-  **solo verso l'email con cui ti sei registrato**. Per inviare da/verso altri
-  indirizzi, verifica un tuo dominio e aggiorna `mittente` in `settings.yaml`.
+- Dati personali e chiavi API stanno **solo** in `app/data/` (gitignored, mai online).
+- A ogni avvio l'app aggiorna da sola notizie, prezzi, fondamentali e grafico
+  del patrimonio, in background.
 
-### 3) Collega GitHub a Claude Code
-Nel terminale Claude Code esegui `/web-setup` per dare accesso al repo.
+## Il news-monitor (cloud)
 
-### 4) Crea l'ambiente cloud della routine
-Su https://claude.ai/code/routines, in fase di creazione routine, apri le
-impostazioni dell'ambiente:
-- **Network access → Custom**: aggiungi `api.resend.com` e spunta "Also include
-  default list of common package managers".
-- **Environment variables**: aggiungi `RESEND_API_KEY=<la tua chiave>`
-  (formato `.env`, senza virgolette).
+1. Una Routine schedulata parte nel cloud e clona questo repo (config + prompt + stato).
+2. Segue le istruzioni in `prompts/` (report, event-check, settimanale, mensile):
+   scarica le news (`scripts/fetch_news.py`, con dedup), le analizza, filtra per soglia.
+3. Se c'è qualcosa di rilevante invia l'email via Resend (`scripts/send_email.py`);
+   l'event-check invia SEMPRE un esito (🚨 critico oppure ✅ tutto tranquillo).
+4. Aggiorna `state/` e committa su `main` per ricordarsene alla run successiva.
 
-### 5) Crea la routine
-- **Prompt** (campo della routine): testo breve che punta al repo —
-  > Leggi e segui le istruzioni in `prompts/report.md`. Rispetta `CLAUDE.md`.
-- **Repository**: questo repo.
-- **Environment**: quello configurato al punto 4.
-- **Permissions**: abilita **Allow unrestricted branch pushes** (così i commit di
-  stato arrivano su `main`).
-- **Trigger**: per il test usa **Run now** (a regime imposteremo gli orari).
+```
+CLAUDE.md              regole sempre attive (mai segnali operativi, disclaimer, ...)
+CONTESTO-PROGETTO.md   briefing completo per riprendere il lavoro in una chat nuova
+config/
+  portfolio.yaml       i 37 titoli monitorati (pesi allineati all'app)
+  settings.yaml        destinatario, mittente, soglie, test_mode
+prompts/               istruzioni passo-passo delle routine (report, event-check, ...)
+scripts/               fetch news, render email (design in app/emails/), invio, stato
+state/                 notizie viste, analisi, log delle run (committati dal robot)
+app/                   la web app MyMoney (vedi app/README.md)
+```
 
-### 6) Test Fase 1
-Lancia **Run now**. Verifica:
-- ✅ arriva l'**email di prova** (controlla anche spam);
-- ✅ nel repo compare un nuovo **commit** con `state/runlog.ndjson` aggiornato;
-- apri la sessione della run per leggere cosa ha fatto e diagnosticare eventuali
-  errori (es. dominio non in whitelist → `403 host_not_allowed`).
+### Setup una tantum del robot (già fatto, come promemoria)
+- Repo GitHub **privato** collegato a Claude Code.
+- Ambiente della routine: rete consentita verso `api.resend.com` (+ package manager),
+  variabili `RESEND_API_KEY` e `FINNHUB_API_KEY`.
+- Permessi: push su `main` abilitato (per i commit di stato).
+- ⚠️ I **cron personalizzati sono in UTC**: d'estate (CEST) `cron = ora locale − 2`,
+  d'inverno − 1.
 
-Quando il test passa, si procede con la Fase 2.
+## Privacy e sicurezza
+- Portafoglio e ISIN restano nel repo **privato**; i dati personali (saldi, movimenti,
+  quantità) stanno solo in `app/data/`, mai committati.
+- Le chiavi (`RESEND_API_KEY`, Finnhub, Gemini) non vengono mai stampate, loggate
+  o committate.
+- All'agente AI dell'app arrivano solo dati aggregati e anonimi.

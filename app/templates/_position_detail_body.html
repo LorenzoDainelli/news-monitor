@@ -1,0 +1,132 @@
+{# ============================================================================
+   Corpo del dettaglio posizione (design freeze v1.0 — PositionDetail.jsx):
+   numeri chiave, grafico 12 mesi, dati fondo/titolo (Fact), prime posizioni,
+   esposizione settoriale, "cosa ne pensa l'agente". Usato sia dalla PAGINA
+   /portafoglio/{id} sia dal DRAWER (?panel=1). Valori mancanti = "—".
+   ============================================================================ #}
+{% from "_icons.html" import icon %}
+
+{% macro fact(k, v) -%}
+  <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;min-width:0;">
+    <div class="muted" style="font-size:12px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ k }}</div>
+    <div class="num" style="font-weight:700;color:var(--ink);font-size:var(--text-md);">{{ v }}</div>
+  </div>
+{%- endmacro %}
+
+{% macro weightrow(n, w, mx) -%}
+  <div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+    <span style="flex:0 0 44%;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ n }}</span>
+    <div style="flex:1;height:6px;background:var(--surface-alt);border-radius:999px;overflow:hidden;">
+      <div style="height:100%;width:{{ (w / mx * 100) | round(1) }}%;background:var(--accent);border-radius:999px;"></div>
+    </div>
+    <span class="num muted" style="flex:0 0 46px;text-align:right;font-size:13px;">{{ w | pct }}</span>
+  </div>
+{%- endmacro %}
+
+{# ---------- numeri chiave ---------- #}
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+  <div>
+    <div class="muted" style="font-size:12px;">{{ t('detail.price') }}</div>
+    <div class="num" style="font-size:var(--text-lg);font-weight:700;">{% if q and q.ok and q.price_eur is not none %}{{ q.price_eur | eur }}{% else %}—{% endif %}</div>
+    {% if q and q.ok and q.currency and q.currency != 'EUR' %}<div class="faint" style="font-size:11px;">{{ q.price | qty }} {{ q.currency }} · {{ q.source }}</div>{% endif %}
+  </div>
+  <div>
+    <div class="muted" style="font-size:12px;">{{ t('detail.months12') }}</div>
+    <div class="num {{ 'pos' if perf is not none and perf >= 0 else 'neg' if perf is not none else '' }}" style="font-size:var(--text-lg);font-weight:700;">{% if perf is not none %}{{ '+' if perf >= 0 else '' }}{{ perf | pct }}{% else %}—{% endif %}</div>
+  </div>
+  <div>
+    <div class="muted" style="font-size:12px;">{{ t('detail.position') }}</div>
+    <div class="num" style="font-size:var(--text-lg);font-weight:700;">{% if p.quantita and q and q.ok and q.price_eur %}{{ (q.price_eur * p.quantita) | eur(0) }}{% elif p.valore_posseduto %}{{ p.valore_posseduto | eur(0) }}{% else %}—{% endif %}</div>
+  </div>
+</div>
+
+{# ---------- grafico 12 mesi ---------- #}
+{% if chart_points %}
+<div class="card" style="margin-top:14px;padding:14px 16px;">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;">
+    <div class="card-h" style="margin:0;">{{ t('detail.chart_12m') }}</div>
+    {% if p.quantita %}<span class="num muted" style="font-size:12px;">{{ t('detail.qty_val', q=(p.quantita | qty), v=((q.price_eur * p.quantita) | eur(0) if (q and q.ok and q.price_eur) else '—')) }}</span>{% endif %}
+  </div>
+  {% set col = 'var(--pos)' if chart_up else 'var(--neg)' %}
+  <div style="margin-top:8px;">
+    <svg viewBox="0 0 560 132" width="100%" height="132" preserveAspectRatio="none" style="display:block;">
+      <defs><linearGradient id="detgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{{ col }}" stop-opacity="0.22"/><stop offset="1" stop-color="{{ col }}" stop-opacity="0"/></linearGradient></defs>
+      <polygon points="6,126 {{ chart_points }} 554,126" fill="url(#detgrad)"/>
+      <polyline points="{{ chart_points }}" fill="none" stroke="{{ col }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</div>
+{% endif %}
+
+{# ---------- dati del fondo / del titolo (Fact) ---------- #}
+{% if fund %}
+<div class="card" style="margin-top:14px;padding:16px;">
+  <div class="card-h">{{ t('detail.fund_data') if p.tipo == 'ETF' else t('detail.stock_data') }}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:6px;">
+    {% if p.tipo == 'ETF' %}
+      {{ fact(t('detail.ter'), ((fund.expense_ratio * 100) | pct) if fund.expense_ratio else '—') }}
+      {{ fact(t('detail.assets'), (fund.total_assets | big ~ ' ' ~ (fund.currency or '')) if fund.total_assets else '—') }}
+      {{ fact(t('detail.div_yield'), ((fund.div_yield * 100) | pct) if fund.div_yield else '—') }}
+      {{ fact(t('detail.titoli'), fund.holdings_count if fund.holdings_count else '—') }}
+      {{ fact(t('detail.category'), fund.category or '—') }}
+      {{ fact(t('detail.domicile'), domicilio or '—') }}
+    {% else %}
+      {{ fact(t('detail.sector_l'), fund.sector or '—') }}
+      {{ fact(t('detail.industry'), fund.industry or '—') }}
+      {{ fact(t('detail.country'), fund.country or '—') }}
+      {{ fact(t('detail.beta'), (fund.beta | qty) if fund.beta else '—') }}
+      {{ fact(t('detail.pe'), (fund.pe | qty) if fund.pe else '—') }}
+      {{ fact(t('detail.div_yield'), ((fund.div_yield * 100) | pct) if fund.div_yield else '—') }}
+    {% endif %}
+  </div>
+  {% if fund._fetched %}<p class="faint" style="font-size:12px;margin:10px 0 0;">{{ t('detail.updated', when=fund._fetched) }}</p>{% endif %}
+</div>
+
+{# ---------- prime posizioni (solo ETF) ---------- #}
+{% if p.tipo == 'ETF' and fund.holdings %}
+{% set hmax = fund.holdings | map(attribute='weight') | max %}
+<div class="card" style="margin-top:14px;padding:16px;">
+  <div class="card-h">{{ t('detail.holdings') }}</div>
+  <div class="muted" style="font-size:12px;margin-top:-4px;margin-bottom:4px;">{{ t('detail.holdings_partial') }}</div>
+  {% for h in fund.holdings %}{{ weightrow(h.name or h.symbol, h.weight, hmax) }}{% endfor %}
+</div>
+{% endif %}
+
+{# ---------- esposizione settoriale ---------- #}
+{% if fund.sectors %}
+{% set smax = fund.sectors | map(attribute='weight') | max %}
+<div class="card" style="margin-top:14px;padding:16px;">
+  <div class="card-h">{{ t('detail.sectors') }}</div>
+  {% for s in fund.sectors %}{{ weightrow(t.sector(s.name), s.weight, smax) }}{% endfor %}
+</div>
+{% endif %}
+{% else %}
+<div class="note info" style="margin-top:14px;">{{ t('detail.no_data') }}</div>
+{% endif %}
+
+{# ---------- cosa ne pensa l'agente (AI) ---------- #}
+{% if (fund and fund.ai) or (ai_on and p.ticker) %}
+<div style="position:relative;overflow:hidden;background:var(--ai-bg);border:1px solid var(--ai-bd);border-left:3px solid var(--ai);border-radius:var(--r-lg);padding:16px;box-shadow:0 12px 40px -14px color-mix(in oklab, var(--ai) 60%, transparent), var(--sheen-top);margin-top:14px;">
+  <div style="position:absolute;inset:0 0 auto 0;height:2px;background-image:linear-gradient(90deg, transparent, var(--ai), var(--accent), transparent);background-size:200% 100%;animation:mm-sheen 4s var(--ease-in-out) infinite;"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    <span class="ai-label">{{ icon('sparkles', 13) }} {{ t('detail.ai_take') }}</span>
+    {% if fund and fund.ai %}<span class="pill gray" style="text-transform:none;">{{ t('dash.conf') }}: {{ t('conf.' ~ fund.ai.conf) }}</span>{% endif %}
+  </div>
+  {% if fund and fund.ai %}
+  <p style="margin:10px 0 0;color:var(--ink);line-height:var(--lh-relaxed);white-space:pre-line;">{{ fund.ai.text }}</p>
+  <p class="faint" style="font-size:12px;margin:10px 0 0;">{{ t('detail.ai_disclaimer') }}</p>
+  {% endif %}
+  {% if ai_on and p.ticker %}
+  <form method="post" action="/portafoglio/{{ p.id }}/ai" style="margin:10px 0 0;">
+    <button type="submit" class="mm-aibtn" style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;border:1px solid var(--ai-bd);background:var(--ai-bg);color:var(--ai);border-radius:999px;padding:3px 9px;font-size:11px;font-weight:600;">{{ t('dash.ai_regen') if (fund and fund.ai) else t('detail.ai_gen') }}</button>
+  </form>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if p.note %}
+<div class="card" style="margin-top:14px;">
+  <div class="card-h">{{ t('detail.note') }}</div>
+  <div>{{ p.note }}</div>
+</div>
+{% endif %}

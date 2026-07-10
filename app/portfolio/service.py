@@ -43,7 +43,7 @@ def calcola_pac(importo_mensile: float) -> dict:
             implicita = (p.importo_fisso / importo * 100) if importo > 0 else 0.0
             somma_fissi += p.importo_fisso
             righe_fisse.append({
-                "nome": p.nome, "ticker": p.ticker, "categoria": p.categoria,
+                "nome": p.nome_vista, "ticker": p.ticker, "categoria": p.categoria,
                 "importo": round(p.importo_fisso, 2), "pct_implicita": implicita,
             })
         else:
@@ -51,7 +51,7 @@ def calcola_pac(importo_mensile: float) -> dict:
             somma_pct += p.pct_target
             somma_quote += quota
             righe.append({
-                "nome": p.nome, "ticker": p.ticker, "tipo": p.tipo,
+                "nome": p.nome_vista, "ticker": p.ticker, "tipo": p.tipo,
                 "categoria": p.categoria, "pct_target": p.pct_target, "quota": quota,
             })
 
@@ -109,17 +109,18 @@ def vista_portafoglio() -> dict:
     }
 
 
-def riepilogo() -> dict:
-    """Numeri di sintesi per la dashboard."""
-    posizioni = lista_posizioni()
-    a_pct = [p for p in posizioni if not p.is_fisso]
-    vista = vista_portafoglio()
+def riepilogo(vista: dict | None = None) -> dict:
+    """Numeri di sintesi per la dashboard (una sola passata sulle posizioni).
+    Se la pagina ha già calcolato la vista, la riusa senza rifare le query."""
+    vista = vista or vista_portafoglio()
+    posizioni = [r["p"] for r in vista["righe"]]
+    somma = round(sum(p.pct_target for p in posizioni if not p.is_fisso), 4)
     return {
         "n_posizioni": len(posizioni),
         "n_etf": sum(1 for p in posizioni if p.tipo == "ETF"),
         "n_azioni": sum(1 for p in posizioni if p.tipo == "Azione"),
-        "somma_target": round(sum(p.pct_target for p in a_pct), 4),
-        "target_ok": abs(sum(p.pct_target for p in a_pct) - 100.0) < 0.01,
+        "somma_target": somma,
+        "target_ok": abs(somma - 100.0) < 0.01,
         "valore_totale": vista["totale"],
         "ha_valori": vista["ha_totale"],
         "ultimo_agg": vista["ultimo_agg"],

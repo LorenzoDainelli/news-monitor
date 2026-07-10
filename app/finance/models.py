@@ -33,6 +33,9 @@ class Wallet(Base):
     note: Mapped[str] = mapped_column(Text, default="")
     ordine: Mapped[int] = mapped_column(Integer, default=0)
     archiviato: Mapped[bool] = mapped_column(Boolean, default=False)
+    # accento brand della card (design: strisciolina in alto + chip + barra);
+    # vuoto = card neutra con i colori standard del tema
+    colore: Mapped[str] = mapped_column(String(20), default="")
 
 
 class Category(Base):
@@ -47,11 +50,11 @@ class Transaction(Base):
     __tablename__ = "finance_transactions"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tipo: Mapped[str] = mapped_column(String(15))               # entrata|uscita|trasferimento
-    data: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    data: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)   # ora locale (app locale)
     importo: Mapped[float] = mapped_column(Float, default=0.0)  # sempre positivo
     wallet_id: Mapped[int] = mapped_column(ForeignKey("finance_wallets.id"))
     wallet_to_id: Mapped[int | None] = mapped_column(ForeignKey("finance_wallets.id"), nullable=True)
     category_id: Mapped[int | None] = mapped_column(ForeignKey("finance_categories.id"), nullable=True)
     metodo: Mapped[str] = mapped_column(String(60), default="")
     descrizione: Mapped[str] = mapped_column(Text, default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)

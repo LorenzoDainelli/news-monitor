@@ -1,42 +1,44 @@
+{# ============================================================================
+   PAC (design freeze v1.0 — MoreScreens.jsx/PacScreen): tre riquadri (Importo
+   mensile con Calcola · Importi fissi · Titoli) e tabella con quote che si
+   RICALCOLANO LIVE mentre digiti (app.js #pac-importo). Il form "predefinito"
+   salva importo+giorno per il promemoria in dashboard.
+   ============================================================================ #}
 {% extends "base.html" %}
 {% block title %}{{ t('nav.pac') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
-  <div class="page-title">{{ t('nav.pac') }}</div>
-  <p class="page-sub">{{ t('pac.subtitle') }}</p>
+  <div style="margin-bottom:18px;">
+    <div class="page-title" style="margin:0 0 12px;">{{ t('pac.title') }}</div>
+    <p class="page-sub" style="margin:0 0 16px;">{{ t('pac.subtitle') }}</p>
 
-  <form class="form" method="get" action="/pac" style="max-width:520px; margin-bottom:18px;">
-    <div class="field" style="margin-bottom:10px;">
-      <label>{{ t('pac.label_amount') }}</label>
-      <div style="display:flex; gap:10px;">
-        <input type="text" name="importo" value="{{ importo_input }}" placeholder="{{ t('pac.ph_amount') }}" autofocus>
-        <button type="submit" class="btn primary" style="white-space:nowrap;">{{ t('pac.btn_calc') }}</button>
+    {% if not r.pct_ok %}
+      <div class="note warn">{{ t('pac.warn_not100', pct=(r.somma_pct | pct)) }}</div>
+    {% endif %}
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;" class="mm-grid-3">
+      <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;flex-direction:column;justify-content:center;">
+        <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-bottom:6px;">{{ t('pac.label_amount') }}</div>
+        <form method="get" action="/pac" style="display:flex;gap:10px;margin-bottom:8px;">
+          <input type="text" id="pac-importo" name="importo" value="{{ importo_input }}" placeholder="{{ t('pac.ph_amount') }}" data-fixed="{{ r.somma_fissi }}">
+          <button type="submit" class="btn primary" style="white-space:nowrap;">{{ t('pac.btn_calc') }}</button>
+        </form>
+        <div class="muted" style="font-size:11px;line-height:1.3;">{{ t('pac.hint') }}</div>
       </div>
-      <div class="hint">{{ t('pac.hint') }}</div>
-    </div>
-  </form>
-
-  {% if not r.pct_ok %}
-    <div class="note warn">{{ t('pac.warn_not100', pct=(r.somma_pct | pct)) }}</div>
-  {% endif %}
-
-  <div class="grid" style="margin-bottom:16px;">
-    <div class="stat">
-      <div class="k">{{ t('pac.stat_invested', n=r.n_asset) }}</div>
-      <div class="v">{{ r.somma_quote | eur }}</div>
-    </div>
-    <div class="stat">
-      <div class="k">{{ t('pac.stat_fixed') }}</div>
-      <div class="v small">{{ r.somma_fissi | eur }}</div>
-    </div>
-    <div class="stat ok">
-      <div class="k">{{ t('pac.stat_total') }}</div>
-      <div class="v">{{ r.totale_mensile | eur }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('pac.stat_total_sub') }}</div>
-    </div>
-    <div class="stat {{ 'warn' if r.scostamento != 0 else 'ok' }}">
-      <div class="k">{{ t('pac.stat_round') }}</div>
-      <div class="v small" style="color:{{ 'var(--neg)' if r.scostamento != 0 else 'var(--pos)' }};">{{ r.scostamento | eur }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('pac.stat_round_sub') }}</div>
+      {% if r.righe_fisse %}
+      <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;flex-direction:column;justify-content:center;">
+        <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-bottom:6px;">{{ t('pac.stat_fixed') }}</div>
+        <div class="num" style="font-size:var(--text-lg);font-weight:800;letter-spacing:var(--ls-tight);color:var(--ink);margin-bottom:8px;">{{ r.somma_fissi | eur(0) }}</div>
+        <div style="font-size:12px;line-height:1.4;color:var(--muted);">
+          {% for f in r.righe_fisse %}<div><span class="t-ticker">{{ f.ticker }}</span> · {{ f.importo | eur(0) }}</div>{% endfor %}
+          <div style="margin-top:6px;font-size:11px;font-weight:600;color:var(--ink);">{{ r.righe_fisse | length }} {{ t('pac.stat_titles') | lower }}</div>
+        </div>
+      </div>
+      {% endif %}
+      <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;flex-direction:column;justify-content:center;">
+        <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-bottom:6px;">{{ t('pac.stat_titles') }}</div>
+        <div class="num" style="font-size:var(--text-lg);font-weight:800;letter-spacing:var(--ls-tight);color:var(--ink);">{{ r.n_asset }}</div>
+        {% if r.scostamento != 0 %}<div class="muted" style="font-size:12px;margin-top:4px;">{{ t('pac.stat_round') }}: <span style="color:var(--neg);">{{ r.scostamento | eur }}</span></div>{% endif %}
+      </div>
     </div>
   </div>
 
@@ -54,30 +56,33 @@
         {% for riga in r.righe %}
         <tr>
           <td><span class="t-ticker">{{ riga.ticker or '—' }}</span>
-              <span class="t-type">· {{ t('type.etf') if riga.tipo == 'ETF' else t('type.stock') }}</span><br>{{ riga.nome }}</td>
-          <td>{{ t.category(riga.categoria) or '—' }}</td>
+              <span class="t-type">· {{ t('type.etf') if riga.tipo == 'ETF' else t('type.stock') }}</span><br>
+              <span class="muted" style="font-size:13px;">{{ riga.nome }}</span></td>
+          <td><span class="muted">{{ t.category(riga.categoria) or '—' }}</span></td>
           <td class="num">{{ riga.pct_target | pct }}</td>
-          <td class="num">{{ riga.quota | eur }}</td>
+          <td class="num" data-target="{{ riga.pct_target }}">{{ riga.quota | eur(0) }}</td>
         </tr>
         {% endfor %}
         {% for riga in r.righe_fisse %}
         <tr>
-          <td><span class="t-ticker">{{ riga.ticker or '—' }}</span><br>{{ riga.nome }}
+          <td><span class="t-ticker">{{ riga.ticker or '—' }}</span><br>
+              <span class="muted" style="font-size:13px;">{{ riga.nome }}</span>
               <span class="pill gray">{{ t('pac.fixed_badge') }}</span></td>
-          <td>{{ t.category(riga.categoria) or '—' }}</td>
+          <td><span class="muted">{{ t.category(riga.categoria) or '—' }}</span></td>
           <td class="num faint">≈ {{ riga.pct_implicita | pct }} <span class="faint">{{ t('pac.implicit') }}</span></td>
-          <td class="num">{{ riga.importo | eur }}</td>
+          <td class="num">{{ riga.importo | eur(0) }}</td>
         </tr>
         {% endfor %}
       </tbody>
       <tfoot>
         <tr>
-          <td>{{ t('common.total') }}</td>
+          <td><b>{{ t('common.total') }}</b></td>
           <td></td>
-          <td class="num" style="color:{{ 'var(--pos)' if r.pct_ok else 'var(--neg)' }};">{{ r.somma_pct | pct }}</td>
-          <td class="num">{{ r.totale_mensile | eur }}</td>
+          <td class="num"><b style="color:{{ 'var(--pos)' if r.pct_ok else 'var(--neg)' }};">{{ r.somma_pct | pct }}</b></td>
+          <td class="num"><b id="pac-totale">{{ r.totale_mensile | eur(0) }}</b></td>
         </tr>
       </tfoot>
     </table>
   </div>
+
 {% endblock %}

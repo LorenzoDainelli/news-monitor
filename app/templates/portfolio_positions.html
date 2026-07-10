@@ -1,116 +1,147 @@
+{# ============================================================================
+   Portafoglio (design freeze v1.0 — PortfolioScreen.jsx): stat hero + form
+   inline "Aggiungi posizione" (si apre senza cambiare pagina), tabella con
+   Titolo→dettaglio, P/L a 12 mesi, cestino con conferma INLINE reversibile,
+   toast dopo aggiungi/elimina/salva. Dati mancanti = "—", mai inventati.
+   ============================================================================ #}
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}{{ t('nav.portfolio') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
   <div class="page-title">{{ t('nav.portfolio') }}</div>
-  <p class="page-sub">{{ t('pf.subtitle') }}</p>
+  <p class="page-sub">{{ t('pf.subtitle') }} · <span class="muted">{{ t('pf.tap_hint') }}</span></p>
 
   {% if not riepilogo.target_ok %}
     <div class="note warn">{{ t('pf.warn_not100', pct=(riepilogo.somma_target | pct)) }}</div>
   {% endif %}
+  {% if flash_added %}
+    <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} {{ t('pf.toast_added', tk=flash_added) }}</span></div>
+  {% elif flash_deleted %}
+    <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} {{ t('pf.toast_deleted', tk=flash_deleted) }}</span></div>
+  {% elif flash_saved %}
+    <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} {{ t('pf.toast_saved') }}</span></div>
+  {% endif %}
 
   <div class="grid" style="margin-bottom:16px;">
-    <div class="stat ok">
+    <div class="stat ok hero">
       <div class="k">{{ t('pf.total_value') }}</div>
-      <div class="v">{{ vista.totale | eur if vista.ha_totale else '—' }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('pf.prices_coverage', n=vista.n_prezzi, tot=vista.n_ticker) }}</div>
+      <div class="v num">{{ vista.totale | eur(0) if vista.ha_totale else '—' }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">
+        {% if pf_perf is not none %}<span class="{{ 'pos' if pf_perf >= 0 else 'neg' }}">{{ '+' if pf_perf >= 0 else '' }}{{ pf_perf | pct }}</span> · {% endif %}{{ riepilogo.n_posizioni }} {{ t('dash.posizioni') }}
+      </div>
     </div>
     <div class="stat">
-      <div class="k">{{ t('th.price') }}</div>
-      <div class="v small">
-        {% if vista.ultimo_agg %}{{ t('pf.prices_updated', when=vista.ultimo_agg) }}{% else %}{{ t('pf.prices_never') }}{% endif %}
-      </div>
-      <div style="margin-top:8px;">
-        <form method="post" action="/portafoglio/aggiorna" style="margin:0;">
-          <button type="submit" class="btn sm">{{ t('pf.btn_refresh') }}</button>
-        </form>
-      </div>
+      <div class="k">{{ t('pf.composizione') }}</div>
+      <div class="v small">{{ t('pf.comp_v', etf=riepilogo.n_etf, stocks=riepilogo.n_azioni) }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('pf.comp_sub') }}</div>
+    </div>
+    <div class="stat">
+      <div class="k">{{ t('pf.prezzi') }}</div>
+      <div class="v small">{% if vista.ultimo_agg %}{{ t('pf.prezzi_ok') }}{% else %}{{ t('pf.prices_never') }}{% endif %}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{% if vista.ultimo_agg %}{{ vista.ultimo_agg }} · {% endif %}{{ t('pf.prices_coverage', n=vista.n_prezzi, tot=vista.n_ticker) }}</div>
     </div>
   </div>
 
   <div class="actions">
-    <a href="/portafoglio/nuovo" class="btn primary">{{ t('pf.btn_add') }}</a>
-    <a href="/pac" class="btn">{{ t('nav.pac') }}</a>
-    <span class="muted" style="font-size:13px;">
-      {{ t('pf.count', n=riepilogo.n_posizioni, etf=riepilogo.n_etf, stocks=riepilogo.n_azioni) }}
-    </span>
+    <button type="button" class="btn primary" data-toggle="#pf-add" data-alt="{{ t('pf.btn_close') }}">{{ icon('plus', 16) }} {{ t('pf.btn_add') }}</button>
+    <form method="post" action="/portafoglio/aggiorna" style="margin:0;">
+      <button type="submit" class="btn ghost">{{ icon('refresh', 16) }} {{ t('pf.btn_refresh') }}</button>
+    </form>
   </div>
+
+  {# ---------- form inline (freeze): nome · tipo/ticker/target · categoria ---------- #}
+  <form id="pf-add" class="form" method="post" action="/portafoglio/salva" style="margin-bottom:16px;{% if not open_form %}display:none;{% endif %}">
+    <div class="field">
+      <label>{{ t('form.name') }}</label>
+      <input type="text" name="nome" required placeholder="{{ t('form.ph_name') }}" {% if open_form %}autofocus{% endif %}>
+    </div>
+    <div class="row3">
+      <div class="field">
+        <label>{{ t('form.type') }}</label>
+        <select name="tipo"><option value="ETF">{{ t('type.etf') }}</option><option value="Azione">{{ t('type.stock') }}</option></select>
+      </div>
+      <div class="field">
+        <label>{{ t('form.ticker') }}</label>
+        <input type="text" name="ticker" placeholder="IWDA">
+      </div>
+      <div class="field">
+        <label>{{ t('th.pct_target') }}</label>
+        <input type="text" name="pct_target" placeholder="25">
+        <div class="hint">{{ t('form.hint_pct') }}</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>{{ t('th.category') }}</label>
+      <input type="text" name="categoria" placeholder="{{ t('form.ph_category') }}">
+    </div>
+    <div class="actions" style="margin-bottom:0;">
+      <button type="submit" class="btn primary">{{ t('form.add') }}</button>
+      <button type="button" class="btn ghost" data-toggle="#pf-add">{{ t('form.cancel') }}</button>
+      <a href="/portafoglio/nuovo" class="muted" style="font-size:13px;">{{ t('form.title_new') }} →</a>
+    </div>
+  </form>
 
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>{{ t('th.title') }}</th>
-          <th>{{ t('th.category') }}</th>
-          <th class="num">{{ t('th.pct_target') }}</th>
-          <th class="num">{{ t('th.qty') }}</th>
-          <th class="num">{{ t('th.price') }}</th>
-          <th class="num">{{ t('th.value') }}</th>
-          <th>{{ t('th.last_buy') }}</th>
-          <th style="width:1%;">{{ t('th.actions') }}</th>
+          <th class="sortable" data-type="text">{{ t('th.title') }}</th>
+          <th class="sortable" data-type="text">{{ t('th.category') }}</th>
+          <th class="num sortable" data-type="num">{{ t('th.pct_target') }}</th>
+          <th class="num sortable" data-type="num">{{ t('th.qty') }}</th>
+          <th class="num sortable" data-type="num">{{ t('th.value') }}</th>
+          <th class="num sortable" data-type="num">{{ t('th.pl') }}</th>
+          <th style="width:1%;"></th>
         </tr>
       </thead>
       <tbody>
         {% for r in vista.righe %}
         {% set p = r.p %}
+        {% set pl = perf.get((p.ticker or '') | upper) %}
         <tr>
-          <td>
-            <span class="t-ticker">{{ p.ticker or '—' }}</span>
-            <span class="t-type">· {{ t('type.etf') if p.tipo == 'ETF' else t('type.stock') }}</span>
-            {% if p.tipo == 'ETF' and p.ticker %}
-              <button type="button" class="btn sm" style="padding:1px 7px;margin-left:6px;font-size:12px;" data-holdings="{{ p.id }}">{{ t('pf.holdings_toggle') }} ▾</button>
-            {% endif %}
-            <br>
-            <a href="/portafoglio/{{ p.id }}">{{ p.nome }}</a>
-            {% if p.isin %}<br><span class="faint" style="font-size:12px;">{{ t('pf.isin', isin=p.isin) }}</span>{% endif %}
+          <td data-s="{{ p.ticker or p.nome }}">
+            <a href="/portafoglio/{{ p.id }}" class="mm-titlebtn" data-drawer style="display:block;width:100%;text-decoration:none;color:inherit;" title="{{ t('pf.tap_hint') }}">
+              <span class="t-ticker">{{ p.ticker or '—' }}</span> <span class="t-type">· {{ t('type.etf') if p.tipo == 'ETF' else t('type.stock') }}</span>
+              {{ icon('chevron', 13, 'color:var(--faint);transform:rotate(-90deg);margin-left:3px;vertical-align:middle;') }}
+              <br>
+              <span class="mm-titlename" style="font-size:13px;color:var(--muted);">{{ p.nome_vista }}</span>
+              {% if p.isin %}<span class="faint" style="font-family:var(--font-mono);font-size:11px;margin-left:6px;">{{ p.isin }}</span>{% endif %}
+            </a>
           </td>
-          <td>{{ t.category(p.categoria) or '—' }}</td>
-          <td class="num">
-            {% if p.is_fisso %}
-              <span class="pill gray">{{ t('pf.fixed_month', eur=(p.importo_fisso | eur)) }}</span>
+          <td><span class="muted">{{ t.category(p.categoria) or '—' }}</span></td>
+          <td class="num" data-s="{{ '' if p.is_fisso else p.pct_target }}">
+            {% if p.is_fisso %}<span class="pill gray">{{ t('pf.fixed_month', eur=(p.importo_fisso | eur)) }}</span>
             {% else %}{{ p.pct_target | pct }}{% endif %}
           </td>
-          <td class="num">{{ p.quantita | qty }}</td>
-          <td class="num">
-            {% if r.prezzo_eur is not none %}
-              {{ r.prezzo_eur | eur }}
-              {% if r.q and r.q.currency and r.q.currency != 'EUR' %}
-                <br><span class="faint" style="font-size:11px;">{{ r.q.price | qty }} {{ r.q.currency }} · {{ r.q.source }}</span>
-              {% endif %}
-            {% else %}
-              <span class="faint">{{ t('pf.unavailable') }}</span>
-            {% endif %}
+          <td class="num" data-s="{{ p.quantita if p.quantita is not none else '' }}">{{ p.quantita | qty }}</td>
+          <td class="num" data-s="{{ r.valore if r.valore is not none else '' }}">{{ r.valore | eur if r.valore is not none else '—' }}</td>
+          <td class="num" data-s="{{ pl if pl is not none else '' }}">
+            {% if pl is not none %}<span class="{{ 'pos' if pl >= 0 else 'neg' }}" style="font-weight:600;">{{ '+' if pl >= 0 else '' }}{{ pl | pct }}</span>{% else %}—{% endif %}
           </td>
-          <td class="num">{{ r.valore | eur if r.valore is not none else '—' }}</td>
-          <td>{{ p.data_ultimo_acquisto.strftime('%d/%m/%Y') if p.data_ultimo_acquisto else '—' }}</td>
           <td class="num">
-            <div style="display:flex; gap:6px;">
-              <a href="/portafoglio/{{ p.id }}/modifica" class="btn sm">{{ t('btn.edit') }}</a>
-              <form method="post" action="/portafoglio/{{ p.id }}/elimina"
-                    class="js-confirm" data-msg="{{ t('pf.confirm_delete') }}">
-                <button type="submit" class="btn sm danger">{{ t('btn.delete') }}</button>
+            <div style="display:flex;gap:6px;justify-content:flex-end;align-items:center;">
+              <a href="/portafoglio/{{ p.id }}/modifica" class="btn sm ghost icon-only" aria-label="{{ t('btn.edit') }}" title="{{ t('btn.edit') }}">{{ icon('edit', 15) }}</a>
+              <form method="post" action="/portafoglio/{{ p.id }}/elimina" class="js-confirm"
+                    data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:0;">
+                <button type="submit" class="btn sm danger icon-only" aria-label="{{ t('btn.delete') }}" title="{{ t('btn.delete') }}">{{ icon('trash', 15) }}</button>
               </form>
             </div>
           </td>
         </tr>
-        {% if p.tipo == 'ETF' and p.ticker %}
-        <tr class="holdings-row" id="hr-{{ p.id }}" style="display:none;">
-          <td colspan="8" style="padding:0;"><div class="holdings-box" data-loaded="0"></div></td>
-        </tr>
-        {% endif %}
         {% endfor %}
       </tbody>
       <tfoot>
         <tr>
-          <td>{{ t('pf.total_alloc') }}</td>
+          <td><b>{{ t('pf.total_alloc') }}</b></td>
           <td></td>
-          <td class="num" style="color:{{ 'var(--pos)' if riepilogo.target_ok else 'var(--neg)' }};">{{ riepilogo.somma_target | pct }}</td>
+          <td class="num"><b style="color:{{ 'var(--pos)' if riepilogo.target_ok else 'var(--neg)' }};">{{ riepilogo.somma_target | pct }}</b></td>
+          <td></td>
+          <td class="num"><b>{{ vista.totale | eur if vista.ha_totale else '' }}</b></td>
           <td></td><td></td>
-          <td class="num">{{ vista.totale | eur if vista.ha_totale else '' }}</td>
-          <td colspan="2"></td>
         </tr>
       </tfoot>
     </table>
   </div>
 
-  <p class="faint" style="font-size:12px; margin-top:12px;">{{ t('pf.prices_note') }}</p>
+  <p class="faint" style="font-size:12px;margin-top:12px;">{{ t('pf.prices_note') }}</p>
 {% endblock %}

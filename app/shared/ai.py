@@ -3,7 +3,7 @@
 Qui c'è solo lo STRATO DI BASE: connessione a Gemini, prova connessione, modello
 configurabile e l'interruttore doppia modalità. Le funzioni che mandano dati
 (inserimento spese in linguaggio naturale, analisi) e il filtro privacy per sezione
-arriveranno nei passi successivi.
+sono più sotto in questo modulo.
 
 Filosofia dell'agente (dal CLAUDE.md del news-monitor):
 - mai segnali operativi (compra/vendi/entra/esci);
@@ -88,6 +88,9 @@ def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20, _model: s
         # volta sul modello di default, così l'agente non si rompe da solo.
         if e.code == 404 and _model is None and model != DEFAULT_MODEL:
             return _call(prompt, system, timeout, _model=DEFAULT_MODEL)
+        # Limiti del free tier esauriti sul principale: UNA prova col ripiego lite.
+        if e.code == 429 and _model is None and model != DEFAULT_FALLBACK:
+            return _call(prompt, system, timeout, _model=DEFAULT_FALLBACK)
         raise
     cands = data.get("candidates") or []
     if not cands:
@@ -167,7 +170,7 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
     testo = (testo or "").strip()
     if not testo:
         return {"ok": False, "error": "vuoto"}
-    oggi = oggi or datetime.utcnow().strftime("%Y-%m-%d")
+    oggi = oggi or datetime.now().strftime("%Y-%m-%d")  # data LOCALE: 'ieri' giusto anche di sera
     nomi_w = [w.nome for w in wallets]
     nomi_c = [c.nome for c in categorie]
     pulito = privacy.scrub_text(testo)
@@ -218,6 +221,82 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
     }
 
 
+def _estrai_confidenza(txt: str) -> tuple[str, str]:
+    """Separa la riga finale 'Confidenza: X' dal testo. Ritorna (testo, conf)."""
+    righe = [r for r in (txt or "").strip().splitlines() if r.strip()]
+    conf = "media"
+    if righe:
+        ultima = righe[-1].strip().lower()
+        m = re.search(r"confidenza\s*[:\-]?\s*(bassa|media|alta)", ultima)
+        if m:
+            conf = m.group(1)
+            righe = righe[:-1]
+    return "\n".join(righe).strip(), conf
+
+
+def punto_settimana(contesto: str) -> dict:
+    """'Il punto della settimana' per la dashboard: 2-4 frasi descrittive su dati
+    aggregati e anonimi. Ritorna {ok, text, conf} oppure {ok: False, error}."""
+    if not is_configured():
+        return {"ok": False, "error": "no_key"}
+    prompt = (
+        "Questi sono dati AGGREGATI e anonimi (nessun dato sensibile) della situazione "
+        "finanziaria dell'utente. Scrivi 'il punto della settimana' in italiano semplice, "
+        "2-4 frasi DESCRITTIVE: cosa salta all'occhio su liquidità, spese e composizione "
+        "del portafoglio. Vietato ogni consiglio operativo (comprare/vendere/spostare "
+        "soldi): descrivi soltanto i fatti. Chiudi con una riga 'Confidenza: bassa|media|alta'.\n\n"
+        + privacy.scrub_text(contesto)
+    )
+    try:
+        txt = _call(prompt, timeout=25)
+    except Exception as e:
+        return {"ok": False, "error": type(e).__name__}
+    testo, conf = _estrai_confidenza(txt)
+    return {"ok": True, "text": testo, "conf": conf}
+
+
+def analizza_posizione(descr: str) -> dict:
+    """'Cosa ne pensa l'agente' su un singolo titolo/ETF, SOLO da dati pubblici
+    (nome, tipo, categoria, settori, performance): mai valori posseduti, quantità
+    o ISIN. Ritorna {ok, text, conf} oppure {ok: False, error}."""
+    if not is_configured():
+        return {"ok": False, "error": "no_key"}
+    prompt = (
+        "Descrivi in italiano semplice (3-4 frasi) le caratteristiche di questo "
+        "strumento in un portafoglio diversificato: cosa lo muove, a quali settori/"
+        "rischi è esposto, che ruolo tipicamente ricopre. SOLO fatti qualitativi e "
+        "pubblici: niente previsioni di prezzo, niente consigli operativi "
+        "(comprare/vendere), niente numeri inventati. Chiudi con una riga "
+        "'Confidenza: bassa|media|alta'.\n\n" + privacy.scrub_text(descr)
+    )
+    try:
+        txt = _call(prompt, timeout=25)
+    except Exception as e:
+        return {"ok": False, "error": type(e).__name__}
+    testo, conf = _estrai_confidenza(txt)
+    return {"ok": True, "text": testo, "conf": conf}
+
+
+def spiega_metrica(label: str, valore: str, contesto: str = "") -> dict:
+    """Spiega una singola metrica dell'analisi (popup ✨ della pagina Analisi).
+    Ritorna {ok, text, conf} oppure {ok: False, error}."""
+    if not is_configured():
+        return {"ok": False, "error": "no_key"}
+    prompt = (
+        (privacy.scrub_text(contesto) + "\n\n" if contesto else "")
+        + "Spiega in 3-4 frasi, in italiano semplice, cosa significa questo dato "
+        f"per il portafoglio: \"{privacy.scrub_text(label)} = {privacy.scrub_text(valore)}\". "
+        "Tono neutro e descrittivo, niente consigli operativi (comprare/vendere), "
+        "niente numeri inventati. Chiudi con una riga 'Confidenza: bassa|media|alta'."
+    )
+    try:
+        txt = _call(prompt, timeout=25)
+    except Exception as e:
+        return {"ok": False, "error": type(e).__name__}
+    testo, conf = _estrai_confidenza(txt)
+    return {"ok": True, "text": testo, "conf": conf}
+
+
 def analizza_finanze(contesto: str) -> dict:
     """Analisi DESCRITTIVA delle finanze a partire da un riassunto già aggregato
     e anonimo (nessun nome/carta/IBAN). Ritorna {ok, testo} oppure {ok:False, error}.
@@ -237,4 +316,5 @@ def analizza_finanze(contesto: str) -> dict:
         txt = _call(prompt, timeout=25)
     except Exception as e:
         return {"ok": False, "error": type(e).__name__}
-    return {"ok": True, "testo": (txt or "").strip()}
+    testo, conf = _estrai_confidenza(txt)
+    return {"ok": True, "text": testo, "conf": conf, "testo": testo}

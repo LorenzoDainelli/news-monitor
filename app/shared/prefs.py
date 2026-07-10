@@ -3,7 +3,7 @@
 Salvate nel database locale (tabella delle impostazioni). Per ora valgono per
 tutta l'app; quando ci sarà il login diventeranno per-utente (vedi auth.py).
 """
-from shared.settings_store import get_setting, set_setting
+from shared.settings_store import get_setting, set_setting, get_many
 from shared.i18n import LANG_CODES, DEFAULT_LANG
 
 VALID_THEMES = ("light", "dark")
@@ -35,6 +35,19 @@ def set_theme(value: str) -> None:
 def get_lang() -> str:
     v = get_setting("ui_lang", DEFAULT_LANG)
     return v if v in LANG_CODES else DEFAULT_LANG
+
+
+def get_ui() -> dict:
+    """Tema+lingua+animazioni in UNA query (chiamata a ogni pagina)."""
+    vals = get_many(("ui_theme", "ui_lang", "ui_anim"))
+    theme = vals.get("ui_theme", "light")
+    lang = vals.get("ui_lang", DEFAULT_LANG)
+    anim = vals.get("ui_anim", DEFAULT_ANIM)
+    return {
+        "theme": theme if theme in VALID_THEMES else "light",
+        "lang": lang if lang in LANG_CODES else DEFAULT_LANG,
+        "anim": anim if anim in VALID_ANIM else DEFAULT_ANIM,
+    }
 
 
 def set_lang(value: str) -> None:

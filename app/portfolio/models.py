@@ -1,7 +1,7 @@
 """Tabella delle posizioni del portafoglio.
 
 Una 'posizione' = un titolo che vuoi seguire (ETF o azione) con la sua quota
-target. I campi di mercato (prezzo, ecc.) NON stanno qui: arriveranno in Fase 2
+target. I campi di mercato (prezzo, ecc.) NON stanno qui: vivono in market.py
 in tabelle separate, così i tuoi dati restano puliti e mai 'inventati'.
 """
 from datetime import date
@@ -22,6 +22,9 @@ class Position(Base):
 
     # --- anagrafica (inserita/modificata da te dall'interfaccia) ---
     nome: Mapped[str] = mapped_column(String(200))
+    # nome corto per le tabelle (es. "Global" per IWDA); il nome ufficiale
+    # completo resta in `nome` e si vede nella scheda di dettaglio
+    nome_breve: Mapped[str] = mapped_column(String(80), default="")
     tipo: Mapped[str] = mapped_column(String(20), default=TIPO_AZIONE)   # ETF | Azione
     categoria: Mapped[str] = mapped_column(String(120), default="")      # tema/settore
     ticker: Mapped[str] = mapped_column(String(30), default="")
@@ -44,3 +47,8 @@ class Position(Base):
     @property
     def is_fisso(self) -> bool:
         return self.importo_fisso is not None
+
+    @property
+    def nome_vista(self) -> str:
+        """Nome da mostrare in elenco: quello corto se c'è, altrimenti l'ufficiale."""
+        return (self.nome_breve or "").strip() or self.nome

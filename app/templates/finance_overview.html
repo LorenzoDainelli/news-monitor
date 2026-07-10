@@ -1,75 +1,122 @@
+{# ============================================================================
+   Finanze (design freeze v1.0 — FinanceScreen.jsx, come nel video): hero
+   Patrimonio liquido + entrate/uscite; griglia wallet .mm-wallet (simple mode,
+   saldo decrescente col PAC sempre ultimo, accento brand w.colore); "Aggiungi
+   un movimento" con l'AI ✨ "scrivi a parole"; Spese per categoria · Il mese
+   in numeri · Lettura AI; TUTTI i movimenti (header ordinabili) con conferma
+   inline.
+   ============================================================================ #}
 {% extends "base.html" %}
+{% from "_icons.html" import icon %}
 {% block title %}{{ t('nav.finance') }} — {{ t('app.name') }}{% endblock %}
-{% block head %}<link rel="stylesheet" href="/static/wallet-board.css">{% endblock %}
 {% block content %}
   <div class="page-title">{{ t('nav.finance') }}</div>
   <p class="page-sub">{{ t('fin.subtitle') }}</p>
 
-  <div class="grid">
-    <div class="stat ok"><div class="k">{{ t('fin.total_patrimony') }}</div><div class="v">{{ saldi.totale | eur }}</div></div>
-    <div class="stat"><div class="k">{{ t('fin.month_income') }}</div><div class="v small" style="color:var(--pos);">{{ riep.entrate | eur }}</div></div>
-    <div class="stat"><div class="k">{{ t('fin.month_expense') }}</div><div class="v small" style="color:var(--neg);">{{ riep.uscite | eur }}</div></div>
-    <div class="stat {{ 'ok' if riep.saldo >= 0 else 'warn' }}"><div class="k">{{ t('fin.month_balance') }}</div><div class="v small">{{ riep.saldo | eur }}</div></div>
-  </div>
-
-  {% if saldi.righe %}
-  <div class="wboard-wrap" style="margin-top:18px;">
-    <div class="wboard-head"><div class="card-h" style="margin:0;">{{ t('fin.wallet') }}</div></div>
-    <div class="wboard" id="wboard"
-         data-share-of="{{ t('board.share_of') }}"
-         data-in="{{ t('board.preview_in') }}"
-         data-out="{{ t('board.preview_out') }}"
-         aria-label="{{ t('board.title') }}"></div>
-    <div class="wboard-note">{{ t('board.hint') }} {{ t('board.preview_note') }}</div>
-    <div class="actions" style="margin-top:10px;margin-bottom:0;">
-      <a href="/finanze/portafogli" class="btn sm">{{ t('fin.manage_wallets') }}</a>
-      <a href="/finanze/categorie" class="btn sm">{{ t('fin.manage_categories') }}</a>
-      <a href="/finanze/movimenti" class="btn sm">{{ t('fin.all_movements') }}</a>
+  {# ---------- riga hero ---------- #}
+  <div class="grid mm-stats4">
+    <div class="stat hero">
+      <div class="k">{{ t('fin.patrimonio_liq') }}</div>
+      <div class="v num">{{ saldi.totale | eur(0) }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('fin.n_wallets', n=(saldi.righe | length)) }}</div>
+    </div>
+    <div class="stat ok">
+      <div class="k">{{ t('fin.month_income') }}</div>
+      <div class="v small num" style="color:var(--pos);">{{ riep.entrate | eur(0) }}</div>
+    </div>
+    <div class="stat warn">
+      <div class="k">{{ t('fin.month_expense') }}</div>
+      <div class="v small num" style="color:var(--neg);">{{ riep.uscite | eur(0) }}</div>
     </div>
   </div>
-  <script type="application/json" id="wboard-data">[{% for r in saldi.righe %}{% if not loop.first %},{% endif %}{"id":{{ r.w.id }},"nome":{{ r.w.nome|tojson }},"tipo":{{ r.w.tipo|tojson }},"saldo":{{ r.saldo }},"eur":{{ (r.saldo|eur)|tojson }},"tlabel":{{ t('wtype.' ~ r.w.tipo)|tojson }}}{% endfor %}]</script>
-  {% endif %}
 
-  <div style="margin-top:18px;">
-    <div class="page-title" style="font-size:18px;">{{ t('fin.add_movement') }}</div>
-    {% include "finance_ai_box.html" %}
-    {% include "finance_movement_form.html" %}
-  </div>
-
-  <div class="card navy" style="margin-top:18px;">
-    <div class="card-h">{{ t('fin.ai_analysis_h') }}</div>
-    {% if ai_on %}
-      {% if analisi is defined and analisi %}
-        {% if analisi.ok %}
-          <div class="ai-out" style="white-space:pre-line; line-height:1.5;">{{ analisi.testo }}</div>
-        {% else %}
-          <div class="note err">{{ t('fin.ai_prop_err') }}</div>
-        {% endif %}
-      {% else %}
-        <p class="muted" style="margin:0 0 10px;">{{ t('fin.ai_analysis_intro') }}</p>
-      {% endif %}
-      <form method="post" action="/finanze/ai/analisi" style="margin-top:12px; margin-bottom:0;">
-        <button type="submit" class="btn">{{ t('fin.ai_analysis_btn') }}</button>
-      </form>
-      <div class="hint" style="margin-top:8px;">{{ t('analisi.ai_descr') }}</div>
-    {% else %}
-      <div class="note info">✨ {{ t('fin.ai_box_off') }} <a href="/impostazioni">{{ t('fin.ai_box_off_link') }}</a></div>
-    {% endif %}
-  </div>
-
-  {% if riep.spese_categoria %}
-  <div class="card" style="margin-top:18px;">
-    <div class="card-h">{{ t('fin.expenses_by_cat') }}</div>
-    {% for s in riep.spese_categoria %}
-    <div style="margin:6px 0;">
-      <div style="display:flex;justify-content:space-between;font-size:13px;"><span>{{ s.nome }}</span><span class="muted">{{ s.tot | eur }}</span></div>
-      <div style="background:var(--neutral-bg);border-radius:6px;height:9px;overflow:hidden;"><div style="height:9px;width:{{ s.perc }}%;background:var(--accent-2);"></div></div>
+  {# ---------- portafogli: griglia .mm-wallet (simple mode, FinanceScreen.jsx) ---------- #}
+  {% if saldi.righe %}
+  <div class="grid mm-wallets" style="margin-top:14px;">
+    {% for r in saldi.righe %}
+    {% set share = (r.saldo / saldi.totale * 100) if saldi.totale else 0 %}
+    {% set acc = (r.w.colore or '') | trim %}
+    <div class="card mm-wallet" tabindex="0" style="margin:0;padding:16px;display:flex;flex-direction:column;min-height:158px;">
+      {% if acc %}<span aria-hidden="true" style="position:absolute;top:0;left:0;right:0;height:3px;background:{{ acc }};"></span>{% endif %}
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="width:34px;height:34px;border-radius:var(--r-md);background:{{ 'color-mix(in oklab, ' ~ acc ~ ' 15%, transparent)' if acc else 'var(--accent-soft)' }};color:{{ acc or 'var(--accent-strong)' }};display:grid;place-items:center;flex:none;">{{ icon('wallet', 17) }}</span>
+        <span class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;">{{ t('wtype.' ~ r.w.tipo) }}</span>
+      </div>
+      <div style="font-weight:700;margin-top:12px;color:var(--ink);">{{ r.w.nome }}</div>
+      <div class="num" style="font-size:var(--text-xl);font-weight:800;letter-spacing:var(--ls-tight);color:var(--ink);margin-top:2px;">{{ r.saldo | eur(0) }}</div>
+      <div style="margin-top:auto;padding-top:12px;">
+        <div style="height:6px;background:var(--surface-alt);border-radius:999px;overflow:hidden;"><div style="height:100%;width:{{ [0, [100, share] | min] | max | round(1) }}%;background:{{ acc or 'var(--accent)' }};border-radius:999px;"></div></div>
+        <div class="muted" style="font-size:12px;margin-top:5px;">{{ t('fin.share_liq', pct=(share | round(1) | pct(1))) }}</div>
+      </div>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <div style="margin:18px 0 8px;"><span class="card-h">{{ t('fin.recent') }}</span></div>
+  {# ---------- aggiungi un movimento (AI "scrivi a parole" + form) ---------- #}
+  <div class="page-title" style="font-size:18px;margin-top:20px;">{{ t('fin.add_movement') }}</div>
+  {% include "finance_ai_box.html" %}
+  {% include "finance_movement_form.html" %}
+
+  {# ---------- spese · il mese in numeri · lettura AI ---------- #}
+  <div class="mm-grid-3" style="margin-top:18px;align-items:stretch;">
+    <div class="card" style="margin:0;">
+      <div class="card-h">{{ t('fin.expenses_by_cat') }}</div>
+      {% for s in riep.spese_categoria %}
+      <div style="margin:8px 0;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;"><span>{{ s.nome }}</span><span class="muted num">{{ s.tot | eur(0) }}</span></div>
+        <div style="background:var(--surface-alt);border-radius:999px;height:8px;overflow:hidden;"><div style="height:100%;width:{{ s.perc }}%;background:var(--neg);border-radius:999px;"></div></div>
+      </div>
+      {% else %}
+      <div class="faint">{{ t('fin.no_movements') }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="card" style="margin:0;">
+      <div class="card-h">{{ t('fin.month_numbers') }}</div>
+      {% set rate = (riep.saldo / riep.entrate * 100) if riep.entrate else 0 %}
+      <div style="display:flex;flex-direction:column;gap:12px;height:100%;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span class="muted" style="font-size:13px;">{{ t('fin.savings_rate') }}</span>
+          <span class="num {{ 'pos' if riep.saldo >= 0 else 'neg' }}" style="font-weight:800;font-size:var(--text-lg);">{{ rate | round(0) | pct(0) }}</span>
+        </div>
+        <div style="height:8px;background:var(--surface-alt);border-radius:999px;overflow:hidden;">
+          <div style="height:100%;width:{{ [0, [100, rate] | min] | max | round(1) }}%;background:var(--pos);border-radius:999px;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:10px;border-top:1px solid var(--border);">
+          <span class="muted" style="font-size:13px;">{{ t('fin.avg_daily') }}</span>
+          <span class="num" style="font-weight:700;color:var(--ink);">{{ (riep.uscite / 30) | eur(0) }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span class="muted" style="font-size:13px;">{{ t('fin.month_balance') }}</span>
+          <span class="num {{ 'pos' if riep.saldo >= 0 else 'neg' }}" style="font-weight:700;">{{ ('+' if riep.saldo >= 0 else '−') ~ (riep.saldo | abs | eur(0)) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;background:var(--ai-bg);border:1px solid var(--ai-bd);border-left:3px solid var(--ai);border-radius:var(--r-lg);padding:16px;box-shadow:0 12px 40px -14px color-mix(in oklab, var(--ai) 60%, transparent), var(--sheen-top);">
+      <div style="position:absolute;inset:0 0 auto 0;height:2px;background-image:linear-gradient(90deg, transparent, var(--ai), var(--accent), transparent);background-size:200% 100%;animation:mm-sheen 4s var(--ease-in-out) infinite;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <span class="ai-label">{{ icon('sparkles', 13) }} {{ t('fin.ai_read') }}</span>
+        {% if lettura_ai %}<span class="pill gray" style="text-transform:none;">{{ t('dash.conf') }}: {{ t('conf.' ~ lettura_ai.conf) }}</span>{% endif %}
+      </div>
+      {% if lettura_ai %}
+      <p style="margin:10px 0 0;color:var(--ink);font-size:14px;line-height:var(--lh-relaxed);white-space:pre-line;">{{ lettura_ai.text }}</p>
+      <p class="faint" style="font-size:12px;margin:8px 0 0;">{{ t('fin.ai_disc') }}</p>
+      {% elif ai_on %}
+      <p class="muted" style="margin:10px 0 0;font-size:14px;">{{ t('fin.ai_analysis_intro') }}</p>
+      {% else %}
+      <p class="muted" style="margin:10px 0 0;font-size:14px;">{{ t('fin.ai_box_off') }} <a href="/impostazioni">{{ t('fin.ai_box_off_link') }}</a></p>
+      {% endif %}
+      {% if ai_on %}
+      <form method="post" action="/finanze/ai/analisi" style="margin:10px 0 0;">
+        <button type="submit" class="mm-aibtn" style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;border:1px solid var(--ai-bd);background:var(--ai-bg);color:var(--ai);border-radius:999px;padding:3px 9px;font-size:11px;font-weight:600;">{{ t('dash.ai_regen') if lettura_ai else t('fin.ai_analysis_btn') }}</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  {# ---------- tutti i movimenti (header ordinabili, default: data desc) ---------- #}
+  <div class="page-title" style="font-size:18px;margin-top:20px;">{{ t('fin.all_movements') }}</div>
   {% include "finance_movements_table.html" %}
 {% endblock %}
-{% block scripts %}<script src="/static/wallet-board.js"></script>{% endblock %}

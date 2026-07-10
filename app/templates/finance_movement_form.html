@@ -1,3 +1,7 @@
+{# Form movimento (design freeze v1.0, come nel video): Tipo · Importo ·
+   Portafoglio, poi Categoria · Descrizione, poi "Salva movimento".
+   "A (portafoglio)" compare SOLO scegliendo Trasferimento; data e metodo
+   stanno dietro un piccolo toggle (di default: adesso, nessun metodo). #}
 {% if proposta is defined and proposta %}
   {% if proposta.ok %}
     <div class="note ok" style="margin-bottom:10px;">✨ {{ t('fin.ai_prop_ok') }}
@@ -10,12 +14,12 @@
   {% endif %}
 {% endif %}
 {% set p = proposta if (proposta is defined and proposta and proposta.ok) else None %}
-<form class="form" method="post" action="/finanze/movimenti/salva">
+<form class="form" method="post" action="/finanze/movimenti/salva" id="mov-form">
   <input type="hidden" name="next" value="{{ next_url if (next_url is defined and next_url) else cur_path }}">
   <div class="row3">
     <div class="field">
       <label>{{ t('fin.type') }}</label>
-      <select name="tipo">
+      <select name="tipo" id="mov-tipo">
         <option value="uscita" {{ 'selected' if p and p.tipo=='uscita' else '' }}>{{ t('fin.uscita') }}</option>
         <option value="entrata" {{ 'selected' if p and p.tipo=='entrata' else '' }}>{{ t('fin.entrata') }}</option>
         <option value="trasferimento" {{ 'selected' if p and p.tipo=='trasferimento' else '' }}>{{ t('fin.trasferimento') }}</option>
@@ -27,32 +31,41 @@
              value="{{ ('%.2f'|format(p.importo))|replace('.', ',') if (p and p.importo) else '' }}">
     </div>
     <div class="field">
-      <label>{{ t('fin.date') }}</label>
-      <input type="datetime-local" name="data" value="{{ p.data_local if p else oggi }}">
-    </div>
-  </div>
-  <div class="row3">
-    <div class="field">
-      <label>{{ t('fin.wallet_from') }}</label>
+      <label>{{ t('fin.wallet') }}</label>
       <select name="wallet_id">{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
     </div>
-    <div class="field">
-      <label>{{ t('fin.wallet_to') }}</label>
-      <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_to_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
-      <div class="hint">{{ t('fin.wallet_to_hint') }}</div>
-    </div>
-    <div class="field">
-      <label>{{ t('fin.category') }}</label>
-      <input type="text" name="categoria" list="catlist" autocomplete="off"
-             value="{{ p.categoria if p else '' }}">
-      <datalist id="catlist">{% for c in categorie %}<option value="{{ c.nome }}">{% endfor %}</datalist>
-      <div class="hint">{{ t('fin.category_hint') }}</div>
-    </div>
+  </div>
+  <div class="field" id="mov-wallet-to" style="{% if not (p and p.tipo=='trasferimento') %}display:none;{% endif %}max-width:360px;">
+    <label>{{ t('fin.wallet_to') }}</label>
+    <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_to_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
+    <div class="hint">{{ t('fin.wallet_to_hint') }}</div>
   </div>
   <div class="row2">
-    <div class="field"><label>{{ t('fin.method') }}</label><input type="text" name="metodo"></div>
-    <div class="field"><label>{{ t('fin.description') }}</label><input type="text" name="descrizione"
-        value="{{ p.descrizione if p else '' }}"></div>
+    <div class="field">
+      <label>{{ t('fin.category') }}</label>
+      <input type="text" name="categoria" list="catlist" autocomplete="off" placeholder="{{ t('fin.category_ph') }}"
+             value="{{ p.categoria if p else '' }}">
+      <datalist id="catlist">{% for c in categorie %}<option value="{{ c.nome }}">{% endfor %}</datalist>
+    </div>
+    <div class="field">
+      <label>{{ t('fin.description') }}</label>
+      <input type="text" name="descrizione" value="{{ p.descrizione if p else '' }}">
+    </div>
   </div>
-  <button type="submit" class="btn primary">{{ t('fin.save') }}</button>
+  <div id="mov-extra" style="display:none;">
+    <div class="row2">
+      <div class="field">
+        <label>{{ t('fin.date') }}</label>
+        <input type="datetime-local" name="data" value="{{ p.data_local if p else oggi }}">
+      </div>
+      <div class="field">
+        <label>{{ t('fin.method') }}</label>
+        <input type="text" name="metodo">
+      </div>
+    </div>
+  </div>
+  <div class="actions" style="margin-bottom:0;">
+    <button type="submit" class="btn primary">{{ t('fin.save_movement') }}</button>
+    <button type="button" class="btn sm ghost" data-toggle="#mov-extra">{{ t('fin.more_fields') }}</button>
+  </div>
 </form>

@@ -1,3 +1,8 @@
+{# ============================================================================
+   Notizie (design freeze v1.0 — MoreScreens.jsx/NotizieScreen): card con
+   eyebrow tipo + badge rilevanza/100, titolo con ticker, pill di impatto per
+   orizzonte (colore per direzione), confidenza, data · fonte. Sola lettura.
+   ============================================================================ #}
 {% extends "base.html" %}
 {% block title %}{{ t('nav.news') }} — {{ t('app.name') }}{% endblock %}
 {% block content %}
@@ -5,27 +10,31 @@
   <p class="page-sub">{{ t('news.subtitle') }}{% if aggiornato %} · <span class="muted">{{ t('news.updated') }} {{ aggiornato }}</span>{% endif %}</p>
 
   {% if cards %}
-  <div class="muted" style="font-size:13px;margin-bottom:12px;">{{ cards|length }} {{ t('news.count') }}</div>
   {% for c in cards %}
-  <div class="card {{ c.bordo_class }}" style="margin-bottom:14px;">
-    <div style="font-size:12px;color:var(--accent-strong);font-weight:700;text-transform:uppercase;letter-spacing:.4px;">
-      {{ c.tipo_evento }}
-      {% if c.rilevanza != "" %}<span class="badge {{ c.rel_class }}" style="margin-left:6px;">{{ c.rilevanza }}/100</span>{% endif %}
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="card-h" style="margin:0;color:var(--muted);">{{ c.tipo_evento }}</span>
+      {% if c.rilevanza != "" %}<span class="badge {{ c.rel_class }}">{{ c.rilevanza }}/100</span>{% endif %}
     </div>
-    <div style="font-size:17px;font-weight:700;color:var(--ink);margin:6px 0;">{% if c.ticker %}{{ c.ticker }} — {% endif %}{{ c.titolo }}</div>
-    <div style="margin:8px 0;">
+    <div class="card-title" style="margin-top:6px;">{% if c.ticker %}<span class="t-ticker">{{ c.ticker }}</span> — {% endif %}{{ c.titolo }}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;">
       {% for p in c.impatti %}
       <span class="pill {{ p.pill }}">{{ t('news.horizon_' ~ p.hk) }} {{ p.arrow }} {{ t('impact.' ~ p.vw) }}</span>
       {% endfor %}
       <span class="pill gray">{{ t('news.confidence') }}: {{ t('conf.' ~ c.confidenza) }}</span>
     </div>
     <div class="muted" style="font-size:13px;">
-      {% if c.data %}{{ c.data }}{% endif %}
-      {% if c.url %} · <a href="{{ c.url }}" target="_blank" rel="noopener" style="color:var(--link);text-decoration:none;">{{ t('news.source') }}</a>{% endif %}
+      {% if c.data_it %}{{ c.data_it }}{% endif %}
+      {% if c.url %} · <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.fonte or t('news.source') }}</a>{% endif %}
     </div>
   </div>
   {% endfor %}
+  <p class="faint" style="font-size:12px;">{{ t('news.readonly') }}</p>
   {% else %}
-  <div class="card">{{ t('news.empty') }}</div>
+  <div class="empty">
+    <div class="empty-icon">📰</div>
+    <div class="empty-title">{{ t('news.empty') }}</div>
+    <p class="empty-sub">{{ t('news.readonly') }}</p>
+  </div>
   {% endif %}
 {% endblock %}
