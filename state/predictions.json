@@ -3134,6 +3134,81 @@
       "rilevanza": 52,
       "titolo": "Ciclo DRAM a rischio eccesso di offerta: avviata raccomandazione Hold su Samsung",
       "url": "https://finnhub.io/api/news?id=c1e733518f92e2548bfcf2d1a75feb000af4b826ace22001a81df44ba3da4fad"
+    },
+    {
+      "id": "meta-nvda-chip-ai-proprietario",
+      "ticker": "META",
+      "data": "2026-07-10T17:30:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "Meta pianifica la produzione di un chip AI proprietario: NVIDIA regge",
+      "url": "https://finnhub.io/api/news?id=e26ad5566c55bb6902d2c5b7df0b6f02f1ff6f6a9543db3d70a69cb0abf12a6f"
+    },
+    {
+      "id": "ttwo-russell-value-rimossa",
+      "ticker": "TTWO",
+      "data": "2026-07-10T17:30:00+00:00",
+      "tipo_evento": "ribilanciamento/cambio indice",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 60,
+      "titolo": "Take-Two rimossa dagli indici Russell Value: pressione istituzionale sulle azioni",
+      "url": "https://finnhub.io/api/news?id=ff122b9449bb9c899cbf312a9adf49fbf71fb6c1051caa1a8eeab4f417041462"
+    },
+    {
+      "id": "intc-margini-200b-capex",
+      "ticker": "INTC",
+      "data": "2026-07-10T17:30:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "titolo": "Intel: margini operativi in ripresa grazie all'AI PC e Xeon, ma il piano da $200 miliardi resta sotto esame",
+      "url": "https://finnhub.io/api/news?id=07e1f88f08be4725cf3accd7457da65bed13bc00d60602031be2981482122857"
+    },
+    {
+      "id": "wdc-analyst-target-hike-hamr",
+      "ticker": "WDC",
+      "data": "2026-07-10T17:30:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Western Digital: target price alzato dagli analisti, spinta dall'AI grazie alla tecnologia HAMR e nuovi accordi",
+      "url": "https://finnhub.io/api/news?id=07f0688fa1c9c27e5180c0e973e21c0eb0de0b87b03aba67dfc5ade40604f8e7"
+    },
+    {
+      "id": "pltr-gnp-seguros-latam",
+      "ticker": "PLTR",
+      "data": "2026-07-10T17:30:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 52,
+      "titolo": "Palantir conquista il primo cliente commerciale in America Latina: accordo pluriennale con GNP Seguros",
+      "url": "https://finnhub.io/api/news?id=21195e042b1fa1e0b65b9084eb2476ff96532cde91f60f8faacc0d0705d8249a"
     }
   ]
 }

@@ -2105,6 +2105,86 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=d7125bdc5f3f67274fe9f4f48fde9f2f5107e5b841238664ac082a0da303215a",
       "data_invio": "2026-07-10T05:10:00+00:00"
+    },
+    {
+      "id": "meta-nvda-chip-ai-proprietario",
+      "ticker": "META",
+      "titolo": "Meta pianifica la produzione di un chip AI proprietario: NVIDIA regge",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=e26ad5566c55bb6902d2c5b7df0b6f02f1ff6f6a9543db3d70a69cb0abf12a6f",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "jnj-q2-earnings-preview",
+      "ticker": "JNJ",
+      "titolo": "Johnson & Johnson: attesa per i risultati Q2 con stime degli analisti in chiaroscuro",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=1f52f873241b901f657ddaf086aba8d0e482b06569ce93acf95f3cf49f028cd7",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "ttwo-russell-value-rimossa",
+      "ticker": "TTWO",
+      "titolo": "Take-Two rimossa dagli indici Russell Value: pressione istituzionale sulle azioni",
+      "tipo_evento": "ribilanciamento/cambio indice",
+      "url": "https://finnhub.io/api/news?id=ff122b9449bb9c899cbf312a9adf49fbf71fb6c1051caa1a8eeab4f417041462",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "intc-margini-200b-capex",
+      "ticker": "INTC",
+      "titolo": "Intel: margini operativi in ripresa grazie all'AI PC e Xeon, ma il piano da $200 miliardi resta sotto esame",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=07e1f88f08be4725cf3accd7457da65bed13bc00d60602031be2981482122857",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "cina-ban-elio-semiconduttori",
+      "ticker": "ASML",
+      "titolo": "La Cina vieta temporaneamente l'export di elio: potenziale impatto sulla filiera dei semiconduttori",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNc3JNM3pfZEJxTV9oX1JMNXdpSzJ5a2NvTFBNZXBHUWpLMnEyM3BqYjNEcDg0WGZsZGhSaktsODR1di1NbU56SzJRZ2NmcXloY3p1MURESl8xS3NFTDRaYkFLZ3VLQU40X0Rwb0V1amJPRE1BVmdLZmJEc29YVjB0d1FQTFgzZWFSekwxRzE0aDFaeDlUZWlsNkpUcUNuNWM?oc=5",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "ko-q2-earnings-preview",
+      "ticker": "KO",
+      "titolo": "Coca-Cola si avvicina alla trimestrale Q2 con domanda resiliente: Jefferies e altri analisti ottimisti",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=9a1927650b0807ddbebd7fea1b66c6704a77709b7f095c518ab7722468b4bed0",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "wdc-analyst-target-hike-hamr",
+      "ticker": "WDC",
+      "titolo": "Western Digital: target price alzato dagli analisti, spinta dall'AI grazie alla tecnologia HAMR e nuovi accordi",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=07f0688fa1c9c27e5180c0e973e21c0eb0de0b87b03aba67dfc5ade40604f8e7",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "ibm-susquehanna-neutral",
+      "ticker": "IBM",
+      "titolo": "IBM: Susquehanna avvia la copertura con Neutral — tanti pregi, ma valutazione già piena",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=c329cdb2be35ddde6e443a8d9cd6ff0e9a9daae1a998c4ab63909a6969a715e2",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "orcl-msft-uk-cloud-regolatorio",
+      "ticker": "ORCL",
+      "titolo": "Il UK classifica i grandi cloud provider come infrastruttura critica finanziaria: nuovi obblighi in arrivo",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=fa0c21d42bfe5bc6337749b03983021cd357225f4990a4ff94bdf7abd7bfd6e6",
+      "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "pltr-gnp-seguros-latam",
+      "ticker": "PLTR",
+      "titolo": "Palantir conquista il primo cliente commerciale in America Latina: accordo pluriennale con GNP Seguros",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=21195e042b1fa1e0b65b9084eb2476ff96532cde91f60f8faacc0d0705d8249a",
+      "data_invio": "2026-07-10T17:30:00+00:00"
     }
   ]
 }
