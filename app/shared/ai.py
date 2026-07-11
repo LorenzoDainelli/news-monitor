@@ -177,17 +177,25 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
     prompt = (
         "Estrai UN movimento finanziario dalla frase dell'utente e rispondi SOLO "
         "con un oggetto JSON valido, senza testo prima o dopo, con QUESTE chiavi:\n"
-        '{"tipo":"uscita|entrata|trasferimento","importo":<numero in euro>,'
+        '{"tipo":"uscita|entrata|trasferimento|giro","importo":<numero in euro>,'
         '"categoria":"<breve>","wallet":"<nome o vuoto>","wallet_to":"<nome o vuoto>",'
-        '"data":"YYYY-MM-DD","descrizione":"<breve>","confidenza":"bassa|media|alta"}\n'
+        '"data":"YYYY-MM-DD","descrizione":"<breve>","confidenza":"bassa|media|alta",'
+        '"controparte":"<chi rimborsa, o vuoto>","importo_ricevuto":<numero o 0>,'
+        '"data_ricevuto":"YYYY-MM-DD o vuoto","wallet_ricevuto":"<nome o vuoto>"}\n'
         f"Oggi è {oggi}. Risolvi le date relative (es. 'ieri', 'lunedì scorso') in data "
         "assoluta; se non è indicata, usa oggi.\n"
-        f"Portafogli disponibili (per 'wallet'/'wallet_to' copia il NOME ESATTO più adatto, "
-        f"oppure lascia vuoto): {nomi_w}\n"
+        f"Portafogli disponibili (per 'wallet'/'wallet_to'/'wallet_ricevuto' copia il NOME "
+        f"ESATTO più adatto, oppure lascia vuoto): {nomi_w}\n"
         f"Categorie già esistenti (riusane una se calza, altrimenti proponine una breve "
         f"e chiara): {nomi_c}\n"
-        "'wallet_to' va valorizzato solo per i trasferimenti. Se non è chiaramente un "
-        "movimento di denaro, metti importo 0 e confidenza bassa.\n"
+        "'wallet_to' va valorizzato solo per i trasferimenti.\n"
+        "tipo 'giro' = spesa che qualcuno rimborsa (es. 'la pagano i miei', 'me li ridà "
+        "il babbo'): 'importo' è quanto speso; in 'controparte' metti chi rimborsa; se la "
+        "frase dice anche quanto è stato ridato compila 'importo_ricevuto' (e "
+        "'data_ricevuto'/'wallet_ricevuto' se indicati), altrimenti lascia 0 (rimborso in "
+        "arrivo). Le chiavi 'controparte'/'importo_ricevuto'/'data_ricevuto'/"
+        "'wallet_ricevuto' restano vuote/0 per gli altri tipi.\n"
+        "Se non è chiaramente un movimento di denaro, metti importo 0 e confidenza bassa.\n"
         f'Frase: "{pulito}"'
     )
     try:
@@ -197,15 +205,22 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
         return {"ok": False, "error": type(e).__name__}
 
     tipo = str(data.get("tipo", "")).lower().strip()
-    if tipo not in ("entrata", "uscita", "trasferimento"):
+    if tipo not in ("entrata", "uscita", "trasferimento", "giro"):
         tipo = "uscita"
-    try:
-        importo = round(abs(float(str(data.get("importo", 0)).replace(",", "."))), 2)
-    except (TypeError, ValueError):
-        importo = 0.0
+
+    def _num(val):
+        try:
+            return round(abs(float(str(val or 0).replace(",", "."))), 2)
+        except (TypeError, ValueError):
+            return 0.0
+
+    importo = _num(data.get("importo"))
     conf = str(data.get("confidenza", "")).lower()
     conf = "alta" if "alt" in conf else "bassa" if "bass" in conf else "media"
     d = _norm_date(data.get("data"), oggi)
+    # partita di giro: gamba del rimborso (0/vuoto = partita APERTA, arriverà dopo)
+    ricevuto = _num(data.get("importo_ricevuto")) if tipo == "giro" else 0.0
+    d_ric = _norm_date(data.get("data_ricevuto"), oggi) if ricevuto else None
     return {
         "ok": True,
         "tipo": tipo,
@@ -218,6 +233,10 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
         "descrizione": str(data.get("descrizione", "")).strip()[:200],
         "confidenza": conf,
         "testo": testo,
+        "controparte": str(data.get("controparte", "")).strip()[:80] if tipo == "giro" else "",
+        "importo_ricevuto": ricevuto if (tipo == "giro" and ricevuto) else None,
+        "data_ricevuto_local": (d_ric + "T12:00") if d_ric else None,
+        "wallet_ricevuto_id": _match_wallet(data.get("wallet_ricevuto"), wallets) if (tipo == "giro" and ricevuto) else None,
     }
 
 

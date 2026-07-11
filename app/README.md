@@ -23,6 +23,9 @@ Serve solo **Python 3** già installato (verificato: 3.11). Nessun'altra install
 - **Analisi**: look-through, settori, geografia, valute, metriche di rischio, spiegazioni ✨AI.
 - **Finanze**: conti e carte reali (AIB, Hype, Revolut, Trade Republic, contanti,
   PAC), movimenti con inserimento anche in linguaggio naturale (AI), sintesi del mese.
+  Quattro tipi di movimento: entrata, uscita, trasferimento e **partita di giro**
+  (spesa che qualcuno rimborsa: i saldi si muovono davvero, nelle statistiche conta
+  solo la differenza; le partite aperte restano in evidenza finché non le chiudi).
 - **Notizie**: le card del news-monitor, aggiornate da GitHub a ogni avvio.
 - **Impostazioni**: aspetto, lingua (6), agente AI Gemini. La chiave resta solo in locale.
 

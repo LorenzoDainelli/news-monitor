@@ -1,7 +1,10 @@
 {# Form movimento (design freeze v1.0, come nel video): Tipo · Importo ·
    Portafoglio, poi Categoria · Descrizione, poi "Salva movimento".
    "A (portafoglio)" compare SOLO scegliendo Trasferimento; data e metodo
-   stanno dietro un piccolo toggle (di default: adesso, nessun metodo). #}
+   stanno dietro un piccolo toggle (di default: adesso, nessun metodo).
+   Partita di giro: Importo/Portafoglio qui sopra = la SPESA; il blocco
+   dedicato chiede "da chi" e la gamba del rimborso (oppure la casella
+   "arriverà dopo" per lasciare la partita aperta). #}
 {% if proposta is defined and proposta %}
   {% if proposta.ok %}
     <div class="note ok" style="margin-bottom:10px;">✨ {{ t('fin.ai_prop_ok') }}
@@ -23,6 +26,7 @@
         <option value="uscita" {{ 'selected' if p and p.tipo=='uscita' else '' }}>{{ t('fin.uscita') }}</option>
         <option value="entrata" {{ 'selected' if p and p.tipo=='entrata' else '' }}>{{ t('fin.entrata') }}</option>
         <option value="trasferimento" {{ 'selected' if p and p.tipo=='trasferimento' else '' }}>{{ t('fin.trasferimento') }}</option>
+        <option value="giro" {{ 'selected' if p and p.tipo=='giro' else '' }}>{{ t('fin.giro') }}</option>
       </select>
     </div>
     <div class="field">
@@ -39,6 +43,49 @@
     <label>{{ t('fin.wallet_to') }}</label>
     <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_to_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
     <div class="hint">{{ t('fin.wallet_to_hint') }}</div>
+  </div>
+
+  {# ---- partita di giro: da chi + la gamba del rimborso (o "arriverà dopo") ---- #}
+  {% set p_giro = p and p.tipo == 'giro' %}
+  {% set p_giro_aperta = p_giro and not p.importo_ricevuto %}
+  <div id="mov-giro" style="{% if not p_giro %}display:none;{% endif %}border:1px solid var(--border);border-radius:var(--r-md);padding:12px;background:var(--surface-alt);">
+    <div class="hint" style="margin:0 0 10px;">{{ t('fin.giro_hint') }}</div>
+    <div class="row2">
+      <div class="field">
+        <label>{{ t('fin.giro_da_chi') }}</label>
+        <input type="text" name="controparte" list="giro-da-chi" autocomplete="off"
+               placeholder="{{ t('fin.giro_da_chi_ph') }}" value="{{ p.controparte if p_giro else '' }}">
+        <datalist id="giro-da-chi">
+          {% for c in (controparti if controparti is defined else []) %}<option value="{{ c }}">{% endfor %}
+        </datalist>
+      </div>
+      <div class="field">
+        <label style="visibility:hidden;">.</label>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400;cursor:pointer;">
+          <input type="checkbox" name="giro_dopo" value="1" id="mov-giro-dopo" style="width:auto;"
+                 {{ 'checked' if p_giro_aperta else '' }}>
+          {{ t('fin.giro_dopo') }}
+        </label>
+      </div>
+    </div>
+    <div id="mov-giro-ricevuto" {% if p_giro_aperta %}style="display:none;"{% endif %}>
+      <div class="row3">
+        <div class="field">
+          <label>{{ t('fin.giro_ricevuto') }}</label>
+          <input type="text" name="importo_ricevuto" placeholder="0,00"
+                 value="{{ ('%.2f'|format(p.importo_ricevuto))|replace('.', ',') if (p_giro and p.importo_ricevuto) else '' }}">
+        </div>
+        <div class="field">
+          <label>{{ t('fin.giro_ricevuto_data') }}</label>
+          <input type="datetime-local" name="data_ricevuto" value="{{ p.data_ricevuto_local if (p_giro and p.data_ricevuto_local) else oggi }}">
+        </div>
+        <div class="field">
+          <label>{{ t('fin.giro_ricevuto_wallet') }}</label>
+          <select name="wallet_ricevuto_id">{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p_giro and p.wallet_ricevuto_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
+        </div>
+      </div>
+      <div class="hint" style="margin:0;">{{ t('fin.giro_diff_hint') }}</div>
+    </div>
   </div>
   <div class="row2">
     <div class="field">

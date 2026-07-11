@@ -162,11 +162,19 @@ document.addEventListener('click', function (e) {
   });
 })();
 
-// 6) Form movimento: "A (portafoglio)" compare solo per i trasferimenti.
+// 6) Form movimento: "A (portafoglio)" compare solo per i trasferimenti; il
+//    blocco della partita di giro (da chi + gamba del rimborso) solo per i
+//    giri, e la casella "il rimborso arriverà dopo" nasconde la gamba.
 document.addEventListener('change', function (e) {
   if (e.target && e.target.id === 'mov-tipo') {
     var box = document.getElementById('mov-wallet-to');
     if (box) box.style.display = e.target.value === 'trasferimento' ? '' : 'none';
+    var giro = document.getElementById('mov-giro');
+    if (giro) giro.style.display = e.target.value === 'giro' ? '' : 'none';
+  }
+  if (e.target && e.target.id === 'mov-giro-dopo') {
+    var ric = document.getElementById('mov-giro-ricevuto');
+    if (ric) ric.style.display = e.target.checked ? 'none' : '';
   }
 });
 
