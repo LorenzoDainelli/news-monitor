@@ -53,6 +53,53 @@
   </div>
   {% endif %}
 
+  {# ---------- partite di giro APERTE: in attesa di rimborso ---------- #}
+  {% if giri_aperti %}
+  <div class="card" style="margin:14px 0 0;border-color:var(--warn-bd);background:var(--warn-bg);">
+    <div class="card-h" style="display:flex;align-items:center;gap:8px;color:var(--warn-tx);">
+      {{ icon('clock', 16) }} {{ t('fin.giro_open_title') }}
+      <span class="pill gray" style="text-transform:none;">{{ giri_aperti | length }}</span>
+    </div>
+    <p class="muted" style="margin:0 0 12px;font-size:13px;">{{ t('fin.giro_open_sub') }}</p>
+    {% for g in giri_aperti %}
+    <div style="padding:12px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);{% if not loop.first %}margin-top:10px;{% endif %}">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;">
+        <span class="num" style="font-weight:800;color:var(--neg);">−{{ g.t.importo | eur }}</span>
+        <span style="font-weight:600;color:var(--ink);">{{ g.wallet }}</span>
+        <span class="muted" style="font-size:13px;">· {{ g.t.data.strftime('%d/%m/%Y') }}</span>
+        {% if g.t.controparte %}<span class="pill accent" style="text-transform:none;">{{ t('fin.giro_by', chi=g.t.controparte) }}</span>{% endif %}
+        {% if g.t.descrizione %}<span class="muted" style="font-size:13px;">{{ g.t.descrizione }}</span>{% endif %}
+      </div>
+      <form method="post" action="/finanze/giro/{{ g.t.id }}/chiudi" class="form" style="margin:10px 0 0;">
+        <input type="hidden" name="next" value="{{ cur_path }}">
+        <div class="row3">
+          <div class="field" style="margin:0;">
+            <label>{{ t('fin.giro_ricevuto') }}</label>
+            <input type="text" name="importo_ricevuto" placeholder="0,00" required>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>{{ t('fin.giro_ricevuto_data') }}</label>
+            <input type="datetime-local" name="data_ricevuto" value="{{ oggi }}">
+          </div>
+          <div class="field" style="margin:0;">
+            <label>{{ t('fin.giro_ricevuto_wallet') }}</label>
+            <select name="wallet_ricevuto_id">{% for w in wallets %}<option value="{{ w.id }}">{{ w.nome }}</option>{% endfor %}</select>
+          </div>
+        </div>
+        <div class="actions" style="margin:10px 0 0;">
+          <button type="submit" class="btn sm primary">{{ t('fin.giro_close_btn') }}</button>
+        </div>
+      </form>
+      <form method="post" action="/finanze/giro/{{ g.t.id }}/converti" class="js-confirm" style="display:inline-block;margin:8px 8px 0 0;"
+            data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}">
+        <input type="hidden" name="next" value="{{ cur_path }}">
+        <button type="submit" class="btn sm ghost">{{ t('fin.giro_convert') }}</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
   {# ---------- aggiungi un movimento (AI "scrivi a parole" + form) ---------- #}
   <div class="page-title" style="font-size:18px;margin-top:20px;">{{ t('fin.add_movement') }}</div>
   {% include "finance_ai_box.html" %}

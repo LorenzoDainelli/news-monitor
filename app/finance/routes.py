@@ -10,7 +10,7 @@ from shared.templating import templates
 from shared.parsing import to_float, to_datetime
 from shared import ai, settings_store
 from finance import service
-from finance.models import TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO
+from finance.models import TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO, TIPO_GIRO
 
 router = APIRouter()
 
@@ -41,7 +41,9 @@ def _ctx_panoramica() -> dict:
         "movimenti": service.lista_movimenti(),      # TUTTI, data desc
         "wallets": service.wallets(),
         "categorie": service.categorie(),
-        "tipi": (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO),
+        "tipi": (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO, TIPO_GIRO),
+        "giri_aperti": service.giri_aperti(),        # riquadro "In attesa di rimborso"
+        "controparti": service.controparti(),        # suggerimenti "da chi"
         "oggi": _oggi_local(),
         "ai_on": ai.is_configured(),
         "lettura_ai": _lettura_ai_salvata(),
@@ -64,14 +66,30 @@ def salva_movimento(
     categoria: str = Form(""),
     metodo: str = Form(""),
     descrizione: str = Form(""),
+    # --- solo partite di giro ---
+    controparte: str = Form(""),
+    giro_dopo: str = Form(""),             # checkbox: il rimborso arriverà dopo
+    importo_ricevuto: str = Form(""),
+    data_ricevuto: str = Form(""),
+    wallet_ricevuto_id: str = Form(""),
     next: str = Form("/finanze"),
 ):
+    wto = int(wallet_to_id) if (wallet_to_id or "").strip().isdigit() else None
     if tipo in (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO):
-        wto = int(wallet_to_id) if (wallet_to_id or "").strip().isdigit() else None
         service.crea_movimento(
             tipo=tipo, data=to_datetime(data), importo=to_float(importo, 0.0) or 0.0,
             wallet_id=wallet_id, wallet_to_id=wto, categoria_nome=categoria,
             metodo=metodo, descrizione=descrizione)
+    elif tipo == TIPO_GIRO:
+        # con la casella "rimborso dopo" la gamba ricevuta si ignora: partita APERTA
+        ricevuto = None if giro_dopo else to_float(importo_ricevuto, None)
+        wric = int(wallet_ricevuto_id) if (wallet_ricevuto_id or "").strip().isdigit() else None
+        service.crea_giro(
+            data=to_datetime(data), importo=to_float(importo, 0.0) or 0.0,
+            wallet_id=wallet_id, controparte=controparte, descrizione=descrizione,
+            importo_ricevuto=ricevuto,
+            data_ricevuto=to_datetime(data_ricevuto) if ricevuto is not None else None,
+            wallet_to_id=wric if ricevuto is not None else None)
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
 
@@ -79,6 +97,35 @@ def salva_movimento(
 @router.post("/finanze/movimenti/{tid}/elimina")
 def elimina_movimento(tid: int, next: str = Form("/finanze")):
     service.elimina_movimento(tid)
+    dest = next if next.startswith("/finanze") else "/finanze"
+    return RedirectResponse(dest, status_code=303)
+
+
+# ------------------------------ partite di giro ------------------------------
+@router.post("/finanze/giro/{tid}/chiudi")
+def giro_chiudi(
+    tid: int,
+    importo_ricevuto: str = Form("0"),
+    data_ricevuto: str = Form(""),
+    wallet_ricevuto_id: int = Form(...),
+    next: str = Form("/finanze"),
+):
+    """Registra il rimborso di una partita aperta: da qui la differenza entra
+    nelle statistiche (guadagno alla data del rimborso, perdita a quella della
+    spesa)."""
+    imp = to_float(importo_ricevuto, None)
+    if imp is not None:
+        service.chiudi_giro(tid, importo_ricevuto=imp,
+                            data_ricevuto=to_datetime(data_ricevuto),
+                            wallet_to_id=wallet_ricevuto_id)
+    dest = next if next.startswith("/finanze") else "/finanze"
+    return RedirectResponse(dest, status_code=303)
+
+
+@router.post("/finanze/giro/{tid}/converti")
+def giro_converti(tid: int, next: str = Form("/finanze")):
+    """'Non me li ridaranno': la partita aperta diventa una normale uscita."""
+    service.converti_giro_in_uscita(tid)
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
 

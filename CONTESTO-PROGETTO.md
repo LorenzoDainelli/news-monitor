@@ -127,6 +127,12 @@ Legge le notizie del robot e riusa la lista titoli.
   Hype `#12B3A6`, Revolut `#5B5BD6`, Trade Republic `#334155`, Contanti, PAC; ordinate
   per saldo decrescente col PAC sempre ultimo. Movimento in linguaggio naturale (AI),
   sintesi mese, **tutti** i movimenti in tabella ordinabile.
+  **Partita di giro** (4º tipo di movimento): spesa che qualcuno rimborsa (es. la
+  pagano i genitori). Due gambe (speso/ricevuto) su UNA riga; i saldi si muovono
+  davvero, in entrate/uscite conta SOLO la differenza (guadagno datato al rimborso,
+  perdita alla spesa); casella "rimborso dopo" = partita APERTA nel riquadro
+  "In attesa di rimborso" (neutra finché non chiusa; chiudibile o convertibile in
+  uscita). Eliminare una partita elimina entrambe le gambe.
 - **Notizie**: card come le email, aggiornate da GitHub a ogni avvio.
 - **Impostazioni**: aspetto/lingua, agente AI Gemini (chiave, modello, modalità, test).
 - Il portafoglio target dell'utente è **solo in percentuale** (niente più importi
