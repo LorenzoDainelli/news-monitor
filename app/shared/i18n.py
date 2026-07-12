@@ -482,7 +482,6 @@ STRINGS = {
     "fin.giro_got_total": {"it": "già rientrato", "en": "already back", "es": "ya devuelto", "fr": "déjà rendu", "de": "schon zurück", "uk": "вже повернуто"},
     "fin.giro_add_close": {"it": "Aggiungi e chiudi", "en": "Add and close", "es": "Añadir y cerrar", "fr": "Ajouter et clôturer", "de": "Hinzufügen und schließen", "uk": "Додати й закрити"},
     "fin.giro_add_more": {"it": "Aggiungi (ne arriva altro)", "en": "Add (more to come)", "es": "Añadir (llegará más)", "fr": "Ajouter (encore à venir)", "de": "Hinzufügen (mehr folgt)", "uk": "Додати (буде ще)"},
-    "fin.giro_close_now": {"it": "Chiudere la partita? Il netto entrerà nelle statistiche.", "en": "Close the entry? The net will count in stats.", "es": "¿Cerrar la partida? El neto contará en las estadísticas.", "fr": "Clôturer l'opération ? Le net comptera dans les stats.", "de": "Vorgang schließen? Der Saldo zählt in der Statistik.", "uk": "Закрити запис? Різниця врахується в статистиці."},
     "fin.giro_close_asis": {"it": "Chiudi partita", "en": "Close entry", "es": "Cerrar partida", "fr": "Clôturer", "de": "Vorgang schließen", "uk": "Закрити запис"},
 
     # PAC
