@@ -2,9 +2,9 @@
    Portafoglio · Categoria · Descrizione · cestino con conferma INLINE.
    Header cliccabili = ordinamento asc/desc lato client (app.js, th.sortable);
    il server consegna già tutto in ordine di data e ora decrescenti.
-   Partita di giro: l'importo mostrato è SOLO la differenza (l'unica cosa che
-   conta nelle statistiche); le due gambe vere stanno nella descrizione.
-   Il cestino elimina l'INTERA partita (le due gambe insieme). #}
+   Partita di giro: ogni gamba (spesa −, rimborso +) è una riga a sé, con
+   importo NEUTRO (non è una vera entrata/uscita: conta solo il netto della
+   partita, e solo quando è chiusa). Il cestino elimina l'INTERA partita. #}
 {% from "_icons.html" import icon %}
 <div class="table-wrap">
   <table>
@@ -20,20 +20,18 @@
     <tbody>
     {% for m in movimenti %}
       {% set tt = m.t.tipo %}
-      {% set diff = m.t.giro_diff if tt == 'giro' else None %}
+      {% set gk = m.t.giro_kind if tt == 'giro' else None %}
+      {% set gamt = m.t.giro_importo_display if tt == 'giro' else None %}
       <tr>
         <td data-s="{{ m.t.data.isoformat() }}"><span class="muted">{{ m.t.data.strftime('%d/%m') }} · {{ m.t.data.strftime('%H:%M') }}</span></td>
         <td data-s="{{ t('fin.' ~ tt) }}">
           <span class="pill {{ 'green' if tt=='entrata' else 'red' if tt=='uscita' else 'accent' if tt=='giro' else 'gray' }}">{{ t('fin.' ~ tt) }}</span>
-          {% if tt == 'giro' and m.t.giro_aperta %}<span class="pill gray" style="text-transform:none;">{{ t('fin.giro_open_pill') }}</span>{% endif %}
+          {% if tt == 'giro' %}<span class="pill gray" style="text-transform:none;">{{ t('fin.giro_leg_' ~ gk) }}</span>{% if m.t.giro_aperta %}<span class="pill gray" style="text-transform:none;">{{ t('fin.giro_open_pill') }}</span>{% endif %}{% endif %}
         </td>
         {% if tt == 'giro' %}
-        <td class="num {{ 'pos' if diff and diff > 0 else 'neg' if diff and diff < 0 else '' }}" style="font-weight:600;"
-            data-s="{{ diff if diff is not none else 0 }}">
-          {% if m.t.giro_aperta %}<span class="muted" title="{{ t('fin.giro_open_title') }}">—</span>
-          {% elif diff > 0 %}+{{ diff | eur }}
-          {% elif diff < 0 %}−{{ (0 - diff) | eur }}
-          {% else %}<span class="muted">{{ 0 | eur }}</span>{% endif %}
+        <td class="num" style="font-weight:600;color:var(--muted);" data-s="{{ gamt }}"
+            title="{{ t('fin.giro_neutral_hint') }}">
+          {% if gamt > 0 %}+{{ gamt | eur }}{% elif gamt < 0 %}−{{ (0 - gamt) | eur }}{% else %}{{ 0 | eur }}{% endif %}
         </td>
         {% else %}
         <td class="num {{ 'pos' if tt=='entrata' else 'neg' if tt=='uscita' else '' }}" style="font-weight:600;"
@@ -41,10 +39,10 @@
           {{ '+' if tt=='entrata' else ('−' if tt=='uscita' else '') }}{{ m.t.importo | eur }}
         </td>
         {% endif %}
-        <td>{{ m.wallet }}{% if m.wallet_to %} → {{ m.wallet_to }}{% endif %}</td>
-        <td><span class="muted">{% if tt == 'giro' %}{{ t('fin.giro_by', chi=m.t.controparte) if m.t.controparte else '—' }}{% else %}{{ m.categoria or '—' }}{% endif %}</span></td>
+        <td>{{ m.wallet }}{% if m.wallet_to and tt != 'giro' %} → {{ m.wallet_to }}{% endif %}</td>
+        <td><span class="muted">{% if tt == 'giro' %}{% if gk == 'spesa' %}{{ m.categoria or '—' }}{% else %}{{ t('fin.giro_by', chi=m.t.controparte) if m.t.controparte else '—' }}{% endif %}{% else %}{{ m.categoria or '—' }}{% endif %}</span></td>
         <td>{{ m.t.descrizione or '—' }}
-          {% if tt == 'giro' %}<span class="faint num"> · −{{ m.t.importo | eur }} → {% if m.t.giro_aperta %}{{ t('fin.giro_pending') }}{% else %}+{{ m.t.importo_ricevuto | eur }}{% endif %}</span>{% endif %}
+          {% if tt == 'giro' and gk == 'combo' %}<span class="faint num"> · −{{ m.t.importo | eur }} → +{{ m.t.importo_ricevuto | eur }}</span>{% endif %}
         </td>
         <td class="num">
           <form method="post" action="/finanze/movimenti/{{ m.t.id }}/elimina" class="js-confirm"

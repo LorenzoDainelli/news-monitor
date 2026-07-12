@@ -3,7 +3,9 @@
 Saldo di un wallet = saldo di apertura + entrate - uscite + trasferimenti in arrivo
 - trasferimenti in uscita ± le gambe delle partite di giro. Il trasferimento non
 cambia il patrimonio totale; la partita di giro lo cambia SOLO della differenza
-(ricevuto − speso), che è anche l'unica cosa contata in entrate/uscite del mese.
+netta (Σ rientri − Σ spese), che è anche l'unica cosa contata in entrate/uscite del
+mese — e solo quando la partita è chiusa. Una partita può avere più spese e più
+rientri: sono più righe con lo stesso `giro_id` (vedi finance/models.py).
 
 Tutto DESCRITTIVO: qui l'inserimento e' manuale e strutturato (l'inserimento in
 linguaggio naturale passa dall'agente AI, che però compila solo il modulo).
@@ -71,14 +73,33 @@ def migra_schema():
         if cols and "colore" not in cols:
             c.execute(text("ALTER TABLE finance_wallets ADD COLUMN colore VARCHAR(20) DEFAULT ''"))
             c.commit()
-        # partite di giro: la gamba del rimborso sulla stessa riga del movimento
+        # partite di giro: gambe (spesa/rientro) e raggruppamento in una partita
         cols = [r[1] for r in c.execute(text("PRAGMA table_info(finance_transactions)"))]
         for nome, ddl in (("importo_ricevuto", "FLOAT"),
                           ("data_ricevuto", "DATETIME"),
-                          ("controparte", "VARCHAR(80) DEFAULT ''")):
+                          ("controparte", "VARCHAR(80) DEFAULT ''"),
+                          ("giro_id", "VARCHAR(32) DEFAULT ''"),
+                          ("giro_aperta", "BOOLEAN DEFAULT 0")):
             if cols and nome not in cols:
                 c.execute(text(f"ALTER TABLE finance_transactions ADD COLUMN {nome} {ddl}"))
                 c.commit()
+    # Backfill: le vecchie partite di giro (a riga singola, senza giro_id) diventano
+    # ognuna un gruppo a sé; l'apertura si deduce dalla vecchia regola (rimborso
+    # assente = aperta). Idempotente: tocca solo le righe giro ancora senza giro_id.
+    _backfill_giro_id()
+
+
+def _backfill_giro_id() -> None:
+    import uuid
+    with SessionLocal() as db:
+        legacy = db.query(Transaction).filter(
+            Transaction.tipo == TIPO_GIRO,
+            (Transaction.giro_id.is_(None)) | (Transaction.giro_id == "")).all()
+        for t in legacy:
+            t.giro_id = uuid.uuid4().hex[:16]
+            t.giro_aperta = t.importo_ricevuto is None
+        if legacy:
+            db.commit()
 
 
 def seed_wallets_if_empty() -> int:
@@ -226,70 +247,186 @@ def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
 
 
 def elimina_movimento(tid):
-    # per le partite di giro elimina l'INTERA partita (le due gambe sono una riga)
+    """Elimina un movimento. Se è la gamba di una partita di giro, elimina
+    l'INTERA partita (tutte le righe con lo stesso giro_id)."""
     with SessionLocal() as db:
         t = db.get(Transaction, tid)
-        if t:
+        if not t:
+            return
+        if t.tipo == TIPO_GIRO and (t.giro_id or ""):
+            for r in db.query(Transaction).filter(Transaction.giro_id == t.giro_id).all():
+                db.delete(r)
+        else:
             db.delete(t)
-            db.commit()
+        db.commit()
 
 
 # ------------------------------ partite di giro ------------------------------
-def crea_giro(data, importo, wallet_id, controparte="", descrizione="",
-              importo_ricevuto=None, data_ricevuto=None, wallet_to_id=None):
-    """Registra una partita di giro. Senza la gamba del rimborso
-    (importo_ricevuto=None) la partita resta APERTA: il saldo del wallet della
-    spesa è già aggiornato ma non conta nulla in entrate/uscite."""
+def _nuovo_giro_id() -> str:
+    import uuid
+    return uuid.uuid4().hex[:16]
+
+
+def _riga_spesa(db, gid, aperta, importo, wallet_id, categoria="", descrizione="", data=None):
+    cat_id = _get_or_create_categoria(db, categoria, "")   # categoria come etichetta (kind neutro)
+    return Transaction(
+        tipo=TIPO_GIRO, giro_id=gid, giro_aperta=aperta,
+        data=data or datetime.now(), importo=abs(importo or 0.0),
+        wallet_id=wallet_id, category_id=cat_id,
+        descrizione=(descrizione or "").strip())
+
+
+def _riga_rientro(db, gid, aperta, importo, wallet_id, controparte="", data=None):
+    # la gamba rientro: importo=0 (non è una spesa), il denaro ENTRA in wallet_to_id
+    return Transaction(
+        tipo=TIPO_GIRO, giro_id=gid, giro_aperta=aperta,
+        data=data or datetime.now(), importo=0.0,
+        wallet_id=wallet_id, wallet_to_id=wallet_id,
+        importo_ricevuto=abs(importo or 0.0),
+        data_ricevuto=data or datetime.now(),
+        controparte=(controparte or "").strip())
+
+
+def crea_giro(spese, rientri=None, aperta=False):
+    """Registra una partita di giro con PIÙ spese e PIÙ rientri (una sola partita).
+    - spese:   lista di dict {importo, wallet_id, categoria, descrizione, data}
+    - rientri: lista di dict {importo, wallet_id, controparte, data}
+    Con `aperta=True` (casella 'il rimborso arriverà dopo') gli eventuali rientri
+    passati vengono IGNORATI: la partita resta in attesa. I saldi dei portafogli
+    si muovono comunque, gamba per gamba; il netto conta solo quando è chiusa."""
+    spese = [s for s in (spese or []) if (s.get("importo") or 0) > 0 and s.get("wallet_id")]
+    rientri = [] if aperta else [r for r in (rientri or [])
+                                 if (r.get("importo") or 0) > 0 and r.get("wallet_id")]
+    if not spese:
+        return None
+    gid = _nuovo_giro_id()
     with SessionLocal() as db:
-        db.add(Transaction(
-            tipo=TIPO_GIRO, data=data or datetime.now(), importo=abs(importo or 0.0),
-            wallet_id=wallet_id, descrizione=(descrizione or "").strip(),
-            controparte=(controparte or "").strip(),
-            importo_ricevuto=abs(importo_ricevuto) if importo_ricevuto is not None else None,
-            data_ricevuto=data_ricevuto if importo_ricevuto is not None else None,
-            wallet_to_id=wallet_to_id if importo_ricevuto is not None else None))
+        for s in spese:
+            db.add(_riga_spesa(db, gid, aperta, s.get("importo"), s["wallet_id"],
+                               s.get("categoria", ""), s.get("descrizione", ""), s.get("data")))
+        for r in rientri:
+            db.add(_riga_rientro(db, gid, aperta, r.get("importo"), r["wallet_id"],
+                                 r.get("controparte", ""), r.get("data")))
         db.commit()
+    return gid
 
 
-def chiudi_giro(tid, importo_ricevuto, data_ricevuto, wallet_to_id):
-    """Chiude una partita aperta registrando il rimborso: da qui in poi la
-    differenza (ricevuto − speso) entra nelle statistiche del mese."""
+def aggiungi_rientro(giro_id, importo, wallet_id, controparte="", data=None):
+    """Aggiunge un rientro (rimborso) a una partita esistente, lasciandola com'è
+    (aperta o chiusa). Serve per i rimborsi arrivati in più volte."""
+    if not giro_id or (importo or 0) <= 0 or not wallet_id:
+        return False
     with SessionLocal() as db:
-        t = db.get(Transaction, tid)
-        if not t or t.tipo != TIPO_GIRO or t.importo_ricevuto is not None:
+        altra = db.query(Transaction).filter(Transaction.giro_id == giro_id).first()
+        if not altra or altra.tipo != TIPO_GIRO:
             return False
-        t.importo_ricevuto = abs(importo_ricevuto or 0.0)
-        t.data_ricevuto = data_ricevuto or datetime.now()
-        t.wallet_to_id = wallet_to_id
+        db.add(_riga_rientro(db, giro_id, altra.giro_aperta, importo, wallet_id, controparte, data))
         db.commit()
         return True
 
 
-def converti_giro_in_uscita(tid):
-    """Il rimborso non arriverà mai: la partita aperta diventa una normale
-    uscita (stessa data, stesso importo, stesso wallet)."""
+def chiudi_giro(giro_id, importo=None, wallet_id=None, controparte="", data=None):
+    """Chiude una partita: da qui il netto (Σ rientri − Σ spese) entra nelle
+    statistiche. Se vengono passati importo+wallet_id, registra prima un ultimo
+    rientro (comodo dal riquadro 'In attesa'). Accetta anche l'id di UNA riga."""
     with SessionLocal() as db:
-        t = db.get(Transaction, tid)
-        if not t or t.tipo != TIPO_GIRO or t.importo_ricevuto is not None:
+        rows = db.query(Transaction).filter(Transaction.giro_id == giro_id).all()
+        if not rows:                       # ripiego: giro_id passato come id di riga
+            t = db.get(Transaction, giro_id) if str(giro_id).isdigit() else None
+            if t and t.giro_id:
+                rows = db.query(Transaction).filter(Transaction.giro_id == t.giro_id).all()
+        if not rows:
             return False
-        t.tipo = TIPO_USCITA
-        t.wallet_to_id = None
-        t.data_ricevuto = None
+        gid = rows[0].giro_id
+        if importo and wallet_id:
+            db.add(_riga_rientro(db, gid, False, importo, wallet_id, controparte, data))
+        for r in rows:
+            r.giro_aperta = False
         db.commit()
         return True
+
+
+def converti_giro_in_uscita(giro_id):
+    """'Non me li ridaranno': le spese della partita diventano normali uscite,
+    gli eventuali rientri già registrati vengono rimossi. Accetta anche l'id di
+    una riga della partita."""
+    with SessionLocal() as db:
+        rows = db.query(Transaction).filter(Transaction.giro_id == giro_id).all()
+        if not rows:
+            t = db.get(Transaction, giro_id) if str(giro_id).isdigit() else None
+            if t and t.giro_id:
+                rows = db.query(Transaction).filter(Transaction.giro_id == t.giro_id).all()
+        if not rows:
+            return False
+        for r in rows:
+            if r.giro_kind == "rientro":
+                db.delete(r)
+            else:                          # spesa o combo -> uscita normale
+                r.tipo = TIPO_USCITA
+                r.giro_id = ""
+                r.giro_aperta = False
+                r.wallet_to_id = None
+                r.importo_ricevuto = None
+                r.data_ricevuto = None
+                r.controparte = ""
+        db.commit()
+        return True
+
+
+def _riassumi_giro(rows) -> dict:
+    """Aggrega le gambe di UNA partita (righe con lo stesso giro_id) in un
+    riepilogo: totali speso/ricevuto, netto, date chiave, apertura."""
+    speso = sum(r.importo or 0.0 for r in rows)
+    ricevuto = sum(r.importo_ricevuto or 0.0 for r in rows if r.importo_ricevuto is not None)
+    date_spesa = [r.data for r in rows if (r.importo or 0.0) > 0 and r.data]
+    date_rientro = [r.data_ricevuto for r in rows if r.importo_ricevuto is not None and r.data_ricevuto]
+    return {
+        "giro_id": rows[0].giro_id,
+        "aperta": any(r.giro_aperta for r in rows),
+        "speso": round(speso, 2),
+        "ricevuto": round(ricevuto, 2),
+        "netto": round(ricevuto - speso, 2),
+        "n_rientri": sum(1 for r in rows if r.importo_ricevuto is not None),
+        "ultima_spesa": max(date_spesa) if date_spesa else None,
+        "ultimo_rientro": max(date_rientro) if date_rientro else None,
+        "prima_data": min(date_spesa) if date_spesa else (rows[0].data),
+    }
+
+
+def _gruppi_giro(db):
+    """{giro_id: [righe]} di tutte le partite di giro, ordinate per data."""
+    rows = list(db.execute(
+        select(Transaction).where(Transaction.tipo == TIPO_GIRO)
+        .order_by(Transaction.data, Transaction.id)).scalars().all())
+    gruppi = {}
+    for t in rows:
+        gruppi.setdefault(t.giro_id or f"_{t.id}", []).append(t)
+    return gruppi
 
 
 def giri_aperti():
-    """Partite di giro in attesa di rimborso (le più vecchie prima), con il
-    nome del wallet da cui è uscita la spesa: alimentano il riquadro
+    """Partite di giro APERTE (in attesa di rimborso), le più vecchie prima, con
+    le loro spese e i rientri già registrati: alimentano il riquadro
     'In attesa di rimborso' della pagina Finanze."""
     with SessionLocal() as db:
         wn = {w.id: w.nome for w in db.query(Wallet).all()}
-        rows = list(db.execute(
-            select(Transaction).where(Transaction.tipo == TIPO_GIRO,
-                                      Transaction.importo_ricevuto.is_(None))
-            .order_by(Transaction.data, Transaction.id)).scalars().all())
-    return [{"t": t, "wallet": wn.get(t.wallet_id, "—")} for t in rows]
+        gruppi = _gruppi_giro(db)
+        out = []
+        for gid, rows in gruppi.items():
+            rec = _riassumi_giro(rows)
+            if not rec["aperta"]:
+                continue
+            spese = [{"importo": r.importo, "wallet": wn.get(r.wallet_id, "—"),
+                      "descrizione": r.descrizione, "controparte": r.controparte,
+                      "data": r.data} for r in rows if r.giro_kind in ("spesa", "combo")]
+            rientri = [{"importo": r.importo_ricevuto, "wallet": wn.get(r.wallet_id, "—"),
+                        "controparte": r.controparte, "data": r.data_ricevuto}
+                       for r in rows if r.giro_kind in ("rientro", "combo")]
+            controparti_g = sorted({s["controparte"] for s in spese if s["controparte"]} |
+                                   {r["controparte"] for r in rientri if r["controparte"]}, key=str.lower)
+            out.append({**rec, "spese": spese, "rientri": rientri, "controparti": controparti_g})
+        out.sort(key=lambda g: (g["prima_data"] or datetime.now()))
+    return out
 
 
 def controparti() -> list[str]:
@@ -417,22 +554,25 @@ def riepilogo_mese(anno, mese):
             T.tipo == TIPO_ENTRATA, T.data >= start, T.data < end).scalar() or 0.0
         uscite = db.query(func.coalesce(func.sum(T.importo), 0.0)).filter(
             T.tipo == TIPO_USCITA, T.data >= start, T.data < end).scalar() or 0.0
-        giri = db.query(T.importo, T.importo_ricevuto, T.data, T.data_ricevuto).filter(
-            T.tipo == TIPO_GIRO, T.importo_ricevuto.isnot(None)).all()
+        gruppi = _gruppi_giro(db)
         per_cat = db.query(Category.nome, func.sum(T.importo)).join(
             Category, Category.id == T.category_id).filter(
             T.tipo == TIPO_USCITA, T.data >= start, T.data < end).group_by(
             Category.id).order_by(func.sum(T.importo).desc()).all()
-    # Partite di giro CHIUSE: in entrate/uscite conta SOLO la differenza.
-    # Ridato di più = entrata alla data del rimborso; ridato di meno = uscita
-    # alla data della spesa. Le aperte restano neutre; le gambe intere non
+    # Partite di giro CHIUSE: in entrate/uscite conta SOLO il netto della partita
+    # (Σ rientri − Σ spese). Netto > 0 = entrata all'ultimo rientro; netto < 0 =
+    # uscita all'ultima spesa. Le aperte restano neutre; le gambe intere non
     # compaiono mai qui (muovono solo i saldi dei portafogli).
-    for speso, ricevuto, d_spesa, d_rimborso in giri:
-        diff = round((ricevuto or 0.0) - (speso or 0.0), 2)
-        if diff > 0 and d_rimborso and start <= d_rimborso < end:
-            entrate = float(entrate) + diff
-        elif diff < 0 and d_spesa and start <= d_spesa < end:
-            uscite = float(uscite) - diff
+    entrate, uscite = float(entrate), float(uscite)
+    for rows in gruppi.values():
+        rec = _riassumi_giro(rows)
+        if rec["aperta"]:
+            continue
+        netto = rec["netto"]
+        if netto > 0 and rec["ultimo_rientro"] and start <= rec["ultimo_rientro"] < end:
+            entrate += netto
+        elif netto < 0 and rec["ultima_spesa"] and start <= rec["ultima_spesa"] < end:
+            uscite += -netto
     spese = [{"nome": n, "tot": round(float(s), 2)} for n, s in per_cat]
     max_spesa = max((s["tot"] for s in spese), default=0.0)
     for s in spese:
