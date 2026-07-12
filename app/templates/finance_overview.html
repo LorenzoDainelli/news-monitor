@@ -103,7 +103,7 @@
       </form>
       <div style="margin-top:8px;">
         <form method="post" action="/finanze/giro/{{ g.giro_id }}/chiudi" class="js-confirm" style="display:inline-block;margin:0 8px 0 0;"
-              data-confirm="{{ t('fin.giro_close_now') }}" data-cancel="{{ t('form.cancel') }}">
+              data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}">
           <input type="hidden" name="next" value="{{ cur_path }}">
           <button type="submit" class="btn sm ghost">{{ t('fin.giro_close_asis') }}</button>
         </form>
