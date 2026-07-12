@@ -56,39 +56,80 @@ def panoramica(request: Request):
     return templates.TemplateResponse(request, "finance_overview.html", _ctx_panoramica())
 
 
+def _aggiorna_grafico_patrimonio():
+    """Un movimento cambia la liquidità: rigenera (in background) la cache del
+    grafico del patrimonio così si aggiorna senza aspettare il riavvio."""
+    try:
+        from portfolio import wealth
+        wealth.rebuild_async()
+    except Exception:
+        pass  # il grafico è un extra: mai far fallire il salvataggio
+
+
+def _zip_spese(importi, wallets, categorie, descrizioni, date):
+    out = []
+    for i, imp in enumerate(importi):
+        amount = to_float(imp, 0.0) or 0.0
+        w = wallets[i] if i < len(wallets) else ""
+        if amount > 0 and (w or "").strip().isdigit():
+            out.append({
+                "importo": amount, "wallet_id": int(w),
+                "categoria": categorie[i] if i < len(categorie) else "",
+                "descrizione": descrizioni[i] if i < len(descrizioni) else "",
+                "data": to_datetime(date[i]) if i < len(date) and date[i] else None})
+    return out
+
+
+def _zip_rientri(importi, wallets, chi, date):
+    out = []
+    for i, imp in enumerate(importi):
+        amount = to_float(imp, 0.0) or 0.0
+        w = wallets[i] if i < len(wallets) else ""
+        if amount > 0 and (w or "").strip().isdigit():
+            out.append({
+                "importo": amount, "wallet_id": int(w),
+                "controparte": chi[i] if i < len(chi) else "",
+                "data": to_datetime(date[i]) if i < len(date) and date[i] else None})
+    return out
+
+
 @router.post("/finanze/movimenti/salva")
 def salva_movimento(
     tipo: str = Form(...),
     data: str = Form(""),
     importo: str = Form("0"),
-    wallet_id: int = Form(...),
+    wallet_id: str = Form(""),
     wallet_to_id: str = Form(""),
     categoria: str = Form(""),
     descrizione: str = Form(""),
-    # --- solo partite di giro ---
-    controparte: str = Form(""),
+    # --- partita di giro: spese e rientri sono liste (più operazioni) ---
     giro_dopo: str = Form(""),             # checkbox: il rimborso arriverà dopo
-    importo_ricevuto: str = Form(""),
-    data_ricevuto: str = Form(""),
-    wallet_ricevuto_id: str = Form(""),
+    spesa_importo: list[str] = Form([]),
+    spesa_wallet: list[str] = Form([]),
+    spesa_categoria: list[str] = Form([]),
+    spesa_descrizione: list[str] = Form([]),
+    spesa_data: list[str] = Form([]),
+    rientro_importo: list[str] = Form([]),
+    rientro_wallet: list[str] = Form([]),
+    rientro_chi: list[str] = Form([]),
+    rientro_data: list[str] = Form([]),
     next: str = Form("/finanze"),
 ):
-    wto = int(wallet_to_id) if (wallet_to_id or "").strip().isdigit() else None
     if tipo in (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO):
-        service.crea_movimento(
-            tipo=tipo, data=to_datetime(data), importo=to_float(importo, 0.0) or 0.0,
-            wallet_id=wallet_id, wallet_to_id=wto, categoria_nome=categoria,
-            descrizione=descrizione)
+        wid = int(wallet_id) if (wallet_id or "").strip().isdigit() else None
+        wto = int(wallet_to_id) if (wallet_to_id or "").strip().isdigit() else None
+        if wid:
+            service.crea_movimento(
+                tipo=tipo, data=to_datetime(data), importo=to_float(importo, 0.0) or 0.0,
+                wallet_id=wid, wallet_to_id=wto, categoria_nome=categoria,
+                descrizione=descrizione)
     elif tipo == TIPO_GIRO:
-        # con la casella "rimborso dopo" la gamba ricevuta si ignora: partita APERTA
-        ricevuto = None if giro_dopo else to_float(importo_ricevuto, None)
-        wric = int(wallet_ricevuto_id) if (wallet_ricevuto_id or "").strip().isdigit() else None
         service.crea_giro(
-            data=to_datetime(data), importo=to_float(importo, 0.0) or 0.0,
-            wallet_id=wallet_id, controparte=controparte, descrizione=descrizione,
-            importo_ricevuto=ricevuto,
-            data_ricevuto=to_datetime(data_ricevuto) if ricevuto is not None else None,
-            wallet_to_id=wric if ricevuto is not None else None)
+            spese=_zip_spese(spesa_importo, spesa_wallet, spesa_categoria,
+                             spesa_descrizione, spesa_data),
+            rientri=_zip_rientri(rientro_importo, rientro_wallet, rientro_chi, rientro_data),
+            aperta=bool(giro_dopo))
+    _aggiorna_grafico_patrimonio()
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
 
@@ -96,35 +137,59 @@ def salva_movimento(
 @router.post("/finanze/movimenti/{tid}/elimina")
 def elimina_movimento(tid: int, next: str = Form("/finanze")):
     service.elimina_movimento(tid)
+    _aggiorna_grafico_patrimonio()
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
 
 
 # ------------------------------ partite di giro ------------------------------
-@router.post("/finanze/giro/{tid}/chiudi")
-def giro_chiudi(
-    tid: int,
+@router.post("/finanze/giro/{gid}/rientro")
+def giro_rientro(
+    gid: str,
     importo_ricevuto: str = Form("0"),
     data_ricevuto: str = Form(""),
-    wallet_ricevuto_id: int = Form(...),
+    wallet_ricevuto_id: str = Form(""),
+    controparte: str = Form(""),
     next: str = Form("/finanze"),
 ):
-    """Registra il rimborso di una partita aperta: da qui la differenza entra
-    nelle statistiche (guadagno alla data del rimborso, perdita a quella della
-    spesa)."""
-    imp = to_float(importo_ricevuto, None)
-    if imp is not None:
-        service.chiudi_giro(tid, importo_ricevuto=imp,
-                            data_ricevuto=to_datetime(data_ricevuto),
-                            wallet_to_id=wallet_ricevuto_id)
+    """Registra un rimborso su una partita e la lascia APERTA (per i rimborsi
+    che arrivano in più volte)."""
+    w = int(wallet_ricevuto_id) if (wallet_ricevuto_id or "").strip().isdigit() else None
+    service.aggiungi_rientro(gid, importo=to_float(importo_ricevuto, 0.0) or 0.0,
+                             wallet_id=w, controparte=controparte,
+                             data=to_datetime(data_ricevuto))
+    _aggiorna_grafico_patrimonio()
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
 
 
-@router.post("/finanze/giro/{tid}/converti")
-def giro_converti(tid: int, next: str = Form("/finanze")):
-    """'Non me li ridaranno': la partita aperta diventa una normale uscita."""
-    service.converti_giro_in_uscita(tid)
+@router.post("/finanze/giro/{gid}/chiudi")
+def giro_chiudi(
+    gid: str,
+    importo_ricevuto: str = Form(""),
+    data_ricevuto: str = Form(""),
+    wallet_ricevuto_id: str = Form(""),
+    controparte: str = Form(""),
+    next: str = Form("/finanze"),
+):
+    """Chiude la partita: da qui il netto entra nelle statistiche. Se sono passati
+    importo+portafoglio, registra prima un ultimo rimborso ('aggiungi e chiudi')."""
+    imp = to_float(importo_ricevuto, 0.0) or 0.0
+    w = int(wallet_ricevuto_id) if (wallet_ricevuto_id or "").strip().isdigit() else None
+    aggiungi = imp > 0 and w is not None
+    service.chiudi_giro(gid, importo=imp if aggiungi else None,
+                        wallet_id=w if aggiungi else None,
+                        controparte=controparte, data=to_datetime(data_ricevuto))
+    _aggiorna_grafico_patrimonio()
+    dest = next if next.startswith("/finanze") else "/finanze"
+    return RedirectResponse(dest, status_code=303)
+
+
+@router.post("/finanze/giro/{gid}/converti")
+def giro_converti(gid: str, next: str = Form("/finanze")):
+    """'Non me li ridaranno': le spese della partita diventano normali uscite."""
+    service.converti_giro_in_uscita(gid)
+    _aggiorna_grafico_patrimonio()
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)
 

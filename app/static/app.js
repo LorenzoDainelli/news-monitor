@@ -162,19 +162,51 @@ document.addEventListener('click', function (e) {
   });
 })();
 
-// 6) Form movimento: "A (portafoglio)" compare solo per i trasferimenti; il
-//    blocco della partita di giro (da chi + gamba del rimborso) solo per i
-//    giri, e la casella "il rimborso arriverà dopo" nasconde la gamba.
+// 6) Form movimento. Il tipo decide cosa si vede:
+//    - entrata/uscita/trasferimento -> #mov-generic (e "A (portafoglio)" solo
+//      per il trasferimento);
+//    - partita di giro -> #mov-giro, con liste dinamiche di SPESE e RIENTRI
+//      ("+ Aggiungi spesa/rientro" clonano un modello <template>, la ✕ rimuove
+//      la riga tenendone sempre almeno una) e la casella "il rimborso arriverà
+//      dopo" che nasconde i rientri (partita aperta).
 document.addEventListener('change', function (e) {
   if (e.target && e.target.id === 'mov-tipo') {
-    var box = document.getElementById('mov-wallet-to');
-    if (box) box.style.display = e.target.value === 'trasferimento' ? '' : 'none';
-    var giro = document.getElementById('mov-giro');
-    if (giro) giro.style.display = e.target.value === 'giro' ? '' : 'none';
+    var v = e.target.value, giro = v === 'giro';
+    var gen = document.getElementById('mov-generic');
+    var box = document.getElementById('mov-giro');
+    var to = document.getElementById('mov-wallet-to');
+    if (gen) gen.style.display = giro ? 'none' : '';
+    if (box) box.style.display = giro ? '' : 'none';
+    if (to) to.style.display = v === 'trasferimento' ? '' : 'none';
   }
   if (e.target && e.target.id === 'mov-giro-dopo') {
-    var ric = document.getElementById('mov-giro-ricevuto');
-    if (ric) ric.style.display = e.target.checked ? 'none' : '';
+    var wrap = document.getElementById('giro-rientri-wrap');
+    if (wrap) wrap.style.display = e.target.checked ? 'none' : '';
+  }
+});
+
+document.addEventListener('click', function (e) {
+  // aggiungi una riga clonando il relativo <template>
+  var add = e.target.closest('#giro-add-spesa, #giro-add-rientro');
+  if (add) {
+    var isSpesa = add.id === 'giro-add-spesa';
+    var tpl = document.getElementById(isSpesa ? 'tpl-spesa' : 'tpl-rientro');
+    var list = document.getElementById(isSpesa ? 'giro-spese' : 'giro-rientri');
+    if (tpl && list) {
+      var node = tpl.content.firstElementChild.cloneNode(true);
+      list.appendChild(node);
+      var first = node.querySelector('input, select');
+      if (first) first.focus();
+    }
+    return;
+  }
+  // rimuovi una riga, ma tienine sempre almeno una nella sua lista
+  var rm = e.target.closest('.giro-rm');
+  if (rm) {
+    var row = rm.closest('.giro-row');
+    if (row && row.parentNode && row.parentNode.querySelectorAll('.giro-row').length > 1) {
+      row.remove();
+    }
   }
 });
 

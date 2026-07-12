@@ -5,15 +5,24 @@ Quattro tipi di movimento:
 - uscita         -> diminuisce il saldo del wallet
 - trasferimento  -> sposta denaro da un wallet all'altro (NON cambia il patrimonio
                     totale, cambia solo i due saldi)
-- giro           -> "partita di giro": spesa che qualcuno rimborsa (es. la pagano
-                    i genitori). Una sola riga con DUE gambe: quella spesa
-                    (importo/data/wallet_id) e quella ricevuta (importo_ricevuto/
-                    data_ricevuto/wallet_to_id). I saldi si muovono davvero, ma
-                    nelle statistiche entrate/uscite conta SOLO la differenza:
-                    ricevuto > speso = entrata (alla data del rimborso),
-                    ricevuto < speso = uscita (alla data della spesa).
-                    Gamba ricevuta assente (importo_ricevuto NULL) = partita
-                    APERTA, "in attesa di rimborso": neutra finché non si chiude.
+- giro           -> "partita di giro": spese che qualcuno rimborsa (es. la pagano
+                    i genitori). Una partita può avere PIÙ spese e PIÙ rientri, su
+                    portafogli/date/persone diversi: sono più righe che condividono
+                    lo stesso `giro_id`. Ogni riga è una gamba:
+                    · SPESA   -> importo>0, wallet_id, categoria/descrizione/data
+                                 (importo_ricevuto NULL)
+                    · RIENTRO -> importo_ricevuto>0, wallet_to_id (dove entra),
+                                 controparte (da chi), data_ricevuto (importo=0)
+                    (le vecchie partite a riga singola hanno le due gambe insieme:
+                    importo>0 E importo_ricevuto>0 — restano valide, sono un gruppo
+                    di una riga sola.)
+                    I saldi si muovono davvero riga per riga; nelle statistiche
+                    entrate/uscite conta SOLO la differenza netta della partita
+                    (Σ rientri − Σ spese) e solo quando la partita è CHIUSA:
+                    netto > 0 = entrata (all'ultimo rientro),
+                    netto < 0 = uscita (all'ultima spesa).
+                    `giro_aperta` = partita ancora "in attesa di rimborso": i saldi
+                    sono già aggiornati ma il netto NON conta finché non la chiudi.
 
 Prefisso tabelle 'finance_' per non interferire col modulo portafoglio.
 """
@@ -69,20 +78,32 @@ class Transaction(Base):
     metodo: Mapped[str] = mapped_column(String(60), default="")  # legacy: non più usato (colonna lasciata per non migrare)
     descrizione: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    # --- solo partite di giro (tipo == "giro"): la gamba del rimborso ---
-    importo_ricevuto: Mapped[float | None] = mapped_column(Float, nullable=True)   # NULL = aperta
+    # --- solo partite di giro (tipo == "giro") ---
+    giro_id: Mapped[str] = mapped_column(String(32), default="")   # raggruppa le gambe di una partita
+    giro_aperta: Mapped[bool] = mapped_column(Boolean, default=False)  # partita in attesa di rimborso
+    importo_ricevuto: Mapped[float | None] = mapped_column(Float, nullable=True)   # gamba RIENTRO
     data_ricevuto: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     controparte: Mapped[str] = mapped_column(String(80), default="")  # da chi (babbo, mamma, ...)
 
     @property
-    def giro_aperta(self) -> bool:
-        """Partita di giro ancora in attesa del rimborso."""
-        return self.tipo == TIPO_GIRO and self.importo_ricevuto is None
+    def giro_kind(self) -> str | None:
+        """Che gamba è questa riga di partita di giro:
+        'spesa' | 'rientro' | 'combo' (vecchia riga con entrambe). None se non è un giro."""
+        if self.tipo != TIPO_GIRO:
+            return None
+        ha_spesa = (self.importo or 0.0) > 0
+        ha_rientro = self.importo_ricevuto is not None
+        if ha_spesa and ha_rientro:
+            return "combo"
+        return "rientro" if ha_rientro else "spesa"
 
     @property
-    def giro_diff(self) -> float | None:
-        """Differenza di una partita CHIUSA (ricevuto − speso): l'unica cosa
-        che tocca le statistiche. None se aperta o non è un giro."""
-        if self.tipo != TIPO_GIRO or self.importo_ricevuto is None:
-            return None
-        return round((self.importo_ricevuto or 0.0) - (self.importo or 0.0), 2)
+    def giro_importo_display(self) -> float:
+        """Importo con segno da mostrare nel registro per questa gamba:
+        −spesa, +rientro, o la differenza per le vecchie righe combo."""
+        k = self.giro_kind
+        if k == "rientro":
+            return round(self.importo_ricevuto or 0.0, 2)
+        if k == "combo":
+            return round((self.importo_ricevuto or 0.0) - (self.importo or 0.0), 2)
+        return round(-(self.importo or 0.0), 2)   # spesa

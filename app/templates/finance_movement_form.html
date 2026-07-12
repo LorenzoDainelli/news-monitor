@@ -1,10 +1,8 @@
-{# Form movimento (design freeze v1.0, come nel video): Tipo · Importo ·
-   Portafoglio, poi Categoria · Descrizione · Data, poi "Salva movimento".
-   La data è già impostata su adesso (modificabile per movimenti passati).
-   "A (portafoglio)" compare SOLO scegliendo Trasferimento.
-   Partita di giro: Importo/Portafoglio qui sopra = la SPESA; il blocco
-   dedicato chiede "da chi" e la gamba del rimborso (oppure la casella
-   "arriverà dopo" per lasciare la partita aperta). #}
+{# Form movimento (design freeze v1.0). Tipo · poi i campi.
+   entrata/uscita/trasferimento -> un solo movimento (#mov-generic).
+   Partita di giro (#mov-giro) -> più SPESE e più RIENTRI, ognuno con i suoi
+   campi, aggiungibili con "+ Aggiungi spesa" / "+ Aggiungi rientro"; oppure la
+   casella "il rimborso arriverà dopo" per lasciare la partita aperta. #}
 {% if proposta is defined and proposta %}
   {% if proposta.ok %}
     <div class="note ok" style="margin-bottom:10px;">✨ {{ t('fin.ai_prop_ok') }}
@@ -17,93 +15,128 @@
   {% endif %}
 {% endif %}
 {% set p = proposta if (proposta is defined and proposta and proposta.ok) else None %}
+{% set p_giro = p and p.tipo == 'giro' %}
+{% set p_giro_aperta = p_giro and not p.importo_ricevuto %}
+{% set ctrl = controparti if controparti is defined else [] %}
+
+{% macro wallet_opts(sel) %}{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if sel is not none and sel==w.id else '' }}>{{ w.nome }}</option>{% endfor %}{% endmacro %}
+
+{# --- una riga SPESA della partita di giro (usata sia iniziale sia come modello da clonare) --- #}
+{% macro spesa_row(imp='', wid=None, cat='', desc='', dt=None) %}
+<div class="giro-row giro-spesa-row" style="border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;background:var(--surface);position:relative;margin-top:8px;">
+  <div class="row3">
+    <div class="field"><label>{{ t('fin.amount') }}</label><input type="text" name="spesa_importo" placeholder="0,00" value="{{ imp }}"></div>
+    <div class="field"><label>{{ t('fin.wallet') }}</label><select name="spesa_wallet">{{ wallet_opts(wid) }}</select></div>
+    <div class="field"><label>{{ t('fin.category') }}</label><input type="text" name="spesa_categoria" list="catlist" autocomplete="off" placeholder="{{ t('fin.category_ph') }}" value="{{ cat }}"></div>
+  </div>
+  <div class="row2">
+    <div class="field"><label>{{ t('fin.description') }}</label><input type="text" name="spesa_descrizione" value="{{ desc }}"></div>
+    <div class="field"><label>{{ t('fin.date') }}</label><input type="datetime-local" name="spesa_data" value="{{ dt or oggi }}"></div>
+  </div>
+  <button type="button" class="btn sm ghost giro-rm" aria-label="{{ t('fin.giro_remove') }}" style="position:absolute;top:8px;right:8px;">✕</button>
+</div>
+{% endmacro %}
+
+{# --- una riga RIENTRO (chi · quanto · quando · dove) --- #}
+{% macro rientro_row(chi='', imp='', dt=None, wid=None) %}
+<div class="giro-row giro-rientro-row" style="border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;background:var(--surface);position:relative;margin-top:8px;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+    <div class="field" style="margin:0;"><label>{{ t('fin.giro_da_chi') }}</label><input type="text" name="rientro_chi" list="giro-da-chi" autocomplete="off" placeholder="{{ t('fin.giro_da_chi_ph') }}" value="{{ chi }}"></div>
+    <div class="field" style="margin:0;"><label>{{ t('fin.giro_quanto') }}</label><input type="text" name="rientro_importo" placeholder="0,00" value="{{ imp }}"></div>
+    <div class="field" style="margin:0;"><label>{{ t('fin.giro_quando') }}</label><input type="datetime-local" name="rientro_data" value="{{ dt or oggi }}"></div>
+    <div class="field" style="margin:0;"><label>{{ t('fin.giro_dove') }}</label><select name="rientro_wallet">{{ wallet_opts(wid) }}</select></div>
+  </div>
+  <button type="button" class="btn sm ghost giro-rm" aria-label="{{ t('fin.giro_remove') }}" style="position:absolute;top:8px;right:8px;">✕</button>
+</div>
+{% endmacro %}
+
 <form class="form" method="post" action="/finanze/movimenti/salva" id="mov-form">
   <input type="hidden" name="next" value="{{ next_url if (next_url is defined and next_url) else cur_path }}">
-  <div class="row3">
-    <div class="field">
-      <label>{{ t('fin.type') }}</label>
-      <select name="tipo" id="mov-tipo">
-        <option value="uscita" {{ 'selected' if p and p.tipo=='uscita' else '' }}>{{ t('fin.uscita') }}</option>
-        <option value="entrata" {{ 'selected' if p and p.tipo=='entrata' else '' }}>{{ t('fin.entrata') }}</option>
-        <option value="trasferimento" {{ 'selected' if p and p.tipo=='trasferimento' else '' }}>{{ t('fin.trasferimento') }}</option>
-        <option value="giro" {{ 'selected' if p and p.tipo=='giro' else '' }}>{{ t('fin.giro') }}</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>{{ t('fin.amount') }}</label>
-      <input type="text" name="importo" placeholder="0,00" required
-             value="{{ ('%.2f'|format(p.importo))|replace('.', ',') if (p and p.importo) else '' }}">
-    </div>
-    <div class="field">
-      <label>{{ t('fin.wallet') }}</label>
-      <select name="wallet_id">{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
-    </div>
-  </div>
-  <div class="field" id="mov-wallet-to" style="{% if not (p and p.tipo=='trasferimento') %}display:none;{% endif %}max-width:360px;">
-    <label>{{ t('fin.wallet_to') }}</label>
-    <select name="wallet_to_id"><option value="">—</option>{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p and p.wallet_to_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
-    <div class="hint">{{ t('fin.wallet_to_hint') }}</div>
+  {# datalist condivise (sempre nel DOM, servono anche alle righe clonate) #}
+  <datalist id="catlist">{% for c in categorie %}<option value="{{ c.nome }}">{% endfor %}</datalist>
+  <datalist id="giro-da-chi">{% for c in ctrl %}<option value="{{ c }}">{% endfor %}</datalist>
+
+  <div class="field" style="max-width:280px;">
+    <label>{{ t('fin.type') }}</label>
+    <select name="tipo" id="mov-tipo">
+      <option value="uscita" {{ 'selected' if p and p.tipo=='uscita' else '' }}>{{ t('fin.uscita') }}</option>
+      <option value="entrata" {{ 'selected' if p and p.tipo=='entrata' else '' }}>{{ t('fin.entrata') }}</option>
+      <option value="trasferimento" {{ 'selected' if p and p.tipo=='trasferimento' else '' }}>{{ t('fin.trasferimento') }}</option>
+      <option value="giro" {{ 'selected' if p_giro else '' }}>{{ t('fin.giro') }}</option>
+    </select>
   </div>
 
-  {# ---- partita di giro: da chi + la gamba del rimborso (o "arriverà dopo") ---- #}
-  {% set p_giro = p and p.tipo == 'giro' %}
-  {% set p_giro_aperta = p_giro and not p.importo_ricevuto %}
-  <div id="mov-giro" style="{% if not p_giro %}display:none;{% endif %}border:1px solid var(--border);border-radius:var(--r-md);padding:12px;background:var(--surface-alt);">
-    <div class="hint" style="margin:0 0 10px;">{{ t('fin.giro_hint') }}</div>
-    <div class="row2">
+  {# =================== entrata / uscita / trasferimento =================== #}
+  <div id="mov-generic" style="{% if p_giro %}display:none;{% endif %}">
+    <div class="row3">
       <div class="field">
-        <label>{{ t('fin.giro_da_chi') }}</label>
-        <input type="text" name="controparte" list="giro-da-chi" autocomplete="off"
-               placeholder="{{ t('fin.giro_da_chi_ph') }}" value="{{ p.controparte if p_giro else '' }}">
-        <datalist id="giro-da-chi">
-          {% for c in (controparti if controparti is defined else []) %}<option value="{{ c }}">{% endfor %}
-        </datalist>
+        <label>{{ t('fin.amount') }}</label>
+        <input type="text" name="importo" placeholder="0,00"
+               value="{{ ('%.2f'|format(p.importo))|replace('.', ',') if (p and not p_giro and p.importo) else '' }}">
       </div>
       <div class="field">
-        <label style="visibility:hidden;">.</label>
-        <label style="display:flex;align-items:center;gap:8px;font-weight:400;cursor:pointer;">
-          <input type="checkbox" name="giro_dopo" value="1" id="mov-giro-dopo" style="width:auto;"
-                 {{ 'checked' if p_giro_aperta else '' }}>
-          {{ t('fin.giro_dopo') }}
-        </label>
+        <label>{{ t('fin.wallet') }}</label>
+        <select name="wallet_id">{{ wallet_opts(p.wallet_id if (p and not p_giro) else None) }}</select>
+      </div>
+      <div class="field" id="mov-wallet-to" style="{% if not (p and p.tipo=='trasferimento') %}display:none;{% endif %}">
+        <label>{{ t('fin.wallet_to') }}</label>
+        <select name="wallet_to_id"><option value="">—</option>{{ wallet_opts(p.wallet_to_id if p else None) }}</select>
       </div>
     </div>
-    <div id="mov-giro-ricevuto" {% if p_giro_aperta %}style="display:none;"{% endif %}>
-      <div class="row3">
-        <div class="field">
-          <label>{{ t('fin.giro_ricevuto') }}</label>
-          <input type="text" name="importo_ricevuto" placeholder="0,00"
-                 value="{{ ('%.2f'|format(p.importo_ricevuto))|replace('.', ',') if (p_giro and p.importo_ricevuto) else '' }}">
-        </div>
-        <div class="field">
-          <label>{{ t('fin.giro_ricevuto_data') }}</label>
-          <input type="datetime-local" name="data_ricevuto" value="{{ p.data_ricevuto_local if (p_giro and p.data_ricevuto_local) else oggi }}">
-        </div>
-        <div class="field">
-          <label>{{ t('fin.giro_ricevuto_wallet') }}</label>
-          <select name="wallet_ricevuto_id">{% for w in wallets %}<option value="{{ w.id }}" {{ 'selected' if p_giro and p.wallet_ricevuto_id==w.id else '' }}>{{ w.nome }}</option>{% endfor %}</select>
-        </div>
+    <div class="row3">
+      <div class="field">
+        <label>{{ t('fin.category') }}</label>
+        <input type="text" name="categoria" list="catlist" autocomplete="off" placeholder="{{ t('fin.category_ph') }}"
+               value="{{ p.categoria if (p and not p_giro) else '' }}">
       </div>
-      <div class="hint" style="margin:0;">{{ t('fin.giro_diff_hint') }}</div>
+      <div class="field">
+        <label>{{ t('fin.description') }}</label>
+        <input type="text" name="descrizione" value="{{ p.descrizione if (p and not p_giro) else '' }}">
+      </div>
+      <div class="field">
+        <label>{{ t('fin.date') }}</label>
+        <input type="datetime-local" name="data" value="{{ p.data_local if (p and not p_giro) else oggi }}">
+      </div>
     </div>
   </div>
-  <div class="row3">
-    <div class="field">
-      <label>{{ t('fin.category') }}</label>
-      <input type="text" name="categoria" list="catlist" autocomplete="off" placeholder="{{ t('fin.category_ph') }}"
-             value="{{ p.categoria if p else '' }}">
-      <datalist id="catlist">{% for c in categorie %}<option value="{{ c.nome }}">{% endfor %}</datalist>
+
+  {# =========================== partita di giro =========================== #}
+  <div id="mov-giro" style="{% if not p_giro %}display:none;{% endif %}">
+    <div class="hint" style="margin:4px 0 8px;">{{ t('fin.giro_hint') }}</div>
+    <label style="display:flex;align-items:center;gap:8px;font-weight:400;cursor:pointer;margin-bottom:4px;">
+      <input type="checkbox" name="giro_dopo" value="1" id="mov-giro-dopo" style="width:auto;" {{ 'checked' if p_giro_aperta else '' }}>
+      {{ t('fin.giro_dopo') }}
+    </label>
+
+    <div class="card-title" style="margin:12px 0 0;font-size:14px;">{{ t('fin.giro_spese_title') }}</div>
+    <div id="giro-spese">
+      {% if p_giro %}
+        {{ spesa_row(('%.2f'|format(p.importo))|replace('.', ',') if p.importo else '', p.wallet_id, p.categoria or '', p.descrizione or '', p.data_local) }}
+      {% else %}
+        {{ spesa_row() }}
+      {% endif %}
     </div>
-    <div class="field">
-      <label>{{ t('fin.description') }}</label>
-      <input type="text" name="descrizione" value="{{ p.descrizione if p else '' }}">
+    <button type="button" class="btn sm ghost" id="giro-add-spesa" style="margin-top:8px;">＋ {{ t('fin.giro_add_spesa') }}</button>
+
+    <div id="giro-rientri-wrap" style="{% if p_giro_aperta %}display:none;{% endif %}">
+      <div class="card-title" style="margin:16px 0 0;font-size:14px;">{{ t('fin.giro_rientri_title') }}</div>
+      <div id="giro-rientri">
+        {% if p_giro and p.importo_ricevuto %}
+          {{ rientro_row(p.controparte or '', ('%.2f'|format(p.importo_ricevuto))|replace('.', ','), p.data_ricevuto_local, p.wallet_ricevuto_id) }}
+        {% elif not p_giro %}
+          {{ rientro_row() }}
+        {% endif %}
+      </div>
+      <button type="button" class="btn sm ghost" id="giro-add-rientro" style="margin-top:8px;">＋ {{ t('fin.giro_add_rientro') }}</button>
     </div>
-    <div class="field">
-      <label>{{ t('fin.date') }}</label>
-      <input type="datetime-local" name="data" value="{{ p.data_local if p else oggi }}">
-    </div>
+    <div class="hint" style="margin:10px 0 0;">{{ t('fin.giro_diff_hint') }}</div>
+
+    {# modelli da clonare (non renderizzati finché non li usa il JS) #}
+    <template id="tpl-spesa">{{ spesa_row() }}</template>
+    <template id="tpl-rientro">{{ rientro_row() }}</template>
   </div>
-  <div class="actions" style="margin-bottom:0;">
+
+  <div class="actions" style="margin:14px 0 0;">
     <button type="submit" class="btn primary">{{ t('fin.save_movement') }}</button>
   </div>
 </form>
