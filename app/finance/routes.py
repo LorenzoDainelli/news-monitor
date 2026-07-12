@@ -64,7 +64,6 @@ def salva_movimento(
     wallet_id: int = Form(...),
     wallet_to_id: str = Form(""),
     categoria: str = Form(""),
-    metodo: str = Form(""),
     descrizione: str = Form(""),
     # --- solo partite di giro ---
     controparte: str = Form(""),
@@ -79,7 +78,7 @@ def salva_movimento(
         service.crea_movimento(
             tipo=tipo, data=to_datetime(data), importo=to_float(importo, 0.0) or 0.0,
             wallet_id=wallet_id, wallet_to_id=wto, categoria_nome=categoria,
-            metodo=metodo, descrizione=descrizione)
+            descrizione=descrizione)
     elif tipo == TIPO_GIRO:
         # con la casella "rimborso dopo" la gamba ricevuta si ignora: partita APERTA
         ricevuto = None if giro_dopo else to_float(importo_ricevuto, None)

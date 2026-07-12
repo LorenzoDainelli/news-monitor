@@ -66,7 +66,7 @@ class Transaction(Base):
     # trasferimento: wallet di destinazione — giro: wallet dove entra il rimborso
     wallet_to_id: Mapped[int | None] = mapped_column(ForeignKey("finance_wallets.id"), nullable=True)
     category_id: Mapped[int | None] = mapped_column(ForeignKey("finance_categories.id"), nullable=True)
-    metodo: Mapped[str] = mapped_column(String(60), default="")
+    metodo: Mapped[str] = mapped_column(String(60), default="")  # legacy: non più usato (colonna lasciata per non migrare)
     descrizione: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     # --- solo partite di giro (tipo == "giro"): la gamba del rimborso ---

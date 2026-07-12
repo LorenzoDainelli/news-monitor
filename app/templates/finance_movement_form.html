@@ -1,7 +1,7 @@
 {# Form movimento (design freeze v1.0, come nel video): Tipo · Importo ·
-   Portafoglio, poi Categoria · Descrizione, poi "Salva movimento".
-   "A (portafoglio)" compare SOLO scegliendo Trasferimento; data e metodo
-   stanno dietro un piccolo toggle (di default: adesso, nessun metodo).
+   Portafoglio, poi Categoria · Descrizione · Data, poi "Salva movimento".
+   La data è già impostata su adesso (modificabile per movimenti passati).
+   "A (portafoglio)" compare SOLO scegliendo Trasferimento.
    Partita di giro: Importo/Portafoglio qui sopra = la SPESA; il blocco
    dedicato chiede "da chi" e la gamba del rimborso (oppure la casella
    "arriverà dopo" per lasciare la partita aperta). #}
@@ -87,7 +87,7 @@
       <div class="hint" style="margin:0;">{{ t('fin.giro_diff_hint') }}</div>
     </div>
   </div>
-  <div class="row2">
+  <div class="row3">
     <div class="field">
       <label>{{ t('fin.category') }}</label>
       <input type="text" name="categoria" list="catlist" autocomplete="off" placeholder="{{ t('fin.category_ph') }}"
@@ -98,21 +98,12 @@
       <label>{{ t('fin.description') }}</label>
       <input type="text" name="descrizione" value="{{ p.descrizione if p else '' }}">
     </div>
-  </div>
-  <div id="mov-extra" style="display:none;">
-    <div class="row2">
-      <div class="field">
-        <label>{{ t('fin.date') }}</label>
-        <input type="datetime-local" name="data" value="{{ p.data_local if p else oggi }}">
-      </div>
-      <div class="field">
-        <label>{{ t('fin.method') }}</label>
-        <input type="text" name="metodo">
-      </div>
+    <div class="field">
+      <label>{{ t('fin.date') }}</label>
+      <input type="datetime-local" name="data" value="{{ p.data_local if p else oggi }}">
     </div>
   </div>
   <div class="actions" style="margin-bottom:0;">
     <button type="submit" class="btn primary">{{ t('fin.save_movement') }}</button>
-    <button type="button" class="btn sm ghost" data-toggle="#mov-extra">{{ t('fin.more_fields') }}</button>
   </div>
 </form>
