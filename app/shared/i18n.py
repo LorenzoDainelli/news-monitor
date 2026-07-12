@@ -292,7 +292,7 @@ STRINGS = {
     "fin.ai_analysis_intro": {"it": "Un riassunto descrittivo dei tuoi ultimi mesi (dati aggregati e anonimi).", "en": "A descriptive summary of your recent months (aggregated, anonymous data).", "es": "Un resumen descriptivo de tus últimos meses (datos agregados y anónimos).", "fr": "Un résumé descriptif de tes derniers mois (données agrégées et anonymes).", "de": "Eine beschreibende Zusammenfassung deiner letzten Monate (aggregierte, anonyme Daten).", "uk": "Описове зведення твоїх останніх місяців (агреговані, анонімні дані)."},
     "fin.ai_analysis_btn": {"it": "Analizza", "en": "Analyze", "es": "Analizar", "fr": "Analyser", "de": "Analysieren", "uk": "Аналізувати"},
     "wtype.contanti": {"it": "Contanti", "en": "Cash", "es": "Efectivo", "fr": "Espèces", "de": "Bargeld", "uk": "Готівка"},
-    "wtype.carta": {"it": "Carta", "en": "Card", "es": "Tarjeta", "fr": "Carte", "de": "Karte", "uk": "Картка"},
+    "wtype.carta": {"it": "Carte & Wallet Digitali", "en": "Cards & Digital Wallets", "es": "Tarjetas y monederos digitales", "fr": "Cartes & portefeuilles numériques", "de": "Karten & digitale Wallets", "uk": "Картки та цифрові гаманці"},
     "wtype.conto": {"it": "Conto corrente", "en": "Bank account", "es": "Cuenta", "fr": "Compte", "de": "Konto", "uk": "Рахунок"},
     "wtype.investimento": {"it": "Investimenti", "en": "Investments", "es": "Inversiones", "fr": "Investissements", "de": "Investitionen", "uk": "Інвестиції"},
     "wtype.altro": {"it": "Altro", "en": "Other", "es": "Otro", "fr": "Autre", "de": "Sonstiges", "uk": "Інше"},

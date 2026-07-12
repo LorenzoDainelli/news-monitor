@@ -39,7 +39,8 @@ seed.migra_schema()                    # idem per il portafoglio (es. nome_breve
 seed.seed_if_empty()
 seed.applica_nomi_brevi()              # nomi corti degli ETF anche su DB già popolati
 fin_service.seed_wallets_if_empty()
-fin_service.assicura_wallet_brand()    # conti/carte reali (AIB, Hype, Revolut, TR), mai generici
+fin_service.assicura_wallet_brand()    # conti/carte reali (AIB, Hype, Revolut, TR, PayPal), mai generici
+fin_service.applica_saldi_iniziali()   # saldi di apertura al 4/7/2026 (solo dove ancora a zero)
 
 
 # --- a OGNI avvio aggiorna TUTTI i dati, in background (non blocca l'avvio) ---

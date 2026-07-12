@@ -56,16 +56,18 @@ def _grid_totale(serie_titoli: list, extra_flat: float) -> list:
 
 def _griglia_sola_liquidita(key: str, now: datetime) -> list:
     """Senza titoli valorizzati il patrimonio è la sola liquidità: griglia di
-    date equidistanti sui movimenti reali (40 punti)."""
+    date equidistanti (40 punti) dall'inizio del tracking (o dalla finestra del
+    range, se più recente) fino a ora. Così anche con pochi giorni di storia i
+    range non restano senza punti."""
+    inizio = fin_service.data_inizio()
     if key == "D0":
         start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     elif key == "Y1":
-        start = now - timedelta(days=365)
-    else:
-        prima = fin_service.prima_data_movimento()
-        if prima is None:
-            return []
-        start = min(prima, now - timedelta(days=30))
+        start = max(now - timedelta(days=365), inizio) if inizio else now - timedelta(days=365)
+    else:  # MX: tutta la storia = dall'inizio del tracking
+        start = inizio
+    if start is None or start >= now:
+        return []
     n = 40
     step = (now - start) / (n - 1)
     return [((start + step * i).timestamp(), 0.0) for i in range(n)]
@@ -73,6 +75,7 @@ def _griglia_sola_liquidita(key: str, now: datetime) -> list:
 
 def _build() -> dict:
     now = datetime.now()
+    floor_ts = fin_service.data_inizio().timestamp()   # niente patrimonio prima dell'inizio del tracking
     posizioni = [p for p in lista_posizioni()
                  if (p.ticker or "").strip() and (p.quantita or 0) > 0]
     qmap = market.quotes_map()
@@ -107,7 +110,7 @@ def _build() -> dict:
         griglie[key] = g
 
     def fetta(base: str, days: int | None = None, ytd: bool = False) -> list:
-        g = griglie.get(base) or []
+        g = [x for x in (griglie.get(base) or []) if x[0] >= floor_ts]
         if days is not None:
             lim = (now - timedelta(days=days)).timestamp()
             g = [x for x in g if x[0] >= lim]
