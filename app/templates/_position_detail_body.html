@@ -36,7 +36,7 @@
   </div>
   <div>
     <div class="muted" style="font-size:12px;">{{ t('detail.position') }}</div>
-    <div class="num" style="font-size:var(--text-lg);font-weight:700;">{% if p.quantita and q and q.ok and q.price_eur %}{{ (q.price_eur * p.quantita) | eur(0) }}{% elif p.valore_posseduto %}{{ p.valore_posseduto | eur(0) }}{% else %}—{% endif %}</div>
+    <div class="num" style="font-size:var(--text-lg);font-weight:700;">{% if p.quantita and q and q.ok and q.price_eur %}{{ (q.price_eur * p.quantita) | eur }}{% elif p.valore_posseduto %}{{ p.valore_posseduto | eur }}{% else %}—{% endif %}</div>
   </div>
 </div>
 
@@ -45,7 +45,7 @@
 <div class="card" style="margin-top:14px;padding:14px 16px;">
   <div style="display:flex;justify-content:space-between;align-items:baseline;">
     <div class="card-h" style="margin:0;">{{ t('detail.chart_12m') }}</div>
-    {% if p.quantita %}<span class="num muted" style="font-size:12px;">{{ t('detail.qty_val', q=(p.quantita | qty), v=((q.price_eur * p.quantita) | eur(0) if (q and q.ok and q.price_eur) else '—')) }}</span>{% endif %}
+    {% if p.quantita %}<span class="num muted" style="font-size:12px;">{{ t('detail.qty_val', q=(p.quantita | qty), v=((q.price_eur * p.quantita) | eur if (q and q.ok and q.price_eur) else '—')) }}</span>{% endif %}
   </div>
   {% set col = 'var(--pos)' if chart_up else 'var(--neg)' %}
   <div style="margin-top:8px;">

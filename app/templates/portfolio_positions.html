@@ -25,7 +25,7 @@
   <div class="grid" style="margin-bottom:16px;">
     <div class="stat ok hero">
       <div class="k">{{ t('pf.total_value') }}</div>
-      <div class="v num">{{ vista.totale | eur(0) if vista.ha_totale else '—' }}</div>
+      <div class="v num">{{ vista.totale | eur if vista.ha_totale else '—' }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">
         {% if pf_perf is not none %}<span class="{{ 'pos' if pf_perf >= 0 else 'neg' }}">{{ '+' if pf_perf >= 0 else '' }}{{ pf_perf | pct }}</span> · {% endif %}{{ riepilogo.n_posizioni }} {{ t('dash.posizioni') }}
       </div>

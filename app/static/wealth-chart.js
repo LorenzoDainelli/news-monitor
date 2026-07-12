@@ -19,7 +19,7 @@
 
   var F = {
     eur: function (n, dec) {
-      dec = dec || 0;
+      dec = (dec == null ? 2 : dec);
       return '€ ' + Number(n).toLocaleString(lang, { minimumFractionDigits: dec, maximumFractionDigits: dec });
     },
     signedEur: function (n) { return (n >= 0 ? '+' : '−') + F.eur(Math.abs(n)); },

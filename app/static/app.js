@@ -39,7 +39,7 @@ document.addEventListener('submit', function (e) {
     var end = parseFloat(el.dataset.countup);
     if (isNaN(end)) return;
     var fmt = function (v) {
-      return '€ ' + v.toLocaleString(lang, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+      return '€ ' + v.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
     if (still) { el.textContent = fmt(end); return; }
     var t0 = null, dur = 900;
@@ -82,7 +82,7 @@ document.addEventListener('click', function (e) {
   if (!inp) return;
   var lang = document.documentElement.lang || 'it';
   var eur = function (v) {
-    return '€ ' + v.toLocaleString(lang, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return '€ ' + v.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   function ricalcola() {
     var raw = (inp.value || '').replace(/\./g, '').replace(',', '.');
