@@ -176,7 +176,7 @@ def _get_or_create_categoria(db, nome, kind=""):
 
 # ------------------------------ movimenti ------------------------------
 def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
-                   categoria_nome="", metodo="", descrizione=""):
+                   categoria_nome="", descrizione=""):
     with SessionLocal() as db:
         cat_id = None
         if tipo in (TIPO_ENTRATA, TIPO_USCITA):
@@ -187,7 +187,7 @@ def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
             wallet_id=wallet_id,
             wallet_to_id=wallet_to_id if tipo == TIPO_TRASFERIMENTO else None,
             category_id=cat_id if tipo != TIPO_TRASFERIMENTO else None,
-            metodo=metodo.strip(), descrizione=descrizione.strip()))
+            descrizione=descrizione.strip()))
         db.commit()
 
 

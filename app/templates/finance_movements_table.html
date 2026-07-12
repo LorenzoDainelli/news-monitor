@@ -43,7 +43,7 @@
         {% endif %}
         <td>{{ m.wallet }}{% if m.wallet_to %} → {{ m.wallet_to }}{% endif %}</td>
         <td><span class="muted">{% if tt == 'giro' %}{{ t('fin.giro_by', chi=m.t.controparte) if m.t.controparte else '—' }}{% else %}{{ m.categoria or '—' }}{% endif %}</span></td>
-        <td>{{ m.t.descrizione or '—' }}{% if m.t.metodo %} <span class="faint">· {{ m.t.metodo }}</span>{% endif %}
+        <td>{{ m.t.descrizione or '—' }}
           {% if tt == 'giro' %}<span class="faint num"> · −{{ m.t.importo | eur }} → {% if m.t.giro_aperta %}{{ t('fin.giro_pending') }}{% else %}+{{ m.t.importo_ricevuto | eur }}{% endif %}</span>{% endif %}
         </td>
         <td class="num">

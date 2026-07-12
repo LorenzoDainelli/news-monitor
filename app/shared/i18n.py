@@ -266,7 +266,6 @@ STRINGS = {
     "fin.wallet_to_hint": {"it": "Solo per i trasferimenti.", "en": "Transfers only.", "es": "Solo para transferencias.", "fr": "Transferts uniquement.", "de": "Nur für Überweisungen.", "uk": "Лише для переказів."},
     "fin.category": {"it": "Categoria", "en": "Category", "es": "Categoría", "fr": "Catégorie", "de": "Kategorie", "uk": "Категорія"},
     "fin.category_hint": {"it": "Per entrate/uscite. Riusa una esistente o scrivine una nuova.", "en": "For income/expenses. Reuse an existing one or type a new one.", "es": "Para ingresos/gastos. Reutiliza una o escribe una nueva.", "fr": "Pour revenus/dépenses. Réutilise-en une ou écris-en une nouvelle.", "de": "Für Einnahmen/Ausgaben. Vorhandene wiederverwenden oder neue eingeben.", "uk": "Для доходів/витрат. Повтори наявну або введи нову."},
-    "fin.method": {"it": "Metodo", "en": "Method", "es": "Método", "fr": "Méthode", "de": "Methode", "uk": "Метод"},
     "fin.description": {"it": "Descrizione", "en": "Description", "es": "Descripción", "fr": "Description", "de": "Beschreibung", "uk": "Опис"},
     "fin.save": {"it": "Salva", "en": "Save", "es": "Guardar", "fr": "Enregistrer", "de": "Speichern", "uk": "Зберегти"},
     "fin.opening_balance": {"it": "Saldo di apertura (€)", "en": "Opening balance (€)", "es": "Saldo inicial (€)", "fr": "Solde d'ouverture (€)", "de": "Anfangssaldo (€)", "uk": "Початковий баланс (€)"},
@@ -453,7 +452,6 @@ STRINGS = {
     "fin.ai_disc": {"it": "Analisi qualitativa, non un consiglio finanziario.", "en": "Qualitative analysis, not financial advice.", "es": "Análisis cualitativo, no un consejo financiero.", "fr": "Analyse qualitative, pas un conseil financier.", "de": "Qualitative Analyse, keine Finanzberatung.", "uk": "Якісний аналіз, не фінансова порада."},
     "fin.category_ph": {"it": "es. Trasporti", "en": "e.g. Transport", "es": "p. ej. Transporte", "fr": "ex. Transports", "de": "z. B. Verkehr", "uk": "напр. Транспорт"},
     "fin.save_movement": {"it": "Salva movimento", "en": "Save movement", "es": "Guardar movimiento", "fr": "Enregistrer le mouvement", "de": "Bewegung speichern", "uk": "Зберегти рух"},
-    "fin.more_fields": {"it": "Data e metodo", "en": "Date & method", "es": "Fecha y método", "fr": "Date et méthode", "de": "Datum & Methode", "uk": "Дата й метод"},
 
     # partite di giro (spese rimborsate: es. "la pagano i miei")
     "fin.giro": {"it": "Partita di giro", "en": "Reimbursed expense", "es": "Gasto reembolsado", "fr": "Dépense remboursée", "de": "Erstattete Ausgabe", "uk": "Відшкодована витрата"},
