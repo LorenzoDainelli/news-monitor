@@ -18,6 +18,9 @@ from finance.models import (Wallet, Category, Transaction,
 
 # Viola ufficiale AIB (Pantone 520 C) — la "strisciolina" brand della card.
 AIB_COLORE = "#632874"
+# Blu ufficiale PayPal — "Pay Blue" (Pantone 295 C), fonte brandcolorcode.com
+# (stessa di AIB). PayPal è un wallet digitale: categoria "carta".
+PAYPAL_COLORE = "#00457C"
 
 # Conti e carte REALI, mai generici (richiesta utente): nome -> (tipo, accento
 # brand). I colori di Hype/Revolut/Trade Republic sono copiati 1:1 dal design
@@ -27,11 +30,26 @@ WALLET_BRAND = {
     "Hype": ("carta", "#12B3A6"),
     "Revolut": ("carta", "#5B5BD6"),
     "Trade Republic": ("carta", "#334155"),
+    "PayPal": ("carta", PAYPAL_COLORE),
 }
 
 # Wallet generici delle prime versioni, da togliere: via se mai usati,
 # archiviati (dati preservati) se hanno movimenti o un saldo di apertura.
 WALLET_GENERICI = ("Carta di credito", "Conto corrente")
+
+# Saldi di APERTURA dei portafogli al 4 luglio 2026 (NON movimenti: sono il
+# punto di partenza da cui il tracking accumula, al posto dello zero). Applicati
+# ai wallet ancora a zero (vedi applica_saldi_iniziali); chi non è elencato = 0.
+DATA_INIZIO = datetime(2026, 7, 4, 0, 0)
+SALDI_INIZIALI = {
+    "Hype": 91.98,
+    "Contanti": 6.39,
+    "AIB": 0.41,
+    "Trade Republic": 0.0,
+    "Revolut": 0.0,
+    "PayPal": 0.0,
+    "PAC investimenti": 0.0,
+}
 
 # Portafogli precaricati la prima volta (li puoi rinominare/eliminare).
 SEED_WALLETS = [
@@ -39,6 +57,7 @@ SEED_WALLETS = [
     ("Hype", "carta", WALLET_BRAND["Hype"][1]),
     ("Revolut", "carta", WALLET_BRAND["Revolut"][1]),
     ("Trade Republic", "carta", WALLET_BRAND["Trade Republic"][1]),
+    ("PayPal", "carta", PAYPAL_COLORE),
     ("AIB", "conto", AIB_COLORE),
     ("PAC investimenti", "investimento", ""),
 ]
@@ -67,10 +86,24 @@ def seed_wallets_if_empty() -> int:
         if db.query(Wallet).first() is not None:
             return 0
         for i, (nome, tipo, colore) in enumerate(SEED_WALLETS):
-            db.add(Wallet(nome=nome, tipo=tipo, saldo_iniziale=0.0, ordine=i,
-                          colore=colore))
+            db.add(Wallet(nome=nome, tipo=tipo,
+                          saldo_iniziale=SALDI_INIZIALI.get(nome, 0.0),
+                          ordine=i, colore=colore))
         db.commit()
         return len(SEED_WALLETS)
+
+
+def applica_saldi_iniziali() -> None:
+    """Imposta i saldi di APERTURA (al 4/7/2026, vedi SALDI_INIZIALI) come valori
+    di partenza dei portafogli, SOLO dove sono ancora a zero: sono i saldi
+    predefiniti, non movimenti. Non tocca mai un saldo di apertura già impostato,
+    così non sovrascrive eventuali correzioni."""
+    with SessionLocal() as db:
+        for w in db.query(Wallet).all():
+            atteso = SALDI_INIZIALI.get((w.nome or "").strip())
+            if atteso and not (w.saldo_iniziale or 0.0):
+                w.saldo_iniziale = atteso
+        db.commit()
 
 
 def assicura_wallet_brand() -> None:
@@ -86,7 +119,8 @@ def assicura_wallet_brand() -> None:
         for nome, (tipo, colore) in WALLET_BRAND.items():
             w = per_nome.get(nome.lower())
             if w is None:
-                db.add(Wallet(nome=nome, tipo=tipo, saldo_iniziale=0.0,
+                db.add(Wallet(nome=nome, tipo=tipo,
+                              saldo_iniziale=SALDI_INIZIALI.get(nome, 0.0),
                               ordine=ordine, colore=colore))
                 ordine += 1
             elif not (w.colore or "").strip():
@@ -345,6 +379,14 @@ def prima_data_movimento():
         d1 = db.query(func.min(Transaction.data)).scalar()
         d2 = db.query(func.min(Transaction.data_ricevuto)).scalar()
     return min((d for d in (d1, d2) if d), default=None)
+
+
+def data_inizio():
+    """Inizio del tracking del patrimonio: la data dei saldi di apertura
+    (DATA_INIZIO, 4/7/2026), o la prima data di movimento se precedente. Il
+    grafico del patrimonio non mostra nulla prima di questa data."""
+    prima = prima_data_movimento()
+    return min(DATA_INIZIO, prima) if prima else DATA_INIZIO
 
 
 def serie_liquidita_12m() -> list[float]:
