@@ -24,22 +24,22 @@
   <div class="grid mm-stats4">
     <div class="stat hero">
       <div class="k">{{ t('dash.patrimonio') }}</div>
-      <div class="v num" data-countup="{{ d.patrimonio }}">{{ d.patrimonio | eur(0) }}</div>
+      <div class="v num" data-countup="{{ d.patrimonio }}">{{ d.patrimonio | eur }}</div>
       {% if d.perf12m is not none %}
       <div class="muted" style="font-size:13px;margin-top:4px;">
-        {{ t('dash.perf') }} <span class="{{ 'pos' if d.perf12m >= 0 else 'neg' }}">{{ '+' if d.perf12m >= 0 else '' }}{{ d.perf12m | pct }}</span>{% if d.gain12m is not none %} · {{ ('+' if d.gain12m >= 0 else '−') ~ (d.gain12m | abs | eur(0)) }}{% endif %} {{ t('dash.in12m') }}
+        {{ t('dash.perf') }} <span class="{{ 'pos' if d.perf12m >= 0 else 'neg' }}">{{ '+' if d.perf12m >= 0 else '' }}{{ d.perf12m | pct }}</span>{% if d.gain12m is not none %} · {{ ('+' if d.gain12m >= 0 else '−') ~ (d.gain12m | abs | eur) }}{% endif %} {{ t('dash.in12m') }}
       </div>
       {% endif %}
     </div>
     <div class="stat">
       <div class="k">{{ t('dash.spesa_media') }}</div>
-      <div class="v small num">{{ d.spesa_media | eur(0) }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('dash.spesa_media_sub', tot=(d.uscite | eur(0))) }}</div>
+      <div class="v small num">{{ d.spesa_media | eur }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('dash.spesa_media_sub', tot=(d.uscite | eur)) }}</div>
     </div>
     <div class="stat {{ 'ok' if d.saldo_mese >= 0 else 'warn' }}">
       <div class="k">{{ t('dash.saldo_mese') }}</div>
-      <div class="v small num">{{ ('+' if d.saldo_mese >= 0 else '−') ~ (d.saldo_mese | abs | eur(0)) }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('dash.saldo_hint', inc=(d.entrate | eur(0)), out=(d.uscite | eur(0))) }}</div>
+      <div class="v small num">{{ ('+' if d.saldo_mese >= 0 else '−') ~ (d.saldo_mese | abs | eur) }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('dash.saldo_hint', inc=(d.entrate | eur), out=(d.uscite | eur)) }}</div>
     </div>
   </div>
 
@@ -106,11 +106,11 @@
         {% if d.dividendi %}
         <div style="display:flex;gap:18px;align-items:baseline;">
           <div>
-            <div class="num" style="font-size:var(--text-xl);font-weight:800;color:var(--ink);letter-spacing:var(--ls-tight);">{{ d.dividendi.annuo | eur(0) }}</div>
+            <div class="num" style="font-size:var(--text-xl);font-weight:800;color:var(--ink);letter-spacing:var(--ls-tight);">{{ d.dividendi.annuo | eur }}</div>
             <div class="muted" style="font-size:12px;">{{ t('dash.div_anno') }}</div>
           </div>
           <div>
-            <div class="num" style="font-size:var(--text-md);font-weight:700;color:var(--ink);">~{{ d.dividendi.mese | eur(0) }}</div>
+            <div class="num" style="font-size:var(--text-md);font-weight:700;color:var(--ink);">~{{ d.dividendi.mese | eur }}</div>
             <div class="muted" style="font-size:12px;">{{ t('dash.div_mese') }}</div>
           </div>
           {% if d.dividendi.resa is not none %}
@@ -126,7 +126,7 @@
           <a href="/portafoglio/{{ r.id }}" class="mm-rowbtn" data-drawer style="display:flex;align-items:center;gap:8px;width:100%;border-radius:var(--r-sm);padding:6px 8px;text-decoration:none;color:inherit;">
             <span class="t-ticker" style="width:54px;">{{ r.tk }}</span>
             <div style="flex:1;height:6px;background:var(--surface-alt);border-radius:999px;overflow:hidden;"><div style="height:100%;width:{{ (r.annuo / d.dividendi.top_max * 100) | round(1) }}%;background:var(--pos);border-radius:999px;"></div></div>
-            <span class="num muted" style="flex:0 0 54px;text-align:right;font-size:12px;">{{ r.annuo | eur(0) }}</span>
+            <span class="num muted" style="flex:0 0 54px;text-align:right;font-size:12px;">{{ r.annuo | eur }}</span>
           </a>
           {% endfor %}
         </div>

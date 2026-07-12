@@ -27,9 +27,9 @@
       {% if r.righe_fisse %}
       <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;flex-direction:column;justify-content:center;">
         <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-bottom:6px;">{{ t('pac.stat_fixed') }}</div>
-        <div class="num" style="font-size:var(--text-lg);font-weight:800;letter-spacing:var(--ls-tight);color:var(--ink);margin-bottom:8px;">{{ r.somma_fissi | eur(0) }}</div>
+        <div class="num" style="font-size:var(--text-lg);font-weight:800;letter-spacing:var(--ls-tight);color:var(--ink);margin-bottom:8px;">{{ r.somma_fissi | eur }}</div>
         <div style="font-size:12px;line-height:1.4;color:var(--muted);">
-          {% for f in r.righe_fisse %}<div><span class="t-ticker">{{ f.ticker }}</span> · {{ f.importo | eur(0) }}</div>{% endfor %}
+          {% for f in r.righe_fisse %}<div><span class="t-ticker">{{ f.ticker }}</span> · {{ f.importo | eur }}</div>{% endfor %}
           <div style="margin-top:6px;font-size:11px;font-weight:600;color:var(--ink);">{{ r.righe_fisse | length }} {{ t('pac.stat_titles') | lower }}</div>
         </div>
       </div>
@@ -60,7 +60,7 @@
               <span class="muted" style="font-size:13px;">{{ riga.nome }}</span></td>
           <td><span class="muted">{{ t.category(riga.categoria) or '—' }}</span></td>
           <td class="num">{{ riga.pct_target | pct }}</td>
-          <td class="num" data-target="{{ riga.pct_target }}">{{ riga.quota | eur(0) }}</td>
+          <td class="num" data-target="{{ riga.pct_target }}">{{ riga.quota | eur }}</td>
         </tr>
         {% endfor %}
         {% for riga in r.righe_fisse %}
@@ -70,7 +70,7 @@
               <span class="pill gray">{{ t('pac.fixed_badge') }}</span></td>
           <td><span class="muted">{{ t.category(riga.categoria) or '—' }}</span></td>
           <td class="num faint">≈ {{ riga.pct_implicita | pct }} <span class="faint">{{ t('pac.implicit') }}</span></td>
-          <td class="num">{{ riga.importo | eur(0) }}</td>
+          <td class="num">{{ riga.importo | eur }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -79,7 +79,7 @@
           <td><b>{{ t('common.total') }}</b></td>
           <td></td>
           <td class="num"><b style="color:{{ 'var(--pos)' if r.pct_ok else 'var(--neg)' }};">{{ r.somma_pct | pct }}</b></td>
-          <td class="num"><b id="pac-totale">{{ r.totale_mensile | eur(0) }}</b></td>
+          <td class="num"><b id="pac-totale">{{ r.totale_mensile | eur }}</b></td>
         </tr>
       </tfoot>
     </table>
