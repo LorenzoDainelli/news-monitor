@@ -81,15 +81,19 @@
         _movs = (r[2] || []).filter(function (m) { return !m.deleted; });
         var lastSync = r[3];
 
-        if (!_wallets.length) { $("empty").hidden = false; $("wallets").innerHTML = ""; $("totale").textContent = "—"; $("lista-sec").hidden = true; }
-        else { $("empty").hidden = true; }
+        // Senza portafogli il telefono non ha ancora dati (arrivano con la sync):
+        // niente form (inutilizzabile senza portafogli), stato "vuoto" in evidenza.
+        var vuoto = !_wallets.length;
+        $("empty").hidden = !vuoto;
+        $("add").hidden = vuoto;
+        if (vuoto) { $("add-form").hidden = true; $("lista-sec").hidden = true; $("wallets").innerHTML = ""; }
 
         var saldoMap = FIN.saldi(_wallets, _movs);
         var tot = FIN.totale(_wallets, saldoMap);
         var now = new Date();
         var riep = FIN.riepilogoMese(_movs, now.getFullYear(), now.getMonth() + 1);
-        $("totale").textContent = _wallets.length ? eur(tot) : "—";
-        $("mese").textContent = _wallets.length ? ("Questo mese: +" + eur(riep.entrate) + " · −" + eur(riep.uscite)) : "";
+        $("totale").textContent = vuoto ? "—" : eur(tot);
+        $("mese").textContent = vuoto ? "In attesa della sincronizzazione" : ("Questo mese: +" + eur(riep.entrate) + " · −" + eur(riep.uscite));
 
         // card portafogli
         var box = $("wallets"); box.innerHTML = "";
