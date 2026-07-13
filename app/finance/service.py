@@ -10,6 +10,7 @@ rientri: sono più righe con lo stesso `giro_id` (vedi finance/models.py).
 Tutto DESCRITTIVO: qui l'inserimento e' manuale e strutturato (l'inserimento in
 linguaggio naturale passa dall'agente AI, che però compila solo il modulo).
 """
+import uuid
 from datetime import datetime
 
 from sqlalchemy import func, select, text
@@ -83,14 +84,44 @@ def migra_schema():
             if cols and nome not in cols:
                 c.execute(text(f"ALTER TABLE finance_transactions ADD COLUMN {nome} {ddl}"))
                 c.commit()
-    # Backfill: le vecchie partite di giro (a riga singola, senza giro_id) diventano
-    # ognuna un gruppo a sé; l'apertura si deduce dalla vecchia regola (rimborso
-    # assente = aperta). Idempotente: tocca solo le righe giro ancora senza giro_id.
+        # sync v2 (multi-dispositivo): identità e versione di ogni record + tombstone
+        for tabella in ("finance_wallets", "finance_categories", "finance_transactions"):
+            cols = [r[1] for r in c.execute(text(f"PRAGMA table_info({tabella})"))]
+            for nome, ddl in (("uid", "VARCHAR(32) DEFAULT ''"),
+                              ("updated_at", "DATETIME"),
+                              ("rev", "INTEGER DEFAULT 1"),
+                              ("deleted", "BOOLEAN DEFAULT 0")):
+                if cols and nome not in cols:
+                    c.execute(text(f"ALTER TABLE {tabella} ADD COLUMN {nome} {ddl}"))
+                    c.commit()
+            c.execute(text(f"CREATE INDEX IF NOT EXISTS ix_{tabella}_uid ON {tabella}(uid)"))
+        c.commit()
+    # Backfill idempotenti: metadati di sync ai record pre-v2, e giro_id alle
+    # vecchie partite a riga singola (l'apertura dalla vecchia regola: rimborso
+    # assente = aperta). Toccano solo le righe non ancora sistemate.
+    _backfill_meta_sync()
     _backfill_giro_id()
 
 
+def _backfill_meta_sync() -> None:
+    """Assegna uid e updated_at ai record creati prima della v2 (uid = un id unico
+    per riga; updated_at = created_at dove c'è, altrimenti ora). Raw SQL per non
+    passare dall'ORM (niente rev++ inutile). Idempotente."""
+    now = datetime.now()
+    with engine.begin() as c:
+        c.execute(text("UPDATE finance_transactions SET updated_at=created_at "
+                       "WHERE updated_at IS NULL AND created_at IS NOT NULL"))
+        for tabella in ("finance_wallets", "finance_categories", "finance_transactions"):
+            for (rid,) in c.execute(text(
+                    f"SELECT id FROM {tabella} WHERE uid IS NULL OR uid=''")).fetchall():
+                c.execute(text(f"UPDATE {tabella} SET uid=:u WHERE id=:i"),
+                          {"u": uuid.uuid4().hex, "i": rid})
+            c.execute(text(f"UPDATE {tabella} SET updated_at=:n WHERE updated_at IS NULL"), {"n": now})
+            c.execute(text(f"UPDATE {tabella} SET rev=1 WHERE rev IS NULL"))
+            c.execute(text(f"UPDATE {tabella} SET deleted=0 WHERE deleted IS NULL"))
+
+
 def _backfill_giro_id() -> None:
-    import uuid
     with SessionLocal() as db:
         legacy = db.query(Transaction).filter(
             Transaction.tipo == TIPO_GIRO,
