@@ -2185,6 +2185,86 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=21195e042b1fa1e0b65b9084eb2476ff96532cde91f60f8faacc0d0705d8249a",
       "data_invio": "2026-07-10T17:30:00+00:00"
+    },
+    {
+      "id": "aapl-openai-lawsuit-2026-07-13",
+      "ticker": "AAPL",
+      "titolo": "Apple avvia causa contro OpenAI per furto di segreti commerciali sull'AI hardware",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=a2bc4b2e83515181eb1fae20e425e7aebdd8233ec1c641c2f11d56ac83fca788",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "shel-iran-oil-2026-07-13",
+      "ticker": "SHEL",
+      "titolo": "Attacchi USA all'Iran vicino allo Stretto di Hormuz: il petrolio sale del 4%",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOUFpPY1lfc0lIc0xsNVlaSkZQanVuM3RZd0lUMTdLMlktT0dLajFOWExXSTZEd1pJd1kteDBWeTk5UnFHMmFtdUE1cWdmMEZwaDR4M09lV3NENXlhTHIwOUc1NEhTbGNYQTBZUmFNYlRIT3RUWWNyc3JZOXR2WXFrTWRFTmc1V2FHWnlDRW90YkJrOW1WWGstZ0d1bS1JaEJYZTcya0dUdkN4VzZQczhz?oc=5",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "nato-summit-ankara-2026-07-13",
+      "ticker": "NATO",
+      "titolo": "Summit NATO ad Ankara: 57 miliardi in nuovi contratti difesa, 70 miliardi all'Ucraina",
+      "tipo_evento": "macro tematica",
+      "url": "https://tresorfx.com/article.php?slug=nato-industry-forum-2026-defence-deals-signed-what-it-means-for-defence-stocks-and-markets",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "nvda-rack-delay-2028-2026-07-13",
+      "ticker": "NVDA",
+      "titolo": "Possibile ritardo dei rack NVIDIA di nuova generazione (2028): spazio per AMD e Google",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=3cd991655d4cdeaa4a578b841f964bf00d3d1d0fe2f441922829c044b64ee7a4",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "intc-server-price-hike-2026-07-13",
+      "ticker": "INTC",
+      "titolo": "Intel alza i prezzi dei chip server: la domanda AI supera la capacità produttiva",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=f7ff853c76c06e0e5fb1a6f18e2ce14e66de1fae8df73dcafd1e872b1f97a233",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "meta-manus-eu-probe-2026-07-13",
+      "ticker": "META",
+      "titolo": "Pechino blocca l'acquisizione AI da 2 miliardi di Meta; l'UE apre un'indagine sul design delle app",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=301a712dae530ddc2310f55e0bd761ee861c08e43a0fb86fe4e5b5887704ed7c",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "jpm-q2-earnings-preview-2026-07-13",
+      "ticker": "JPM",
+      "titolo": "JPMorgan Chase riporta domani i risultati Q2 2026: cosa tenere d'occhio",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=5d0c680376c0c74b538e81cd07dc80aecbdecf6d9ac19c425e43c903a5fece14",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "sndk-goldman-target-2026-07-13",
+      "ticker": "SNDK",
+      "titolo": "Goldman Sachs fissa un target ambizioso su SanDisk, puntando al superciclo delle memorie AI",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=1377c8f1c900acedefc491a91a007fd0cfe7822cbbfc57d429733b3f41dfb27d",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "asml-earnings-week-2026-07-13",
+      "ticker": "ASML",
+      "titolo": "ASML riporta i risultati questa settimana: la domanda di macchine EUV per l'AI sotto i riflettori",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=be8a7e25bd648b9d168672c8ccdb1dcebb365f3c11f3d51c03c27b2ed0f9dbe1",
+      "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "tsm-q2-earnings-jul16-2026-07-13",
+      "ticker": "TSM",
+      "titolo": "Taiwan Semiconductor riporta il 16 luglio: forte crescita attesa nel Q2 grazie alla domanda AI",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=0cc77e30ad19e0252aafb19bbd465d9fc5f1e33058f06a29444b97b0bf5ff854",
+      "data_invio": "2026-07-13T05:10:00Z"
     }
   ]
 }
