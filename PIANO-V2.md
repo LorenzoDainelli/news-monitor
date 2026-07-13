@@ -75,9 +75,13 @@ Principi:
 > committa/pusha subito (regola: mai lavoro non salvato). Ordine pensato per
 > ridurre il rischio: prima le fondamenta invisibili, poi le cose visibili.
 
-### Fase 0 — Fondamenta dati sul PC (prerequisito di tutto)  [taglia: S]
+### Fase 0 — Fondamenta dati sul PC (prerequisito di tutto)  [taglia: S]  ✅ FATTA
 Cosa: preparare i dati delle Finanze alla vita multi-dispositivo, SENZA
 cambiare nulla per l'utente.
+> Fatto: uid/updated_at/rev/deleted su Wallet/Category/Transaction; timbratura
+> automatica via evento SQLAlchemy `before_flush`; migrazione idempotente +
+> backfill. 19/19 test unit + migrazione reale sul DB + E2E browser. Il
+> soft-delete (uso del flag `deleted`) resta cablato dalla Fase 4.
 - Colonna **`uid`** (UUID) su transazioni, wallet e categorie (la chiave
   numerica attuale resta per uso interno; il `uid` è l'identità "universale"
   con cui i dispositivi si parlano). Backfill dei dati esistenti.
@@ -92,15 +96,17 @@ cambiare nulla per l'utente.
 - **Criterio di fine**: l'app si comporta ESATTAMENTE come prima; test che
   creano/modificano/cancellano e verificano uid/rev/tombstone.
 
-### Fase 1 — API JSON delle Finanze sul PC  [taglia: S]
-Cosa: esporre in JSON ciò che oggi è solo HTML, per PWA e sync.
-- `GET /api/finanze/stato` (wallet, categorie, saldi)
-- `GET /api/finanze/movimenti?since=<rev|data>` (delta)
-- `POST /api/finanze/ops` (applica un pacchetto di operazioni {upsert/delete})
-- Solo su 127.0.0.1 come oggi; niente autenticazione nuova per ora (finché
-  l'app non esce dal PC non serve).
-- **Criterio di fine**: con `curl` si legge lo stato e si inserisce un
-  movimento; la pagina Finanze lo mostra.
+### Fase 1 — API JSON delle Finanze sul PC  [taglia: S]  ✅ FATTA
+Cosa: esporre in JSON ciò che oggi è solo HTML, per PWA e sync. SOLA LETTURA:
+il canale di SCRITTURA/fusione (`POST /ops`) è stato spostato alla Fase 4, dove
+vive col protocollo di sync (scelta di coerenza).
+- `GET /api/finanze/stato` → wallet (con saldo attuale), categorie, totale, mese
+- `GET /api/finanze/movimenti?since=<ISO>&limit=<n>` → movimenti in formato sync
+- Riferimenti tra record per **uid**, mai per id interno. File `finance/api_routes.py`.
+- Solo su 127.0.0.1 come oggi; niente autenticazione nuova (finché l'app non
+  esce dal PC non serve).
+- **Fatto/verificato**: `curl /stato` e `/movimenti` OK; delta `since` OK
+  (torna solo i movimenti più recenti); nessun errore server.
 
 ### Fase 2 — Guscio PWA installabile sull'iPhone  [taglia: M]
 Cosa: la "app" che si installa dalla home, ancora con pochi contenuti.
@@ -274,8 +280,8 @@ Cosa: il resto dell'app, nel modo onesto.
 ## 8. Stato avanzamento
 
 - ☑ v1.0 chiusa, taggata e backuppata (12/07/2026)
-- ☐ Fase 0 — Fondamenta dati (uid, rev, updated_at, tombstone)
-- ☐ Fase 1 — API JSON Finanze
+- ☑ Fase 0 — Fondamenta dati (uid, rev, updated_at, tombstone) — 13/07/2026
+- ☑ Fase 1 — API JSON Finanze (sola lettura; POST /ops spostato a Fase 4) — 13/07/2026
 - ☐ Fase 2 — Guscio PWA installabile
 - ☐ Fase 3 — Finanze offline sul telefono
 - ☐ Fase 4 — Motore di sync (diari + merge)

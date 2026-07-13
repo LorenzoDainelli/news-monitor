@@ -615,3 +615,78 @@ def riepilogo_mese(anno, mese):
         "spese_categoria": spese,
         "anno": anno, "mese": mese,
     }
+
+
+# ============================================================================
+#  API JSON per la PWA e il sync (v2, vedi PIANO-V2.md). SOLA LETTURA in Fase 1;
+#  il canale di scrittura/fusione arriva con la Fase 4. I riferimenti tra record
+#  usano lo `uid` (stabile tra dispositivi), MAI l'id interno (che varia).
+# ============================================================================
+def _iso(dt):
+    return dt.isoformat() if dt else None
+
+
+def _parse_iso(s):
+    try:
+        return datetime.fromisoformat(s) if s else None
+    except (TypeError, ValueError):
+        return None
+
+
+def stato_sync() -> dict:
+    """Fotografia dello stato Finanze per la dashboard della PWA: portafogli (con
+    saldo attuale), categorie e sintesi del mese. Ogni record porta uid/rev/updated_at."""
+    now = datetime.now()
+    with SessionLocal() as db:
+        smap = _saldi_map(db)
+        ws = list(db.execute(select(Wallet).order_by(Wallet.ordine, Wallet.id)).scalars().all())
+        cats = list(db.execute(select(Category).order_by(Category.nome)).scalars().all())
+        wallets = [{
+            "uid": w.uid, "nome": w.nome, "tipo": w.tipo,
+            "saldo_iniziale": round(w.saldo_iniziale or 0.0, 2),
+            "saldo": round(smap.get(w.id, 0.0), 2),
+            "colore": w.colore, "ordine": w.ordine,
+            "archiviato": bool(w.archiviato), "deleted": bool(w.deleted),
+            "rev": w.rev, "updated_at": _iso(w.updated_at),
+        } for w in ws]
+        categorie = [{
+            "uid": c.uid, "nome": c.nome, "kind": c.kind,
+            "archiviato": bool(c.archiviato), "deleted": bool(c.deleted),
+            "rev": c.rev, "updated_at": _iso(c.updated_at),
+        } for c in cats]
+    riep = riepilogo_mese(now.year, now.month)
+    totale = round(sum(w["saldo"] for w in wallets if not w["archiviato"]), 2)
+    return {
+        "wallets": wallets, "categorie": categorie, "totale": totale,
+        "mese": {"anno": now.year, "mese": now.month, "entrate": riep["entrate"],
+                 "uscite": riep["uscite"], "saldo": riep["saldo"]},
+        "generato": _iso(now),
+    }
+
+
+def movimenti_sync(since=None, limit=None) -> list[dict]:
+    """Movimenti in formato sync: tutti i campi + uid/rev/updated_at, riferimenti
+    per uid. Con `since` (ISO-8601) restituisce solo quelli modificati DOPO quel
+    momento (delta per la sincronizzazione)."""
+    since_dt = _parse_iso(since) if isinstance(since, str) else since
+    with SessionLocal() as db:
+        wuid = {w.id: w.uid for w in db.query(Wallet).all()}
+        cuid = {c.id: c.uid for c in db.query(Category).all()}
+        q = select(Transaction).order_by(Transaction.updated_at.desc(), Transaction.id.desc())
+        if since_dt:
+            q = q.where(Transaction.updated_at > since_dt)
+        if limit:
+            q = q.limit(limit)
+        rows = list(db.execute(q).scalars().all())
+    return [{
+        "uid": t.uid, "tipo": t.tipo, "data": _iso(t.data),
+        "importo": round(t.importo or 0.0, 2),
+        "wallet_uid": wuid.get(t.wallet_id),
+        "wallet_to_uid": wuid.get(t.wallet_to_id) if t.wallet_to_id else None,
+        "categoria_uid": cuid.get(t.category_id) if t.category_id else None,
+        "descrizione": t.descrizione,
+        "giro_id": t.giro_id, "giro_aperta": bool(t.giro_aperta),
+        "importo_ricevuto": (round(t.importo_ricevuto, 2) if t.importo_ricevuto is not None else None),
+        "data_ricevuto": _iso(t.data_ricevuto), "controparte": t.controparte,
+        "rev": t.rev, "updated_at": _iso(t.updated_at), "deleted": bool(t.deleted),
+    } for t in rows]

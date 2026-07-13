@@ -27,6 +27,7 @@ from portfolio import service as pf_service
 from portfolio.routes import router as portfolio_router
 from finance import service as fin_service
 from finance.routes import router as finance_router, _contesto_finanze
+from finance.api_routes import router as finance_api_router
 from shared.settings_routes import router as settings_router
 from shared.prefs_routes import router as prefs_router
 from news import reader
@@ -64,6 +65,7 @@ app = FastAPI(title=APP_NAME)
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
 app.include_router(portfolio_router)
 app.include_router(finance_router)
+app.include_router(finance_api_router)
 app.include_router(settings_router)
 app.include_router(prefs_router)
 app.include_router(news_router)
