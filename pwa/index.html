@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>MyMoney</title>
+  <meta name="description" content="Le tue finanze personali, offline.">
+  <meta name="theme-color" content="#A6DA47" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0E110C" media="(prefers-color-scheme: dark)">
+  <!-- iOS: comportati da app a schermo intero -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MyMoney">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">MyMoney</div>
+    <div class="status"><span class="dot" id="dot"></span><span id="net">—</span></div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="k">Patrimonio liquido</div>
+      <div class="v num" id="totale">—</div>
+      <div class="sub" id="mese"></div>
+    </section>
+
+    <section id="wallets" class="wallets" aria-live="polite"></section>
+
+    <section id="empty" class="empty" hidden>
+      <div class="empty-icon" aria-hidden="true">✦</div>
+      <p class="empty-title">Ancora nessun dato sul telefono</p>
+      <p class="muted">Qui compariranno i tuoi portafogli e movimenti. La copia locale
+      e la sincronizzazione col PC (tramite il tuo Google Drive) arrivano nelle
+      prossime fasi.</p>
+    </section>
+
+    <button class="btn primary" id="add" disabled>＋ Aggiungi movimento</button>
+
+    <p class="foot">
+      <span id="foot-state">Guscio PWA · v2 Fase 2</span><br>
+      <span class="muted" id="sync-info">Sincronizzazione: in arrivo</span>
+    </p>
+
+    <div id="install-hint" class="install-hint" hidden>
+      Per installarla: tocca <b>Condividi</b> e poi <b>Aggiungi alla schermata Home</b>.
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

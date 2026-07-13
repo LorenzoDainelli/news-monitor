@@ -63,6 +63,11 @@ threading.Thread(target=_refresh_dati_bg, daemon=True).start()
 # --- app web ---
 app = FastAPI(title=APP_NAME)
 app.mount("/static", StaticFiles(directory=str(APP_DIR / "static")), name="static")
+# Guscio PWA (v2): servito anche dal PC per prova/uso in LAN. In produzione il
+# guscio sta su Cloudflare Pages (HTTPS), ma i file sono gli stessi (cartella pwa/).
+_PWA_DIR = APP_DIR.parent / "pwa"
+if _PWA_DIR.exists():
+    app.mount("/pwa", StaticFiles(directory=str(_PWA_DIR), html=True), name="pwa")
 app.include_router(portfolio_router)
 app.include_router(finance_router)
 app.include_router(finance_api_router)
