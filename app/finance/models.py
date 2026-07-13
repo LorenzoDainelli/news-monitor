@@ -26,10 +26,11 @@ Quattro tipi di movimento:
 
 Prefisso tabelle 'finance_' per non interferire col modulo portafoglio.
 """
+import uuid
 from datetime import datetime
 
-from sqlalchemy import String, Float, Integer, DateTime, Text, Boolean, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Float, Integer, DateTime, Text, Boolean, ForeignKey, event
+from sqlalchemy.orm import Mapped, mapped_column, Session
 
 from shared.db import Base
 
@@ -55,6 +56,10 @@ class Wallet(Base):
     # accento brand della card (design: strisciolina in alto + chip + barra);
     # vuoto = card neutra con i colori standard del tema
     colore: Mapped[str] = mapped_column(String(20), default="")
+    uid: Mapped[str] = mapped_column(String(32), default="", index=True)          # sync v2
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)  # sync v2
+    rev: Mapped[int] = mapped_column(Integer, default=1)                          # sync v2
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)                 # sync v2 (tombstone)
 
 
 class Category(Base):
@@ -63,6 +68,10 @@ class Category(Base):
     nome: Mapped[str] = mapped_column(String(120))
     kind: Mapped[str] = mapped_column(String(10), default="")   # "" | uscita | entrata
     archiviato: Mapped[bool] = mapped_column(Boolean, default=False)
+    uid: Mapped[str] = mapped_column(String(32), default="", index=True)          # sync v2
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)  # sync v2
+    rev: Mapped[int] = mapped_column(Integer, default=1)                          # sync v2
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)                 # sync v2 (tombstone)
 
 
 class Transaction(Base):
@@ -84,6 +93,11 @@ class Transaction(Base):
     importo_ricevuto: Mapped[float | None] = mapped_column(Float, nullable=True)   # gamba RIENTRO
     data_ricevuto: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     controparte: Mapped[str] = mapped_column(String(80), default="")  # da chi (babbo, mamma, ...)
+    # --- metadati di sincronizzazione multi-dispositivo (v2, vedi PIANO-V2.md) ---
+    uid: Mapped[str] = mapped_column(String(32), default="", index=True)          # identità stabile tra dispositivi
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)  # ultima modifica (per la fusione)
+    rev: Mapped[int] = mapped_column(Integer, default=1)                          # versione del record (sale a ogni modifica)
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)                 # tombstone (soft-delete attivo dalla Fase 4)
 
     @property
     def giro_kind(self) -> str | None:
@@ -107,3 +121,31 @@ class Transaction(Base):
         if k == "combo":
             return round((self.importo_ricevuto or 0.0) - (self.importo or 0.0), 2)
         return round(-(self.importo or 0.0), 2)   # spesa
+
+
+# ---------------------------------------------------------------------------
+# Timbratura automatica dei metadati di sync (v2). Un solo punto centrale, così
+# ogni riga porta con sé identità e versione a prescindere da CHI la modifica:
+#   - creazione  -> uid (se manca), updated_at, rev=1
+#   - modifica   -> updated_at aggiornato, rev incrementato
+# È il fondamento della sincronizzazione multi-dispositivo (vedi PIANO-V2.md,
+# Fase 4); qui NON cambia nulla di visibile: i dati si comportano come prima.
+# ---------------------------------------------------------------------------
+_MODELLI_SYNC = (Wallet, Category, Transaction)
+
+
+@event.listens_for(Session, "before_flush")
+def _timbra_metadati_sync(session, flush_context, instances):
+    now = datetime.now()
+    for obj in session.new:
+        if isinstance(obj, _MODELLI_SYNC):
+            if not getattr(obj, "uid", ""):
+                obj.uid = uuid.uuid4().hex
+            if not getattr(obj, "updated_at", None):
+                obj.updated_at = now
+            if not getattr(obj, "rev", None):
+                obj.rev = 1
+    for obj in session.dirty:
+        if isinstance(obj, _MODELLI_SYNC) and session.is_modified(obj, include_collections=False):
+            obj.updated_at = now
+            obj.rev = (obj.rev or 0) + 1
