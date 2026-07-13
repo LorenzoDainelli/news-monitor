@@ -108,7 +108,15 @@ vive col protocollo di sync (scelta di coerenza).
 - **Fatto/verificato**: `curl /stato` e `/movimenti` OK; delta `since` OK
   (torna solo i movimenti più recenti); nessun errore server.
 
-### Fase 2 — Guscio PWA installabile sull'iPhone  [taglia: M]
+### Fase 2 — Guscio PWA installabile sull'iPhone  [taglia: M]  ✅ FATTA (manca il deploy dell'utente)
+> Fatto: cartella `pwa/` (index.html, styles.css con i token MyMoney, app.js,
+> sw.js service worker, manifest.webmanifest, icone PNG €-su-lime generate).
+> Percorsi relativi (funziona sotto /pwa/ in locale e alla radice su Cloudflare).
+> Montata anche in FastAPI (`/pwa`) per prova/LAN. Verificato: manifest valido,
+> SW registrato e attivo (9 file del guscio in cache, pagina controllata dal SW →
+> apertura offline), icone servite, e quando l'API del PC è raggiungibile mostra
+> i portafogli/saldi reali. **Resta il passo manuale dell'utente**: pubblicare
+> `pwa/` su Cloudflare Pages e installarla su iPhone (guida in `pwa/README.md`).
 Cosa: la "app" che si installa dalla home, ancora con pochi contenuti.
 - Progetto statico `pwa/` nel repo: HTML + CSS (token MyMoney riusati) + JS
   vanilla. **Nessun framework**: coerente con l'app (vanilla) e leggero.
@@ -282,7 +290,7 @@ Cosa: il resto dell'app, nel modo onesto.
 - ☑ v1.0 chiusa, taggata e backuppata (12/07/2026)
 - ☑ Fase 0 — Fondamenta dati (uid, rev, updated_at, tombstone) — 13/07/2026
 - ☑ Fase 1 — API JSON Finanze (sola lettura; POST /ops spostato a Fase 4) — 13/07/2026
-- ☐ Fase 2 — Guscio PWA installabile
+- ☑ Fase 2 — Guscio PWA installabile (manca solo il deploy Cloudflare dell'utente) — 13/07/2026
 - ☐ Fase 3 — Finanze offline sul telefono
 - ☐ Fase 4 — Motore di sync (diari + merge)
 - ☐ Fase 5 — OAuth Google Drive
