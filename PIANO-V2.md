@@ -130,7 +130,18 @@ Cosa: la "app" che si installa dalla home, ancora con pochi contenuti.
 - **Criterio di fine**: Lorenzo apre l'URL da Safari, "Aggiungi a Home",
   l'icona MyMoney si apre a schermo intero anche in modalità aereo.
 
-### Fase 3 — Finanze offline sul telefono  [taglia: L]
+### Fase 3 — Finanze offline sul telefono  [taglia: L]  ✅ FATTA (giro-create in PWA = follow-up)
+> Fatto: `pwa/db.js` (IndexedDB: wallets/categorie/movimenti/meta, chiave = uid),
+> `pwa/finance.js` (saldi + riepilogo mese IN JS, mirror di service.py, giro
+> incluso), `app.js` riscritto (pull dall'API quando c'è rete → IndexedDB; render
+> SEMPRE dai dati locali; form "aggiungi movimento" offline per entrata/uscita/
+> trasferimento con auto-creazione categoria). Ogni record locale nasce con
+> uid/rev/updated_at/`_local` (pronto per il sync). Verificato: seed dal PC,
+> aggiunta uscita 10€ (Hype 91,98→81,98, uscite mese 10), persistenza dopo reload,
+> il movimento locale sopravvive al ripull, e con API irraggiungibile rende tutto
+> da IndexedDB. **Follow-up**: creare PARTITE DI GIRO dal telefono (ora nella PWA
+> si aggiungono entrata/uscita/trasferimento; i giri si vedono/calcolano ma si
+> creano dal PC).
 Cosa: la PWA diventa una vera app Finanze.
 - Dati locali in **IndexedDB** (movimenti, wallet, categorie) con lo stesso
   modello della Fase 0 (uid, rev, updated_at, deleted).
@@ -291,7 +302,7 @@ Cosa: il resto dell'app, nel modo onesto.
 - ☑ Fase 0 — Fondamenta dati (uid, rev, updated_at, tombstone) — 13/07/2026
 - ☑ Fase 1 — API JSON Finanze (sola lettura; POST /ops spostato a Fase 4) — 13/07/2026
 - ☑ Fase 2 — Guscio PWA installabile (manca solo il deploy Cloudflare dell'utente) — 13/07/2026
-- ☐ Fase 3 — Finanze offline sul telefono
+- ☑ Fase 3 — Finanze offline sul telefono (IndexedDB; giro-create in PWA = follow-up) — 13/07/2026
 - ☐ Fase 4 — Motore di sync (diari + merge)
 - ☐ Fase 5 — OAuth Google Drive
 - ☐ Fase 6 — Dashboard sola-lettura sul telefono

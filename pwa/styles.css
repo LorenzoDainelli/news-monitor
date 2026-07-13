@@ -101,6 +101,36 @@ body {
 .btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; }
 .btn:disabled { opacity: .55; cursor: default; }
 
+/* ---- form aggiungi movimento ---- */
+.add-form {
+  margin-top: 12px; padding: 14px; border: 1px solid var(--border);
+  border-radius: var(--r-md); background: var(--surface); display: grid; gap: 12px;
+}
+.af-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.add-form label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.add-form input, .add-form select {
+  font: inherit; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--ink);
+}
+.add-form .af-full { grid-column: 1 / -1; }
+.af-actions { display: flex; gap: 10px; }
+.af-actions .btn { margin-top: 0; }
+
+/* ---- lista movimenti ---- */
+.lista-h { font-weight: 700; margin: 22px 0 8px; font-size: 15px; }
+.lista { display: grid; gap: 2px; }
+.mrow {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 4px; border-bottom: 1px solid var(--border);
+}
+.mmain { min-width: 0; }
+.mdesc { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.msub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.mval { font-weight: 700; white-space: nowrap; }
+.mval.pos { color: var(--pos); }
+.mval.neg { color: var(--neg); }
+.mval.muted { color: var(--muted); }
+
 .foot { text-align: center; font-size: 12px; color: var(--faint); margin-top: 22px; line-height: 1.7; }
 .install-hint {
   margin-top: 14px; padding: 12px 14px; border-radius: var(--r-sm);
