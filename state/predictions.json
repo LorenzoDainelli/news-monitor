@@ -3209,6 +3209,66 @@
       "rilevanza": 52,
       "titolo": "Palantir conquista il primo cliente commerciale in America Latina: accordo pluriennale con GNP Seguros",
       "url": "https://finnhub.io/api/news?id=21195e042b1fa1e0b65b9084eb2476ff96532cde91f60f8faacc0d0705d8249a"
+    },
+    {
+      "id": "aapl-openai-lawsuit-2026-07-13",
+      "ticker": "AAPL",
+      "data": "2026-07-13T05:10:00Z",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 72,
+      "titolo": "Apple avvia causa contro OpenAI per furto di segreti commerciali sull'AI hardware",
+      "url": "https://finnhub.io/api/news?id=a2bc4b2e83515181eb1fae20e425e7aebdd8233ec1c641c2f11d56ac83fca788"
+    },
+    {
+      "id": "shel-iran-oil-2026-07-13",
+      "ticker": "SHEL",
+      "data": "2026-07-13T05:10:00Z",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 70,
+      "titolo": "Attacchi USA all'Iran vicino allo Stretto di Hormuz: il petrolio sale del 4%",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOUFpPY1lfc0lIc0xsNVlaSkZQanVuM3RZd0lUMTdLMlktT0dLajFOWExXSTZEd1pJd1kteDBWeTk5UnFHMmFtdUE1cWdmMEZwaDR4M09lV3NENXlhTHIwOUc1NEhTbGNYQTBZUmFNYlRIT3RUWWNyc3JZOXR2WXFrTWRFTmc1V2FHWnlDRW90YkJrOW1WWGstZ0d1bS1JaEJYZTcya0dUdkN4VzZQczhz?oc=5"
+    },
+    {
+      "id": "meta-manus-eu-probe-2026-07-13",
+      "ticker": "META",
+      "data": "2026-07-13T05:10:00Z",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Pechino blocca l'acquisizione AI da 2 miliardi di Meta; l'UE apre un'indagine sul design delle app",
+      "url": "https://finnhub.io/api/news?id=301a712dae530ddc2310f55e0bd761ee861c08e43a0fb86fe4e5b5887704ed7c"
+    },
+    {
+      "id": "intc-server-price-hike-2026-07-13",
+      "ticker": "INTC",
+      "data": "2026-07-13T05:10:00Z",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Intel alza i prezzi dei chip server: la domanda AI supera la capacità produttiva",
+      "url": "https://finnhub.io/api/news?id=f7ff853c76c06e0e5fb1a6f18e2ce14e66de1fae8df73dcafd1e872b1f97a233"
     }
   ]
 }
