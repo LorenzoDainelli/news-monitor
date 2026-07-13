@@ -7,7 +7,6 @@
   <meta name="description" content="Le tue finanze personali, offline.">
   <meta name="theme-color" content="#A6DA47" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0E110C" media="(prefers-color-scheme: dark)">
-  <!-- iOS: comportati da app a schermo intero -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="MyMoney">
@@ -31,19 +30,63 @@
 
     <section id="wallets" class="wallets" aria-live="polite"></section>
 
+    <button class="btn primary" id="add">＋ Aggiungi movimento</button>
+
+    <!-- form offline: entrata / uscita / trasferimento -->
+    <form id="add-form" class="add-form" hidden>
+      <div class="af-row">
+        <label>Tipo
+          <select name="tipo" id="af-tipo">
+            <option value="uscita">Uscita</option>
+            <option value="entrata">Entrata</option>
+            <option value="trasferimento">Trasferimento</option>
+          </select>
+        </label>
+        <label>Importo (€)
+          <input name="importo" inputmode="decimal" placeholder="0,00" required>
+        </label>
+      </div>
+      <div class="af-row">
+        <label id="af-wallet-lab">Portafoglio
+          <select name="wallet" id="af-wallet"></select>
+        </label>
+        <label id="af-wallet-to-lab" hidden>A portafoglio
+          <select name="wallet_to" id="af-wallet-to"></select>
+        </label>
+      </div>
+      <div class="af-row" id="af-cat-row">
+        <label>Categoria
+          <input name="categoria" list="af-cats" autocomplete="off" placeholder="es. Spesa">
+          <datalist id="af-cats"></datalist>
+        </label>
+        <label>Data
+          <input type="datetime-local" name="data" id="af-data">
+        </label>
+      </div>
+      <label class="af-full">Descrizione
+        <input name="descrizione" placeholder="(facoltativa)">
+      </label>
+      <div class="af-actions">
+        <button type="submit" class="btn primary">Salva</button>
+        <button type="button" class="btn" id="af-cancel">Annulla</button>
+      </div>
+    </form>
+
+    <section id="lista-sec" hidden>
+      <div class="lista-h">Ultimi movimenti</div>
+      <div id="lista" class="lista"></div>
+    </section>
+
     <section id="empty" class="empty" hidden>
       <div class="empty-icon" aria-hidden="true">✦</div>
       <p class="empty-title">Ancora nessun dato sul telefono</p>
-      <p class="muted">Qui compariranno i tuoi portafogli e movimenti. La copia locale
-      e la sincronizzazione col PC (tramite il tuo Google Drive) arrivano nelle
-      prossime fasi.</p>
+      <p class="muted">Connettiti una volta alla rete di casa per scaricare i tuoi
+      portafogli dal PC, oppure aggiungi un movimento: da qui in poi funziona offline.</p>
     </section>
 
-    <button class="btn primary" id="add" disabled>＋ Aggiungi movimento</button>
-
     <p class="foot">
-      <span id="foot-state">Guscio PWA · v2 Fase 2</span><br>
-      <span class="muted" id="sync-info">Sincronizzazione: in arrivo</span>
+      <span id="foot-state">MyMoney · v2 Fase 3</span><br>
+      <span class="muted" id="sync-info">—</span>
     </p>
 
     <div id="install-hint" class="install-hint" hidden>
@@ -51,6 +94,8 @@
     </div>
   </main>
 
+  <script src="db.js"></script>
+  <script src="finance.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
