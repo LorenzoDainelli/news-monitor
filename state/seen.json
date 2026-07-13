@@ -2265,6 +2265,46 @@
       "tipo_evento": "earnings",
       "url": "https://finnhub.io/api/news?id=0cc77e30ad19e0252aafb19bbd465d9fc5f1e33058f06a29444b97b0bf5ff854",
       "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "skhynix-warning-sndk-wdc-2026-07-13",
+      "ticker": "SNDK",
+      "titolo": "SK Hynix emette un profit warning storico: SanDisk e Western Digital cedono il 6%, Intel il 4%",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=42d1edba85f645d8fc7ce039cfdbb2f54aac3f4535f5e03ab90f51d36df7a266",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "meta-datacenter-louisiana-50b-2026-07-13",
+      "ticker": "META",
+      "titolo": "Meta annuncia un data center AI da oltre 50 miliardi in Louisiana: il più grande nella storia della società",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=6540b5fb8052448f14bf5973c176f6a4ba2b01c2b79d32c66fb9dacef24aba89",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "aapl-ath-citi-365-2026-07-13",
+      "ticker": "AAPL",
+      "titolo": "Apple tocca nuovi massimi storici: Citi alza il target di prezzo a 365 dollari",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=e8fc26bd40b1f8832627dc97ba88ba94d58e369106e05624431b4413d350f3ce",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "nflx-wedbush-oppenheimer-pre-earnings-2026-07-13",
+      "ticker": "NFLX",
+      "titolo": "Netflix: Wedbush e Oppenheimer vedono pubblicità e margini in crescita prima dei risultati trimestrali",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=e9a599ac504324de6467a82f33687ce62057bbee329cf2d3a3439d3d84dfb3bb",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "spcx-cathie-wood-54m-2026-07-13",
+      "ticker": "SPCX",
+      "titolo": "Cathie Wood compra 54 milioni di dollari di azioni SpaceX nell'arco di una settimana",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=f9b778750087e7257dcaa89a698cc3abdd980ec775cf51eb75bfbabbca689d65",
+      "data_invio": "2026-07-13T17:05:00+00:00"
     }
   ]
 }
