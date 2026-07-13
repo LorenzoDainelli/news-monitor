@@ -24,6 +24,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* l'attributo hidden vince sempre (anche su label{display:flex}) */
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);

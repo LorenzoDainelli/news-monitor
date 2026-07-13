@@ -30,6 +30,16 @@
 
     <section id="wallets" class="wallets" aria-live="polite"></section>
 
+    <section id="empty" class="empty" hidden>
+      <div class="empty-icon" aria-hidden="true">☁︎</div>
+      <p class="empty-title">Nessun dato sul telefono (ancora)</p>
+      <p class="muted">I tuoi portafogli e movimenti vivono sul PC. La
+      sincronizzazione automatica via Google Drive è la <b>prossima</b> cosa che
+      costruiamo: da lì compariranno qui e potrai aggiungere spese anche offline.</p>
+      <p class="muted" style="font-size:12px;margin-top:10px;">In casa, sulla stessa
+      rete del PC, puoi già collegarti: apri l'app dal PC e usa l'indirizzo di rete.</p>
+    </section>
+
     <button class="btn primary" id="add">＋ Aggiungi movimento</button>
 
     <!-- form offline: entrata / uscita / trasferimento -->
@@ -75,13 +85,6 @@
     <section id="lista-sec" hidden>
       <div class="lista-h">Ultimi movimenti</div>
       <div id="lista" class="lista"></div>
-    </section>
-
-    <section id="empty" class="empty" hidden>
-      <div class="empty-icon" aria-hidden="true">✦</div>
-      <p class="empty-title">Ancora nessun dato sul telefono</p>
-      <p class="muted">Connettiti una volta alla rete di casa per scaricare i tuoi
-      portafogli dal PC, oppure aggiungi un movimento: da qui in poi funziona offline.</p>
     </section>
 
     <p class="foot">
