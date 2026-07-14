@@ -263,3 +263,57 @@ PWA                                     PC
 ```
 
 Il primo avvio usa `GET /api/finanze/snapshot` al posto del passo 2.
+
+---
+
+## 9. Trasporto Google Drive (Fase 5)
+
+Quando PC e telefono non si vedono via HTTP (il server gira su 127.0.0.1), il
+"corriere" è il Google Drive dell'utente: cartella nascosta **appDataFolder**,
+scope minimo `drive.appdata` (l'app vede solo la sua cartellina).
+
+### File su Drive
+
+Un file per dispositivo, con lo **stato completo** (formato snapshot, §5):
+
+```
+state-<device_id>.json
+```
+
+Perché lo stato pieno e non i diari a delta: i dati sono pochi KB; lo snapshot
+contiene anche i record nati prima della Fase 4 (che nel diario del PC non ci
+sono); il formato è idempotente e auto-riparante (un file perso o corrotto si
+rigenera alla sync successiva); i tombstone viaggiano comunque (`deleted=true`
+resta nello stato fino alla compattazione, Fase 7). I diari locali restano e
+continuano ad alimentare la sync HTTP in LAN (§6-§8).
+
+### Algoritmo (identico su PC e PWA)
+
+```
+1. lista i file state-*.json in appDataFolder
+2. per ogni file di un ALTRO device:
+     se modifiedTime == cursore locale per quel file → salta
+     altrimenti scarica e applica come snapshot (merge LWW, §3-§4);
+     aggiorna il cursore (meta drive_seen)
+3. ricostruisci il PROPRIO stato (che ora include la fusione appena fatta)
+   e caricalo (create o update del proprio file);
+   se l'impronta del contenuto (soli record, esclusi ts/diary_lines) è uguale
+   all'ultimo upload e il file esiste già → non ricaricare
+```
+
+Ogni device scrive SOLO il proprio file → niente collisioni tra sync
+simultanee (problema #10 del PIANO-V2). Un file con `schema` diverso da 1
+viene saltato e loggato: mai corrompere.
+
+### OAuth
+
+- **PC**: authorization code + PKCE (client "Desktop"); il callback torna
+  sull'app (`/impostazioni/drive/callback`); refresh token in settings_store
+  (DB in `app/data/`, mai nel repo). Refresh automatico; `invalid_grant`
+  (accesso revocato) → token dimenticato, dati locali intatti.
+- **PWA**: flusso implicit con redirect di pagina intera (client "Web", senza
+  secret); token (~1h) in IndexedDB `meta`; alla scadenza si ripassa dal
+  consenso al tocco successivo. Niente popup (inaffidabili nelle PWA
+  standalone iOS) e niente script esterni.
+
+Setup delle credenziali (una tantum, account dell'utente): `docs/SETUP-DRIVE.md`.

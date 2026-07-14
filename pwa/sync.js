@@ -86,6 +86,26 @@ window.SYNC = (function () {
 
   var ENTITY_STORE = { wallet: "wallets", category: "categorie", transaction: "movimenti" };
 
+  function opsFromSnapshot(snap) {
+    /* Uno snapshot è una lista di record completi: trasformali in ops
+       upsert/delete da passare ad applyRemoteOps (stesse regole di merge).
+       Riusato da: initialSync, importBundle e dalla sync via Drive (Fase 5). */
+    var ops = [];
+    ["wallets", "categorie", "movimenti"].forEach(function (key) {
+      var entity = { wallets: "wallet", categorie: "category", movimenti: "transaction" }[key];
+      (((snap || {})[key]) || []).forEach(function (fields) {
+        ops.push({
+          schema: 1, uid: fields.uid, entity: entity,
+          op: fields.deleted ? "delete" : "upsert",
+          fields: fields, rev: fields.rev || 1,
+          updated_at: fields.updated_at || "",
+          device_id: snap.device_id || ""
+        });
+      });
+    });
+    return ops;
+  }
+
   function applyRemoteOps(ops, localDeviceId) {
     /* Applica le operazioni remote in locale con merge LWW.
        Ordine: wallet → category → transaction (per FK). */
@@ -198,20 +218,7 @@ window.SYNC = (function () {
         return res.json();
       }).then(function (snap) {
         // Lo snapshot è una lista di record: applicali come ops
-        var ops = [];
-        ["wallets", "categorie", "movimenti"].forEach(function (key) {
-          var entity = { wallets: "wallet", categorie: "category", movimenti: "transaction" }[key];
-          (snap[key] || []).forEach(function (fields) {
-            ops.push({
-              schema: 1, uid: fields.uid, entity: entity,
-              op: fields.deleted ? "delete" : "upsert",
-              fields: fields, rev: fields.rev || 1,
-              updated_at: fields.updated_at || "",
-              device_id: snap.device_id || ""
-            });
-          });
-        });
-        return applyRemoteOps(ops, deviceId).then(function (result) {
+        return applyRemoteOps(opsFromSnapshot(snap), deviceId).then(function (result) {
           // Il cursore parte già dalla fine del diario del PC: lo snapshot
           // riflette tutte le sue ops, quindi la prima sync normale scaricherà
           // solo il NUOVO, non di nuovo l'intero diario.
@@ -275,20 +282,7 @@ window.SYNC = (function () {
 
   function importBundle(data) {
     return getDeviceId().then(function (deviceId) {
-      var ops = [];
-      var snap = data.snapshot || data;
-      ["wallets", "categorie", "movimenti"].forEach(function (key) {
-        var entity = { wallets: "wallet", categorie: "category", movimenti: "transaction" }[key];
-        (snap[key] || []).forEach(function (fields) {
-          ops.push({
-            schema: 1, uid: fields.uid, entity: entity,
-            op: fields.deleted ? "delete" : "upsert",
-            fields: fields, rev: fields.rev || 1,
-            updated_at: fields.updated_at || "",
-            device_id: snap.device_id || ""
-          });
-        });
-      });
+      var ops = opsFromSnapshot(data.snapshot || data);
       // Poi il diario (se presente)
       (data.diary || []).forEach(function (op) { ops.push(op); });
       return applyRemoteOps(ops, deviceId);
@@ -299,6 +293,7 @@ window.SYNC = (function () {
     getDeviceId: getDeviceId,
     recordOp: recordOp,
     applyRemoteOps: applyRemoteOps,
+    opsFromSnapshot: opsFromSnapshot,
     fullSync: fullSync,
     pushToPC: pushToPC,
     pullFromPC: pullFromPC,

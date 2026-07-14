@@ -26,6 +26,15 @@ Se il PC è raggiungibile mostra i tuoi portafogli reali; altrimenti lo stato "v
 
 > Ad ogni push su GitHub, Cloudflare ripubblica il guscio da solo.
 
+## Sincronizzare col PC via Google Drive (Fase 5)
+
+Il telefono e il PC si parlano attraverso una cartellina **nascosta** del tuo
+Google Drive (l'app non vede i tuoi file personali). Serve una configurazione
+una-tantum sul tuo account Google: segui **[docs/SETUP-DRIVE.md](../docs/SETUP-DRIVE.md)**.
+Poi, nell'app sul telefono: tocca **☁️ Drive** → incolla l'ID client (Web) →
+consenso Google → da lì in poi ☁️ Drive sincronizza. Il "pass" di Google dura
+~1 ora: quando scade, il tocco successivo ripassa un attimo dal consenso.
+
 ## Note tecniche
 - Percorsi **relativi**: funziona sia sotto `/pwa/` (in locale) sia alla radice
   (su Cloudflare).

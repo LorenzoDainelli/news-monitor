@@ -119,6 +119,76 @@
     </form>
   </div>
 
+  <!-- Google Drive (v2 Fase 5): sincronizzazione telefono ↔ PC -->
+  <div class="card navy" style="margin-top:20px;">
+    <div class="card-h">{{ t('set.drive_h') }}</div>
+    <p style="margin:0 0 10px;">{{ t('set.drive_intro') }}</p>
+
+    {% if drive_msg == 'ok' %}<div class="note ok">{{ t('set.drive_msg_ok') }}</div>
+    {% elif drive_msg == 'sync_ok' %}<div class="note ok">{{ t('set.drive_msg_sync_ok') }}</div>
+    {% elif drive_msg == 'off' %}<div class="note info">{{ t('set.drive_msg_off') }}</div>
+    {% elif drive_msg == 'nocred' %}<div class="note warn">{{ t('set.drive_msg_nocred') }}</div>
+    {% elif drive_msg == 'rifiutato' %}<div class="note warn">{{ t('set.drive_msg_denied') }}</div>
+    {% elif drive_msg == 'auth' %}<div class="note warn">{{ t('set.drive_msg_auth') }}</div>
+    {% elif drive_msg in ('err', 'sync_err') %}<div class="note err">{{ t('set.drive_msg_err') }}</div>
+    {% endif %}
+
+    {% if drive_connected %}
+      <div class="note ok" style="margin-bottom:12px;">{{ t('set.drive_status_on') }}</div>
+    {% elif drive_configured %}
+      <div class="note warn" style="margin-bottom:12px;">{{ t('set.drive_status_ready') }}</div>
+    {% else %}
+      <div class="note warn" style="margin-bottom:12px;">{{ t('set.drive_status_unconf') }}<br>
+        <span class="muted" style="font-size:13px;">{{ t('set.drive_guide') }}</span>
+      </div>
+    {% endif %}
+
+    {% if drive_last and drive_last.ok %}
+      <p class="muted" style="font-size:13px;margin:0 0 12px;">
+        {{ t('set.drive_last', when=drive_last.ts, applied=drive_last.applied,
+             skipped=drive_last.skipped, errors=drive_last.errors) }}
+      </p>
+    {% endif %}
+
+    {% set dcid = (voci | selectattr('chiave', 'equalto', 'drive_client_id') | list | first) %}
+    {% set dcs = (voci | selectattr('chiave', 'equalto', 'drive_client_secret') | list | first) %}
+    <form class="form" method="post" action="/impostazioni" style="margin:0;padding:0;border:none;box-shadow:none;background:none;max-width:none;">
+      <div class="row2">
+        <div class="field" style="margin-bottom:0;">
+          <label>{{ t('set.drive_cid') }}</label>
+          {% if dcid and dcid.presente %}
+            <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=dcid.mascherato) }}</div>
+          {% endif %}
+          <input type="text" name="drive_client_id" autocomplete="off" placeholder="{{ '…apps.googleusercontent.com' if not (dcid and dcid.presente) else t('set.ph_keep') }}">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>{{ t('set.drive_csec') }}</label>
+          {% if dcs and dcs.presente %}
+            <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=dcs.mascherato) }}</div>
+          {% endif %}
+          <input type="password" name="drive_client_secret" autocomplete="off" placeholder="{{ 'GOCSPX-…' if not (dcs and dcs.presente) else t('set.ph_keep') }}">
+        </div>
+      </div>
+      <div class="actions" style="margin-bottom:0;margin-top:14px;">
+        <button type="submit" class="btn primary">{{ t('set.drive_save') }}</button>
+      </div>
+    </form>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
+      {% if drive_configured and not drive_connected %}
+        <a class="btn primary" href="/impostazioni/drive/connetti">{{ t('set.drive_connect') }}</a>
+      {% endif %}
+      {% if drive_connected %}
+        <form method="post" action="/impostazioni/drive/sync" style="margin:0;">
+          <button type="submit" class="btn primary">{{ t('set.drive_sync_now') }}</button>
+        </form>
+        <form method="post" action="/impostazioni/drive/scollega" style="margin:0;">
+          <button type="submit" class="btn ghost">{{ t('set.drive_disconnect') }}</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
   <div class="card navy" style="margin-top:20px;">
     <div class="card-h">{{ t('set.what_h') }}</div>
     <p style="margin:0;">{{ t('set.gemini_for') }}</p>

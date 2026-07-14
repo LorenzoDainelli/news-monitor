@@ -16,6 +16,11 @@ from shared.db import Base, SessionLocal
 # dell'etichetta; 'secret' = mostrata mascherata nell'interfaccia e mai loggata.
 KNOWN_SETTINGS = {
     "gemini_api_key":  {"tkey": "set.key_gemini", "secret": True},
+    # OAuth Google Drive (Fase 5): credenziali del client "Desktop" creato
+    # dall'utente (guida in docs/SETUP-DRIVE.md). Il client id non è un segreto
+    # (compare negli URL di consenso), il client secret sì.
+    "drive_client_id":     {"tkey": "set.drive_cid", "secret": False},
+    "drive_client_secret": {"tkey": "set.drive_csec", "secret": True},
 }
 
 
