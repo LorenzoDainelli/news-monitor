@@ -19,6 +19,7 @@ Privacy: qui non passa nulla verso l'esterno. Il diario sta sul filesystem local
 (app/data/sync/) e le API girano solo su 127.0.0.1 (vedi shared/config.py).
 """
 import json
+import logging
 import threading
 import uuid
 from contextlib import contextmanager
@@ -31,6 +32,8 @@ from sqlalchemy.orm import Session
 from shared.config import APP_DIR
 from shared.db import SessionLocal
 from shared import settings_store
+
+log = logging.getLogger("mymoney.sync")
 
 # ── configurazione ──────────────────────────────────────────────────────────
 SYNC_DIR = APP_DIR / "data" / "sync"
@@ -254,11 +257,19 @@ def _wins(remote_rev, remote_updated, remote_device,
 
 
 def _parse_dt(s):
-    """Parse ISO-8601 → datetime, tollerante (None se invalido)."""
+    """Parse ISO-8601 → datetime NAIVE (None se invalido). Tollera il suffisso
+    'Z' (UTC) prodotto dal telefono e lo riporta in ora locale naive, così la
+    colonna resta omogenea: mai un mix naive/aware che sporcherebbe i confronti
+    e i calcoli di date altrove."""
+    if not s:
+        return None
     try:
-        return datetime.fromisoformat(s) if s else None
+        dt = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
     except (TypeError, ValueError):
         return None
+    if dt.tzinfo is not None:
+        dt = dt.astimezone().replace(tzinfo=None)
+    return dt
 
 
 def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
@@ -297,6 +308,10 @@ def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
                             skipped += 1
                     except Exception:
                         errors += 1
+                        # Non blocca la sync, ma lascia traccia per il debug
+                        # (solo uid/entity: niente importi o descrizioni nei log).
+                        log.warning("sync: op saltata uid=%s entity=%s",
+                                    op.get("uid", ""), entity, exc_info=True)
 
             db.commit()
 
@@ -403,6 +418,7 @@ def build_snapshot() -> dict:
         "schema": SCHEMA_VERSION,
         "device_id": get_device_id(),
         "ts": datetime.now().isoformat(),
+        "diary_lines": diary_lines_count(),   # cursore iniziale per il client
         "wallets": wallets,
         "categorie": categorie,
         "movimenti": movimenti,

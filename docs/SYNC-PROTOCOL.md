@@ -147,6 +147,7 @@ nuovo o per un reset:
   "schema": 1,
   "device_id": "pc_a1b2c3d4e5f6",
   "ts": "2026-07-13T14:30:00.123456",
+  "diary_lines": 142,
   "wallets": [ { ... campi completi ... } ],
   "categorie": [ { ... campi completi ... } ],
   "movimenti": [ { ... campi completi ... } ]
@@ -156,6 +157,17 @@ nuovo o per un reset:
 Ogni record nello snapshot ha gli stessi campi di `fields` nel diario. Un
 dispositivo che riceve uno snapshot lo applica come una serie di upsert (con le
 stesse regole di merge LWW), così non sovrascrive dati più recenti.
+
+`diary_lines` è il numero di righe del diario del PC al momento dello snapshot:
+il client lo salva come cursore iniziale (`pc_diary_cursor`), così la prima sync
+normale scarica solo le operazioni NUOVE invece di ri-scaricare l'intero diario
+(che sarebbe comunque idempotente, ma inutile).
+
+**Nota sui timestamp:** `updated_at` viaggia come stringa ISO-8601. Il telefono
+la produce in UTC (`…Z`), il PC in ora locale; in import il PC normalizza sempre
+a `datetime` **naive** (nessun mix naive/aware nel database). Il confronto di
+merge resta comunque **deterministico e convergente** su entrambi i lati perché
+`rev` è la chiave primaria e `updated_at` interviene solo a parità di `rev`.
 
 ---
 

@@ -211,7 +211,13 @@ window.SYNC = (function () {
             });
           });
         });
-        return applyRemoteOps(ops, deviceId);
+        return applyRemoteOps(ops, deviceId).then(function (result) {
+          // Il cursore parte già dalla fine del diario del PC: lo snapshot
+          // riflette tutte le sue ops, quindi la prima sync normale scaricherà
+          // solo il NUOVO, non di nuovo l'intero diario.
+          return DB.setMeta("pc_diary_cursor", snap.diary_lines || 0)
+            .then(function () { return result; });
+        });
       });
     });
   }

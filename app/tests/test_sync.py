@@ -342,3 +342,69 @@ class TestExportImportBundle:
         with Session() as db:
             w = db.query(Wallet).first()
             assert w.nome == "RoundTrip"
+
+
+# ── revisione Fase 4: correzioni post-analisi ───────────────────────────────
+
+class TestTimestampNaive:
+    """_parse_dt riporta SEMPRE datetime naive (niente mix naive/aware anche se
+    il telefono manda updated_at in UTC con la 'Z')."""
+
+    def test_z_suffix_becomes_naive(self, test_db):
+        dt = sync_mod._parse_dt("2026-07-14T08:00:00.123Z")
+        assert dt is not None
+        assert dt.tzinfo is None            # convertito a naive
+
+    def test_plain_iso_stays_naive(self, test_db):
+        dt = sync_mod._parse_dt("2026-07-14T10:00:00.123456")
+        assert dt is not None
+        assert dt.tzinfo is None
+
+    def test_invalid_and_empty(self, test_db):
+        assert sync_mod._parse_dt("") is None
+        assert sync_mod._parse_dt(None) is None
+        assert sync_mod._parse_dt("non-una-data") is None
+
+    def test_imported_transaction_updated_at_is_naive(self, test_db):
+        """Un movimento importato dal telefono (updated_at con 'Z') finisce in DB
+        con updated_at naive: la colonna resta omogenea."""
+        Session = test_db["Session"]
+        w_uid = uuid.uuid4().hex
+        t_uid = uuid.uuid4().hex
+        ops = [
+            {"schema": 1, "uid": w_uid, "entity": "wallet", "op": "upsert",
+             "fields": {"uid": w_uid, "nome": "W", "tipo": "conto",
+                        "saldo_iniziale": 0, "note": "", "ordine": 0, "colore": "",
+                        "archiviato": False, "deleted": False, "rev": 1,
+                        "updated_at": "2026-07-14T08:00:00.000Z"},
+             "rev": 1, "updated_at": "2026-07-14T08:00:00.000Z",
+             "device_id": "pwa_remote", "ts": "2026-07-14T08:00:00.000Z"},
+            {"schema": 1, "uid": t_uid, "entity": "transaction", "op": "upsert",
+             "fields": {"uid": t_uid, "tipo": "uscita", "data": "2026-07-14T10:00:00",
+                        "importo": 5.0, "wallet_uid": w_uid, "wallet_to_uid": None,
+                        "categoria_uid": None, "descrizione": "", "giro_id": "",
+                        "giro_aperta": False, "importo_ricevuto": None,
+                        "data_ricevuto": None, "controparte": "", "deleted": False,
+                        "rev": 1, "updated_at": "2026-07-14T08:00:00.123Z"},
+             "rev": 1, "updated_at": "2026-07-14T08:00:00.123Z",
+             "device_id": "pwa_remote", "ts": "2026-07-14T08:00:00.123Z"},
+        ]
+        assert sync_mod.import_ops(ops)["applied"] == 2
+        with Session() as db:
+            t = db.execute(select(Transaction).where(Transaction.uid == t_uid)).scalar_one()
+            assert t.updated_at is not None
+            assert t.updated_at.tzinfo is None
+
+
+class TestSnapshotCursor:
+    """Lo snapshot espone diary_lines, il cursore iniziale del client (evita di
+    ri-scaricare tutto il diario alla prima sync normale)."""
+
+    def test_snapshot_has_diary_lines(self, test_db):
+        sync_mod._write_diary([
+            {"uid": "x", "entity": "wallet", "op": "upsert", "fields": {},
+             "rev": 1, "updated_at": "2026-07-14", "device_id": "pc_test", "ts": "now"},
+        ])
+        snap = sync_mod.build_snapshot()
+        assert "diary_lines" in snap
+        assert snap["diary_lines"] == 1
