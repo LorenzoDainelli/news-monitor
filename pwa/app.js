@@ -219,6 +219,38 @@
     });
   });
 
+  // ---------- Google Drive (Fase 5) ----------
+  function doDriveSync() {
+    var btn = $("drive-btn");
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ Drive…"; }
+    return DRIVE.driveSync().then(function (r) {
+      if (btn) { btn.disabled = false; btn.textContent = "☁️ Drive"; }
+      if (r.ok) return render();   // render mostra "Ultima sync: …"
+      $("sync-info").textContent = r.reason === "token"
+        ? "Drive: tocca di nuovo ☁️ per accedere"
+        : "Drive: errore (" + r.reason + ")";
+    });
+  }
+
+  $("drive-btn").addEventListener("click", function () {
+    DRIVE.getClientId().then(function (cid) {
+      if (!cid) { $("drive-setup").hidden = false; return; }
+      DRIVE.getToken().then(function (tok) {
+        if (!tok) { DRIVE.connect(); return; }   // redirect a Google e ritorno
+        doDriveSync();
+      });
+    });
+  });
+  $("drive-cid-save").addEventListener("click", function () {
+    var v = $("drive-cid").value.trim();
+    if (!v) return;
+    DRIVE.setClientId(v).then(function () {
+      $("drive-setup").hidden = true;
+      DRIVE.connect();
+    });
+  });
+  $("drive-cid-cancel").addEventListener("click", function () { $("drive-setup").hidden = true; });
+
   // ---------- export/import manuale ----------
   if ($("export-btn")) {
     $("export-btn").addEventListener("click", function () {
@@ -256,5 +288,12 @@
 
   // ---------- boot ----------
   segnalaRete();
-  render().then(function () { return doSync(); }).then(function (ok) { if (ok) return render(); });
+  // Se stiamo TORNANDO dal consenso Google (token nel fragment), salvalo e
+  // parti subito con la sync via Drive; altrimenti la solita sync HTTP (LAN).
+  DRIVE.handleRedirect().then(function (daGoogle) {
+    return render().then(function () {
+      if (daGoogle) return doDriveSync();
+      return doSync().then(function (ok) { if (ok) return render(); });
+    });
+  });
 })();

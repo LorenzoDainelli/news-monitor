@@ -306,7 +306,14 @@ Cosa: il resto dell'app, nel modo onesto.
 - ☑ Fase 4 — Motore di sync (diari + merge LWW, POST /ops, soft-delete) — 14/07/2026
       (sviluppata da Antigravity, revisionata e rifinita; sync HTTP solo in LAN
       finché resta HOST=127.0.0.1 → il sync telefono↔PC diventa reale con la Fase 5)
-- ☐ Fase 5 — OAuth Google Drive
+- ◐ Fase 5 — OAuth Google Drive — codice COMPLETO e testato il 15/07/2026
+      (piano-contratto in PIANO-FASE-5.md; su Drive viaggia lo STATO completo
+      per device `state-<id>.json` in appDataFolder, merge LWW della Fase 4;
+      PC: OAuth installed-app+PKCE via urllib, card in Impostazioni, sync
+      all'avvio; PWA: redirect implicit senza popup/script esterni, bottone ☁️;
+      test con finto-Drive 12/12). **Resta il passo di Lorenzo**: creare le
+      credenziali OAuth (guida docs/SETUP-DRIVE.md, ~10 min) e collaudare
+      contro il Drive vero + iPhone → poi ☑
 - ☐ Fase 6 — Dashboard sola-lettura sul telefono
 - ☐ Fase 7 — Robustezza e rifiniture
 - ☐ (opz.) v2.1 Import CSV · v2.2 auto-prezzi · v2.3 PIN locale

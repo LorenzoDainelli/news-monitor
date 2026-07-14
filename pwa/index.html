@@ -87,9 +87,24 @@
       <div id="lista" class="lista"></div>
     </section>
 
+    <!-- collegamento a Google Drive (Fase 5): il client id si incolla una volta -->
+    <div id="drive-setup" class="add-form" hidden>
+      <label class="af-full">ID client OAuth (Web) di Google
+        <input id="drive-cid" autocomplete="off" placeholder="…apps.googleusercontent.com">
+      </label>
+      <p class="muted" style="font-size:12px;margin:6px 0 10px;">Si crea una volta
+      sola con la guida <b>docs/SETUP-DRIVE.md</b> (nel repo). I dati viaggiano SOLO
+      nel tuo Google Drive, in una cartellina nascosta riservata all'app.</p>
+      <div class="af-actions">
+        <button type="button" class="btn primary" id="drive-cid-save">Salva e collega</button>
+        <button type="button" class="btn" id="drive-cid-cancel">Annulla</button>
+      </div>
+    </div>
+
     <p class="foot">
-      <span id="foot-state">MyMoney · v2 Fase 4</span><br>
+      <span id="foot-state">MyMoney · v2 Fase 5</span><br>
       <span class="muted" id="sync-info">—</span><br>
+      <button class="btn sync" id="drive-btn">☁️ Drive</button>
       <button class="btn sync" id="sync-btn">🔄 Sincronizza</button>
       <button class="btn small" id="export-btn">📤 Esporta</button>
       <button class="btn small" id="import-btn">📥 Importa</button>
@@ -103,6 +118,7 @@
   <script src="db.js"></script>
   <script src="finance.js"></script>
   <script src="sync.js"></script>
+  <script src="drive.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

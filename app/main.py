@@ -57,6 +57,12 @@ def _refresh_dati_bg():
         wealth.get_cached()                 # serie del grafico patrimonio
     except Exception:
         pass  # mai far fallire l'avvio per i dati: si riproverà
+    try:
+        from shared import drive_sync       # sync Drive (Fase 5), solo se collegato
+        if drive_sync.is_configured() and drive_sync.is_connected():
+            drive_sync.sync_once()
+    except Exception:
+        pass  # best-effort: c'è sempre il bottone "Sincronizza ora"
 
 
 threading.Thread(target=_refresh_dati_bg, daemon=True).start()

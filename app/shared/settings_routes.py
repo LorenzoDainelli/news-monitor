@@ -10,12 +10,13 @@ from fastapi.responses import RedirectResponse, HTMLResponse
 from shared.templating import templates
 from shared import settings_store as store
 from shared import ai
+from shared import drive_sync
 
 router = APIRouter()
 
 
 @router.get("/impostazioni", response_class=HTMLResponse)
-def impostazioni(request: Request, salvato: int = 0, ai_test: str = ""):
+def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: str = ""):
     voci = []
     for chiave, meta in store.KNOWN_SETTINGS.items():
         valore = store.get_setting(chiave, "")
@@ -34,6 +35,10 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = ""):
         "ai_mode": ai.get_mode(),
         "ai_test": ai_test,
         "MODES": ai.MODES,
+        "drive_msg": drive,
+        "drive_configured": drive_sync.is_configured(),
+        "drive_connected": drive_sync.is_connected(),
+        "drive_last": drive_sync.last_sync_info(),
     })
 
 
@@ -64,6 +69,45 @@ def _esito_test(ok: bool, detail: str) -> str:
 def prova_ai():
     ok, detail = ai.test_connection()
     return RedirectResponse(f"/impostazioni?ai_test={_esito_test(ok, detail)}", status_code=303)
+
+
+# ── Google Drive (Fase 5): collegamento OAuth e sync manuale ────────────────
+
+def _drive_redirect_uri(request: Request) -> str:
+    """Il callback torna su QUESTA app (client OAuth di tipo Desktop: qualunque
+    porta di loopback è accettata senza registrarla)."""
+    return str(request.url_for("drive_callback"))
+
+
+@router.get("/impostazioni/drive/connetti")
+def drive_connetti(request: Request):
+    if not drive_sync.is_configured():
+        return RedirectResponse("/impostazioni?drive=nocred", status_code=303)
+    return RedirectResponse(drive_sync.build_auth_url(_drive_redirect_uri(request)),
+                            status_code=303)
+
+
+@router.get("/impostazioni/drive/callback", name="drive_callback")
+def drive_callback(request: Request, code: str = "", state: str = "", error: str = ""):
+    if error or not code:
+        return RedirectResponse("/impostazioni?drive=rifiutato", status_code=303)
+    ok, _err = drive_sync.handle_callback(code, state, _drive_redirect_uri(request))
+    return RedirectResponse(f"/impostazioni?drive={'ok' if ok else 'err'}", status_code=303)
+
+
+@router.post("/impostazioni/drive/sync")
+def drive_sync_now():
+    result = drive_sync.sync_once()
+    if result.get("ok"):
+        return RedirectResponse("/impostazioni?drive=sync_ok", status_code=303)
+    esito = "auth" if result.get("error") == "auth" else "sync_err"
+    return RedirectResponse(f"/impostazioni?drive={esito}", status_code=303)
+
+
+@router.post("/impostazioni/drive/scollega")
+def drive_scollega():
+    drive_sync.disconnect()
+    return RedirectResponse("/impostazioni?drive=off", status_code=303)
 
 
 @router.post("/impostazioni")
