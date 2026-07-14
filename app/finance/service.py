@@ -295,6 +295,30 @@ def elimina_movimento(tid):
         db.commit()
 
 
+def aggiorna_movimento(tid, tipo, data, importo, wallet_id, wallet_to_id=None,
+                       categoria_nome="", descrizione=""):
+    """Modifica IN-PLACE un movimento normale (entrata/uscita/trasferimento):
+    stesso record (uid invariato → il sync lo vede come aggiornamento, rev++).
+    Non tocca le partite di giro (quelle passano da `aggiorna_giro`)."""
+    with SessionLocal() as db:
+        t = db.get(Transaction, tid)
+        if not t or t.deleted or t.tipo == TIPO_GIRO:
+            return False
+        cat_id = None
+        if tipo in (TIPO_ENTRATA, TIPO_USCITA):
+            cat_id = _get_or_create_categoria(
+                db, categoria_nome, "entrata" if tipo == TIPO_ENTRATA else "uscita")
+        t.tipo = tipo
+        t.data = data or t.data or datetime.now()
+        t.importo = abs(importo or 0.0)
+        t.wallet_id = wallet_id
+        t.wallet_to_id = wallet_to_id if tipo == TIPO_TRASFERIMENTO else None
+        t.category_id = cat_id if tipo != TIPO_TRASFERIMENTO else None
+        t.descrizione = (descrizione or "").strip()
+        db.commit()
+        return True
+
+
 # ------------------------------ partite di giro ------------------------------
 def _nuovo_giro_id() -> str:
     import uuid
@@ -405,6 +429,98 @@ def converti_giro_in_uscita(giro_id):
                 r.controparte = ""
         db.commit()
         return True
+
+
+def aggiorna_giro(giro_id, spese, rientri=None, aperta=False):
+    """Modifica una partita di giro TUTTA INSIEME. Le gambe vecchie diventano
+    tombstone (deleted=True: così la sostituzione viaggia nel sync) e vengono
+    ricreate dalle liste passate, con lo STESSO `giro_id` (la partita resta la
+    stessa). Serve almeno una spesa. Con `aperta=True` i rientri sono ignorati."""
+    spese = [s for s in (spese or []) if (s.get("importo") or 0) > 0 and s.get("wallet_id")]
+    rientri = [] if aperta else [r for r in (rientri or [])
+                                 if (r.get("importo") or 0) > 0 and r.get("wallet_id")]
+    if not spese:
+        return False
+    with SessionLocal() as db:
+        rows = db.query(Transaction).filter(
+            Transaction.giro_id == giro_id, Transaction.deleted.is_(False)).all()
+        if not rows:
+            return False
+        for r in rows:                     # tombstone delle vecchie gambe
+            r.deleted = True
+        for s in spese:
+            db.add(_riga_spesa(db, giro_id, aperta, s.get("importo"), s["wallet_id"],
+                               s.get("categoria", ""), s.get("descrizione", ""), s.get("data")))
+        for r in rientri:
+            db.add(_riga_rientro(db, giro_id, aperta, r.get("importo"), r["wallet_id"],
+                                 r.get("controparte", ""), r.get("data")))
+        db.commit()
+        return True
+
+
+def _fmt_importo_form(v) -> str:
+    """Importo per un campo del form: '12,34' (virgola decimale, sempre 2 cifre)."""
+    return ("%.2f" % (v or 0.0)).replace(".", ",")
+
+
+def _fmt_dt_form(dt) -> str:
+    """Data per un <input type=datetime-local>: 'YYYY-MM-DDTHH:MM' ('' se assente)."""
+    return dt.strftime("%Y-%m-%dT%H:%M") if dt else ""
+
+
+def dati_modifica(tid):
+    """Ricostruisce i dati di un movimento per il form di modifica.
+    - movimento normale -> dict kind='generic' con i suoi campi;
+    - partita di giro    -> dict kind='giro' con TUTTE le gambe (spese + rientri),
+      così si modifica l'intera partita in un colpo solo (le righe combo legacy
+      vengono scomposte in una spesa + un rientro).
+    Ritorna None se il movimento non esiste (o è già eliminato)."""
+    with SessionLocal() as db:
+        t = db.get(Transaction, tid)
+        if not t or t.deleted:
+            return None
+        cn = {c.id: c.nome for c in db.query(Category).all()}
+        if t.tipo == TIPO_GIRO and (t.giro_id or ""):
+            rows = db.query(Transaction).filter(
+                Transaction.giro_id == t.giro_id, Transaction.deleted.is_(False)
+            ).order_by(Transaction.data, Transaction.id).all()
+            spese, rientri = [], []
+            for r in rows:
+                if (r.importo or 0) > 0:                 # gamba spesa (anche del combo)
+                    spese.append({
+                        "importo": _fmt_importo_form(r.importo),
+                        "wallet_id": r.wallet_id,
+                        "categoria": cn.get(r.category_id, "") or "",
+                        "descrizione": r.descrizione or "",
+                        "data_local": _fmt_dt_form(r.data),
+                    })
+                if r.importo_ricevuto is not None:       # gamba rientro (anche del combo)
+                    rientri.append({
+                        "controparte": r.controparte or "",
+                        "importo": _fmt_importo_form(r.importo_ricevuto),
+                        "data_local": _fmt_dt_form(r.data_ricevuto or r.data),
+                        "wallet_id": r.wallet_to_id or r.wallet_id,
+                    })
+            return {
+                "kind": "giro",
+                "giro_id": t.giro_id,
+                "action": f"/finanze/giro/{t.giro_id}/aggiorna",
+                "aperta": any(r.giro_aperta for r in rows),
+                "spese": spese,
+                "rientri": rientri,
+            }
+        return {
+            "kind": "generic",
+            "id": t.id,
+            "action": f"/finanze/movimenti/{t.id}/aggiorna",
+            "tipo": t.tipo,
+            "importo": _fmt_importo_form(t.importo),
+            "wallet_id": t.wallet_id,
+            "wallet_to_id": t.wallet_to_id,
+            "categoria": cn.get(t.category_id, "") or "",
+            "descrizione": t.descrizione or "",
+            "data_local": _fmt_dt_form(t.data),
+        }
 
 
 def _riassumi_giro(rows) -> dict:

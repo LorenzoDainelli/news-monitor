@@ -452,6 +452,7 @@ STRINGS = {
     "fin.ai_disc": {"it": "Analisi qualitativa, non un consiglio finanziario.", "en": "Qualitative analysis, not financial advice.", "es": "Análisis cualitativo, no un consejo financiero.", "fr": "Analyse qualitative, pas un conseil financier.", "de": "Qualitative Analyse, keine Finanzberatung.", "uk": "Якісний аналіз, не фінансова порада."},
     "fin.category_ph": {"it": "es. Trasporti", "en": "e.g. Transport", "es": "p. ej. Transporte", "fr": "ex. Transports", "de": "z. B. Verkehr", "uk": "напр. Транспорт"},
     "fin.save_movement": {"it": "Salva movimento", "en": "Save movement", "es": "Guardar movimiento", "fr": "Enregistrer le mouvement", "de": "Bewegung speichern", "uk": "Зберегти рух"},
+    "fin.edit_movement": {"it": "Modifica movimento", "en": "Edit movement", "es": "Editar movimiento", "fr": "Modifier le mouvement", "de": "Bewegung bearbeiten", "uk": "Редагувати рух"},
 
     # partite di giro (spese rimborsate: es. "la pagano i miei")
     "fin.giro": {"it": "Partita di giro", "en": "Reimbursed expense", "es": "Gasto reembolsado", "fr": "Dépense remboursée", "de": "Erstattete Ausgabe", "uk": "Відшкодована витрата"},

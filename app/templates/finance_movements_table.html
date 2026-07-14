@@ -45,11 +45,15 @@
           {% if tt == 'giro' and gk == 'combo' %}<span class="faint num"> · −{{ m.t.importo | eur }} → +{{ m.t.importo_ricevuto | eur }}</span>{% endif %}
         </td>
         <td class="num">
-          <form method="post" action="/finanze/movimenti/{{ m.t.id }}/elimina" class="js-confirm"
-                data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:0;">
-            <input type="hidden" name="next" value="{{ cur_path }}">
-            <button type="submit" class="btn sm danger icon-only" aria-label="{{ t('btn.delete') }}" title="{{ t('btn.delete') }}">{{ icon('trash', 15) }}</button>
-          </form>
+          <div style="display:inline-flex;gap:6px;align-items:center;">
+            <a href="/finanze/movimenti/{{ m.t.id }}/modifica#mov-form" class="btn sm ghost icon-only"
+               aria-label="{{ t('btn.edit') }}" title="{{ t('btn.edit') }}">{{ icon('edit', 15) }}</a>
+            <form method="post" action="/finanze/movimenti/{{ m.t.id }}/elimina" class="js-confirm"
+                  data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:0;">
+              <input type="hidden" name="next" value="{{ cur_path }}">
+              <button type="submit" class="btn sm danger icon-only" aria-label="{{ t('btn.delete') }}" title="{{ t('btn.delete') }}">{{ icon('trash', 15) }}</button>
+            </form>
+          </div>
         </td>
       </tr>
     {% else %}

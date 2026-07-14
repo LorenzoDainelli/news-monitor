@@ -142,6 +142,45 @@ def elimina_movimento(tid: int, next: str = Form("/finanze")):
     return RedirectResponse(dest, status_code=303)
 
 
+@router.get("/finanze/movimenti/{tid}/modifica", response_class=HTMLResponse)
+def modifica_movimento(request: Request, tid: int):
+    """Riapre la panoramica col modulo PRECOMPILATO sul movimento scelto.
+    Per una partita di giro precompila TUTTE le gambe (si modifica insieme)."""
+    edit = service.dati_modifica(tid)
+    if not edit:
+        return RedirectResponse("/finanze", status_code=303)
+    ctx = _ctx_panoramica()
+    ctx["edit"] = edit
+    ctx["next_url"] = "/finanze"          # dopo il salvataggio si torna alla panoramica
+    return templates.TemplateResponse(request, "finance_overview.html", ctx)
+
+
+@router.post("/finanze/movimenti/{tid}/aggiorna")
+def aggiorna_movimento(
+    tid: int,
+    tipo: str = Form(...),
+    data: str = Form(""),
+    importo: str = Form("0"),
+    wallet_id: str = Form(""),
+    wallet_to_id: str = Form(""),
+    categoria: str = Form(""),
+    descrizione: str = Form(""),
+    next: str = Form("/finanze"),
+):
+    """Salva le modifiche a un movimento normale (in-place, stesso record)."""
+    if tipo in (TIPO_ENTRATA, TIPO_USCITA, TIPO_TRASFERIMENTO):
+        wid = int(wallet_id) if (wallet_id or "").strip().isdigit() else None
+        wto = int(wallet_to_id) if (wallet_to_id or "").strip().isdigit() else None
+        if wid:
+            service.aggiorna_movimento(
+                tid, tipo=tipo, data=to_datetime(data),
+                importo=to_float(importo, 0.0) or 0.0, wallet_id=wid,
+                wallet_to_id=wto, categoria_nome=categoria, descrizione=descrizione)
+    _aggiorna_grafico_patrimonio()
+    dest = next if next.startswith("/finanze") else "/finanze"
+    return RedirectResponse(dest, status_code=303)
+
+
 # ------------------------------ partite di giro ------------------------------
 @router.post("/finanze/giro/{gid}/rientro")
 def giro_rientro(
@@ -189,6 +228,33 @@ def giro_chiudi(
 def giro_converti(gid: str, next: str = Form("/finanze")):
     """'Non me li ridaranno': le spese della partita diventano normali uscite."""
     service.converti_giro_in_uscita(gid)
+    _aggiorna_grafico_patrimonio()
+    dest = next if next.startswith("/finanze") else "/finanze"
+    return RedirectResponse(dest, status_code=303)
+
+
+@router.post("/finanze/giro/{gid}/aggiorna")
+def giro_aggiorna(
+    gid: str,
+    giro_dopo: str = Form(""),
+    spesa_importo: list[str] = Form([]),
+    spesa_wallet: list[str] = Form([]),
+    spesa_categoria: list[str] = Form([]),
+    spesa_descrizione: list[str] = Form([]),
+    spesa_data: list[str] = Form([]),
+    rientro_importo: list[str] = Form([]),
+    rientro_wallet: list[str] = Form([]),
+    rientro_chi: list[str] = Form([]),
+    rientro_data: list[str] = Form([]),
+    next: str = Form("/finanze"),
+):
+    """Salva le modifiche a un'INTERA partita di giro (tutte le gambe insieme)."""
+    service.aggiorna_giro(
+        gid,
+        spese=_zip_spese(spesa_importo, spesa_wallet, spesa_categoria,
+                         spesa_descrizione, spesa_data),
+        rientri=_zip_rientri(rientro_importo, rientro_wallet, rientro_chi, rientro_data),
+        aperta=bool(giro_dopo))
     _aggiorna_grafico_patrimonio()
     dest = next if next.startswith("/finanze") else "/finanze"
     return RedirectResponse(dest, status_code=303)

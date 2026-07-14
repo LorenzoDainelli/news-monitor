@@ -303,7 +303,9 @@ Cosa: il resto dell'app, nel modo onesto.
 - ☑ Fase 1 — API JSON Finanze (sola lettura; POST /ops spostato a Fase 4) — 13/07/2026
 - ☑ Fase 2 — Guscio PWA installabile (manca solo il deploy Cloudflare dell'utente) — 13/07/2026
 - ☑ Fase 3 — Finanze offline sul telefono (IndexedDB; giro-create in PWA = follow-up) — 13/07/2026
-- ☐ Fase 4 — Motore di sync (diari + merge)
+- ☑ Fase 4 — Motore di sync (diari + merge LWW, POST /ops, soft-delete) — 14/07/2026
+      (sviluppata da Antigravity, revisionata e rifinita; sync HTTP solo in LAN
+      finché resta HOST=127.0.0.1 → il sync telefono↔PC diventa reale con la Fase 5)
 - ☐ Fase 5 — OAuth Google Drive
 - ☐ Fase 6 — Dashboard sola-lettura sul telefono
 - ☐ Fase 7 — Robustezza e rifiniture
