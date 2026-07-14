@@ -2377,6 +2377,22 @@
       "tipo_evento": "earnings",
       "url": "https://finnhub.io/api/news?id=dfacd50390ba892ac701deef6fecec1a7e257a6c7c31fefd90036a6e5c0e1a09",
       "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "ibm-q2-earnings-miss-2026-07-14",
+      "ticker": "IBM",
+      "titolo": "IBM crolla del 25% nella peggiore seduta della sua storia: l'AI mangia i ricavi IT tradizionali",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=3354152afa3dd1c48f7b04823e242f9d8e8b66f8a7dfab0461e7a31337d68c0f",
+      "data_invio": "2026-07-14T17:07:31+00:00"
+    },
+    {
+      "id": "wdc-kioxia-merger-2026-07-14",
+      "ticker": "WDC",
+      "titolo": "Western Digital riapre i colloqui di fusione con Kioxia per il consolidamento del mercato NAND",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=0d16dcc958c290a2ef452f97106040fd69d0cb0fecac738c1be3dda007bc97c0",
+      "data_invio": "2026-07-14T17:07:31+00:00"
     }
   ]
 }
