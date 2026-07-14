@@ -1,0 +1,466 @@
+"""Motore di sincronizzazione multi-dispositivo (v2, Fase 4).
+
+Protocollo stile Cashew: diario append-only per dispositivo, merge last-write-wins
+per record. Il contratto è in docs/SYNC-PROTOCOL.md.
+
+Flusso (locale → remoto):
+1. Ogni scrittura locale (insert/update/soft-delete) registra un'operazione nel
+   diario del dispositivo (file JSONL append-only in app/data/sync/).
+2. Il diario viene esposto via API (`GET /api/finanze/diary`).
+3. Un dispositivo remoto scarica le operazioni e le applica con merge LWW.
+
+Flusso (remoto → locale):
+1. Le operazioni remote arrivano via `POST /api/finanze/ops`.
+2. Vengono applicate con le stesse regole di merge.
+3. Durante l'import i metadati (rev/updated_at) NON vengono ri-timbrati: restano
+   quelli del dispositivo sorgente.
+
+Privacy: qui non passa nulla verso l'esterno. Il diario sta sul filesystem locale
+(app/data/sync/) e le API girano solo su 127.0.0.1 (vedi shared/config.py).
+"""
+import json
+import threading
+import uuid
+from contextlib import contextmanager
+from datetime import datetime
+from pathlib import Path
+
+from sqlalchemy import event, select
+from sqlalchemy.orm import Session
+
+from shared.config import APP_DIR
+from shared.db import SessionLocal
+from shared import settings_store
+
+# ── configurazione ──────────────────────────────────────────────────────────
+SYNC_DIR = APP_DIR / "data" / "sync"
+SCHEMA_VERSION = 1
+
+# ── flag thread-local per sopprimere la registrazione durante l'import ──────
+_ctx = threading.local()
+
+
+def _is_importing() -> bool:
+    return getattr(_ctx, "importing", False)
+
+
+@contextmanager
+def importing():
+    """Context manager: dentro questo blocco i before_flush / after_commit NON
+    registrano nel diario e NON ri-timbrano rev/updated_at."""
+    _ctx.importing = True
+    try:
+        yield
+    finally:
+        _ctx.importing = False
+
+
+# ── device id ───────────────────────────────────────────────────────────────
+def get_device_id() -> str:
+    """ID stabile del dispositivo (generato al primo uso, poi persistito)."""
+    did = settings_store.get_setting("sync_device_id", "")
+    if not did:
+        did = "pc_" + uuid.uuid4().hex[:12]
+        settings_store.set_setting("sync_device_id", did)
+    return did
+
+
+# ── serializzazione entità → dict sync ──────────────────────────────────────
+def _iso(dt):
+    return dt.isoformat() if dt else None
+
+
+def _wallet_to_fields(w) -> dict:
+    return {
+        "uid": w.uid, "nome": w.nome, "tipo": w.tipo,
+        "saldo_iniziale": round(w.saldo_iniziale or 0.0, 2),
+        "note": w.note or "", "ordine": w.ordine,
+        "colore": w.colore or "", "archiviato": bool(w.archiviato),
+        "deleted": bool(w.deleted),
+        "rev": w.rev, "updated_at": _iso(w.updated_at),
+    }
+
+
+def _category_to_fields(c) -> dict:
+    return {
+        "uid": c.uid, "nome": c.nome, "kind": c.kind or "",
+        "archiviato": bool(c.archiviato), "deleted": bool(c.deleted),
+        "rev": c.rev, "updated_at": _iso(c.updated_at),
+    }
+
+
+def _transaction_to_fields(t, session) -> dict:
+    """Campi sync di un movimento. Le FK (wallet_id, category_id) vengono
+    risolte in uid del record referenziato (l'id interno non esce mai)."""
+    from finance.models import Wallet, Category
+    w_uid, wt_uid, cat_uid = None, None, None
+    if t.wallet_id:
+        w = session.get(Wallet, t.wallet_id)
+        w_uid = w.uid if w else None
+    if t.wallet_to_id:
+        wt = session.get(Wallet, t.wallet_to_id)
+        wt_uid = wt.uid if wt else None
+    if t.category_id:
+        cat = session.get(Category, t.category_id)
+        cat_uid = cat.uid if cat else None
+    return {
+        "uid": t.uid, "tipo": t.tipo, "data": _iso(t.data),
+        "importo": round(t.importo or 0.0, 2),
+        "wallet_uid": w_uid, "wallet_to_uid": wt_uid,
+        "categoria_uid": cat_uid,
+        "descrizione": t.descrizione or "",
+        "giro_id": t.giro_id or "", "giro_aperta": bool(t.giro_aperta),
+        "importo_ricevuto": (round(t.importo_ricevuto, 2)
+                             if t.importo_ricevuto is not None else None),
+        "data_ricevuto": _iso(t.data_ricevuto),
+        "controparte": t.controparte or "",
+        "deleted": bool(t.deleted),
+        "rev": t.rev, "updated_at": _iso(t.updated_at),
+    }
+
+
+def _obj_to_sync(obj, session) -> dict | None:
+    """Converte un oggetto SQLAlchemy in un dict sync (None se non è sincronizzabile)."""
+    from finance.models import Wallet, Category, Transaction
+    if isinstance(obj, Wallet):
+        entity, fields = "wallet", _wallet_to_fields(obj)
+    elif isinstance(obj, Category):
+        entity, fields = "category", _category_to_fields(obj)
+    elif isinstance(obj, Transaction):
+        entity, fields = "transaction", _transaction_to_fields(obj, session)
+    else:
+        return None
+    op = "delete" if getattr(obj, "deleted", False) else "upsert"
+    return {
+        "schema": SCHEMA_VERSION,
+        "uid": obj.uid,
+        "entity": entity,
+        "op": op,
+        "fields": fields,
+        "rev": obj.rev,
+        "updated_at": _iso(obj.updated_at),
+        "device_id": get_device_id(),
+        "ts": datetime.now().isoformat(),
+    }
+
+
+# ── registrazione automatica nel diario ─────────────────────────────────────
+
+def _diary_path() -> Path:
+    SYNC_DIR.mkdir(parents=True, exist_ok=True)
+    return SYNC_DIR / f"changes-{get_device_id()}.jsonl"
+
+
+def _write_diary(ops: list[dict]) -> None:
+    """Append delle operazioni al diario locale (una riga JSON per operazione)."""
+    if not ops:
+        return
+    path = _diary_path()
+    with open(path, "a", encoding="utf-8") as f:
+        for op in ops:
+            f.write(json.dumps(op, ensure_ascii=False, default=str) + "\n")
+
+
+def _setup_diary_hooks():
+    """Registra gli hook SQLAlchemy per la registrazione automatica nel diario.
+
+    Viene chiamato UNA volta all'import del modulo. Gli hook:
+    - before_flush (dopo quello di models.py): raccoglie le operazioni pendenti
+    - after_commit: le scrive nel diario (solo se il commit ha successo)
+    - after_soft_rollback: pulisce le operazioni pendenti se il commit fallisce
+    """
+    from finance.models import _MODELLI_SYNC
+
+    @event.listens_for(Session, "before_flush")
+    def _collect_sync_ops(session, flush_context, instances):
+        """Raccoglie le operazioni da registrare nel diario. Gira DOPO il
+        before_flush di models.py (che timbra uid/rev/updated_at), quindi i
+        valori sono definitivi."""
+        if _is_importing():
+            return
+        pending = []
+        # Nuovi record
+        for obj in session.new:
+            if isinstance(obj, _MODELLI_SYNC):
+                entry = _obj_to_sync(obj, session)
+                if entry:
+                    pending.append(entry)
+        # Record modificati
+        for obj in session.dirty:
+            if isinstance(obj, _MODELLI_SYNC) and session.is_modified(obj, include_collections=False):
+                entry = _obj_to_sync(obj, session)
+                if entry:
+                    pending.append(entry)
+        if pending:
+            session.info.setdefault("_sync_pending", []).extend(pending)
+
+    @event.listens_for(Session, "after_commit")
+    def _flush_diary(session):
+        """Scrive le operazioni nel diario SOLO se il commit ha successo."""
+        ops = session.info.pop("_sync_pending", [])
+        if ops:
+            _write_diary(ops)
+
+    @event.listens_for(Session, "after_soft_rollback")
+    def _discard_pending(session, previous_transaction):
+        """Pulisce le operazioni pendenti se il commit fallisce."""
+        session.info.pop("_sync_pending", None)
+
+
+# ── lettura del diario ──────────────────────────────────────────────────────
+
+def diary_lines_count() -> int:
+    """Numero totale di righe nel diario locale."""
+    path = _diary_path()
+    if not path.exists():
+        return 0
+    with open(path, "r", encoding="utf-8") as f:
+        return sum(1 for _ in f)
+
+
+def export_diary(since_line: int = 0) -> list[dict]:
+    """Ritorna le operazioni del diario locale dal cursore `since_line` in poi
+    (0-indexed: 0 = tutte, N = dalla riga N esclusa)."""
+    path = _diary_path()
+    if not path.exists():
+        return []
+    ops = []
+    with open(path, "r", encoding="utf-8") as f:
+        for i, line in enumerate(f):
+            if i < since_line:
+                continue
+            line = line.strip()
+            if line:
+                try:
+                    ops.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass  # riga corrotta: skip, non bloccare la sync
+    return ops
+
+
+# ── merge LWW ───────────────────────────────────────────────────────────────
+
+def _wins(remote_rev, remote_updated, remote_device,
+          local_rev, local_updated, local_device) -> bool:
+    """True se il record remoto vince sul locale (LWW per record).
+    Ordinamento: (rev, updated_at, device_id) — vince il più alto."""
+    if (remote_rev or 0) != (local_rev or 0):
+        return (remote_rev or 0) > (local_rev or 0)
+    r_up = str(remote_updated or "")
+    l_up = str(local_updated or "")
+    if r_up != l_up:
+        return r_up > l_up
+    return str(remote_device or "") > str(local_device or "")
+
+
+def _parse_dt(s):
+    """Parse ISO-8601 → datetime, tollerante (None se invalido)."""
+    try:
+        return datetime.fromisoformat(s) if s else None
+    except (TypeError, ValueError):
+        return None
+
+
+def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
+    """Applica una lista di operazioni remote con merge LWW.
+
+    Ritorna {applied: int, skipped: int, errors: int}.
+    Le operazioni vengono raggruppate per entità e applicate nell'ordine
+    corretto: wallet → category → transaction (per risolvere le FK).
+    """
+    from finance.models import Wallet, Category, Transaction
+
+    # Raggruppa per entità e ordina per priorità di applicazione
+    by_entity = {"wallet": [], "category": [], "transaction": []}
+    for op in ops:
+        entity = op.get("entity", "")
+        if entity in by_entity:
+            by_entity[entity].append(op)
+
+    applied = skipped = errors = 0
+
+    with importing():
+        with SessionLocal() as db:
+            # Mappa uid→id per risolvere le FK dei movimenti
+            uid_to_wallet_id = {w.uid: w.id for w in db.execute(select(Wallet)).scalars().all()}
+            uid_to_cat_id = {c.uid: c.id for c in db.execute(select(Category)).scalars().all()}
+            device_id = get_device_id()
+
+            for entity in ("wallet", "category", "transaction"):
+                for op in by_entity[entity]:
+                    try:
+                        result = _apply_one(db, op, entity, device_id,
+                                            uid_to_wallet_id, uid_to_cat_id)
+                        if result == "applied":
+                            applied += 1
+                        else:
+                            skipped += 1
+                    except Exception:
+                        errors += 1
+
+            db.commit()
+
+            # Aggiorna le mappe (nuovi wallet/categorie creati durante l'import)
+            # Non serve per questa sessione, ma per il prossimo import.
+
+    return {"applied": applied, "skipped": skipped, "errors": errors}
+
+
+def _apply_one(db, op, entity, local_device_id, uid_to_wallet_id, uid_to_cat_id) -> str:
+    """Applica UNA operazione con merge LWW. Ritorna 'applied' o 'skipped'."""
+    from finance.models import Wallet, Category, Transaction
+
+    uid = op.get("uid", "")
+    fields = op.get("fields", {})
+    remote_rev = op.get("rev", 0)
+    remote_updated = op.get("updated_at", "")
+    remote_device = op.get("device_id", "")
+
+    if not uid or not fields:
+        return "skipped"
+
+    # Trova il record locale per uid
+    ModelClass = {"wallet": Wallet, "category": Category, "transaction": Transaction}[entity]
+    local = db.execute(select(ModelClass).where(ModelClass.uid == uid)).scalar_one_or_none()
+
+    if local is not None:
+        # Record esiste: confronta per decidere chi vince
+        if not _wins(remote_rev, remote_updated, remote_device,
+                     local.rev, _iso(local.updated_at), local_device_id):
+            return "skipped"
+        # Il remoto vince: aggiorna i campi
+        _set_fields(local, entity, fields, uid_to_wallet_id, uid_to_cat_id)
+    else:
+        # Record non esiste: inserisci
+        obj = ModelClass()
+        obj.uid = uid
+        _set_fields(obj, entity, fields, uid_to_wallet_id, uid_to_cat_id)
+        db.add(obj)
+        db.flush()
+        # Aggiorna le mappe per eventuali record successivi che referenziano questo
+        if entity == "wallet":
+            uid_to_wallet_id[uid] = obj.id
+        elif entity == "category":
+            uid_to_cat_id[uid] = obj.id
+
+    return "applied"
+
+
+def _set_fields(obj, entity, fields, uid_to_wallet_id, uid_to_cat_id):
+    """Imposta i campi di un record dai valori sync (fields dict)."""
+    # Metadati sync (sempre presenti)
+    obj.rev = fields.get("rev", 1)
+    obj.updated_at = _parse_dt(fields.get("updated_at"))
+    obj.deleted = bool(fields.get("deleted", False))
+
+    if entity == "wallet":
+        obj.nome = fields.get("nome", "")
+        obj.tipo = fields.get("tipo", "altro")
+        obj.saldo_iniziale = fields.get("saldo_iniziale", 0.0)
+        obj.note = fields.get("note", "")
+        obj.ordine = fields.get("ordine", 0)
+        obj.archiviato = bool(fields.get("archiviato", False))
+        obj.colore = fields.get("colore", "")
+
+    elif entity == "category":
+        obj.nome = fields.get("nome", "")
+        obj.kind = fields.get("kind", "")
+        obj.archiviato = bool(fields.get("archiviato", False))
+
+    elif entity == "transaction":
+        obj.tipo = fields.get("tipo", "uscita")
+        obj.data = _parse_dt(fields.get("data")) or datetime.now()
+        obj.importo = fields.get("importo", 0.0)
+        obj.descrizione = fields.get("descrizione", "")
+        obj.giro_id = fields.get("giro_id", "")
+        obj.giro_aperta = bool(fields.get("giro_aperta", False))
+        obj.importo_ricevuto = fields.get("importo_ricevuto")
+        obj.data_ricevuto = _parse_dt(fields.get("data_ricevuto"))
+        obj.controparte = fields.get("controparte", "")
+        # Risolvi FK: uid → id locale
+        w_uid = fields.get("wallet_uid")
+        obj.wallet_id = uid_to_wallet_id.get(w_uid) if w_uid else None
+        wt_uid = fields.get("wallet_to_uid")
+        obj.wallet_to_id = uid_to_wallet_id.get(wt_uid) if wt_uid else None
+        cat_uid = fields.get("categoria_uid")
+        obj.category_id = uid_to_cat_id.get(cat_uid) if cat_uid else None
+
+
+# ── snapshot ────────────────────────────────────────────────────────────────
+
+def build_snapshot() -> dict:
+    """Fotografia completa di tutti i dati sync (wallet + categorie + movimenti).
+    Usata per il primo avvio di un dispositivo nuovo."""
+    from finance.models import Wallet, Category, Transaction
+    with SessionLocal() as db:
+        ws = list(db.execute(select(Wallet)).scalars().all())
+        cs = list(db.execute(select(Category)).scalars().all())
+        ts = list(db.execute(select(Transaction)).scalars().all())
+        wallets = [_wallet_to_fields(w) for w in ws]
+        categorie = [_category_to_fields(c) for c in cs]
+        movimenti = [_transaction_to_fields(t, db) for t in ts]
+    return {
+        "schema": SCHEMA_VERSION,
+        "device_id": get_device_id(),
+        "ts": datetime.now().isoformat(),
+        "wallets": wallets,
+        "categorie": categorie,
+        "movimenti": movimenti,
+    }
+
+
+def apply_snapshot(data: dict) -> dict:
+    """Applica uno snapshot (primo avvio): tratta ogni record come un upsert."""
+    ops = []
+    for entity, key in (("wallet", "wallets"), ("category", "categorie"),
+                        ("transaction", "movimenti")):
+        for fields in data.get(key, []):
+            ops.append({
+                "schema": SCHEMA_VERSION,
+                "uid": fields.get("uid", ""),
+                "entity": entity,
+                "op": "delete" if fields.get("deleted") else "upsert",
+                "fields": fields,
+                "rev": fields.get("rev", 1),
+                "updated_at": fields.get("updated_at", ""),
+                "device_id": data.get("device_id", ""),
+                "ts": data.get("ts", ""),
+            })
+    return import_ops(ops, source_device_id=data.get("device_id", ""))
+
+
+# ── export/import file (fallback manuale) ───────────────────────────────────
+
+def export_bundle() -> dict:
+    """Bundle completo: snapshot + diario. Per backup o sync manuale."""
+    return {
+        "schema": SCHEMA_VERSION,
+        "type": "bundle",
+        "snapshot": build_snapshot(),
+        "diary": export_diary(since_line=0),
+    }
+
+
+def import_bundle(data: dict) -> dict:
+    """Importa un bundle (snapshot + diario) da un altro dispositivo."""
+    result = {"applied": 0, "skipped": 0, "errors": 0}
+    # Prima lo snapshot (crea i record base)
+    snap = data.get("snapshot")
+    if snap:
+        r = apply_snapshot(snap)
+        result["applied"] += r["applied"]
+        result["skipped"] += r["skipped"]
+        result["errors"] += r["errors"]
+    # Poi il diario (aggiorna con le modifiche più recenti)
+    diary = data.get("diary", [])
+    if diary:
+        r = import_ops(diary)
+        result["applied"] += r["applied"]
+        result["skipped"] += r["skipped"]
+        result["errors"] += r["errors"]
+    return result
+
+
+# ── inizializzazione (chiamata all'import del modulo) ───────────────────────
+_setup_diary_hooks()
+

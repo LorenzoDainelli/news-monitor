@@ -1,24 +1,37 @@
-/* MyMoney PWA — archivio locale (IndexedDB). v2 Fase 3.
+/* MyMoney PWA — archivio locale (IndexedDB). v2 Fase 4.
    Tiene sul telefono i dati delle Finanze (portafogli, categorie, movimenti) così
    l'app funziona OFFLINE. Ogni record porta i metadati di sync (uid/rev/updated_at/
-   deleted), gli stessi del PC: pronti per la sincronizzazione (Fase 4).
-   Chiave primaria di ogni store = uid (stabile tra dispositivi). */
+   deleted), gli stessi del PC: pronti per la sincronizzazione.
+   Chiave primaria di ogni store = uid (stabile tra dispositivi).
+
+   Fase 4: aggiunto store `diary` (append-only, autoincrement) per le operazioni
+   locali da sincronizzare. Schema versione 2. */
 window.DB = (function () {
   "use strict";
-  var NAME = "mymoney", VERSION = 1;
-  var STORES = ["wallets", "categorie", "movimenti", "meta"];
+  var NAME = "mymoney", VERSION = 2;
   var _db = null;
 
   function open() {
     if (_db) return Promise.resolve(_db);
     return new Promise(function (resolve, reject) {
       var req = indexedDB.open(NAME, VERSION);
-      req.onupgradeneeded = function () {
+      req.onupgradeneeded = function (e) {
         var db = req.result;
-        if (!db.objectStoreNames.contains("wallets")) db.createObjectStore("wallets", { keyPath: "uid" });
-        if (!db.objectStoreNames.contains("categorie")) db.createObjectStore("categorie", { keyPath: "uid" });
-        if (!db.objectStoreNames.contains("movimenti")) db.createObjectStore("movimenti", { keyPath: "uid" });
-        if (!db.objectStoreNames.contains("meta")) db.createObjectStore("meta", { keyPath: "k" });
+        var old = e.oldVersion;
+        // v1: store base
+        if (old < 1) {
+          if (!db.objectStoreNames.contains("wallets")) db.createObjectStore("wallets", { keyPath: "uid" });
+          if (!db.objectStoreNames.contains("categorie")) db.createObjectStore("categorie", { keyPath: "uid" });
+          if (!db.objectStoreNames.contains("movimenti")) db.createObjectStore("movimenti", { keyPath: "uid" });
+          if (!db.objectStoreNames.contains("meta")) db.createObjectStore("meta", { keyPath: "k" });
+        }
+        // v2: diario sync (Fase 4)
+        if (old < 2) {
+          if (!db.objectStoreNames.contains("diary")) {
+            var ds = db.createObjectStore("diary", { keyPath: "id", autoIncrement: true });
+            ds.createIndex("pushed", "_pushed", { unique: false });
+          }
+        }
       };
       req.onsuccess = function () { _db = req.result; resolve(_db); };
       req.onerror = function () { reject(req.error); };
@@ -57,6 +70,35 @@ window.DB = (function () {
     setMeta: function (k, v) { return this.put("meta", { k: k, v: v }); },
     isEmpty: function () {
       return this.getAll("wallets").then(function (ws) { return !ws || ws.length === 0; });
+    },
+
+    // ── Fase 4: diario sync ────────────────────────────────────────────
+    appendDiary: function (entry) {
+      return tx("diary", "readwrite").then(function (s) { return wrap(s.add(entry)); });
+    },
+    getAllDiary: function () {
+      return tx("diary", "readonly").then(function (s) { return wrap(s.getAll()); });
+    },
+    getUnpushedDiary: function () {
+      return tx("diary", "readonly").then(function (s) {
+        return wrap(s.index("pushed").getAll(false));
+      });
+    },
+    markDiaryPushed: function (ids) {
+      return open().then(function (db) {
+        return new Promise(function (resolve, reject) {
+          var t = db.transaction("diary", "readwrite"), os = t.objectStore("diary");
+          ids.forEach(function (id) {
+            var req = os.get(id);
+            req.onsuccess = function () {
+              var entry = req.result;
+              if (entry) { entry._pushed = true; os.put(entry); }
+            };
+          });
+          t.oncomplete = function () { resolve(true); };
+          t.onerror = function () { reject(t.error); };
+        });
+      });
     }
   };
 })();

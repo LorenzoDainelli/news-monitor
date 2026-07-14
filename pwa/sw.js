@@ -2,10 +2,10 @@
    Mette in cache il "guscio" (shell) così l'app si apre anche offline.
    Strategia: cache-first per il guscio; l'API (/api/...) passa sempre dalla rete
    (non ha senso servirla dalla cache). Cambiare CACHE per forzare l'aggiornamento. */
-var CACHE = "mymoney-shell-v3";
+var CACHE = "mymoney-shell-v4";
 var ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./db.js", "./finance.js",
-  "./manifest.webmanifest",
+  "./sync.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png",
   "./icons/icon-maskable-512.png", "./icons/apple-touch-icon.png"
 ];

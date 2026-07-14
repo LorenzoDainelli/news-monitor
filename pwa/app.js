@@ -1,9 +1,9 @@
-/* MyMoney PWA — app (v2 Fase 3). Finanze OFFLINE sul telefono.
+/* MyMoney PWA — app (v2 Fase 4). Finanze OFFLINE sul telefono + sync bidirezionale.
    - i dati vivono in IndexedDB (db.js); il calcolo è in finance.js;
-   - all'avvio, se c'è rete, scarica lo stato dal PC (/api/finanze) e lo unisce
-     ai dati locali; poi rende TUTTO dai dati locali (funziona anche offline);
-   - puoi aggiungere movimenti dal telefono: restano in locale, con uid/rev/
-     updated_at pronti per la sincronizzazione (Fase 4). */
+   - all'avvio, se c'è rete, fullSync (push ops locali + pull ops PC) via sync.js;
+   - puoi aggiungere movimenti dal telefono: restano in locale con uid/rev/updated_at,
+     e vengono registrati nel diario per la sincronizzazione;
+   - bottone 🔄 Sincronizza per sync manuale. */
 (function () {
   "use strict";
   var lang = "it";
@@ -26,45 +26,33 @@
     $("net").textContent = on ? "online" : "offline";
     $("dot").className = "dot " + (on ? "online" : "offline");
   }
-  window.addEventListener("online", function () { segnalaRete(); sincronizza().then(render); });
+  window.addEventListener("online", function () { segnalaRete(); doSync().then(render); });
   window.addEventListener("offline", segnalaRete);
 
   // ---------- installazione (iOS) ----------
   var isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !isStandalone) $("install-hint").hidden = false;
 
-  // ---------- pull dallo stato del PC (se raggiungibile) ----------
+  // ---------- API base ----------
   function apiBase() { try { return localStorage.getItem("mm_api_base") || ""; } catch (e) { return ""; } }
-  function sincronizza() {
-    if (!navigator.onLine) return Promise.resolve(false);
-    var base = apiBase();
-    var ctrl = new AbortController(); var to = setTimeout(function () { ctrl.abort(); }, 3000);
-    return Promise.all([
-      fetch(base + "/api/finanze/stato", { signal: ctrl.signal, headers: { Accept: "application/json" } }),
-      fetch(base + "/api/finanze/movimenti", { signal: ctrl.signal, headers: { Accept: "application/json" } })
-    ]).then(function (rs) {
-      clearTimeout(to);
-      if (!rs[0].ok || !rs[1].ok) throw new Error("no-api");
-      return Promise.all([rs[0].json(), rs[1].json()]);
-    }).then(function (d) {
-      var stato = d[0], mov = d[1].movimenti || [];
-      // wallet e categorie: il PC è la fonte (sola lettura sul telefono per ora)
-      return DB.putMany("wallets", stato.wallets || [])
-        .then(function () { return DB.putMany("categorie", stato.categorie || []); })
-        .then(function () {
-          // movimenti: upsert dei più recenti del PC senza toccare quelli creati in locale
-          return DB.getAll("movimenti").then(function (locali) {
-            var byUid = {}; locali.forEach(function (m) { byUid[m.uid] = m; });
-            var daSalvare = mov.filter(function (m) {
-              var ex = byUid[m.uid];
-              return !ex || (m.rev || 0) >= (ex.rev || 0);   // il PC vince a parità/maggiore rev
-            });
-            return DB.putMany("movimenti", daSalvare);
-          });
-        })
-        .then(function () { return DB.setMeta("last_sync", new Date().toISOString()); })
-        .then(function () { return true; });
-    }).catch(function () { clearTimeout(to); return false; });
+
+  // ---------- sync bidirezionale (Fase 4) ----------
+  var _syncing = false;
+
+  function doSync() {
+    if (_syncing || !navigator.onLine) return Promise.resolve(false);
+    _syncing = true;
+    var btn = $("sync-btn");
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ Sync…"; }
+    return SYNC.fullSync(apiBase()).then(function (result) {
+      _syncing = false;
+      if (btn) { btn.disabled = false; btn.textContent = "🔄 Sincronizza"; }
+      return result.ok;
+    }).catch(function () {
+      _syncing = false;
+      if (btn) { btn.disabled = false; btn.textContent = "🔄 Sincronizza"; }
+      return false;
+    });
   }
 
   // ---------- render ----------
@@ -113,6 +101,7 @@
         renderLista(saldoMap);
         popolaForm();
 
+        // info sync
         $("sync-info").textContent = lastSync
           ? ("Ultima sync: " + new Date(lastSync).toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))
           : (navigator.onLine ? "Non ancora sincronizzato" : "Offline");
@@ -181,7 +170,13 @@
     var ex = _cats.find(function (c) { return c.nome.toLowerCase() === nome.toLowerCase(); });
     if (ex) return Promise.resolve(ex.uid);
     var c = { uid: nuovoUid(), nome: nome, kind: kind || "", archiviato: false, deleted: false, rev: 1, updated_at: new Date().toISOString(), _local: true };
-    return DB.put("categorie", c).then(function () { _cats.push(c); return c.uid; });
+    return DB.put("categorie", c).then(function () {
+      _cats.push(c);
+      // Registra nel diario per la sync
+      return SYNC.getDeviceId().then(function (did) {
+        return SYNC.recordOp("category", "upsert", c, did);
+      }).then(function () { return c.uid; });
+    });
   }
 
   $("add-form").addEventListener("submit", function (e) {
@@ -204,7 +199,12 @@
         giro_id: "", giro_aperta: false, importo_ricevuto: null, data_ricevuto: null, controparte: "",
         rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
       };
-      return DB.put("movimenti", m);
+      return DB.put("movimenti", m).then(function () {
+        // Registra nel diario per la sync
+        return SYNC.getDeviceId().then(function (did) {
+          return SYNC.recordOp("transaction", "upsert", m, did);
+        });
+      });
     }).then(function () {
       $("add-form").reset(); $("af-data").value = nowLocalInput();
       toggleForm(false);
@@ -212,7 +212,49 @@
     });
   });
 
+  // ---------- bottone sync ----------
+  $("sync-btn").addEventListener("click", function () {
+    doSync().then(function (ok) {
+      render();
+    });
+  });
+
+  // ---------- export/import manuale ----------
+  if ($("export-btn")) {
+    $("export-btn").addEventListener("click", function () {
+      SYNC.exportBundle().then(function (bundle) {
+        var blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "mymoney-export.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    });
+  }
+  if ($("import-btn")) {
+    $("import-btn").addEventListener("click", function () {
+      var input = document.createElement("input");
+      input.type = "file"; input.accept = ".json";
+      input.onchange = function () {
+        var f = input.files[0]; if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var data = JSON.parse(reader.result);
+            SYNC.importBundle(data).then(function (result) {
+              alert("Importati: " + result.applied + " record.");
+              render();
+            });
+          } catch (e) { alert("File non valido."); }
+        };
+        reader.readAsText(f);
+      };
+      input.click();
+    });
+  }
+
   // ---------- boot ----------
   segnalaRete();
-  render().then(function () { return sincronizza(); }).then(function (ok) { if (ok) return render(); });
+  render().then(function () { return doSync(); }).then(function (ok) { if (ok) return render(); });
 })();

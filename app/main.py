@@ -21,6 +21,7 @@ import shared.settings_store          # noqa: F401  -> tabella shared_settings
 import portfolio.models               # noqa: F401  -> tabella portfolio_positions
 from portfolio import market          # noqa: F401  -> tabella portfolio_quotes
 import finance.models                 # noqa: F401  -> tabelle finance_*
+import shared.sync                    # noqa: F401  -> hook diario sync (Fase 4)
 
 from portfolio import seed, analytics, wealth
 from portfolio import service as pf_service

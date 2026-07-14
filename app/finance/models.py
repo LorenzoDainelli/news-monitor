@@ -134,18 +134,32 @@ class Transaction(Base):
 _MODELLI_SYNC = (Wallet, Category, Transaction)
 
 
+def _sync_is_importing() -> bool:
+    """True se sync.py sta importando (flag thread-local): in quel caso NON
+    si devono ri-timbrare rev/updated_at (restano quelli del dispositivo sorgente)."""
+    try:
+        from shared.sync import _is_importing
+        return _is_importing()
+    except ImportError:
+        return False
+
+
 @event.listens_for(Session, "before_flush")
 def _timbra_metadati_sync(session, flush_context, instances):
     now = datetime.now()
+    importing = _sync_is_importing()
     for obj in session.new:
         if isinstance(obj, _MODELLI_SYNC):
             if not getattr(obj, "uid", ""):
                 obj.uid = uuid.uuid4().hex
-            if not getattr(obj, "updated_at", None):
-                obj.updated_at = now
-            if not getattr(obj, "rev", None):
-                obj.rev = 1
+            # Durante l'import i valori sono già settati dal dispositivo sorgente
+            if not importing:
+                if not getattr(obj, "updated_at", None):
+                    obj.updated_at = now
+                if not getattr(obj, "rev", None):
+                    obj.rev = 1
     for obj in session.dirty:
         if isinstance(obj, _MODELLI_SYNC) and session.is_modified(obj, include_collections=False):
-            obj.updated_at = now
-            obj.rev = (obj.rev or 0) + 1
+            if not importing:
+                obj.updated_at = now
+                obj.rev = (obj.rev or 0) + 1

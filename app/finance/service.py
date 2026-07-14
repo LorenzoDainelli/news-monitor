@@ -193,7 +193,7 @@ def assicura_wallet_brand() -> None:
 # ------------------------------ wallet ------------------------------
 def wallets(include_archived: bool = False):
     with SessionLocal() as db:
-        q = select(Wallet).order_by(Wallet.ordine, Wallet.id)
+        q = select(Wallet).where(Wallet.deleted.is_(False)).order_by(Wallet.ordine, Wallet.id)
         if not include_archived:
             q = q.where(Wallet.archiviato.is_(False))
         return list(db.execute(q).scalars().all())
@@ -202,7 +202,8 @@ def wallets(include_archived: bool = False):
 def _saldi_map(db) -> dict:
     """Saldo di ogni wallet, calcolato con poche query aggregate.
     Le partite di giro muovono i saldi con le loro DUE gambe reali: la spesa
-    esce da wallet_id, il rimborso (quando c'è) entra in wallet_to_id."""
+    esce da wallet_id, il rimborso (quando c'è) entra in wallet_to_id.
+    I record con deleted=True (tombstone sync) NON contribuiscono ai saldi."""
     saldi = {w.id: w.saldo_iniziale for w in db.query(Wallet).all()}
 
     def add(query, sign, key="wallet_id"):
@@ -211,13 +212,14 @@ def _saldi_map(db) -> dict:
                 saldi[wid] += sign * tot
 
     T = Transaction
-    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_ENTRATA).group_by(T.wallet_id), +1)
-    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_USCITA).group_by(T.wallet_id), -1)
-    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_TRASFERIMENTO).group_by(T.wallet_id), -1)
-    add(db.query(T.wallet_to_id, func.sum(T.importo)).filter(T.tipo == TIPO_TRASFERIMENTO).group_by(T.wallet_to_id), +1)
-    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_GIRO).group_by(T.wallet_id), -1)
+    _alive = T.deleted.is_(False)
+    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_ENTRATA, _alive).group_by(T.wallet_id), +1)
+    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_USCITA, _alive).group_by(T.wallet_id), -1)
+    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_TRASFERIMENTO, _alive).group_by(T.wallet_id), -1)
+    add(db.query(T.wallet_to_id, func.sum(T.importo)).filter(T.tipo == TIPO_TRASFERIMENTO, _alive).group_by(T.wallet_to_id), +1)
+    add(db.query(T.wallet_id, func.sum(T.importo)).filter(T.tipo == TIPO_GIRO, _alive).group_by(T.wallet_id), -1)
     add(db.query(T.wallet_to_id, func.sum(T.importo_ricevuto)).filter(
-        T.tipo == TIPO_GIRO, T.importo_ricevuto.isnot(None)).group_by(T.wallet_to_id), +1)
+        T.tipo == TIPO_GIRO, T.importo_ricevuto.isnot(None), _alive).group_by(T.wallet_to_id), +1)
     return saldi
 
 
@@ -228,7 +230,7 @@ def saldi():
     with SessionLocal() as db:
         smap = _saldi_map(db)
         ws = list(db.execute(
-            select(Wallet).where(Wallet.archiviato.is_(False)).order_by(Wallet.ordine, Wallet.id)
+            select(Wallet).where(Wallet.archiviato.is_(False), Wallet.deleted.is_(False)).order_by(Wallet.ordine, Wallet.id)
         ).scalars().all())
     righe = [{"w": w, "saldo": round(smap.get(w.id, 0.0), 2)} for w in ws]
     righe.sort(key=lambda r: (r["w"].tipo == "investimento", -r["saldo"]))
@@ -239,7 +241,7 @@ def saldi():
 # ------------------------------ categorie ------------------------------
 def categorie(include_archived: bool = False):
     with SessionLocal() as db:
-        q = select(Category).order_by(Category.nome)
+        q = select(Category).where(Category.deleted.is_(False)).order_by(Category.nome)
         if not include_archived:
             q = q.where(Category.archiviato.is_(False))
         return list(db.execute(q).scalars().all())
@@ -251,7 +253,8 @@ def _get_or_create_categoria(db, nome, kind=""):
         return None
     # riusa una categoria esistente con lo stesso nome (niente doppioni)
     ex = db.query(Category).filter(func.lower(Category.nome) == nome.lower(),
-                                   Category.archiviato.is_(False)).first()
+                                   Category.archiviato.is_(False),
+                                   Category.deleted.is_(False)).first()
     if ex:
         return ex.id
     c = Category(nome=nome, kind=kind)
@@ -278,17 +281,17 @@ def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
 
 
 def elimina_movimento(tid):
-    """Elimina un movimento. Se è la gamba di una partita di giro, elimina
-    l'INTERA partita (tutte le righe con lo stesso giro_id)."""
+    """Soft-delete di un movimento (Fase 4: il tombstone viaggia nel sync).
+    Se è la gamba di una partita di giro, marca tutta la partita come deleted."""
     with SessionLocal() as db:
         t = db.get(Transaction, tid)
-        if not t:
+        if not t or t.deleted:
             return
         if t.tipo == TIPO_GIRO and (t.giro_id or ""):
             for r in db.query(Transaction).filter(Transaction.giro_id == t.giro_id).all():
-                db.delete(r)
+                r.deleted = True
         else:
-            db.delete(t)
+            t.deleted = True
         db.commit()
 
 
@@ -391,7 +394,7 @@ def converti_giro_in_uscita(giro_id):
             return False
         for r in rows:
             if r.giro_kind == "rientro":
-                db.delete(r)
+                r.deleted = True
             else:                          # spesa o combo -> uscita normale
                 r.tipo = TIPO_USCITA
                 r.giro_id = ""
@@ -427,7 +430,8 @@ def _riassumi_giro(rows) -> dict:
 def _gruppi_giro(db):
     """{giro_id: [righe]} di tutte le partite di giro, ordinate per data."""
     rows = list(db.execute(
-        select(Transaction).where(Transaction.tipo == TIPO_GIRO)
+        select(Transaction).where(Transaction.tipo == TIPO_GIRO,
+                                  Transaction.deleted.is_(False))
         .order_by(Transaction.data, Transaction.id)).scalars().all())
     gruppi = {}
     for t in rows:
@@ -464,7 +468,8 @@ def controparti() -> list[str]:
     """I 'da chi' già usati (distinti), per i suggerimenti del modulo."""
     with SessionLocal() as db:
         rows = db.query(Transaction.controparte).filter(
-            Transaction.controparte != "").distinct().all()
+            Transaction.controparte != "",
+            Transaction.deleted.is_(False)).distinct().all()
     return sorted({(r[0] or "").strip() for r in rows if (r[0] or "").strip()},
                   key=str.lower)
 
@@ -475,7 +480,7 @@ def lista_movimenti(limit=None, mese=None, anno=None):
     with SessionLocal() as db:
         wn = {w.id: w.nome for w in db.query(Wallet).all()}
         cn = {c.id: c.nome for c in db.query(Category).all()}
-        q = select(Transaction).order_by(Transaction.data.desc(), Transaction.id.desc())
+        q = select(Transaction).where(Transaction.deleted.is_(False)).order_by(Transaction.data.desc(), Transaction.id.desc())
         if anno and mese:
             start, end = _range_mese(anno, mese)
             q = q.where(Transaction.data >= start, Transaction.data < end)
@@ -502,11 +507,12 @@ def _liquidita_walk():
     Una partita di giro produce DUE effetti a due date: la spesa quando esce,
     il rimborso quando (e se) entra."""
     with SessionLocal() as db:
-        attivi = {w.id for w in db.query(Wallet).filter(Wallet.archiviato.is_(False)).all()}
-        base = sum(w.saldo_iniziale or 0.0 for w in db.query(Wallet).all()
-                   if w.id in attivi)
+        attivi = {w.id for w in db.query(Wallet).filter(
+            Wallet.archiviato.is_(False), Wallet.deleted.is_(False)).all()}
+        base = sum(w.saldo_iniziale or 0.0 for w in db.query(Wallet).filter(
+            Wallet.deleted.is_(False)).all() if w.id in attivi)
         effetti = []
-        for t in db.query(Transaction).all():
+        for t in db.query(Transaction).filter(Transaction.deleted.is_(False)).all():
             imp = t.importo or 0.0
             if t.tipo == TIPO_ENTRATA and t.wallet_id in attivi:
                 effetti.append((t.data, +imp))
@@ -544,8 +550,8 @@ def prima_data_movimento():
     """Data del primo effetto registrato (None se il registro è vuoto).
     Considera anche i rimborsi delle partite di giro: possono precedere la spesa."""
     with SessionLocal() as db:
-        d1 = db.query(func.min(Transaction.data)).scalar()
-        d2 = db.query(func.min(Transaction.data_ricevuto)).scalar()
+        d1 = db.query(func.min(Transaction.data)).filter(Transaction.deleted.is_(False)).scalar()
+        d2 = db.query(func.min(Transaction.data_ricevuto)).filter(Transaction.deleted.is_(False)).scalar()
     return min((d for d in (d1, d2) if d), default=None)
 
 
@@ -580,15 +586,16 @@ def _mesi_indietro_ym(now, k):
 def riepilogo_mese(anno, mese):
     start, end = _range_mese(anno, mese)
     T = Transaction
+    _alive = T.deleted.is_(False)
     with SessionLocal() as db:
         entrate = db.query(func.coalesce(func.sum(T.importo), 0.0)).filter(
-            T.tipo == TIPO_ENTRATA, T.data >= start, T.data < end).scalar() or 0.0
+            T.tipo == TIPO_ENTRATA, T.data >= start, T.data < end, _alive).scalar() or 0.0
         uscite = db.query(func.coalesce(func.sum(T.importo), 0.0)).filter(
-            T.tipo == TIPO_USCITA, T.data >= start, T.data < end).scalar() or 0.0
+            T.tipo == TIPO_USCITA, T.data >= start, T.data < end, _alive).scalar() or 0.0
         gruppi = _gruppi_giro(db)
         per_cat = db.query(Category.nome, func.sum(T.importo)).join(
             Category, Category.id == T.category_id).filter(
-            T.tipo == TIPO_USCITA, T.data >= start, T.data < end).group_by(
+            T.tipo == TIPO_USCITA, T.data >= start, T.data < end, _alive).group_by(
             Category.id).order_by(func.sum(T.importo).desc()).all()
     # Partite di giro CHIUSE: in entrate/uscite conta SOLO il netto della partita
     # (Σ rientri − Σ spese). Netto > 0 = entrata all'ultimo rientro; netto < 0 =
