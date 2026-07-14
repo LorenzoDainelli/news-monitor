@@ -3269,6 +3269,186 @@
       "rilevanza": 65,
       "titolo": "Intel alza i prezzi dei chip server: la domanda AI supera la capacità produttiva",
       "url": "https://finnhub.io/api/news?id=f7ff853c76c06e0e5fb1a6f18e2ce14e66de1fae8df73dcafd1e872b1f97a233"
+    },
+    {
+      "id": "skhynix-warning-sndk-wdc-2026-07-13",
+      "ticker": "SNDK",
+      "data": "2026-07-13T17:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 78,
+      "titolo": "SK Hynix emette un profit warning storico: SanDisk e Western Digital cedono il 6%, Intel il 4%",
+      "url": "https://finnhub.io/api/news?id=42d1edba85f645d8fc7ce039cfdbb2f54aac3f4535f5e03ab90f51d36df7a266"
+    },
+    {
+      "id": "meta-datacenter-louisiana-50b-2026-07-13",
+      "ticker": "META",
+      "data": "2026-07-13T17:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Meta annuncia un data center AI da oltre 50 miliardi in Louisiana: il più grande nella storia della società",
+      "url": "https://finnhub.io/api/news?id=6540b5fb8052448f14bf5973c176f6a4ba2b01c2b79d32c66fb9dacef24aba89"
+    },
+    {
+      "id": "aapl-ath-citi-365-2026-07-13",
+      "ticker": "AAPL",
+      "data": "2026-07-13T17:05:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Apple tocca nuovi massimi storici: Citi alza il target di prezzo a 365 dollari",
+      "url": "https://finnhub.io/api/news?id=e8fc26bd40b1f8832627dc97ba88ba94d58e369106e05624431b4413d350f3ce"
+    },
+    {
+      "id": "nflx-wedbush-oppenheimer-pre-earnings-2026-07-13",
+      "ticker": "NFLX",
+      "data": "2026-07-13T17:05:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 58,
+      "titolo": "Netflix: Wedbush e Oppenheimer vedono pubblicità e margini in crescita prima dei risultati trimestrali",
+      "url": "https://finnhub.io/api/news?id=e9a599ac504324de6467a82f33687ce62057bbee329cf2d3a3439d3d84dfb3bb"
+    },
+    {
+      "id": "spcx-cathie-wood-54m-2026-07-13",
+      "ticker": "SPCX",
+      "data": "2026-07-13T17:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Cathie Wood compra 54 milioni di dollari di azioni SpaceX nell'arco di una settimana",
+      "url": "https://finnhub.io/api/news?id=f9b778750087e7257dcaa89a698cc3abdd980ec775cf51eb75bfbabbca689d65"
+    },
+    {
+      "id": "nvda-white-list-asia-2026-07-14",
+      "ticker": "NVDA",
+      "data": "2026-07-14T05:05:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 80,
+      "titolo": "Nvidia dimezza i clienti asiatici autorizzati ai chip AI: nasce la \"white list\"",
+      "url": "https://finnhub.io/api/news?id=c4ceeee14402cd8402e2fcae0899bd2cb448f28f59f4bca74a531367145f5f9e"
+    },
+    {
+      "id": "tsm-vendite-36pct-2026-07-14",
+      "ticker": "TSM",
+      "data": "2026-07-14T05:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 70,
+      "titolo": "TSMC: vendite mensili +36% trainate dall'AI — atteso il quinto trimestre record il 16 luglio",
+      "url": "https://finnhub.io/api/news?id=6a24630aa40c5ab11060dcbf04d0a1310f826c409d8943f3f3f4bb05adc3e5dc"
+    },
+    {
+      "id": "spcx-bond-25b-calo16-2026-07-14",
+      "ticker": "SPCX",
+      "data": "2026-07-14T05:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "SpaceX emette bond da 25 miliardi con rating investment-grade, ma il titolo perde il 16%",
+      "url": "https://finnhub.io/api/news?id=aaa9f68929320c3bb10d765ed8b9fb0deee8ee6be13aab63c0280728c383ed63"
+    },
+    {
+      "id": "goog-tpu-compute-business-2026-07-14",
+      "ticker": "GOOG",
+      "data": "2026-07-14T05:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Alphabet vuole vendere la potenza dei suoi chip TPU come servizio AI a clienti esterni",
+      "url": "https://finnhub.io/api/news?id=2f18335680da58251e72fac677fbd7e685d5903e1ccf37e4054ecdf67dc5e9bd"
+    },
+    {
+      "id": "orcl-14mesi-low-openai-liability-2026-07-14",
+      "ticker": "ORCL",
+      "data": "2026-07-14T05:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Oracle ai minimi da 14 mesi: il deal OpenAI da 300 miliardi definito una \"passività\" dagli investitori",
+      "url": "https://finnhub.io/api/news?id=c943b11bdddf050addf1748f255652f233a7dc81d1ea85b4b30a6304bfdeba19"
+    },
+    {
+      "id": "ibm-q2-earnings-miss-2026-07-14",
+      "ticker": "IBM",
+      "data": "2026-07-14",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 85,
+      "titolo": "IBM crolla del 25% nella peggiore seduta della sua storia: l'AI mangia i ricavi IT tradizionali",
+      "url": "https://finnhub.io/api/news?id=3354152afa3dd1c48f7b04823e242f9d8e8b66f8a7dfab0461e7a31337d68c0f"
+    },
+    {
+      "id": "wdc-kioxia-merger-2026-07-14",
+      "ticker": "WDC",
+      "data": "2026-07-14",
+      "tipo_evento": "M&A",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "Western Digital riapre i colloqui di fusione con Kioxia per il consolidamento del mercato NAND",
+      "url": "https://finnhub.io/api/news?id=0d16dcc958c290a2ef452f97106040fd69d0cb0fecac738c1be3dda007bc97c0"
     }
   ]
 }

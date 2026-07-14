@@ -2265,6 +2265,134 @@
       "tipo_evento": "earnings",
       "url": "https://finnhub.io/api/news?id=0cc77e30ad19e0252aafb19bbd465d9fc5f1e33058f06a29444b97b0bf5ff854",
       "data_invio": "2026-07-13T05:10:00Z"
+    },
+    {
+      "id": "skhynix-warning-sndk-wdc-2026-07-13",
+      "ticker": "SNDK",
+      "titolo": "SK Hynix emette un profit warning storico: SanDisk e Western Digital cedono il 6%, Intel il 4%",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=42d1edba85f645d8fc7ce039cfdbb2f54aac3f4535f5e03ab90f51d36df7a266",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "meta-datacenter-louisiana-50b-2026-07-13",
+      "ticker": "META",
+      "titolo": "Meta annuncia un data center AI da oltre 50 miliardi in Louisiana: il più grande nella storia della società",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=6540b5fb8052448f14bf5973c176f6a4ba2b01c2b79d32c66fb9dacef24aba89",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "aapl-ath-citi-365-2026-07-13",
+      "ticker": "AAPL",
+      "titolo": "Apple tocca nuovi massimi storici: Citi alza il target di prezzo a 365 dollari",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=e8fc26bd40b1f8832627dc97ba88ba94d58e369106e05624431b4413d350f3ce",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "nflx-wedbush-oppenheimer-pre-earnings-2026-07-13",
+      "ticker": "NFLX",
+      "titolo": "Netflix: Wedbush e Oppenheimer vedono pubblicità e margini in crescita prima dei risultati trimestrali",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=e9a599ac504324de6467a82f33687ce62057bbee329cf2d3a3439d3d84dfb3bb",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "spcx-cathie-wood-54m-2026-07-13",
+      "ticker": "SPCX",
+      "titolo": "Cathie Wood compra 54 milioni di dollari di azioni SpaceX nell'arco di una settimana",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=f9b778750087e7257dcaa89a698cc3abdd980ec775cf51eb75bfbabbca689d65",
+      "data_invio": "2026-07-13T17:05:00+00:00"
+    },
+    {
+      "id": "nvda-white-list-asia-2026-07-14",
+      "ticker": "NVDA",
+      "titolo": "Nvidia dimezza i clienti asiatici autorizzati ai chip AI: nasce la \"white list\"",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=c4ceeee14402cd8402e2fcae0899bd2cb448f28f59f4bca74a531367145f5f9e",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "tsm-vendite-36pct-2026-07-14",
+      "ticker": "TSM",
+      "titolo": "TSMC: vendite mensili +36% trainate dall'AI — atteso il quinto trimestre record il 16 luglio",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=6a24630aa40c5ab11060dcbf04d0a1310f826c409d8943f3f3f4bb05adc3e5dc",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "spcx-bond-25b-calo16-2026-07-14",
+      "ticker": "SPCX",
+      "titolo": "SpaceX emette bond da 25 miliardi con rating investment-grade, ma il titolo perde il 16%",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=aaa9f68929320c3bb10d765ed8b9fb0deee8ee6be13aab63c0280728c383ed63",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "goog-tpu-compute-business-2026-07-14",
+      "ticker": "GOOG",
+      "titolo": "Alphabet vuole vendere la potenza dei suoi chip TPU come servizio AI a clienti esterni",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=2f18335680da58251e72fac677fbd7e685d5903e1ccf37e4054ecdf67dc5e9bd",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "shel-sprng-energy-india-2026-07-14",
+      "ticker": "SHEL",
+      "titolo": "Shell vende la sua divisione rinnovabili in India (Sprng Energy) per 1,8 miliardi di dollari",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=ac29cb65c875e7d0ff39bcdc82d4e52eaaf0e2159610bab671e90702a3557fd2",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "nflx-mlb-home-run-derby-2026-07-14",
+      "ticker": "NFLX",
+      "titolo": "Netflix conquista i diritti esclusivi per l'Home Run Derby MLB: primo grande evento live in esclusiva",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=8e26bfeaf71adf49e47614a6744facdf7943bcd0fce688dd3e58969ab6e3ad1f",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "orcl-14mesi-low-openai-liability-2026-07-14",
+      "ticker": "ORCL",
+      "titolo": "Oracle ai minimi da 14 mesi: il deal OpenAI da 300 miliardi definito una \"passività\" dagli investitori",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=c943b11bdddf050addf1748f255652f233a7dc81d1ea85b4b30a6304bfdeba19",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "lly-cathie-wood-acquisto-2026-07-14",
+      "ticker": "LLY",
+      "titolo": "Cathie Wood (ARK Invest) aumenta la posizione su Eli Lilly",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=4485315c448a89a6ae42a93ee1eff88cb436b1981d6da3cd995a10471ecdc57d",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "wdc-q4fy2026-earnings-date-2026-07-14",
+      "ticker": "WDC",
+      "titolo": "Western Digital: risultati Q4 FY2026 programmati per il 5 agosto 2026",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=dfacd50390ba892ac701deef6fecec1a7e257a6c7c31fefd90036a6e5c0e1a09",
+      "data_invio": "2026-07-14T05:05:00+00:00"
+    },
+    {
+      "id": "ibm-q2-earnings-miss-2026-07-14",
+      "ticker": "IBM",
+      "titolo": "IBM crolla del 25% nella peggiore seduta della sua storia: l'AI mangia i ricavi IT tradizionali",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=3354152afa3dd1c48f7b04823e242f9d8e8b66f8a7dfab0461e7a31337d68c0f",
+      "data_invio": "2026-07-14T17:07:31+00:00"
+    },
+    {
+      "id": "wdc-kioxia-merger-2026-07-14",
+      "ticker": "WDC",
+      "titolo": "Western Digital riapre i colloqui di fusione con Kioxia per il consolidamento del mercato NAND",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=0d16dcc958c290a2ef452f97106040fd69d0cb0fecac738c1be3dda007bc97c0",
+      "data_invio": "2026-07-14T17:07:31+00:00"
     }
   ]
 }
