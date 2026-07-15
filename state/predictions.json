@@ -3449,6 +3449,156 @@
       "rilevanza": 68,
       "titolo": "Western Digital riapre i colloqui di fusione con Kioxia per il consolidamento del mercato NAND",
       "url": "https://finnhub.io/api/news?id=0d16dcc958c290a2ef452f97106040fd69d0cb0fecac738c1be3dda007bc97c0"
+    },
+    {
+      "id": "lly-fda-selpercatinib-2026-07-15",
+      "ticker": "LLY",
+      "data": "2026-07-15",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Eli Lilly ottiene l'approvazione definitiva FDA per selpercatinib nei tumori solidi",
+      "url": "https://finnhub.io/api/news?id=85a7dde379b55c28caed39928be7f2f662379741b95f70f30eb6804a9b58aabe"
+    },
+    {
+      "id": "jnj-guidance-100b-2026-07-15",
+      "ticker": "JNJ",
+      "data": "2026-07-15",
+      "tipo_evento": "revisione guidance",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Johnson & Johnson alza le previsioni annuali verso il traguardo storico di 100 miliardi di ricavi",
+      "url": "https://finnhub.io/api/news?id=84094e3225d70c38db6c6d50a9e1c231ea6494cc942138536531dc77bf34a499"
+    },
+    {
+      "id": "ny-ban-ai-datacenter-2026-07-15",
+      "ticker": "MSFT",
+      "data": "2026-07-15",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "New York vieta i nuovi grandi data center AI: altri 14 stati potrebbero seguire",
+      "url": "https://finnhub.io/api/news?id=d55adca71d1b424a95d3ea1f5389575ca7ac8749a8b8e00dffd06b67555de9d1"
+    },
+    {
+      "id": "meta-ai-layoff-lawsuit-2026-07-15",
+      "ticker": "META",
+      "data": "2026-07-15",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Meta in tribunale: i licenziamenti assistiti dall'AI avrebbero penalizzato i lavoratori in malattia",
+      "url": "https://finnhub.io/api/news?id=85def294f7da6bbe9575ae9efdf24b7b74eebb551508b8a4df1e975a14958438"
+    },
+    {
+      "id": "goog-uk-cma-search-portability-2026-07-15",
+      "ticker": "GOOG",
+      "data": "2026-07-15",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Il regolatore britannico impone a Google nuove regole sulla portabilità dei dati di ricerca",
+      "url": "https://finnhub.io/api/news?id=7d84fceeee56042318794b76ba72711c9fc1b0138f3785877e2e1d6f52dc3e07"
+    },
+    {
+      "id": "orcl-ai-native-builder-2026-07-15",
+      "ticker": "ORCL",
+      "data": "2026-07-15",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Oracle lancia il builder AI nativo per le applicazioni enterprise Fusion",
+      "url": "https://finnhub.io/api/news?id=05ee5a1403e66f3316561d1a50b95b777245a26fc154d51b3ae13febe3c28649"
+    },
+    {
+      "id": "pltr-sba-contract-2026-07-15",
+      "ticker": "PLTR",
+      "data": "2026-07-15",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Il governo USA (SBA) espande il contratto con Palantir per individuare le frodi sui fondi COVID",
+      "url": "https://finnhub.io/api/news?id=455dfd9b96c4bf71781ebc70d42d0d47e3f4c3d97581893d7f8240cafe2ce73f"
+    },
+    {
+      "id": "ko-africa-bottler-deal-2026-07-15",
+      "ticker": "KO",
+      "data": "2026-07-15",
+      "tipo_evento": "M&A",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Coca-Cola ottiene il via libera del Sudafrica per acquisire il 75% dell'imbottigliatrice africana",
+      "url": "https://finnhub.io/api/news?id=38127c6655b2f910c290ef7552af2b53c0ad657275f90181b797e94996757013"
+    },
+    {
+      "id": "wdc-skhynix-etf-rally-2026-07-15",
+      "ticker": "WDC",
+      "data": "2026-07-15",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "ETF a leva su SK Hynix debuttano negli USA e trascinano al rialzo tutto il comparto memorie",
+      "url": "https://finnhub.io/api/news?id=02cecc4fa136b128253826a66d603820c05b0a4f41b7d88fc0b2154efbcdbe79"
+    },
+    {
+      "id": "avgo-hardware-rotation-2026-07-15",
+      "ticker": "AVGO",
+      "data": "2026-07-15",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "Broadcom sale nella rotazione dal software all'hardware dopo il crollo storico di IBM",
+      "url": "https://finnhub.io/api/news?id=66414e686f8839b4987357c7da44237b54356ffcc7ba0001fb0228733828497b"
     }
   ]
 }
