@@ -11,9 +11,16 @@ var ASSETS = [
 ];
 
 self.addEventListener("install", function (e) {
+  // Cache tollerante: se UN file non è ancora disponibile (deploy a metà), non
+  // deve far fallire tutta l'installazione e lasciare il guscio a metà. Ogni
+  // asset si mette in cache per conto suo; quelli mancanti si riprenderanno al
+  // prossimo avvio (il fetch li andrà comunque a prendere dalla rete).
   e.waitUntil(
-    caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); })
-      .then(function () { return self.skipWaiting(); })
+    caches.open(CACHE).then(function (c) {
+      return Promise.all(ASSETS.map(function (u) {
+        return c.add(u).catch(function () {});
+      }));
+    }).then(function () { return self.skipWaiting(); })
   );
 });
 

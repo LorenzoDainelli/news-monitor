@@ -220,7 +220,13 @@
   });
 
   // ---------- Google Drive (Fase 5) ----------
+  // drive.js potrebbe non essere ancora arrivato (deploy/cache a metà) o il
+  // guscio in cache potrebbe essere una versione senza i bottoni Drive: in quel
+  // caso l'app deve funzionare LO STESSO, solo senza Drive. Mai bloccare l'avvio.
+  var HAS_DRIVE = (typeof DRIVE !== "undefined") && !!$("drive-btn");
+
   function doDriveSync() {
+    if (!HAS_DRIVE) return Promise.resolve();
     var btn = $("drive-btn");
     if (btn) { btn.disabled = true; btn.textContent = "⏳ Drive…"; }
     return DRIVE.driveSync().then(function (r) {
@@ -232,24 +238,30 @@
     });
   }
 
-  $("drive-btn").addEventListener("click", function () {
-    DRIVE.getClientId().then(function (cid) {
-      if (!cid) { $("drive-setup").hidden = false; return; }
-      DRIVE.getToken().then(function (tok) {
-        if (!tok) { DRIVE.connect(); return; }   // redirect a Google e ritorno
-        doDriveSync();
+  if (HAS_DRIVE) {
+    $("drive-btn").addEventListener("click", function () {
+      DRIVE.getClientId().then(function (cid) {
+        if (!cid) { if ($("drive-setup")) $("drive-setup").hidden = false; return; }
+        DRIVE.getToken().then(function (tok) {
+          if (!tok) { DRIVE.connect(); return; }   // redirect a Google e ritorno
+          doDriveSync();
+        });
       });
     });
-  });
-  $("drive-cid-save").addEventListener("click", function () {
-    var v = $("drive-cid").value.trim();
-    if (!v) return;
-    DRIVE.setClientId(v).then(function () {
-      $("drive-setup").hidden = true;
-      DRIVE.connect();
-    });
-  });
-  $("drive-cid-cancel").addEventListener("click", function () { $("drive-setup").hidden = true; });
+    if ($("drive-cid-save")) {
+      $("drive-cid-save").addEventListener("click", function () {
+        var v = $("drive-cid").value.trim();
+        if (!v) return;
+        DRIVE.setClientId(v).then(function () {
+          $("drive-setup").hidden = true;
+          DRIVE.connect();
+        });
+      });
+    }
+    if ($("drive-cid-cancel")) {
+      $("drive-cid-cancel").addEventListener("click", function () { $("drive-setup").hidden = true; });
+    }
+  }
 
   // ---------- export/import manuale ----------
   if ($("export-btn")) {
@@ -290,10 +302,14 @@
   segnalaRete();
   // Se stiamo TORNANDO dal consenso Google (token nel fragment), salvalo e
   // parti subito con la sync via Drive; altrimenti la solita sync HTTP (LAN).
-  DRIVE.handleRedirect().then(function (daGoogle) {
+  var driveBoot = HAS_DRIVE ? DRIVE.handleRedirect() : Promise.resolve(false);
+  driveBoot.then(function (daGoogle) {
     return render().then(function () {
       if (daGoogle) return doDriveSync();
       return doSync().then(function (ok) { if (ok) return render(); });
     });
+  }).catch(function () {
+    // Qualunque cosa vada storta nell'avvio, l'app deve almeno mostrarsi.
+    try { render(); } catch (e) {}
   });
 })();
