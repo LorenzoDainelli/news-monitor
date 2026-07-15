@@ -2,7 +2,20 @@
    Mette in cache il "guscio" (shell) così l'app si apre anche offline.
    Strategia: cache-first per il guscio; l'API (/api/...) passa sempre dalla rete
    (non ha senso servirla dalla cache). Cambiare CACHE per forzare l'aggiornamento. */
-var CACHE = "mymoney-shell-v6";
+var CACHE = "mymoney-shell-v7";
+
+/* iOS/WebKit rifiuta una navigazione se il service worker restituisce una
+   risposta che ha attraversato un redirect ("Response served by service worker
+   has redirections"): capita al ritorno dal consenso Google. Se una risposta
+   è "redirected", la ricostruiamo pulita (stesso corpo, stessi header). */
+function senzaRedirect(resp) {
+  if (resp && resp.redirected) {
+    return new Response(resp.body, {
+      status: resp.status, statusText: resp.statusText, headers: resp.headers
+    });
+  }
+  return resp;
+}
 var ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./db.js", "./finance.js",
   "./sync.js", "./drive.js", "./manifest.webmanifest",
@@ -38,8 +51,18 @@ self.addEventListener("fetch", function (e) {
   if (url.origin !== self.location.origin) return;            // Drive/Google: sempre rete
   if (url.pathname.indexOf("/api/") !== -1) return;           // API: lascia la rete
   if (e.request.mode === "navigate") {                         // pagina: guscio offline
-    e.respondWith(caches.match("./index.html").then(function (r) { return r || fetch(e.request); }));
+    // Serviamo SEMPRE il guscio dalla cache (mai un redirect); se manca lo
+    // prendiamo dalla rete e lo ripuliamo, così il ritorno dall'OAuth non
+    // inciampa nel blocco di WebKit.
+    e.respondWith(
+      caches.match("./index.html").then(function (r) {
+        return r || fetch("./index.html").then(senzaRedirect)
+          .catch(function () { return caches.match("./"); });
+      })
+    );
     return;
   }
-  e.respondWith(caches.match(e.request).then(function (r) { return r || fetch(e.request); }));
+  e.respondWith(caches.match(e.request).then(function (r) {
+    return r || fetch(e.request).then(senzaRedirect);
+  }));
 });
