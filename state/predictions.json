@@ -3599,6 +3599,156 @@
       "rilevanza": 52,
       "titolo": "Broadcom sale nella rotazione dal software all'hardware dopo il crollo storico di IBM",
       "url": "https://finnhub.io/api/news?id=66414e686f8839b4987357c7da44237b54356ffcc7ba0001fb0228733828497b"
+    },
+    {
+      "id": "asml-q2-earnings-2026-07-15",
+      "ticker": "ASML",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 85,
+      "titolo": "ASML manca le stime del Q2 ma alza le previsioni 2026: il titolo balza",
+      "url": "https://finnhub.io/api/news?id=8b4eada2f409382db208eb59c31ebfcc94f650ee7e05a77b2cdfb59bf57006f2"
+    },
+    {
+      "id": "avgo-aapl-30b-chip-deal-2026-07-15",
+      "ticker": "AVGO",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 78,
+      "titolo": "Apple annuncia un accordo da 30 miliardi con Broadcom per chip AI server",
+      "url": "https://finnhub.io/api/news?id=9e296c989423331aa3b560296469ebc3c1d739b29018ae93667f30857b1ebacd"
+    },
+    {
+      "id": "aapl-china-ai-approval-2026-07-15",
+      "ticker": "AAPL",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "Apple Intelligence ottiene il via libera in Cina con il modello AI di Alibaba",
+      "url": "https://finnhub.io/api/news?id=e226705cbb01fb905d30b33738bf4fb522e9ef84a05a6a837ef2d95a69bdeabe"
+    },
+    {
+      "id": "avgo-apollo-35b-ai-credit-2026-07-15",
+      "ticker": "AVGO",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 70,
+      "titolo": "Apollo finanzia 35 miliardi per Broadcom e Anthropic: la più grande operazione di credito AI della storia",
+      "url": "https://finnhub.io/api/news?id=5e57d39aa9c70b230022bd32cb61057ea42abc89a6a14adaceebd775d9eee90a"
+    },
+    {
+      "id": "spcx-below-ipo-price-2026-07-15",
+      "ticker": "SPCX",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "SpaceX scende per la prima volta sotto il prezzo IPO di 135 dollari: quarta seduta consecutiva in calo",
+      "url": "https://www.cnbc.com/2026/07/15/spacex-spcx-stock-ipo-price.html"
+    },
+    {
+      "id": "shel-iran-new-strikes-2026-07-15",
+      "ticker": "SHEL",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "USA lanciano una nuova ondata di attacchi sull'Iran: navi rifiutano i transiti nello Stretto di Hormuz",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxObUM2X1dwWlEtWHFxM3dFS1pvOWlDcHNlR0NLTTBiTHR2RU01Y21HTXYwSW5FUng3UFZ1S21GdGhJQlJObjJySjBEa2RLSDJMN3cwNDVjMTJmNW9QVi1UOUVvQ0daRXIyVDJQN0RHX3VZWXRqVElkc0xYUEMtQlVwWW5JYzN0cnhnSmlYS1NhajlBTXhNWUZSRlZWLVo?oc=5"
+    },
+    {
+      "id": "wdc-sndk-memory-selloff-2026-07-15",
+      "ticker": "WDC",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Prese di profitto sulle memorie: SanDisk -6%, Western Digital -4%, SK Hynix -5%",
+      "url": "https://finnhub.io/api/news?id=63714d3ba3be4567f8389b6ed9ce870990a79a42586058dad83aee9c8edb8357"
+    },
+    {
+      "id": "intc-analyst-upgrades-2026-07-15",
+      "ticker": "INTC",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Intel: HSBC raddoppia il target di prezzo, Stifel alza le stime — doppio upgrade in un giorno",
+      "url": "https://finnhub.io/api/news?id=714966ecc167da781eb1d15791d46a7dbf6e690b3161756b8cfff89b22fab88e"
+    },
+    {
+      "id": "orcl-japan-cloud-2026-07-15",
+      "ticker": "ORCL",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 57,
+      "titolo": "Oracle guida i colloqui per una rete cloud classificata in Giappone, per condividere intelligence con gli alleati",
+      "url": "https://finnhub.io/api/news?id=c2a74bf867bfd9b3768e9664dc1921a5d298423ca13f1ae1f5859699bda55ec1"
+    },
+    {
+      "id": "nvda-nokia-radio-platform-2026-07-15",
+      "ticker": "NVDA",
+      "data": "2026-07-15T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Nokia e Nvidia lanciano una piattaforma radio nativa AI per le reti telecom",
+      "url": "https://finnhub.io/api/news?id=c41ab86dc144aa782be1e00f70a8207b3e9c00d5f14b82768cae7288ff2d0f74"
     }
   ]
 }
