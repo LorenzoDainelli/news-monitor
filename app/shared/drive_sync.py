@@ -241,6 +241,11 @@ class DriveClient:
         if status == 401:
             raise DriveAuthError("401")
         if status >= 400:
+            err_body = raw.decode("utf-8", errors="ignore")
+            if "storageQuota" in err_body or "quotaExceeded" in err_body:
+                log.warning("drive: errore API (quota) - status %s", status)
+                raise DriveError("quota")
+            log.warning("drive: errore API (http_%s)", status)
             raise DriveError(f"http_{status}")
         return raw
 
@@ -307,7 +312,7 @@ def _sync_with(client) -> dict:
     mine = f"state-{sync.get_device_id()}.json"
     files = client.list_state_files()
     seen = _load_seen()
-    applied = skipped = errors = downloaded = 0
+    applied = skipped = errors = downloaded = future = 0
 
     for f in files:
         name = f.get("name", "")
@@ -323,12 +328,14 @@ def _sync_with(client) -> dict:
             errors += 1
             log.warning("drive: download fallito per %s", name)
             continue
-        if not isinstance(data, dict) or data.get("schema") != sync.SCHEMA_VERSION:
-            errors += 1  # schema sconosciuto: mai corrompere, si salta e si logga
-            log.warning("drive: schema non riconosciuto in %s", name)
+        if not isinstance(data, dict):
+            errors += 1
+            log.warning("drive: contenuto non valido in %s", name)
             continue
+        
         r = sync.apply_snapshot(data)
-        applied += r["applied"]; skipped += r["skipped"]; errors += r["errors"]
+        applied += r.get("applied", 0); skipped += r.get("skipped", 0); errors += r.get("errors", 0)
+        future += r.get("future", 0)
         downloaded += 1
         seen[name] = f.get("modifiedTime")
 
@@ -345,7 +352,7 @@ def _sync_with(client) -> dict:
 
     settings_store.set_setting("drive_seen", json.dumps(seen))
     return {"ok": True, "applied": applied, "skipped": skipped,
-            "errors": errors, "downloaded": downloaded, "uploaded": uploaded}
+            "errors": errors, "downloaded": downloaded, "uploaded": uploaded, "future": future}
 
 
 def sync_once(client=None) -> dict:
@@ -355,7 +362,7 @@ def sync_once(client=None) -> dict:
     inietta un finto-Drive con la stessa interfaccia. Su 401 riprova UNA volta
     con token rinnovato. Non solleva mai: ritorna {ok: False, error: ...}.
     """
-    vuoto = {"applied": 0, "skipped": 0, "errors": 0, "downloaded": 0, "uploaded": False}
+    vuoto = {"applied": 0, "skipped": 0, "errors": 0, "downloaded": 0, "uploaded": False, "future": 0}
     own_client = client is None
     if own_client:
         if not is_configured() or not is_connected():
@@ -380,7 +387,8 @@ def sync_once(client=None) -> dict:
             break
         except DriveError as e:
             log.warning("drive: sync fallita (%s)", e)
-            result = {"ok": False, "error": "drive", **vuoto}
+            err_val = "quota" if str(e) == "quota" else "drive"
+            result = {"ok": False, "error": err_val, **vuoto}
             break
         except Exception:
             log.warning("drive: sync fallita", exc_info=True)

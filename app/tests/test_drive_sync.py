@@ -90,6 +90,10 @@ class AuthFailDrive:
     def list_state_files(self):
         raise drive_mod.DriveAuthError("401")
 
+class QuotaFailDrive:
+    def list_state_files(self):
+        raise drive_mod.DriveError("quota")
+
 
 # ── helper dati ──────────────────────────────────────────────────────────────
 
@@ -219,17 +223,23 @@ class TestDriveSync:
         r = drive_mod.sync_once(client=fake)
         assert r["ok"] is True
         assert r["applied"] == 0
-        assert r["errors"] == 1               # segnalato, mai applicato
+        assert r["errors"] == 0               # non è un errore di sync, è un forward-compat skip
+        assert r["future"] == 1
 
     def test_non_connesso_esito_pulito(self, test_db):
         r = drive_mod.sync_once()             # nessuna credenziale nel DB di test
         assert r == {"ok": False, "error": "non_connesso", "applied": 0,
-                     "skipped": 0, "errors": 0, "downloaded": 0, "uploaded": False}
+                     "skipped": 0, "errors": 0, "downloaded": 0, "uploaded": False, "future": 0}
 
     def test_401_esito_pulito(self, test_db):
         r = drive_mod.sync_once(client=AuthFailDrive())
         assert r["ok"] is False
         assert r["error"] == "auth"
+
+    def test_quota_esito_pulito(self, test_db):
+        r = drive_mod.sync_once(client=QuotaFailDrive())
+        assert r["ok"] is False
+        assert r["error"] == "quota"
 
 
 # ── test: OAuth (senza rete: endpoint token finto) ───────────────────────────

@@ -82,7 +82,15 @@ window.DRIVE = (function () {
     return fetch(url, { method: method, headers: headers, body: body || undefined })
       .then(function (res) {
         if (res.status === 401) throw { code: "auth" };
-        if (!res.ok) throw { code: "http_" + res.status };
+        if (!res.ok) {
+          if (res.status === 403) {
+            return res.text().then(function (txt) {
+              if (txt.indexOf("storageQuota") !== -1 || txt.indexOf("quotaExceeded") !== -1) throw { code: "quota" };
+              throw { code: "http_" + res.status };
+            });
+          }
+          throw { code: "http_" + res.status };
+        }
         return res;
       });
   }
@@ -159,7 +167,10 @@ window.DRIVE = (function () {
             daScaricare.forEach(function (f) {
               p = p.then(function () {
                 return download(token, f.id).then(function (snap) {
-                  if (!snap || snap.schema !== 1) return;  // schema sconosciuto: mai corrompere
+                  if (!snap) return;
+                  if (snap.schema > 1) {
+                    return DB.setMeta("needs_update", true);
+                  }
                   return SYNC.applyRemoteOps(SYNC.opsFromSnapshot(snap), deviceId)
                     .then(function (res) {
                       stats.applied += res.applied;

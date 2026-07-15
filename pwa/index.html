@@ -22,6 +22,12 @@
   </header>
 
   <main class="wrap">
+    <div id="stale" class="stale" hidden></div>
+    <div id="drive-needs-update" class="banner err hide" style="margin-bottom: 15px;">
+      L'altro dispositivo usa una versione più recente dell'app.<br>
+      Sincronizzazione in pausa finché non aggiorni la pagina.
+      <button class="btn ghost mt-10" onclick="location.reload(true)" style="margin-top:10px;">Ricarica App</button>
+    </div>
     <section class="hero">
       <div class="k">Patrimonio liquido</div>
       <div class="v num" id="totale">—</div>

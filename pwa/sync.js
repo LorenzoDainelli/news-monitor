@@ -95,7 +95,7 @@ window.SYNC = (function () {
       var entity = { wallets: "wallet", categorie: "category", movimenti: "transaction" }[key];
       (((snap || {})[key]) || []).forEach(function (fields) {
         ops.push({
-          schema: 1, uid: fields.uid, entity: entity,
+          schema: snap.schema || 1, uid: fields.uid, entity: entity,
           op: fields.deleted ? "delete" : "upsert",
           fields: fields, rev: fields.rev || 1,
           updated_at: fields.updated_at || "",
@@ -110,9 +110,14 @@ window.SYNC = (function () {
     /* Applica le operazioni remote in locale con merge LWW.
        Ordine: wallet → category → transaction (per FK). */
     var byEntity = { wallet: [], category: [], transaction: [] };
+    var future = 0;
     (ops || []).forEach(function (op) {
-      var e = op.entity;
-      if (byEntity[e]) byEntity[e].push(op);
+      if ((op.schema || 1) > 1) {
+        future++;
+      } else {
+        var e = op.entity;
+        if (byEntity[e]) byEntity[e].push(op);
+      }
     });
 
     var applied = 0, skipped = 0;
@@ -145,7 +150,11 @@ window.SYNC = (function () {
     });
 
     return p.then(function () {
-      return { applied: applied, skipped: skipped };
+      var ret = { applied: applied, skipped: skipped, future: future };
+      if (future > 0) {
+        return DB.setMeta("needs_update", true).then(function () { return ret; });
+      }
+      return ret;
     });
   }
 

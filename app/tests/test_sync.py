@@ -21,6 +21,7 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 
 from shared.db import Base
+from shared import settings_store
 from finance.models import Wallet, Category, Transaction, _MODELLI_SYNC
 
 # Importa sync DOPO aver configurato il path
@@ -44,9 +45,11 @@ def test_db(tmp_path, monkeypatch):
     import shared.db as db_mod
     monkeypatch.setattr(db_mod, "engine", test_engine)
     monkeypatch.setattr(db_mod, "SessionLocal", TestSession)
-
-    # Patch anche il riferimento locale in sync_mod
     monkeypatch.setattr(sync_mod, "SessionLocal", TestSession)
+    
+    import finance.service as service_mod
+    monkeypatch.setattr(service_mod, "SessionLocal", TestSession)
+    monkeypatch.setattr(settings_store, "SessionLocal", TestSession)
 
     # Patch SYNC_DIR
     sync_dir = tmp_path / "sync"
@@ -261,6 +264,33 @@ class TestTransactionSync:
             assert t.importo == 25.50
 
 
+    def test_compatta_tombstone(self, test_db):
+        from finance.service import compatta_tombstone
+        from datetime import datetime, timedelta
+        Session = test_db["Session"]
+        with Session() as db:
+            w = Wallet(nome="W", tipo="conto", saldo_iniziale=0, uid=uuid.uuid4().hex)
+            db.add(w)
+            db.commit()
+            
+            t_vivo = Transaction(uid="vivo", tipo="uscita", importo=10, wallet_id=w.id,
+                                 data=datetime.now(), rev=1, deleted=False, updated_at=datetime.now())
+            t_recente = Transaction(uid="lapide_recente", tipo="uscita", importo=10, wallet_id=w.id,
+                                    data=datetime.now(), rev=2, deleted=True, updated_at=datetime.now())
+            t_vecchia = Transaction(uid="lapide_vecchia", tipo="uscita", importo=10, wallet_id=w.id,
+                                    data=datetime.now(), rev=2, deleted=True, updated_at=datetime.now() - timedelta(days=400))
+            db.add_all([t_vivo, t_recente, t_vecchia])
+            db.commit()
+
+        rimosse = compatta_tombstone(365)
+        assert rimosse == 1
+
+        with Session() as db:
+            assert db.query(Transaction).filter_by(uid="vivo").first() is not None
+            assert db.query(Transaction).filter_by(uid="lapide_recente").first() is not None
+            assert db.query(Transaction).filter_by(uid="lapide_vecchia").first() is None
+
+
 class TestSnapshot:
     """Snapshot: fotografia completa e applicazione."""
 
@@ -408,3 +438,22 @@ class TestSnapshotCursor:
         snap = sync_mod.build_snapshot()
         assert "diary_lines" in snap
         assert snap["diary_lines"] == 1
+
+
+class TestSchemaGuard:
+    def test_schema_troppo_nuovo_snapshot(self, test_db):
+        from shared import settings_store
+        settings_store.set_setting("sync_needs_update", "")
+        data = {"schema": 999, "wallets": []}
+        r = sync_mod.apply_snapshot(data)
+        assert r["future"] == 1
+        assert settings_store.get_setting("sync_needs_update", "") == "1"
+
+    def test_schema_troppo_nuovo_ops(self, test_db):
+        from shared import settings_store
+        settings_store.set_setting("sync_needs_update", "")
+        ops = [{"schema": 999, "entity": "wallet", "op": "upsert", "fields": {}}]
+        r = sync_mod.import_ops(ops)
+        assert r["future"] == 1
+        assert r["applied"] == 0
+        assert settings_store.get_setting("sync_needs_update", "") == "1"

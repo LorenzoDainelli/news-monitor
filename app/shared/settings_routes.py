@@ -6,6 +6,7 @@ ne' loggate.
 """
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse, HTMLResponse
+from datetime import datetime
 
 from shared.templating import templates
 from shared import settings_store as store
@@ -27,6 +28,16 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: s
             "presente": bool(valore.strip()),
             "mascherato": store.masked(valore) if meta.get("secret") else valore,
         })
+    drive_last = drive_sync.last_sync_info()
+    drive_last_stale = False
+    if drive_last and drive_last.get("ts"):
+        try:
+            ts = datetime.fromisoformat(drive_last["ts"])
+            if (datetime.now() - ts).days > 7:
+                drive_last_stale = True
+        except ValueError:
+            pass
+
     return templates.TemplateResponse(request, "settings.html", {
         "active": "impostazioni",
         "voci": voci, "salvato": bool(salvato),
@@ -38,7 +49,9 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: s
         "drive_msg": drive,
         "drive_configured": drive_sync.is_configured(),
         "drive_connected": drive_sync.is_connected(),
-        "drive_last": drive_sync.last_sync_info(),
+        "drive_last": drive_last,
+        "drive_last_stale": drive_last_stale,
+        "sync_needs_update": bool(store.get_setting("sync_needs_update", "")),
     })
 
 
@@ -100,7 +113,13 @@ def drive_sync_now():
     result = drive_sync.sync_once()
     if result.get("ok"):
         return RedirectResponse("/impostazioni?drive=sync_ok", status_code=303)
-    esito = "auth" if result.get("error") == "auth" else "sync_err"
+    err = result.get("error")
+    if err == "auth":
+        esito = "auth"
+    elif err == "quota":
+        esito = "quota"
+    else:
+        esito = "sync_err"
     return RedirectResponse(f"/impostazioni?drive={esito}", status_code=303)
 
 

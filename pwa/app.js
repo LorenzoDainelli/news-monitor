@@ -62,12 +62,19 @@
   var _wallets = [], _cats = [], _movs = [];
 
   function render() {
-    return Promise.all([DB.getAll("wallets"), DB.getAll("categorie"), DB.getAll("movimenti"), DB.getMeta("last_sync")])
+    return Promise.all([DB.getAll("wallets"), DB.getAll("categorie"), DB.getAll("movimenti"), DB.getMeta("last_sync"), DB.getMeta("needs_update")])
       .then(function (r) {
         _wallets = (r[0] || []).filter(function (w) { return !w.deleted; });
         _cats = (r[1] || []).filter(function (c) { return !c.deleted; });
         _movs = (r[2] || []).filter(function (m) { return !m.deleted; });
         var lastSync = r[3];
+        var needsUpdate = !!r[4];
+
+        if (needsUpdate) {
+          $("drive-needs-update").classList.remove("hide");
+          if ($("sync-btn")) $("sync-btn").classList.add("stale");
+          if ($("drive-btn")) $("drive-btn").classList.add("stale");
+        }
 
         // Senza portafogli il telefono non ha ancora dati (arrivano con la sync):
         // niente form (inutilizzabile senza portafogli), stato "vuoto" in evidenza.
@@ -102,6 +109,21 @@
         popolaForm();
 
         // info sync
+        var divStale = $("stale");
+        if (divStale) {
+          var msDiff = lastSync ? (new Date() - new Date(lastSync)) : Infinity;
+          var daysDiff = msDiff / (1000 * 3600 * 24);
+          if (!lastSync) {
+            divStale.hidden = false;
+            divStale.textContent = "Non hai ancora sincronizzato questo telefono";
+          } else if (daysDiff > 7) {
+            divStale.hidden = false;
+            divStale.textContent = "Ultima sincronizzazione oltre una settimana fa — tocca 🔄 o ☁️ per aggiornare";
+          } else {
+            divStale.hidden = true;
+          }
+        }
+
         $("sync-info").textContent = lastSync
           ? ("Ultima sync: " + new Date(lastSync).toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))
           : (navigator.onLine ? "Non ancora sincronizzato" : "Offline");
@@ -234,7 +256,7 @@
       if (r.ok) return render();   // render mostra "Ultima sync: …"
       $("sync-info").textContent = r.reason === "token"
         ? "Drive: tocca di nuovo ☁️ per accedere"
-        : "Drive: errore (" + r.reason + ")";
+        : (r.reason === "quota" ? "Drive: spazio esaurito" : "Drive: errore (" + r.reason + ")");
     });
   }
 

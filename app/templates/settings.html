@@ -124,12 +124,17 @@
     <div class="card-h">{{ t('set.drive_h') }}</div>
     <p style="margin:0 0 10px;">{{ t('set.drive_intro') }}</p>
 
+    {% if sync_needs_update %}
+      <div class="note err" style="margin-bottom:12px;">{{ t('set.sync_update') }}</div>
+    {% endif %}
+
     {% if drive_msg == 'ok' %}<div class="note ok">{{ t('set.drive_msg_ok') }}</div>
     {% elif drive_msg == 'sync_ok' %}<div class="note ok">{{ t('set.drive_msg_sync_ok') }}</div>
     {% elif drive_msg == 'off' %}<div class="note info">{{ t('set.drive_msg_off') }}</div>
     {% elif drive_msg == 'nocred' %}<div class="note warn">{{ t('set.drive_msg_nocred') }}</div>
     {% elif drive_msg == 'rifiutato' %}<div class="note warn">{{ t('set.drive_msg_denied') }}</div>
     {% elif drive_msg == 'auth' %}<div class="note warn">{{ t('set.drive_msg_auth') }}</div>
+    {% elif drive_msg == 'quota' %}<div class="note err">{{ t('set.drive_msg_quota') }}</div>
     {% elif drive_msg in ('err', 'sync_err') %}<div class="note err">{{ t('set.drive_msg_err') }}</div>
     {% endif %}
 
@@ -147,6 +152,7 @@
       <p class="muted" style="font-size:13px;margin:0 0 12px;">
         {{ t('set.drive_last', when=drive_last.ts, applied=drive_last.applied,
              skipped=drive_last.skipped, errors=drive_last.errors) }}
+        {% if drive_last_stale %}<span class="muted" style="color:var(--neg);">(più di una settimana fa)</span>{% endif %}
       </p>
     {% endif %}
 

@@ -272,6 +272,14 @@ def _parse_dt(s):
     return dt
 
 
+def _schema_troppo_nuovo(s) -> bool:
+    """True se il messaggio è di uno schema più nuovo di quello che capiamo."""
+    try:
+        return int(s) > SCHEMA_VERSION
+    except (TypeError, ValueError):
+        return False   # schema assente/illeggibile = trattalo come 1 (legacy)
+
+
 def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
     """Applica una lista di operazioni remote con merge LWW.
 
@@ -288,7 +296,7 @@ def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
         if entity in by_entity:
             by_entity[entity].append(op)
 
-    applied = skipped = errors = 0
+    applied = skipped = errors = future = 0
 
     with importing():
         with SessionLocal() as db:
@@ -299,6 +307,9 @@ def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
 
             for entity in ("wallet", "category", "transaction"):
                 for op in by_entity[entity]:
+                    if _schema_troppo_nuovo(op.get("schema")):
+                        future += 1
+                        continue
                     try:
                         result = _apply_one(db, op, entity, device_id,
                                             uid_to_wallet_id, uid_to_cat_id)
@@ -317,8 +328,12 @@ def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
 
             # Aggiorna le mappe (nuovi wallet/categorie creati durante l'import)
             # Non serve per questa sessione, ma per il prossimo import.
+            db.commit()
 
-    return {"applied": applied, "skipped": skipped, "errors": errors}
+    if future > 0:
+        settings_store.set_setting("sync_needs_update", "1")
+
+    return {"applied": applied, "skipped": skipped, "errors": errors, "future": future}
 
 
 def _apply_one(db, op, entity, local_device_id, uid_to_wallet_id, uid_to_cat_id) -> str:
@@ -427,6 +442,10 @@ def build_snapshot() -> dict:
 
 def apply_snapshot(data: dict) -> dict:
     """Applica uno snapshot (primo avvio): tratta ogni record come un upsert."""
+    if _schema_troppo_nuovo(data.get("schema")):
+        settings_store.set_setting("sync_needs_update", "1")
+        return {"applied": 0, "skipped": 0, "errors": 0, "future": 1}
+
     ops = []
     for entity, key in (("wallet", "wallets"), ("category", "categorie"),
                         ("transaction", "movimenti")):
@@ -459,21 +478,23 @@ def export_bundle() -> dict:
 
 def import_bundle(data: dict) -> dict:
     """Importa un bundle (snapshot + diario) da un altro dispositivo."""
-    result = {"applied": 0, "skipped": 0, "errors": 0}
+    result = {"applied": 0, "skipped": 0, "errors": 0, "future": 0}
     # Prima lo snapshot (crea i record base)
     snap = data.get("snapshot")
     if snap:
         r = apply_snapshot(snap)
-        result["applied"] += r["applied"]
-        result["skipped"] += r["skipped"]
-        result["errors"] += r["errors"]
+        result["applied"] += r.get("applied", 0)
+        result["skipped"] += r.get("skipped", 0)
+        result["errors"] += r.get("errors", 0)
+        result["future"] += r.get("future", 0)
     # Poi il diario (aggiorna con le modifiche più recenti)
     diary = data.get("diary", [])
     if diary:
         r = import_ops(diary)
-        result["applied"] += r["applied"]
-        result["skipped"] += r["skipped"]
-        result["errors"] += r["errors"]
+        result["applied"] += r.get("applied", 0)
+        result["skipped"] += r.get("skipped", 0)
+        result["errors"] += r.get("errors", 0)
+        result["future"] += r.get("future", 0)
     return result
 
 

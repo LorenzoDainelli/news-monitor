@@ -63,6 +63,11 @@ def _refresh_dati_bg():
             drive_sync.sync_once()
     except Exception:
         pass  # best-effort: c'è sempre il bottone "Sincronizza ora"
+    try:
+        from finance.service import compatta_tombstone
+        compatta_tombstone(365)
+    except Exception:
+        pass
 
 
 threading.Thread(target=_refresh_dati_bg, daemon=True).start()

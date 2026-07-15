@@ -11,7 +11,7 @@ Tutto DESCRITTIVO: qui l'inserimento e' manuale e strutturato (l'inserimento in
 linguaggio naturale passa dall'agente AI, che però compila solo il modulo).
 """
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import func, select, text
 
@@ -131,6 +131,23 @@ def _backfill_giro_id() -> None:
             t.giro_aperta = t.importo_ricevuto is None
         if legacy:
             db.commit()
+
+
+def compatta_tombstone(giorni: int = 365) -> int:
+    """Elimina fisicamente le TRANSAZIONI tombstone (deleted=True) con
+    updated_at più vecchio di `giorni`. Ritorna quante ne ha rimosse.
+    Sicuro per 2 dispositivi che sincronizzano entro l'anno (la cancellazione
+    è già stata propagata). Non tocca wallet/categorie."""
+    from shared import sync
+    soglia = datetime.now() - timedelta(days=giorni)
+    with SessionLocal() as db:
+        with sync.importing():
+            res = db.query(Transaction).filter(
+                Transaction.deleted.is_(True),
+                Transaction.updated_at < soglia
+            ).delete()
+            db.commit()
+            return res
 
 
 def seed_wallets_if_empty() -> int:
