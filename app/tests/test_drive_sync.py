@@ -241,6 +241,23 @@ class TestDriveSync:
         assert r["ok"] is False
         assert r["error"] == "quota"
 
+    def test_flag_aggiornamento_si_autoguarisce(self, test_db):
+        """Uno stato di schema futuro accende 'sync_needs_update'; quando poi
+        una sync è pulita (nessuno schema futuro) il flag si spegne da solo."""
+        from shared import settings_store
+        _crea_locale(test_db["Session"])
+        fake = FakeDrive()
+        fake.put_remote_state("pwa_x", {"schema": 999, "device_id": "pwa_x",
+                                        "wallets": [], "categorie": [], "movimenti": []})
+        r1 = drive_mod.sync_once(client=fake)
+        assert r1["future"] == 1
+        assert settings_store.get_setting("sync_needs_update", "") == "1"
+        # lo stato futuro sparisce (l'altro device torna a uno schema noto):
+        fake.files.clear()
+        r2 = drive_mod.sync_once(client=fake)
+        assert r2["future"] == 0
+        assert settings_store.get_setting("sync_needs_update", "") == ""
+
 
 # ── test: OAuth (senza rete: endpoint token finto) ───────────────────────────
 

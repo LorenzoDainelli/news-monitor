@@ -70,11 +70,10 @@
         var lastSync = r[3];
         var needsUpdate = !!r[4];
 
-        if (needsUpdate) {
-          $("drive-needs-update").classList.remove("hide");
-          if ($("sync-btn")) $("sync-btn").classList.add("stale");
-          if ($("drive-btn")) $("drive-btn").classList.add("stale");
-        }
+        var banner = $("drive-needs-update");
+        if (banner) banner.classList.toggle("hide", !needsUpdate);
+        if ($("sync-btn")) $("sync-btn").classList.toggle("stale", needsUpdate);
+        if ($("drive-btn")) $("drive-btn").classList.toggle("stale", needsUpdate);
 
         // Senza portafogli il telefono non ha ancora dati (arrivano con la sync):
         // niente form (inutilizzabile senza portafogli), stato "vuoto" in evidenza.

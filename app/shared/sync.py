@@ -326,10 +326,6 @@ def import_ops(ops: list[dict], source_device_id: str = "") -> dict:
 
             db.commit()
 
-            # Aggiorna le mappe (nuovi wallet/categorie creati durante l'import)
-            # Non serve per questa sessione, ma per il prossimo import.
-            db.commit()
-
     if future > 0:
         settings_store.set_setting("sync_needs_update", "1")
 

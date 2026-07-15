@@ -156,7 +156,7 @@ window.DRIVE = (function () {
         .then(function (r) {
           var deviceId = r[0], seen = r[1] || {}, lastHash = r[2] || "";
           var mine = "state-" + deviceId + ".json";
-          var stats = { applied: 0, downloaded: 0 };
+          var stats = { applied: 0, downloaded: 0, future: 0 };
 
           return listFiles(token).then(function (files) {
             var daScaricare = files.filter(function (f) {
@@ -169,6 +169,9 @@ window.DRIVE = (function () {
                 return download(token, f.id).then(function (snap) {
                   if (!snap) return;
                   if (snap.schema > 1) {
+                    // Schema più nuovo: NON marcare 'seen' (verrà riletto dopo
+                    // l'aggiornamento dell'app) e alza l'avviso.
+                    stats.future++;
                     return DB.setMeta("needs_update", true);
                   }
                   return SYNC.applyRemoteOps(SYNC.opsFromSnapshot(snap), deviceId)
@@ -191,7 +194,11 @@ window.DRIVE = (function () {
                     .then(function () { return DB.setMeta("drive_up_hash", hash); })
                     .then(function () { return true; });
               return upP.then(function (uploaded) {
-                return DB.setMeta("drive_seen", seen)
+                // Sync pulita (nessuno stato di schema più nuovo) → spegni
+                // l'avviso "aggiorna" (auto-guarigione dopo un aggiornamento).
+                var healP = stats.future === 0 ? DB.setMeta("needs_update", false) : Promise.resolve();
+                return healP
+                  .then(function () { return DB.setMeta("drive_seen", seen); })
                   .then(function () { return DB.setMeta("last_sync", new Date().toISOString()); })
                   .then(function () {
                     return { ok: true, applied: stats.applied,

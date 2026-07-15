@@ -335,7 +335,12 @@ def _sync_with(client) -> dict:
         
         r = sync.apply_snapshot(data)
         applied += r.get("applied", 0); skipped += r.get("skipped", 0); errors += r.get("errors", 0)
-        future += r.get("future", 0)
+        if r.get("future", 0):
+            # Schema più nuovo del nostro: NON marcare 'seen', così dopo che
+            # l'app sarà aggiornata questo stato verrà riletto e applicato
+            # (coerente con la PWA). Non conta né come download né come errore.
+            future += r["future"]
+            continue
         downloaded += 1
         seen[name] = f.get("modifiedTime")
 
@@ -351,6 +356,11 @@ def _sync_with(client) -> dict:
         uploaded = True
 
     settings_store.set_setting("drive_seen", json.dumps(seen))
+    # Se in questo giro NON abbiamo incontrato stati di schema più nuovo, l'app
+    # è di nuovo allineata: spegni l'avviso "aggiorna" (apply_snapshot lo accende
+    # quando serve, qui lo spegniamo quando la sync è pulita → auto-guarigione).
+    if future == 0:
+        settings_store.set_setting("sync_needs_update", "")
     return {"ok": True, "applied": applied, "skipped": skipped,
             "errors": errors, "downloaded": downloaded, "uploaded": uploaded, "future": future}
 
