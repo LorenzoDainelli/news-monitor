@@ -317,6 +317,14 @@ Cosa: il resto dell'app, nel modo onesto.
       avvio robusto se drive.js manca, e soprattutto il blocco WebKit "Response
       served by service worker has redirections" (Cloudflare fa 308 /index.html
       → /: il SW ora ripulisce le risposte dai redirect prima di cacharle, v8).
-- ☐ Fase 6 — Dashboard sola-lettura sul telefono
-- ☐ Fase 7 — Robustezza e rifiniture
+- ☐ Fase 6 — Dashboard sola-lettura sul telefono (SALTATA per scelta utente)
+- ☑ Fase 7 — Robustezza e rifiniture — 15/07/2026
+      (piano-contratto PIANO-FASE-7.md; SVILUPPATA da Antigravity, review Fase 3
+      di Claude Code = PROMOSSO + rifiniture. Contenuti: guardia di versione
+      schema forward-compat — un dispositivo salta le op di schema più nuovo e
+      alza un avviso "aggiorna", che si auto-spegne a sync pulita; test
+      multi-dispositivo simulato — 2 DB + finto-Drive, convergenza X+Y e LWW;
+      indicatore "ultima sync" + avviso >7 giorni sulla PWA; messaggi Drive
+      quota/token; compattazione tombstone transazioni >365gg all'avvio.
+      44/44 test verdi.)
 - ☐ (opz.) v2.1 Import CSV · v2.2 auto-prezzi · v2.3 PIN locale
