@@ -47,6 +47,7 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: s
         "ai_test": ai_test,
         "MODES": ai.MODES,
         "ai_provider": ai.get_provider(),
+        "ai_default_model": ai.default_model(),
         "PROVIDERS": ai.PROVIDERS,
         "vertex_project": store.get_setting("vertex_project", ""),
         "vertex_location": store.get_setting("vertex_location", "") or ai.DEFAULT_VERTEX_LOCATION,

@@ -29,6 +29,12 @@ from shared import privacy
 DEFAULT_MODEL = "gemini-2.0-flash"        # modello gratuito; modificabile in Impostazioni
 DEFAULT_FALLBACK = "gemini-2.0-flash-lite"  # ripiego se i limiti del principale sono esauriti
 
+# ATTENZIONE: i nomi NON sono intercambiabili fra i due provider. Su Vertex i
+# modelli 2.0 non esistono (404 in ogni regione, verificato sul progetto reale):
+# lì serve il 2.5, che risponde su global/us-central1/europe-west1/europe-west4.
+DEFAULT_MODEL_VERTEX = "gemini-2.5-flash"
+DEFAULT_FALLBACK_VERTEX = "gemini-2.5-flash-lite"
+
 # Due strade per lo STESSO modello Gemini, scelte dall'utente in Impostazioni:
 #  - "studio": Google AI Studio, chiave API, piano gratuito → DEFAULT, invariato;
 #  - "vertex": Vertex AI su Google Cloud, autenticazione con service account →
@@ -56,12 +62,26 @@ SYSTEM_PROMPT = (
 )
 
 
+def _model_key() -> str:
+    """Ogni provider ricorda il SUO modello: cambiando provider non ci si porta
+    dietro un nome che di là non esiste."""
+    return "vertex_model" if get_provider() == PROVIDER_VERTEX else "gemini_model"
+
+
+def default_model() -> str:
+    return DEFAULT_MODEL_VERTEX if get_provider() == PROVIDER_VERTEX else DEFAULT_MODEL
+
+
+def default_fallback() -> str:
+    return DEFAULT_FALLBACK_VERTEX if get_provider() == PROVIDER_VERTEX else DEFAULT_FALLBACK
+
+
 def get_model() -> str:
-    return store.get_setting("gemini_model", "").strip() or DEFAULT_MODEL
+    return store.get_setting(_model_key(), "").strip() or default_model()
 
 
 def set_model(value: str) -> None:
-    store.set_setting("gemini_model", (value or "").strip())
+    store.set_setting(_model_key(), (value or "").strip())
 
 
 def get_mode() -> str:
@@ -172,13 +192,14 @@ def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20, _model: s
         with urllib.request.urlopen(req, timeout=timeout) as r:
             data = json.loads(r.read())
     except urllib.error.HTTPError as e:
-        # Modello non trovato/ritirato (es. un nome vecchio salvato): ripiega UNA
-        # volta sul modello di default, così l'agente non si rompe da solo.
-        if e.code == 404 and _model is None and model != DEFAULT_MODEL:
-            return _call(prompt, system, timeout, _model=DEFAULT_MODEL)
-        # Limiti del free tier esauriti sul principale: UNA prova col ripiego lite.
-        if e.code == 429 and _model is None and model != DEFAULT_FALLBACK:
-            return _call(prompt, system, timeout, _model=DEFAULT_FALLBACK)
+        # Modello non trovato/ritirato (es. un nome vecchio salvato, o un nome
+        # dell'altro provider): ripiega UNA volta sul default DI QUESTO provider,
+        # così l'agente non si rompe da solo.
+        if e.code == 404 and _model is None and model != default_model():
+            return _call(prompt, system, timeout, _model=default_model())
+        # Limiti del piano esauriti sul principale: UNA prova col ripiego lite.
+        if e.code == 429 and _model is None and model != default_fallback():
+            return _call(prompt, system, timeout, _model=default_fallback())
         raise
     cands = data.get("candidates") or []
     if not cands:

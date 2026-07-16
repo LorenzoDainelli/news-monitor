@@ -83,6 +83,46 @@ def test_set_provider_valida():
     assert ai.get_provider() == "vertex"
 
 
+# ── modello: ogni provider ha il suo (i 2.0 su Vertex danno 404) ─────────────
+
+def test_ogni_provider_ha_il_suo_modello():
+    # default per provider
+    assert ai.get_model() == ai.DEFAULT_MODEL                 # studio → 2.0-flash
+    ai.set_provider("vertex")
+    assert ai.get_model() == ai.DEFAULT_MODEL_VERTEX          # vertex → 2.5-flash
+
+    # il modello scelto su un provider NON contamina l'altro
+    ai.set_model("gemini-2.5-pro")
+    assert store_mod.get_setting("vertex_model") == "gemini-2.5-pro"
+    ai.set_provider("studio")
+    assert ai.get_model() == ai.DEFAULT_MODEL                 # studio resta al suo
+    ai.set_model("gemini-2.0-flash-lite")
+    ai.set_provider("vertex")
+    assert ai.get_model() == "gemini-2.5-pro"                 # vertex ricorda il suo
+
+
+def test_fallback_404_usa_il_default_del_provider(monkeypatch):
+    """Un nome di modello inesistente su Vertex deve ripiegare sul 2.5, non sul 2.0."""
+    ai.set_provider("vertex")
+    store_mod.set_setting("vertex_project", "p")
+    store_mod.set_setting("vertex_service_account_json", "{}")
+    store_mod.set_setting("vertex_model", "gemini-2.0-flash")   # inesistente su Vertex
+    monkeypatch.setattr(ai, "_vertex_access_token", lambda: "TOK")
+
+    visti = []
+
+    def _urlopen(req, timeout=None):
+        visti.append(req.full_url)
+        if len(visti) == 1:                       # primo tentativo → 404
+            raise urllib.error.HTTPError(req.full_url, 404, "Not Found", {}, None)
+        return FakeResp({"candidates": [{"content": {"parts": [{"text": "OK"}]}}]})
+
+    monkeypatch.setattr(urllib.request, "urlopen", _urlopen)
+    assert ai._call("ciao") == "OK"
+    assert "gemini-2.0-flash:generateContent" in visti[0]
+    assert f"{ai.DEFAULT_MODEL_VERTEX}:generateContent" in visti[1]
+
+
 # ── Studio: endpoint + header + parsing ──────────────────────────────────────
 
 def test_studio_call_costruisce_endpoint_e_header(monkeypatch):

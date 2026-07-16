@@ -75,8 +75,14 @@ avevi resta salvata: riparte tutto come prima, gratis.
 - **"Chiave non valida" / errore 401-403**: il service account non ha il ruolo
   *Vertex AI User*, oppure l'API Vertex non è abilitata, oppure hai incollato un
   JSON incompleto. Ricontrolla i passi 1-3.
-- **Modello non trovato (404)**: prova a lasciare il modello `gemini-2.0-flash` e
-  la regione `global`. L'app ripiega comunque una volta sul modello predefinito.
+- **Modello non trovato (404)**: su Vertex i modelli **2.0 non esistono** (danno 404
+  in ogni regione): lì serve il **2.5**. L'app lo sa e usa `gemini-2.5-flash` di
+  default quando il provider è Vertex — ogni provider ricorda il proprio modello,
+  quindi passare da Studio a Vertex non trascina un nome che di là non esiste. Se
+  hai scritto a mano un modello inesistente, l'app ripiega comunque una volta sul
+  default del provider. Verificato sul progetto reale: `gemini-2.5-flash`,
+  `gemini-2.5-flash-lite` e `gemini-2.5-pro` rispondono su `global`, `us-central1`,
+  `europe-west1`, `europe-west4`.
 
 ## Controllare la spesa
 In Console Cloud: **Fatturazione → Report** (filtra per servizio *Vertex AI*) e
