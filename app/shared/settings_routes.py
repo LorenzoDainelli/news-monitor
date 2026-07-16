@@ -46,6 +46,10 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: s
         "ai_mode": ai.get_mode(),
         "ai_test": ai_test,
         "MODES": ai.MODES,
+        "ai_provider": ai.get_provider(),
+        "PROVIDERS": ai.PROVIDERS,
+        "vertex_project": store.get_setting("vertex_project", ""),
+        "vertex_location": store.get_setting("vertex_location", "") or ai.DEFAULT_VERTEX_LOCATION,
         "drive_msg": drive,
         "drive_configured": drive_sync.is_configured(),
         "drive_connected": drive_sync.is_connected(),
@@ -75,6 +79,8 @@ def _esito_test(ok: bool, detail: str) -> str:
         return "rate"        # limite di richieste raggiunto (free tier)
     if d == "rete":
         return "net"         # nessuna connessione
+    if "vertex_libs" in d:
+        return "vertexlibs"  # provider Vertex scelto ma google-auth non installato
     return "err"
 
 
@@ -144,4 +150,12 @@ async def salva(request: Request):
         ai.set_model((form.get("modello") or "").strip())
     if "modalita" in form:
         ai.set_mode((form.get("modalita") or "").strip())
+    # provider dell'agente + configurazione Vertex (progetto/regione non segreti):
+    # il service account è già gestito sopra dal ciclo su KNOWN_SETTINGS.
+    if "ai_provider" in form:
+        ai.set_provider((form.get("ai_provider") or "").strip())
+    if "vertex_project" in form:
+        store.set_setting("vertex_project", (form.get("vertex_project") or "").strip())
+    if "vertex_location" in form:
+        store.set_setting("vertex_location", (form.get("vertex_location") or "").strip())
     return RedirectResponse("/impostazioni?salvato=1", status_code=303)

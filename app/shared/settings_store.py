@@ -21,6 +21,10 @@ KNOWN_SETTINGS = {
     # (compare negli URL di consenso), il client secret sì.
     "drive_client_id":     {"tkey": "set.drive_cid", "secret": False},
     "drive_client_secret": {"tkey": "set.drive_csec", "secret": True},
+    # Vertex AI (provider alternativo dell'agente): il JSON della chiave del
+    # service account è un SEGRETO. Progetto e regione, non segreti, sono gestiti
+    # a parte in settings_routes (semplici caselle di testo). Guida SETUP-VERTEX.md.
+    "vertex_service_account_json": {"tkey": "set.vertex_sa", "secret": True},
 }
 
 

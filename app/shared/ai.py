@@ -12,9 +12,10 @@ Filosofia dell'agente (dal CLAUDE.md del news-monitor):
 - italiano semplice, onestà intellettuale, ridurre il rumore;
 - la decisione finale resta sempre dell'utente.
 
-Provider ASTRATTO: oggi Gemini (free tier di Google AI Studio); domani Vertex AI o
-Claude si innestano qui senza toccare il resto. La chiave sta solo in locale
-(database), mai nei log né nell'URL (passata via header).
+Provider ASTRATTO per lo stesso modello Gemini, scelto in Impostazioni: "studio"
+(Google AI Studio, chiave API, piano gratuito — default) oppure "vertex" (Vertex
+AI su Google Cloud, service account — consuma i crediti del progetto). La chiave/
+credenziali stanno solo in locale (database), mai nei log né nell'URL (via header).
 """
 import json
 import re
@@ -27,7 +28,19 @@ from shared import privacy
 
 DEFAULT_MODEL = "gemini-2.0-flash"        # modello gratuito; modificabile in Impostazioni
 DEFAULT_FALLBACK = "gemini-2.0-flash-lite"  # ripiego se i limiti del principale sono esauriti
-ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+# Due strade per lo STESSO modello Gemini, scelte dall'utente in Impostazioni:
+#  - "studio": Google AI Studio, chiave API, piano gratuito → DEFAULT, invariato;
+#  - "vertex": Vertex AI su Google Cloud, autenticazione con service account →
+#    consuma i crediti del progetto Cloud dell'utente. Il CORPO della richiesta
+#    (contents/systemInstruction/generationConfig) è identico: cambiano solo
+#    l'endpoint e l'header di autenticazione. Guida in docs/SETUP-VERTEX.md.
+PROVIDER_STUDIO = "studio"
+PROVIDER_VERTEX = "vertex"
+PROVIDERS = (PROVIDER_STUDIO, PROVIDER_VERTEX)
+STUDIO_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+DEFAULT_VERTEX_LOCATION = "global"        # endpoint 'global': ampia disponibilità dei modelli
+VERTEX_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
 
 MODE_ON_DEMAND = "a_domanda"
 MODE_PROACTIVE = "proattivo"
@@ -61,25 +74,100 @@ def set_mode(value: str) -> None:
         store.set_setting("ai_mode", value)
 
 
+def get_provider() -> str:
+    p = store.get_setting("ai_provider", PROVIDER_STUDIO).strip().lower()
+    return p if p in PROVIDERS else PROVIDER_STUDIO
+
+
+def set_provider(value: str) -> None:
+    v = (value or "").strip().lower()
+    if v in PROVIDERS:
+        store.set_setting("ai_provider", v)
+
+
+def vertex_conf() -> dict:
+    """Configurazione Vertex (progetto/regione/service account) dal DB locale.
+    Il JSON del service account è un SEGRETO: mai stamparlo né loggarlo."""
+    return {
+        "project": store.get_setting("vertex_project", "").strip(),
+        "location": store.get_setting("vertex_location", "").strip() or DEFAULT_VERTEX_LOCATION,
+        "sa_json": store.get_setting("vertex_service_account_json", "").strip(),
+    }
+
+
 def is_configured() -> bool:
-    """True se è stata inserita la chiave Gemini (l'agente è sbloccato)."""
+    """True se il provider scelto è pronto all'uso (l'agente è sbloccato)."""
+    if get_provider() == PROVIDER_VERTEX:
+        c = vertex_conf()
+        return bool(c["project"] and c["sa_json"])
     return store.has_key("gemini_api_key")
 
 
-def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20, _model: str = None) -> str:
+# Credenziali Vertex in cache: google-auth gestisce il refresh del token (~1h),
+# così non rifirmiamo il JWT a ogni chiamata. La cache si invalida da sola se
+# cambia il service account (impronta del JSON).
+_vertex_cache = {"fp": None, "creds": None}
+
+
+def _vertex_access_token() -> str:
+    c = vertex_conf()
+    if not c["project"] or not c["sa_json"]:
+        raise RuntimeError("no_key")
+    try:
+        from google.oauth2 import service_account
+        import google.auth.transport.requests as _gart
+    except ImportError as e:
+        # Provider Vertex scelto ma le librerie non sono installate (vedi requirements).
+        raise RuntimeError("vertex_libs_mancanti") from e
+    import hashlib
+    fp = hashlib.sha256(c["sa_json"].encode("utf-8")).hexdigest()
+    if _vertex_cache["fp"] != fp:
+        info = json.loads(c["sa_json"])
+        _vertex_cache["creds"] = service_account.Credentials.from_service_account_info(
+            info, scopes=[VERTEX_SCOPE])
+        _vertex_cache["fp"] = fp
+    creds = _vertex_cache["creds"]
+    if not creds.valid:
+        creds.refresh(_gart.Request())
+    return creds.token
+
+
+def _vertex_endpoint(model: str) -> str:
+    c = vertex_conf()
+    loc = c["location"]
+    host = "aiplatform.googleapis.com" if loc == "global" else loc + "-aiplatform.googleapis.com"
+    return ("https://" + host + "/v1/projects/" + c["project"] +
+            "/locations/" + loc + "/publishers/google/models/" + model + ":generateContent")
+
+
+def _endpoint_headers(model: str) -> tuple:
+    """(url, headers) per il provider corrente. Chiave/token sempre negli header,
+    MAI nell'URL."""
+    if get_provider() == PROVIDER_VERTEX:
+        token = _vertex_access_token()
+        return _vertex_endpoint(model), {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        }
     key = store.get_setting("gemini_api_key", "").strip()
     if not key:
         raise RuntimeError("no_key")
+    return STUDIO_ENDPOINT.format(model=model), {
+        "Content-Type": "application/json",
+        "x-goog-api-key": key,
+    }
+
+
+def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20, _model: str = None) -> str:
     model = _model or get_model()
-    url = ENDPOINT.format(model=model)
+    url, headers = _endpoint_headers(model)
     body = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "systemInstruction": {"parts": [{"text": system}]},
         "generationConfig": {"temperature": 0.4},
     }
     req = urllib.request.Request(
-        url, data=json.dumps(body).encode("utf-8"), method="POST",
-        headers={"Content-Type": "application/json", "x-goog-api-key": key})
+        url, data=json.dumps(body).encode("utf-8"), method="POST", headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             data = json.loads(r.read())
@@ -111,6 +199,8 @@ def test_connection() -> tuple[bool, str]:
         return (False, f"HTTP {detail}")
     except urllib.error.URLError:
         return (False, "rete")
+    except RuntimeError as e:
+        return (False, str(e))          # es. "vertex_libs_mancanti", "no_key"
     except Exception as e:
         return (False, type(e).__name__)
 

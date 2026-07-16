@@ -54,14 +54,31 @@
 
   <div class="note info">{{ t('set.security_note') }}</div>
 
-  <!-- Agente AI (Gemini) -->
+  <!-- Agente AI (Gemini): Studio (gratis) oppure Vertex AI (crediti Cloud) -->
   <div class="card navy" style="margin-top:4px;">
     <div class="card-h">{{ t('set.ai_h') }}</div>
     <div class="card-title" style="display:inline-flex;align-items:center;gap:6px;">{{ icon('sparkles', 15) }} Gemini</div>
     <p style="margin:0 0 10px;">{{ t('set.ai_intro') }}</p>
 
+    <!-- Provider: al cambio la pagina si ricarica e mostra i campi giusti. -->
+    <div class="field" style="max-width:360px;">
+      <label>{{ t('set.ai_provider') }}</label>
+      <form method="post" action="/impostazioni">
+        <select name="ai_provider" onchange="this.form.submit()">
+          {% for p in PROVIDERS %}
+          <option value="{{ p }}" {{ 'selected' if p==ai_provider else '' }}>{{ t('set.ai_provider_' ~ p) }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <div class="hint">{{ t('set.ai_provider_hint') }}</div>
+    </div>
+
     {% if ai_configured %}
       <div class="note ok" style="margin-bottom:12px;">{{ t('set.ai_status_on') }}</div>
+    {% elif ai_provider == 'vertex' %}
+      <div class="note warn" style="margin-bottom:12px;">{{ t('set.vertex_status_off') }}<br>
+        <span class="muted" style="font-size:13px;">{{ t('set.vertex_guide') }}</span>
+      </div>
     {% else %}
       <div class="note warn" style="margin-bottom:12px;">{{ t('set.ai_status_off') }}<br>
         <span class="muted" style="font-size:13px;">{{ t('set.ai_get_key') }}</span>
@@ -72,25 +89,55 @@
     {% elif ai_test == 'badkey' %}<div class="note err">{{ t('set.ai_test_badkey') }}</div>
     {% elif ai_test == 'rate' %}<div class="note warn">{{ t('set.ai_test_rate') }}</div>
     {% elif ai_test == 'net' %}<div class="note warn">{{ t('set.ai_test_net') }}</div>
+    {% elif ai_test == 'vertexlibs' %}<div class="note err">{{ t('set.ai_test_vertexlibs') }}</div>
     {% elif ai_test == 'err' %}<div class="note err">{{ t('set.ai_test_err') }}</div>
     {% elif ai_test == 'nokey' %}<div class="note warn">{{ t('set.ai_test_nokey') }}</div>
     {% endif %}
 
     {% set gem = (voci | selectattr('chiave', 'equalto', 'gemini_api_key') | list | first) %}
+    {% set vsa = (voci | selectattr('chiave', 'equalto', 'vertex_service_account_json') | list | first) %}
     <form class="form" method="post" action="/impostazioni" style="margin:0;padding:0;border:none;box-shadow:none;background:none;max-width:none;">
-      <div class="field">
-        <label>{{ t('set.ai_key') }}</label>
-        {% if gem and gem.presente %}
-          <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=gem.mascherato) }}</div>
-        {% endif %}
-        <input type="password" name="gemini_api_key" autocomplete="off" placeholder="{{ 'AIza…' if not (gem and gem.presente) else t('set.ph_keep') }}">
-        <div class="hint">{{ t('set.ai_key_hint') }}</div>
-        {% if gem and gem.presente %}
-          <label class="hint" style="display:flex;gap:6px;align-items:center;margin-top:6px;font-weight:400;">
-            <input type="checkbox" name="clear_gemini_api_key" style="width:auto;"> {{ t('set.remove_key') }}
-          </label>
-        {% endif %}
-      </div>
+      {% if ai_provider == 'vertex' %}
+        <div class="row2">
+          <div class="field" style="margin-bottom:0;">
+            <label>{{ t('set.vertex_project') }}</label>
+            <input type="text" name="vertex_project" value="{{ vertex_project }}" autocomplete="off" placeholder="mymoney-502422">
+            <div class="hint">{{ t('set.vertex_project_hint') }}</div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>{{ t('set.vertex_location') }}</label>
+            <input type="text" name="vertex_location" value="{{ vertex_location }}" autocomplete="off" placeholder="global">
+            <div class="hint">{{ t('set.vertex_location_hint') }}</div>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px;">
+          <label>{{ t('set.vertex_sa') }}</label>
+          {% if vsa and vsa.presente %}
+            <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.vertex_sa_present') }}</div>
+          {% endif %}
+          <textarea name="vertex_service_account_json" rows="4" autocomplete="off" spellcheck="false" placeholder='{{ '{ "type": "service_account", ... }' if not (vsa and vsa.presente) else t('set.ph_keep') }}' style="font-family:monospace;font-size:12px;"></textarea>
+          <div class="hint">{{ t('set.vertex_sa_hint') }}</div>
+          {% if vsa and vsa.presente %}
+            <label class="hint" style="display:flex;gap:6px;align-items:center;margin-top:6px;font-weight:400;">
+              <input type="checkbox" name="clear_vertex_service_account_json" style="width:auto;"> {{ t('set.remove_key') }}
+            </label>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="field">
+          <label>{{ t('set.ai_key') }}</label>
+          {% if gem and gem.presente %}
+            <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=gem.mascherato) }}</div>
+          {% endif %}
+          <input type="password" name="gemini_api_key" autocomplete="off" placeholder="{{ 'AIza…' if not (gem and gem.presente) else t('set.ph_keep') }}">
+          <div class="hint">{{ t('set.ai_key_hint') }}</div>
+          {% if gem and gem.presente %}
+            <label class="hint" style="display:flex;gap:6px;align-items:center;margin-top:6px;font-weight:400;">
+              <input type="checkbox" name="clear_gemini_api_key" style="width:auto;"> {{ t('set.remove_key') }}
+            </label>
+          {% endif %}
+        </div>
+      {% endif %}
       <div class="row2">
         <div class="field" style="margin-bottom:0;">
           <label>{{ t('set.ai_model') }}</label>
