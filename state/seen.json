@@ -2473,6 +2473,86 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=66414e686f8839b4987357c7da44237b54356ffcc7ba0001fb0228733828497b",
       "data_invio": "2026-07-15T05:15:00+00:00"
+    },
+    {
+      "id": "asml-q2-2026-earnings",
+      "ticker": "ASML",
+      "titolo": "ASML: trimestrale Q2 batte le attese, espansione capacità del 30% trainata dalla domanda AI",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=39780a92338445b316ab65c8ceb596faa890890bf7e3d26c6f9d97126cd41ea7",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "jpm-q2-2026-record",
+      "ticker": "JPM",
+      "titolo": "JPMorgan Chase: utile record nel Q2 2026, il più grande nella storia delle banche USA",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=24c373ba16fbcb23cd7206426b7c24471c93f444b58d8fba03290bdb84f2170c",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "intc-asml-high-na-euv-ultra3",
+      "ticker": "INTC",
+      "titolo": "Intel avvia la produzione con la macchina litografica High-NA EUV di ASML per i chip Ultra 3",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=7a7203cbe1959ba9b29beb4641119c9a6365e271d7d95d98956be6ca71ffc7be",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "wdc-sndk-sox-selloff-jul15",
+      "ticker": "WDC",
+      "titolo": "Western Digital cede il 9% in una seduta, SanDisk di nuovo in calo: l'indice SOX perde il 16% in un mese",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=36ab7c93ee412566782f0367e1563418c8fad622550134719aa38e26ac651a1b",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "lly-ma-ataibeckley",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly vicina all'acquisizione di AtaiBeckley, sviluppatore di farmaci a base di psichedelici",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=27351ac7c79e321f77c750732adfb94ac1b629a887f19f9711abdd32dcf0e1db",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "aapl-ath-china-ai-breakthrough",
+      "ticker": "AAPL",
+      "titolo": "Apple tocca un nuovo massimo storico: il breakthrough dell'AI in Cina apre una nuova fase di crescita",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=69afb7a574d69554ed5f6402cbca39c55ad7dd7eff2791123f34e5a0a967548b",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "lly-glp1-novo-nordisk-lag",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly perde terreno nella corsa alle pillole GLP-1: Novo Nordisk conquista l'89% delle prescrizioni orali USA",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=b390ec668e38345dfeef3aff61fea4ff4198e1ed8c7c64c0564ef47c2491661b",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "nvda-vera-rubin-denial-huang",
+      "ticker": "NVDA",
+      "titolo": "Jensen Huang smentisce i ritardi su Vera Rubin: volumi di produzione 'giganteschi' confermati",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=cac0c9ed0d301ef5277beaa626435d7c438e7fe0189ea9dd77f421ee6b3eebf4",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "nflx-q2-2026-earnings-preview",
+      "ticker": "NFLX",
+      "titolo": "Netflix riporta i risultati Q2 oggi: segnali misti tra engagement in calo e ritorno delle prove gratuite",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=1f225237a19e6f577073fdb7c4565dff14d87daf9801e38c4f2e49f0e9bea881",
+      "data_invio": "2026-07-16T05:10:00+00:00"
+    },
+    {
+      "id": "shel-iran-hormuz-oil-jul16",
+      "ticker": "SHEL",
+      "titolo": "USA-Iran: le navi evitano lo Stretto di Hormuz, petrolio su per il 4° giorno consecutivo",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQa0VSSEhJSHhNNVl6b2dXTWNoa0FjeV9KQkZOMUs1aUtvM0Rwc1FPYk9pd3NlSDgxcy1oVDZqWjQ0c1dFb3NXLUdBOTFpWlJwUld6ZXkwN1lENTREaFpVZ0lDWFY5Y0UzVjdGbHVjQVRsc0FIXzZMSVJfdkVaamtnVnNmZ2lPQm9jV0pCMjdlajFhMmRFVERaLXVvNG1JSi1yYlRxU0NUaGZIUlFhXzJteHhvcTA?oc=5",
+      "data_invio": "2026-07-16T05:10:00+00:00"
     }
   ]
 }
