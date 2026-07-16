@@ -3599,6 +3599,156 @@
       "rilevanza": 52,
       "titolo": "Broadcom sale nella rotazione dal software all'hardware dopo il crollo storico di IBM",
       "url": "https://finnhub.io/api/news?id=66414e686f8839b4987357c7da44237b54356ffcc7ba0001fb0228733828497b"
+    },
+    {
+      "id": "tsm-q2-earnings-2026-07-16",
+      "ticker": "TSM",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "earnings · revisione guidance",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 85,
+      "titolo": "TSMC: trimestre record con margini al 67,7% e guidance rivista al rialzo",
+      "url": "https://finnhub.io/api/news?id=e2681f876425f894bbdbc47e27a2a2dc61efaa3870257845b8ccb5b7fc13dfd4"
+    },
+    {
+      "id": "asml-q2-guidance-2026-07-16",
+      "ticker": "ASML",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "earnings · revisione guidance",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 83,
+      "titolo": "ASML alza la guidance sull'onda dell'AI: RBC vede margini e volumi in crescita",
+      "url": "https://finnhub.io/api/news?id=ce2bd92b1b3fc2f7096ad164ccc6b634cbdd6a5714fa7b88aa1dbc4865899488"
+    },
+    {
+      "id": "intc-asml-higna-euv-2026-07-16",
+      "ticker": "INTC",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "Intel e ASML raggiungono la produzione in volumi con la litografia High NA EUV",
+      "url": "https://finnhub.io/api/news?id=4af2276485302ad2d6180650379c43063978f9f77d574d3ac2f412a441854e61"
+    },
+    {
+      "id": "lly-ataibeckley-acquisition-2026-07-16",
+      "ticker": "LLY",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "M&A · legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Eli Lilly acquisisce uno sviluppatore di farmaci psichedelici per 3,8 miliardi",
+      "url": "https://finnhub.io/api/news?id=6eac034c6914e1faa4d3597b25972ecf5df2fdb6a0f3aad2a0291a50be75e185"
+    },
+    {
+      "id": "ssnlf-korea-intervention-2026-07-16",
+      "ticker": "SSNLF",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "La Corea del Sud triplica i margini per i prodotti con leva su Samsung e SK Hynix",
+      "url": "https://finnhub.io/api/news?id=74ab78b6e965d405ac944fadcf8ca2e5aa0ddd59c8ae896bb43aadddf6d578d3"
+    },
+    {
+      "id": "aapl-china-ai-baidu-alibaba-2026-07-16",
+      "ticker": "AAPL",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Apple porta l'AI generativa in Cina in partnership con Baidu e Alibaba",
+      "url": "https://finnhub.io/api/news?id=a8ae13a2c2079a4d80c9c90876f389844569c950f017522b44bf53df6d4761b0"
+    },
+    {
+      "id": "pltr-nvda-sovereign-ai-2026-07-16",
+      "ticker": "PLTR",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "Palantir e Nvidia si alleano per l'intelligenza artificiale sovrana",
+      "url": "https://finnhub.io/api/news?id=e4e37eb5cc64ccfb65317770b5f18023106ef1935b318eb4e2b63a6c2e191d59"
+    },
+    {
+      "id": "spcx-below-ipo-piper-neutral-2026-07-16",
+      "ticker": "SPCX",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "news aziendale · upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "SpaceX scende sotto i 135 dollari (prezzo IPO) — Piper Sandler avvia copertura con giudizio Neutrale",
+      "url": "https://finnhub.io/api/news?id=3fcf7637376b5aca6d6a404a3878fd038e0ed1e9fe61bdf165bb3e81bcc6b853"
+    },
+    {
+      "id": "orcl-piper-buy-minus28-2026-07-16",
+      "ticker": "ORCL",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "Oracle ha perso il 28% in un mese per i timori sul capex — Piper Sandler resta su Buy",
+      "url": "https://finnhub.io/api/news?id=ebee71cd8559980903408d9e0e85753a1372caee40a1173e2a8b06e3cd861f89"
+    },
+    {
+      "id": "shel-delta-saf-deal-2026-07-16",
+      "ticker": "SHEL",
+      "data": "2026-07-16T17:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 50,
+      "titolo": "Shell Aviation firma un accordo quinquennale con Delta Air Lines per il carburante sostenibile",
+      "url": "https://finnhub.io/api/news?id=a770ba7326012d4c6d0776516620429a981bda88c2e3a713bf31f8a3e0a101a0"
     }
   ]
 }
