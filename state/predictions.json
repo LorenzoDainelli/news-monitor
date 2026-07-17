@@ -3824,6 +3824,156 @@
       "rilevanza": 62,
       "titolo": "Amazon: 225 miliardi in impegni sui chip Trainium e obbligazioni da 25 miliardi per finanziare l'espansione AI",
       "url": "https://finnhub.io/api/news?id=f8415ecbce3315842185372e904d4319b47d8a88fc44db8a2b7fe99fe1085471"
+    },
+    {
+      "id": "spcx-starship-abort-0717",
+      "ticker": "SPCX",
+      "data": "2026-07-17",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 68,
+      "titolo": "SpaceX annulla il lancio di Starship per un guasto ai motori: titolo in forte calo",
+      "url": "https://finnhub.io/api/news?id=c85d85bdb3eb2cd672acf4af47df6411c29c9bdb4f66e65afc9d16bf3b065d3b"
+    },
+    {
+      "id": "chip-selloff-ai-rotation-0717",
+      "ticker": "NVDA",
+      "data": "2026-07-17",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Ondata di vendite sui semiconduttori: AMD -5%, Intel -4%, Nvidia -3% per timori sulla tenuta del capex AI",
+      "url": "https://finnhub.io/api/news?id=9407d1b497759944a531828e00873f50c88db18bfcf8ac31ae2aff4eee55d7a7"
+    },
+    {
+      "id": "aapl-upgrade-most-valuable-0717",
+      "ticker": "AAPL",
+      "data": "2026-07-17",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 63,
+      "titolo": "Apple promossa dagli analisti per la strategia AI wait & see e torna l'azienda più capitalizzata al mondo",
+      "url": "https://finnhub.io/api/news?id=50df664f3e1a9de7e954dfd874704b6b3c1ed3b680b2413ae2d1d9f38bd2e186"
+    },
+    {
+      "id": "amgn-pcsk9-oral-fda-0717",
+      "ticker": "AMGN",
+      "data": "2026-07-17",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "FDA approva il primo inibitore orale del colesterolo PCSK9: rischio competitivo per Amgen",
+      "url": "https://finnhub.io/api/news?id=78e5e8f079a9163c9983b838a804c3a1454e950919ff3b711da86ab6186281b7"
+    },
+    {
+      "id": "lly-glp1-ubs-generici-0717",
+      "ticker": "LLY",
+      "data": "2026-07-17",
+      "tipo_evento": "sentiment_analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 60,
+      "titolo": "UBS: il franchise GLP-1 di Eli Lilly affronta un rischio generico limitato nel lungo periodo",
+      "url": "https://finnhub.io/api/news?id=3d625afa6233dfda8012435905aba1d5df3aa390512caadad743af8838c21959"
+    },
+    {
+      "id": "intc-downgrade-tech-lag-0717",
+      "ticker": "INTC",
+      "data": "2026-07-17",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "titolo": "Downgrade su Intel: la ripresa finanziaria non basta — il ritardo tecnologico resta strutturale",
+      "url": "https://finnhub.io/api/news?id=622ca08f619f64875ae82ec4ae33312f0d3e7151828e6727fd493c6893d7bc41"
+    },
+    {
+      "id": "aapl-q3-preview-ubs-0717",
+      "ticker": "AAPL",
+      "data": "2026-07-17",
+      "tipo_evento": "sentiment_analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "titolo": "UBS prevede un Q3 di Apple in linea con le attese: iPhone guadagna quota, Servizi stabili",
+      "url": "https://finnhub.io/api/news?id=9364719876587039270ce2de51e708fc5e626ffd3aab33fced01f044895a92fd"
+    },
+    {
+      "id": "nvda-japan-ai-factory-0717",
+      "ticker": "NVDA",
+      "data": "2026-07-17",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Jensen Huang annuncia un AI factory di Nvidia in Giappone",
+      "url": "https://finnhub.io/api/news?id=65034592547b14201e57f06a000e14584f0a9fe03fad267ac91bafef8cd86216"
+    },
+    {
+      "id": "meta-compute-launch-0717",
+      "ticker": "META",
+      "data": "2026-07-17",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 53,
+      "titolo": "Meta lancia Meta Compute come servizio cloud AI per terzi: CoreWeave crolla del 35%",
+      "url": "https://finnhub.io/api/news?id=d0a93d3e05ef218ffa6e6e4db2c2159976839444cce322cd15fe5f5feab6b55a"
+    },
+    {
+      "id": "wdc-sndk-ai-data-growth-0717",
+      "ticker": "WDC",
+      "data": "2026-07-17",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 50,
+      "titolo": "L'esplosione dei dati AI alimenta la domanda di storage: Western Digital punta su nuove tecnologie",
+      "url": "https://finnhub.io/api/news?id=1bff065367e5ce63ffe3b46c7679a33c91ac8ebb5fd6d86f8dd7d16ff1a262e3"
     }
   ]
 }
