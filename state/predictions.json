@@ -3749,6 +3749,81 @@
       "rilevanza": 50,
       "titolo": "Shell Aviation firma un accordo quinquennale con Delta Air Lines per il carburante sostenibile",
       "url": "https://finnhub.io/api/news?id=a770ba7326012d4c6d0776516620429a981bda88c2e3a713bf31f8a3e0a101a0"
+    },
+    {
+      "id": "nflx-q2-earnings-guidance-miss-2026-07-17",
+      "ticker": "NFLX",
+      "data": "2026-07-17T05:10:00+00:00",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 80,
+      "titolo": "Netflix: ricavi record a 12,6 miliardi nel Q2 ma la guidance Q3 delude — titolo -9%",
+      "url": "https://finnhub.io/api/news?id=b9262e8e7088697a09775e8e6e043a0d5b4952a1a6c1a76441108973570dd8d3"
+    },
+    {
+      "id": "ko-fairlife-ransomware-2026-07-17",
+      "ticker": "KO",
+      "data": "2026-07-17T05:10:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "titolo": "Attacco ransomware a Fairlife: Coca-Cola sospende la produzione di latte negli USA",
+      "url": "https://finnhub.io/api/news?id=b230ea6e6dfb50bf15deb9baeb6b6a7eac54b5aeaccffd6f0d2d503142ba6fc2"
+    },
+    {
+      "id": "goog-gemini-35-delay-2026-07-17",
+      "ticker": "GOOG",
+      "data": "2026-07-17T05:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "Gemini 3.5 Pro di Google in ritardo di mesi: GOOGL perde il 4,5% tra timori competitivi",
+      "url": "https://finnhub.io/api/news?id=2da554cb89e91012235ff488de3a74ef338dff5f857c0488aecd6b6c512440ef"
+    },
+    {
+      "id": "aapl-cxmt-chip-block-2026-07-17",
+      "ticker": "AAPL",
+      "data": "2026-07-17T05:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "titolo": "Congresso USA preme per bloccare Apple dall'acquisto di chip di memoria cinesi (CXMT)",
+      "url": "https://finnhub.io/api/news?id=8a59d6ebfaa291925a9e0176702c86a6b7ea0067a2d3fcccb2b659ab4ef03082"
+    },
+    {
+      "id": "amzn-trainium-225b-bond-2026-07-17",
+      "ticker": "AMZN",
+      "data": "2026-07-17T05:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Amazon: 225 miliardi in impegni sui chip Trainium e obbligazioni da 25 miliardi per finanziare l'espansione AI",
+      "url": "https://finnhub.io/api/news?id=f8415ecbce3315842185372e904d4319b47d8a88fc44db8a2b7fe99fe1085471"
     }
   ]
 }

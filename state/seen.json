@@ -2553,6 +2553,78 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=a770ba7326012d4c6d0776516620429a981bda88c2e3a713bf31f8a3e0a101a0",
       "data_invio": "2026-07-16T17:10:00+00:00"
+    },
+    {
+      "id": "nflx-q2-earnings-guidance-miss-2026-07-17",
+      "ticker": "NFLX",
+      "titolo": "Netflix: ricavi record a 12,6 miliardi nel Q2 ma la guidance Q3 delude — titolo -9%",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=b9262e8e7088697a09775e8e6e043a0d5b4952a1a6c1a76441108973570dd8d3",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "ko-fairlife-ransomware-2026-07-17",
+      "ticker": "KO",
+      "titolo": "Attacco ransomware a Fairlife: Coca-Cola sospende la produzione di latte negli USA",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=b230ea6e6dfb50bf15deb9baeb6b6a7eac54b5aeaccffd6f0d2d503142ba6fc2",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "goog-gemini-35-delay-2026-07-17",
+      "ticker": "GOOG",
+      "titolo": "Gemini 3.5 Pro di Google in ritardo di mesi: GOOGL perde il 4,5% tra timori competitivi",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=2da554cb89e91012235ff488de3a74ef338dff5f857c0488aecd6b6c512440ef",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "aapl-cxmt-chip-block-2026-07-17",
+      "ticker": "AAPL",
+      "titolo": "Congresso USA preme per bloccare Apple dall'acquisto di chip di memoria cinesi (CXMT)",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=8a59d6ebfaa291925a9e0176702c86a6b7ea0067a2d3fcccb2b659ab4ef03082",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "amzn-trainium-225b-bond-2026-07-17",
+      "ticker": "AMZN",
+      "titolo": "Amazon: 225 miliardi in impegni sui chip Trainium e obbligazioni da 25 miliardi per finanziare l'espansione AI",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=f8415ecbce3315842185372e904d4319b47d8a88fc44db8a2b7fe99fe1085471",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "shel-iran-redsea-escalation-2026-07-17",
+      "ticker": "SHEL",
+      "titolo": "Escalation USA-Iran: sesta notte consecutiva di attacchi, Iran minaccia la chiusura del Mar Rosso — petrolio in rialzo",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQYnAzc0RfelUyaHNBcU5ERWVndUwxNkhxOC1sREo3M2xoeGp0Vko0MTREMXludzBTcG52UVpvSmpRdlpLV2FFU0VNT2cybFU2b3NjTkhUMkZKWlNZMmo0RWFDV0pfSEU1RDFtVURxQjAtRVBXeTB6VWZCNUpFUVRJRFRSRDA0NzJlN1d2bjl5T3VLZ2lxQndYZ29SUFB0Y05YUkxzd1pOSktyME9XMTFMVWRsVnhRV2RG?oc=5",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "lly-analyst-upgrades-post-atai-2026-07-17",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly: ondata di rialzi dei target da parte degli analisti dopo l'acquisizione di AtaiBeckley",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=f0ad3d9abaaef5ea1ab7af0402f99bf8fd9114bfa921579e54c90ed1027ccc23",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "nukl-nvidia-valar-smr-datacenter-2026-07",
+      "ticker": "NUKL",
+      "titolo": "ETF nucleare/uranio (NUKL): Nvidia e Valar Atomics lanciano il primo data center AI alimentato da reattore SMR",
+      "tipo_evento": "macro tematica",
+      "url": "https://www.deseret.com/u-s-world/2026/07/01/valar-atomics-nvidia-milestone/",
+      "data_invio": "2026-07-17T05:10:00+00:00"
+    },
+    {
+      "id": "pltr-snp-sap-partnership-2026-07-17",
+      "ticker": "PLTR",
+      "titolo": "Palantir si allea con SNP per le trasformazioni SAP con AI integrata nelle grandi imprese",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=45a8b14194ec984b75aeee82536351ca138359dcf5b46354a10e661b6f205b66",
+      "data_invio": "2026-07-17T05:10:00+00:00"
     }
   ]
 }
