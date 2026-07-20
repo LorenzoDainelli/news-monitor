@@ -3974,6 +3974,156 @@
       "rilevanza": 50,
       "titolo": "L'esplosione dei dati AI alimenta la domanda di storage: Western Digital punta su nuove tecnologie",
       "url": "https://finnhub.io/api/news?id=1bff065367e5ce63ffe3b46c7679a33c91ac8ebb5fd6d86f8dd7d16ff1a262e3"
+    },
+    {
+      "id": "ibm-q2-crollo-25pct",
+      "ticker": "IBM",
+      "data": "2026-07-20",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 80,
+      "titolo": "IBM crolla del 25% in un solo giorno: i risultati preliminari Q2 deludono e si teme un taglio della guidance annuale",
+      "url": "https://finnhub.io/api/news?id=7515c55fbf97b6944ee200859612b248e4d9a3ffcbf0e5e9732076e4c4bd66d3"
+    },
+    {
+      "id": "orcl-credito-junk-52w-low",
+      "ticker": "ORCL",
+      "data": "2026-07-20",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 75,
+      "titolo": "Oracle: rating del credito tagliato verso il territorio junk e nuovo minimo annuale — il piano capex AI non convince il mercato",
+      "url": "https://finnhub.io/api/news?id=868679b71c248572c8b429c64ac3c01020340aba3faa69927cfd8002fb7f81ca"
+    },
+    {
+      "id": "jnj-earnings-blowout-ma-fda",
+      "ticker": "JNJ",
+      "data": "2026-07-20",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "titolo": "Johnson & Johnson: trimestre eccellente, acquisizione nella chirurgia spinale e via libera FDA per un dispositivo cardiaco",
+      "url": "https://finnhub.io/api/news?id=8d88b130ffa95c1632bba1a2a2e600b109439fdb1e85c0c8ffa6f37540cd5258"
+    },
+    {
+      "id": "shel-iran-petroliere-hormuz-brent90",
+      "ticker": "SHEL",
+      "data": "2026-07-20",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "titolo": "USA-Iran: nona notte consecutiva di attacchi, due petroliere esplodono nello Stretto di Hormuz — Brent supera 90 dollari",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPbmtOemhMR1UtaVNoMENBMHltNEpKTWJNekRXUEtSa3hidndTM0VZVnRoTEJlV2ZENWtkYVFCUkJtSk8zdFhPeEJQSXRNMS1vWC03N2NJek14WklXdzhNZWkzMnZRUFpGcHg2OXotaHpyVW9jblFTYUM4U2lGcXFWa1NFbnZSQnpreVF6OXVhMW1oeHdIdkFNMjBJa09UZGgycjRkMjZ6Z1dxNC10enJIVDZJdlVSQjRxQlBZc05Tdw?oc=5"
+    },
+    {
+      "id": "avgo-standard-chartered-cloud-54mercati",
+      "ticker": "AVGO",
+      "data": "2026-07-20",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Broadcom porta il cloud banking di Standard Chartered in 54 mercati mondiali con un grande accordo infrastrutturale",
+      "url": "https://finnhub.io/api/news?id=6216c1903bfb5069a67eec855674b51bf77cd49c59ac878578c693d214b7dab8"
+    },
+    {
+      "id": "nflx-acquisizione-interpositive-587m",
+      "ticker": "NFLX",
+      "data": "2026-07-20",
+      "tipo_evento": "M&A",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "titolo": "Netflix spende 587 milioni per la startup di AI cinematografica co-fondata da Ben Affleck",
+      "url": "https://finnhub.io/api/news?id=f37df1127ddd6aaed4ca2c8688ee32f66c90aa33ede187c6017586de7cffbcc8"
+    },
+    {
+      "id": "aapl-causa-openai-hardware",
+      "ticker": "AAPL",
+      "data": "2026-07-20",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 62,
+      "titolo": "Apple cita in giudizio OpenAI: la causa potrebbe bloccare i piani di espansione hardware dello storico rivale",
+      "url": "https://finnhub.io/api/news?id=9b620eb1272a611f663ff7120ac487af26f4fc94cb6084eacf3d4617bbe7a3ef"
+    },
+    {
+      "id": "wmt-richiamo-taylorfarms-cyclospora",
+      "ticker": "WMT",
+      "data": "2026-07-20",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "alta",
+      "rilevanza": 60,
+      "titolo": "Cyclospora nei sacchi insalata: Walmart ritira quattro prodotti Taylor Farms, volatilità sul titolo",
+      "url": "https://finnhub.io/api/news?id=3a907727516ab43302cf43fe0ce306f9c4aee4ebcbc68a1c53064af952b17307"
+    },
+    {
+      "id": "spcx-morgan-stanley-target300",
+      "ticker": "SPCX",
+      "data": "2026-07-20",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Morgan Stanley fissa un target da 300 dollari su SpaceX mentre il titolo è ai minimi da 52 settimane",
+      "url": "https://finnhub.io/api/news?id=be6ecbbf1eeaf6225cfe625dc7ad69f9dc740f3d1334cb6bb6e1c731460dd544"
+    },
+    {
+      "id": "amzn-anthropic-ipo-1200mld",
+      "ticker": "AMZN",
+      "data": "2026-07-20",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 58,
+      "titolo": "Anthropic verso un'IPO da 1.200 miliardi: Amazon, tra i principali azionisti, potrebbe essere un grande beneficiario",
+      "url": "https://finnhub.io/api/news?id=53325a2ad4f0ed7a4ff404f670b6d6de71c4895d5aad481e74a83ca9b1b030a5"
     }
   ]
 }
