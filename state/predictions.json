@@ -4124,6 +4124,126 @@
       "rilevanza": 58,
       "titolo": "Anthropic verso un'IPO da 1.200 miliardi: Amazon, tra i principali azionisti, potrebbe essere un grande beneficiario",
       "url": "https://finnhub.io/api/news?id=53325a2ad4f0ed7a4ff404f670b6d6de71c4895d5aad481e74a83ca9b1b030a5"
+    },
+    {
+      "id": "ssnlf-job-cuts-us-20260720",
+      "ticker": "SSNLF",
+      "data": "2026-07-20",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "titolo": "Samsung taglia centinaia di dipendenti negli USA e sposta le operazioni",
+      "url": "https://finnhub.io/api/news?id=12e895a3c675facb79d45929e7b604cf80c39f6a281f8238edd43e181059134f"
+    },
+    {
+      "id": "meta-tennessee-trial-instagram-20260720",
+      "ticker": "META",
+      "data": "2026-07-20",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "titolo": "Meta a processo nel Tennessee: Instagram accusata di alimentare la crisi della salute mentale giovanile",
+      "url": "https://finnhub.io/api/news?id=6631ff4ddc0eb9ab51e91615982cbe24eb1f64639369b4e1c679efc995bb4413"
+    },
+    {
+      "id": "ibm-breakup-talk-post-crash-20260720",
+      "ticker": "IBM",
+      "data": "2026-07-20",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 58,
+      "titolo": "Dopo il crollo storico, Wall Street inizia a discutere una possibile scissione di IBM",
+      "url": "https://finnhub.io/api/news?id=f3d20a04ef349d3c2e0881b20d2e2ea42947e1049860e8d2ff72baec6cdea62e"
+    },
+    {
+      "id": "asml-retention-bonus-20000-20260720",
+      "ticker": "ASML",
+      "data": "2026-07-20",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 55,
+      "titolo": "ASML offre un bonus da €20.000 ai dipendenti per trattenerli fino al 2030",
+      "url": "https://finnhub.io/api/news?id=dfa56a67b79597d7d52938f04f9bbc23c236dd8009005e254408c71c3864c95a"
+    },
+    {
+      "id": "goog-new-server-chip-20260720",
+      "ticker": "GOOG",
+      "data": "2026-07-20",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "titolo": "Google sta sviluppando un nuovo chip server proprietario per l'AI",
+      "url": "https://finnhub.io/api/news?id=c6dead17a4f77a198559009ee65aa218445ec5eaca93ed74832730938bce1545"
+    },
+    {
+      "id": "nvda-avgo-morgan-stanley-entry-20260720",
+      "ticker": "NVDA",
+      "data": "2026-07-20",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "titolo": "Morgan Stanley: NVDA e AVGO offrono il miglior valore sui chip dopo le vendite recenti",
+      "url": "https://finnhub.io/api/news?id=07f8895614d70e051e4b43bbcedc915b32efd046ce61479dba69c255e7f68206"
+    },
+    {
+      "id": "intc-q2-preview-wedbush-20260720",
+      "ticker": "INTC",
+      "data": "2026-07-20",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "titolo": "Wedbush prevede che Intel batta le attese nel Q2, ma restano rischi di sentiment",
+      "url": "https://finnhub.io/api/news?id=112072690a82644038200a2c23bf186cc0cc1d22c2557ac5a1f77c8c6df41238"
+    },
+    {
+      "id": "meta-q2-preview-bofa-20260720",
+      "ticker": "META",
+      "data": "2026-07-20",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 52,
+      "titolo": "BofA si aspetta che Meta batta le stime Q2 grazie alla pubblicità e all'AI",
+      "url": "https://finnhub.io/api/news?id=7640f854c240c7e9972f8761a87844b206009d050037144c430fb28437d62a66"
     }
   ]
 }

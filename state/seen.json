@@ -2785,6 +2785,70 @@
       "tipo_evento": "news aziendale",
       "url": "https://finnhub.io/api/news?id=53325a2ad4f0ed7a4ff404f670b6d6de71c4895d5aad481e74a83ca9b1b030a5",
       "data_invio": "2026-07-20T05:10:00+00:00"
+    },
+    {
+      "id": "ssnlf-job-cuts-us-20260720",
+      "ticker": "SSNLF",
+      "titolo": "Samsung taglia centinaia di dipendenti negli USA e sposta le operazioni",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=12e895a3c675facb79d45929e7b604cf80c39f6a281f8238edd43e181059134f",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "meta-tennessee-trial-instagram-20260720",
+      "ticker": "META",
+      "titolo": "Meta a processo nel Tennessee: Instagram accusata di alimentare la crisi della salute mentale giovanile",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=6631ff4ddc0eb9ab51e91615982cbe24eb1f64639369b4e1c679efc995bb4413",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "ibm-breakup-talk-post-crash-20260720",
+      "ticker": "IBM",
+      "titolo": "Dopo il crollo storico, Wall Street inizia a discutere una possibile scissione di IBM",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=f3d20a04ef349d3c2e0881b20d2e2ea42947e1049860e8d2ff72baec6cdea62e",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "asml-retention-bonus-20000-20260720",
+      "ticker": "ASML",
+      "titolo": "ASML offre un bonus da €20.000 ai dipendenti per trattenerli fino al 2030",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=dfa56a67b79597d7d52938f04f9bbc23c236dd8009005e254408c71c3864c95a",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "goog-new-server-chip-20260720",
+      "ticker": "GOOG",
+      "titolo": "Google sta sviluppando un nuovo chip server proprietario per l'AI",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=c6dead17a4f77a198559009ee65aa218445ec5eaca93ed74832730938bce1545",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "nvda-avgo-morgan-stanley-entry-20260720",
+      "ticker": "NVDA",
+      "titolo": "Morgan Stanley: NVDA e AVGO offrono il miglior valore sui chip dopo le vendite recenti",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=07f8895614d70e051e4b43bbcedc915b32efd046ce61479dba69c255e7f68206",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "intc-q2-preview-wedbush-20260720",
+      "ticker": "INTC",
+      "titolo": "Wedbush prevede che Intel batta le attese nel Q2, ma restano rischi di sentiment",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=112072690a82644038200a2c23bf186cc0cc1d22c2557ac5a1f77c8c6df41238",
+      "data_invio": "2026-07-20T17:10:00+00:00"
+    },
+    {
+      "id": "meta-q2-preview-bofa-20260720",
+      "ticker": "META",
+      "titolo": "BofA si aspetta che Meta batta le stime Q2 grazie alla pubblicità e all'AI",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=7640f854c240c7e9972f8761a87844b206009d050037144c430fb28437d62a66",
+      "data_invio": "2026-07-20T17:10:00+00:00"
     }
   ]
 }
