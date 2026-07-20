@@ -17,6 +17,17 @@ aumentarlo** e **onestà intellettuale**.
 5. **Mai esporre segreti.** Non stampare, loggare o committare la chiave
    `RESEND_API_KEY` né altri token.
 
+## Orizzonti dell'`impatto` (definizione unica, valida per tutte le routine)
+Il campo `impatto` ha tre orizzonti. Sono **reazioni a una notizia**, non orizzonti
+di investimento: vanno intesi così, sempre.
+- **breve** = 1-5 giorni di borsa (la reazione immediata).
+- **medio** = ~3 mesi, cioè **fino alla trimestrale successiva** (quando il fatto o
+  si vede nei conti o non si vede).
+- **lungo** = 1-2 anni (la tesi strutturale).
+
+Restano stime qualitative con confidenza dichiarata (regola 2): definire l'orizzonte
+serve a renderle **verificabili a posteriori**, non a trasformarle in previsioni.
+
 ## Comportamento operativo
 - **Skip mail vuote (solo REPORT)**: nei report, se nulla supera la soglia (e non sei
   in `test_mode`), NON inviare email; logga comunque la run in `state/runlog.ndjson`.

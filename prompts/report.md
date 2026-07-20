@@ -13,8 +13,11 @@ semplice; mai esporre la chiave API. Il sistema aiuta a CAPIRE, non prevede i pr
 >    copre poco gli ETF UCITS), con parsimonia.
 > 3. **NON aprire/scaricare articoli interi** (niente fetch). Apri un articolo solo
 >    se indispensabile per una notizia **già sopra soglia** (max 1-2, caso raro).
-> 4. **Triage prima, analisi dopo**: l'analisi completa solo sulle poche notizie
->    sopra soglia. Sui titoli senza notizie non ragionare e non scrivere nulla.
+> 4. **Triage prima, analisi dopo, e su due livelli**: **scheda breve** (soli campi
+>    di giudizio) per tutti i candidati sopra soglia, **analisi completa** (riassunto,
+>    fonti, tag) solo per le TOP N che finiscono nell'email. Il risparmio sta nel non
+>    scrivere prosa per voci che nessuno leggerà — non nel giudicare di fretta.
+>    Sui titoli senza notizie non ragionare e non scrivere nulla.
 > 5. Sii **conciso**. Non rileggere file inutilmente.
 > 6. **Esegui triage → analisi → invio UNA SOLA VOLTA.** Non rifare da capo il
 >    lavoro (raddoppia i token) e **non inviare mai una seconda email**.
@@ -54,21 +57,30 @@ passa l'elenco `recent_seen` per riconoscere i doppioni di evento.
    Se non resta nulla per un titolo, passa oltre senza scrivere nulla.
 Tieni una lista breve dei candidati sopravvissuti (titolo, ticker, fonte, punteggio).
 
-## Passo 3 — ANALISI (solo sui candidati sopra soglia)
-Solo per i candidati sopravvissuti, e aggregando in **una voce** la stessa notizia
-da più fonti, compila:
+## Passo 3 — GIUDIZIO su TUTTI i candidati sopra soglia (scheda breve)
+Per **ognuno** dei candidati sopravvissuti al triage (non solo quelli che finiranno
+nell'email), aggregando in **una voce** la stessa notizia da più fonti, compila la
+**scheda breve** — solo campi di giudizio, niente prosa:
 - `tipo_evento` (tassonomia sotto)
-- `titolo`: titolo della notizia **riscritto in italiano semplice e poco tecnico**,
-  mantenendo il significato (non l'headline originale in inglese/gergale)
-- `riassunto`: 2-3 frasi in italiano semplice
-- `fonti`: una o più (testata + link)
+- `titolo`: titolo **riscritto in italiano semplice e poco tecnico**, mantenendo il
+  significato (non l'headline originale in inglese/gergale)
 - `impatto`: `{ breve, medio, lungo }`, ogni valore **una sola parola** ∈
-  `{positivo, neutro, negativo}` (MAI una frase o un commento: il ragionamento va
-  nel `riassunto`)
+  `{positivo, neutro, negativo}` (MAI una frase o un commento). Gli **orizzonti
+  sono definiti in `CLAUDE.md`** (breve 1-5 giorni · medio ~3 mesi · lungo 1-2
+  anni): attieniti a quelli, non a un'idea generica di "lungo periodo".
 - `confidenza`: `bassa | media | alta`
-- `tag`: tematici
-- `sentiment_analisti` (solo **se già presente** nei dati scaricati): rating/target/revisioni
 - `rilevanza`: 0-100
+- `descrittivo`: `true` se la notizia **racconta un movimento di prezzo GIÀ
+  avvenuto** (es. "titolo −10%", "crolla", "+5% overnight"): in quel caso
+  l'`impatto` a breve **descrive il passato**, non lo anticipa. `false` se il prezzo
+  non si è ancora mosso per questa notizia. Non cambia nulla nell'email: serve a non
+  confondere cronaca e stima quando si verifica a posteriori.
+- `url`: la fonte principale.
+
+**Il giudizio ha la stessa cura per tutti**: non sbrigare le voci che non andranno
+in email — è proprio il confronto fra le tue stime e i fatti che rende utile lo
+storico. Quello che si risparmia è la *scrittura* (Passo 4), non il *giudizio*.
+
 Se una notizia tocca **più titoli**, segnalalo nella voce (una voce sola).
 Ricorda: l'impatto è **analisi qualitativa**, non una previsione, mai un consiglio.
 
@@ -95,16 +107,24 @@ tipo evento × magnitudo/sorpresa × recenza × quanto tocca direttamente il tit
 `peso`/`priorita` del titolo. Bande: **70-100 critico** (→ avviso event-check) ·
 **50-69 importante** (→ entra nei report) · **<50 sotto soglia** (scarta).
 
-## Passo 4 — Decidi se inviare e seleziona le TOP (max da settings)
+## Passo 4 — Seleziona le TOP per l'email e completale
 - Ordina i candidati per `rilevanza` decrescente e **seleziona le prime N**, dove
   `N = max_notizie_email` (da `settings.yaml`). Se i candidati sopra soglia sono
   **meno di N, mostrali tutti** (non inventare notizie per riempire). Sono le uniche
-  che vanno nell'email. Gli eventuali candidati oltre la N-esima restano fuori (non
-  marcarli `seen`): verranno rivalutati alla run successiva o decadranno dalla
-  finestra di 36h.
+  che vanno nell'email.
+- **Solo per queste N** aggiungi i campi di presentazione (costano token, quindi
+  vanno solo dove servono davvero, cioè in ciò che leggerai):
+  - `riassunto`: 2-3 frasi in italiano semplice;
+  - `fonti`: una o più (testata + link);
+  - `tag`: tematici;
+  - `sentiment_analisti` (solo **se già presente** nei dati scaricati).
+- I candidati oltre la N-esima **non vanno nell'email e NON vanno marcati `seen`**
+  (verranno rivalutati alla run successiva o decadranno dalla finestra di 36h), ma
+  la loro **scheda breve va comunque registrata** nello storico: vedi Passo 6.
 - `test_mode: true` → invia sempre (oggetto con `[PROVA]`); se nessun candidato,
   manda un'email di prova diagnostica breve (titoli cercati, candidati, soglia).
-- `test_mode: false` e nessun candidato >= soglia → **NON inviare**. Vai al Passo 6.
+- `test_mode: false` e nessun candidato >= soglia → **NON inviare**, ma **registra
+  comunque le schede brevi** (Passo 6) e poi vai al Passo 6.
 
 ## Passo 5 — Scrivi il JSON, renderizza l'HTML, invia
 **NON scrivere l'HTML a mano** (spreca token). Produci solo i **dati** e lascia che
@@ -139,19 +159,31 @@ reinviare**: correggi solo lo stato. Mai una seconda email per run.
 
 ## Passo 6 — Aggiorna lo stato (via script) e committa su `main`
 **NON scrivere Python inline** per aggiornare i JSON. Scrivi un file
-`state_update.json` e lascia fare allo script (deduplica e fa pruning a 30 giorni):
+`state_update.json` e lascia fare allo script (deduplica e pota `seen`):
 ```json
 {
   "seen_add": [{"id":"<slug breve>","ticker":"...","titolo":"<stesso titolo della voce>",
      "tipo_evento":"...","url":"<URL della fonte principale>","data_invio":"<ISO>"}],
   "predictions_add": [{"id":"...","ticker":"...","data":"<ISO>","tipo_evento":"...",
      "impatto":{"breve":"...","medio":"...","lungo":"..."},"confidenza":"...",
-     "rilevanza":NN,"titolo":"...","url":"..."}],
+     "rilevanza":NN,"descrittivo":true|false,"inviata":true|false,
+     "titolo":"...","url":"..."}],
   "runlog": {"ts":"<ISO>","routine":"report","titoli_cercati":N,"notizie_trovate":N,
-     "notizie_inviate":N,"email_inviata":true,"note":"..."}
+     "notizie_inviate":N,"predizioni_registrate":N,"email_inviata":true,"note":"..."}
 }
 ```
-(`seen_add` e `predictions_add` solo per le voci effettivamente inviate.)
+
+⚠️ **I due elenchi NON contengono le stesse voci. È voluto:**
+- **`seen_add` → SOLO le voci effettivamente inviate** nell'email. Questo file
+  guida la deduplica: se ci metti una notizia **non** inviata, quella notizia non
+  verrà **mai più** proposta e la perdi per sempre. Non aggiungerci mai i candidati
+  esclusi dal taglio delle TOP N.
+- **`predictions_add` → TUTTI i candidati sopra soglia** (schede brevi del Passo 3),
+  inviati e non, fino a **~50 per run**. È lo storico su cui si verifica a
+  posteriori se le stime reggono: più è ricco, prima diventa utile. Le voci non
+  inviate hanno `inviata: false` — così si potrà distinguere il campione mostrato
+  (le TOP, molto rilevanti) dal resto, che è mediamente meno rilevante.
+
 In `seen_add` l'`url` **deve essere quello della fonte principale** (è la chiave di
 dedup: stessa notizia = stesso URL) e il `titolo` è quello mostrato nell'email
 (serve alla dedup di evento delle run successive). Poi:
