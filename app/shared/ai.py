@@ -267,6 +267,17 @@ def _norm_date(val, oggi):
     return s if re.match(r"^\d{4}-\d{2}-\d{2}$", s) else oggi
 
 
+def _norm_ora(val, default="12:00"):
+    """Orario 'HH:MM' detto nella frase. Se manca (o non è valido) mezzogiorno:
+    ora neutra, non sposta il movimento al giorno prima/dopo."""
+    s = str(val or "").strip().replace(".", ":")
+    m = re.match(r"^(\d{1,2}):(\d{2})$", s)
+    if not m:
+        return default
+    h, mi = int(m.group(1)), int(m.group(2))
+    return f"{h:02d}:{mi:02d}" if h < 24 and mi < 60 else default
+
+
 def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
     """Trasforma una frase ('ieri 20€ di benzina con la carta') in una BOZZA di
     movimento da far CONFERMARE all'utente. NON salva nulla.
@@ -290,11 +301,15 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
         "con un oggetto JSON valido, senza testo prima o dopo, con QUESTE chiavi:\n"
         '{"tipo":"uscita|entrata|trasferimento|giro","importo":<numero in euro>,'
         '"categoria":"<breve>","wallet":"<nome o vuoto>","wallet_to":"<nome o vuoto>",'
-        '"data":"YYYY-MM-DD","descrizione":"<breve>","confidenza":"bassa|media|alta",'
+        '"data":"YYYY-MM-DD","ora":"HH:MM oppure vuoto",'
+        '"descrizione":"<breve>","confidenza":"bassa|media|alta",'
         '"controparte":"<chi rimborsa, o vuoto>","importo_ricevuto":<numero o 0>,'
         '"data_ricevuto":"YYYY-MM-DD o vuoto","wallet_ricevuto":"<nome o vuoto>"}\n'
         f"Oggi è {oggi}. Risolvi le date relative (es. 'ieri', 'lunedì scorso') in data "
         "assoluta; se non è indicata, usa oggi.\n"
+        "Se la frase dice un ORARIO (es. 'alle 14:13', 'alle 9 e mezza', 'stasera alle "
+        "otto') mettilo in 'ora' nel formato 24 ore HH:MM; se non lo dice, lascia 'ora' "
+        "vuoto (NON inventarlo).\n"
         f"Portafogli disponibili (per 'wallet'/'wallet_to'/'wallet_ricevuto' copia il NOME "
         f"ESATTO più adatto, oppure lascia vuoto): {nomi_w}\n"
         f"Categorie già esistenti (riusane una se calza, altrimenti proponine una breve "
@@ -329,6 +344,7 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
     conf = str(data.get("confidenza", "")).lower()
     conf = "alta" if "alt" in conf else "bassa" if "bass" in conf else "media"
     d = _norm_date(data.get("data"), oggi)
+    ora = _norm_ora(data.get("ora"))
     # partita di giro: gamba del rimborso (0/vuoto = partita APERTA, arriverà dopo)
     ricevuto = _num(data.get("importo_ricevuto")) if tipo == "giro" else 0.0
     d_ric = _norm_date(data.get("data_ricevuto"), oggi) if ricevuto else None
@@ -340,7 +356,7 @@ def parse_movimento(testo, wallets, categorie, oggi=None) -> dict:
         "wallet_id": _match_wallet(data.get("wallet"), wallets),
         "wallet_to_id": _match_wallet(data.get("wallet_to"), wallets) if tipo == "trasferimento" else None,
         "data": d,
-        "data_local": d + "T12:00",        # per <input type=datetime-local>
+        "data_local": d + "T" + ora,       # per <input type=datetime-local>
         "descrizione": str(data.get("descrizione", "")).strip()[:200],
         "confidenza": conf,
         "testo": testo,

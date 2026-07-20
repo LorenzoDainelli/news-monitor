@@ -188,6 +188,42 @@ def test_vertex_senza_credenziali_solleva_no_key():
         ai._vertex_access_token()
 
 
+# ── orario del movimento dettato (prima veniva sempre forzato a mezzogiorno) ──
+
+def test_norm_ora():
+    assert ai._norm_ora("14:13") == "14:13"
+    assert ai._norm_ora("9:30") == "09:30"        # ora a una cifra -> zero davanti
+    assert ai._norm_ora("14.13") == "14:13"       # il punto al posto dei due punti
+    assert ai._norm_ora("") == "12:00"            # non detto -> mezzogiorno neutro
+    assert ai._norm_ora(None) == "12:00"
+    assert ai._norm_ora("25:00") == "12:00"       # ore/minuti fuori scala -> ripiego
+    assert ai._norm_ora("12:75") == "12:00"
+
+
+class _Nome:
+    def __init__(self, nome):
+        self.nome = nome
+
+
+def _proposta(monkeypatch, payload):
+    store_mod.set_setting("gemini_api_key", "AIzaTEST")
+    monkeypatch.setattr(ai, "_call", lambda *a, **k: json.dumps(payload))
+    return ai.parse_movimento("...", [_Nome("Conto")], [_Nome("Bar")], oggi="2026-07-20")
+
+
+def test_orario_dettato_finisce_nel_form(monkeypatch):
+    """'alle 14:13' deve arrivare al campo datetime-local, non diventare 12:00."""
+    p = _proposta(monkeypatch, {"tipo": "uscita", "importo": 12, "data": "2026-07-20",
+                                "ora": "14:13", "confidenza": "alta"})
+    assert p["data_local"] == "2026-07-20T14:13"
+
+
+def test_orario_non_detto_resta_mezzogiorno(monkeypatch):
+    p = _proposta(monkeypatch, {"tipo": "uscita", "importo": 12, "data": "2026-07-20",
+                                "ora": "", "confidenza": "media"})
+    assert p["data_local"] == "2026-07-20T12:00"
+
+
 # ── esito test_connection quando mancano le librerie Vertex ──────────────────
 
 def test_esito_test_mappa_vertexlibs(monkeypatch):
