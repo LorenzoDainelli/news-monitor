@@ -5,6 +5,12 @@ Python inline a ogni run). Deduplica e fa pruning. Solo libreria standard.
 Uso:
     python scripts/update_state.py --data-file state_update.json [--prune-days 30]
 
+Le due finestre di conservazione sono DIVERSE e di proposito:
+- `seen.json` serve solo a non rimandare doppioni: invecchia bene, 30 giorni.
+- `predictions.json` e' la base di prove per la calibrazione (verificare a
+  posteriori se l'impatto stimato ci ha preso): NON si pota, altrimenti il dato
+  sparisce prima ancora dell'orizzonte che dichiara (il 'medio' e' ~3 mesi).
+
 Struttura attesa del JSON:
 {
   "seen_add":        [{"id":"...","ticker":"...","url":"...","data_invio":"ISO"}],
@@ -89,7 +95,11 @@ def merge(existing, additions):
 def main() -> int:
     ap = argparse.ArgumentParser(description="Aggiorna lo stato da JSON.")
     ap.add_argument("--data-file", required=True)
-    ap.add_argument("--prune-days", type=int, default=30)
+    ap.add_argument("--prune-days", type=int, default=30,
+                    help="finestra di seen.json in giorni (0 = non potare)")
+    ap.add_argument("--prune-days-pred", type=int, default=0,
+                    help="finestra di predictions.json (0 = MAI: e' lo storico "
+                         "su cui si calibra, non va buttato)")
     args = ap.parse_args()
 
     try:
@@ -104,7 +114,7 @@ def main() -> int:
     save_items(SEEN, seen)
 
     pred = merge(load_items(PRED), data.get("predictions_add"))
-    pred = prune(pred, args.prune_days, "data")
+    pred = prune(pred, args.prune_days_pred, "data")   # 0 = si tiene tutto
     save_items(PRED, pred)
 
     if data.get("runlog"):

@@ -41,7 +41,11 @@ Passo 2.
 Per i candidati critici (al massimo 5, i più rilevanti) compila i campi come nel
 report: `titolo` (italiano semplice e poco tecnico), `tipo_evento, riassunto, impatto{breve,medio,lungo}, confidenza, tag,
 fonti, rilevanza`. Le **fonti (testata + link) sono obbligatorie** per ogni voce.
-L'`impatto` ha valori di **una sola parola** (positivo/neutro/negativo), mai frasi.
+L'`impatto` ha valori di **una sola parola** (positivo/neutro/negativo), mai frasi;
+gli **orizzonti sono definiti in `CLAUDE.md`** (breve 1-5 giorni · medio ~3 mesi ·
+lungo 1-2 anni). Aggiungi anche `descrittivo`: `true` se la notizia racconta un
+movimento di prezzo **già avvenuto** (es. "titolo −10%", "+5% overnight"), `false`
+altrimenti — non cambia nulla nell'email, serve allo storico.
 Niente fetch di articoli: usa il digest.
 **Valutazione equilibrata:** se la notizia ha sia un lato positivo sia uno negativo
 (es. tagli di personale = risparmio *ma* ridimensionamento), valuta l'effetto
@@ -80,10 +84,13 @@ python scripts/send_email.py --to "<destinatario>" --from "<mittente>" \
 
 ## Passo 5 — Stato + log + commit su `main`
 Scrivi `state_update.json` e aggiorna lo stato:
-- `seen_add` + `predictions_add` **solo** per gli avvisi effettivamente inviati.
+- `seen_add` + `predictions_add` **solo** per gli avvisi effettivamente inviati
+  (questa routine è la più frequente e deve restare leggera: la registrazione estesa
+  dei candidati non inviati la fa il **report**, non tu).
   In `seen_add` ogni voce ha `{id, ticker, titolo, tipo_evento, url, data_invio}`:
   l'`url` è quello della **fonte principale** (chiave di dedup) e il `titolo` quello
   mostrato (serve alla dedup di evento delle run successive).
+  In `predictions_add` aggiungi `descrittivo` e `inviata: true`.
 - `runlog` **sempre**: `{ts, routine:"event-check", titoli_cercati, notizie_trovate,
   notizie_inviate, email_inviata:true, tipo_email:"avviso"|"tranquillo", note}`.
 ```bash

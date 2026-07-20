@@ -121,7 +121,14 @@ def _read_items(path):
 
 
 def _load_items():
-    """Notizie locali (state/) e scaricate da GitHub: vince il set più recente."""
+    """Notizie locali (state/) e scaricate da GitHub: vince il set più recente.
+
+    `predictions.json` contiene anche le notizie **analizzate ma non inviate**
+    (`inviata: false`): servono al robot come storico per verificare a posteriori
+    le proprie stime, NON vanno mostrate qui. Qui si vede ciò che è arrivato per
+    email — altrimenti la sezione si riempie di notizie marginali (filosofia:
+    ridurre il rumore). Le voci vecchie non hanno il campo: erano tutte inviate.
+    """
     locali = _read_items(PREDICTIONS)
     remote = _read_items(REMOTE_CACHE)
 
@@ -129,7 +136,8 @@ def _load_items():
         return max((str(it.get("data", ""))[:10] for it in items if it.get("data")),
                    default="")
 
-    return remote if ultima(remote) >= ultima(locali) and remote else locali
+    scelti = remote if ultima(remote) >= ultima(locali) and remote else locali
+    return [it for it in scelti if it.get("inviata", True)]
 
 
 def news_cards(limit: int = 30):
