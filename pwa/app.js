@@ -1,9 +1,9 @@
-/* MyMoney PWA — app (v2 Fase 4). Finanze OFFLINE sul telefono + sync bidirezionale.
+/* MyMoney PWA — app (v3, redesign "app"). Finanze OFFLINE sul telefono + sync.
    - i dati vivono in IndexedDB (db.js); il calcolo è in finance.js;
-   - all'avvio, se c'è rete, fullSync (push ops locali + pull ops PC) via sync.js;
-   - puoi aggiungere movimenti dal telefono: restano in locale con uid/rev/updated_at,
-     e vengono registrati nel diario per la sincronizzazione;
-   - bottone 🔄 Sincronizza per sync manuale. */
+   - struttura a schede (Home/Movimenti/Conti/Sync) con barra in basso e FAB;
+   - il form Aggiungi vive in un pannello che sale dal fondo (sheet);
+   - all'avvio, se c'è rete, sync (via Drive al ritorno da Google, altrimenti LAN);
+   - il motore dati/sync (db.js/finance.js/sync.js/drive.js) è invariato. */
 (function () {
   "use strict";
   var lang = "it";
@@ -14,6 +14,8 @@
     return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + "T" + p(d.getHours()) + ":" + p(d.getMinutes());
   };
   var parseImporto = function (s) { return parseFloat(String(s || "").replace(/\./g, "").replace(",", ".")) || 0; };
+  function escapeHtml(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (m) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]; }); }
+  function tipoLabel(t) { return ({ contanti: "Contanti", carta: "Carte & Wallet", conto: "Conto", investimento: "Investimenti" }[t] || "Altro"); }
 
   // ---------- service worker ----------
   if ("serviceWorker" in navigator) {
@@ -23,43 +25,121 @@
   // ---------- rete ----------
   function segnalaRete() {
     var on = navigator.onLine;
-    $("net").textContent = on ? "online" : "offline";
-    $("dot").className = "dot " + (on ? "online" : "offline");
+    if ($("net")) $("net").textContent = on ? "online" : "offline";
+    if ($("dot")) $("dot").className = "dot " + (on ? "online" : "offline");
   }
   window.addEventListener("online", function () { segnalaRete(); doSync().then(render); });
   window.addEventListener("offline", segnalaRete);
 
   // ---------- installazione (iOS) ----------
   var isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-  if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !isStandalone) $("install-hint").hidden = false;
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !isStandalone && $("install-hint")) $("install-hint").hidden = false;
 
-  // ---------- API base ----------
+  // ---------- API base (rete locale) ----------
   function apiBase() { try { return localStorage.getItem("mm_api_base") || ""; } catch (e) { return ""; } }
 
-  // ---------- sync bidirezionale (Fase 4) ----------
-  var _syncing = false;
+  // ---------- navigazione a schede ----------
+  var TABS = ["home", "movimenti", "conti", "sync"];
+  function setTab(name) {
+    TABS.forEach(function (n) { var v = $("view-" + n); if (v) v.hidden = n !== name; });
+    document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === name); });
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll(".tab").forEach(function (t) {
+    t.addEventListener("click", function () { setTab(t.getAttribute("data-tab")); });
+  });
+  document.querySelectorAll("[data-goto]").forEach(function (b) {
+    b.addEventListener("click", function () { setTab(b.getAttribute("data-goto")); });
+  });
 
+  // ---------- sync rete locale (Fase 4) ----------
+  var _syncing = false;
   function doSync() {
     if (_syncing || !navigator.onLine) return Promise.resolve(false);
     _syncing = true;
-    var btn = $("sync-btn");
+    var btn = $("sync-btn"), orig = btn ? btn.textContent : "";
     if (btn) { btn.disabled = true; btn.textContent = "⏳ Sync…"; }
     return SYNC.fullSync(apiBase()).then(function (result) {
-      _syncing = false;
-      if (btn) { btn.disabled = false; btn.textContent = "🔄 Sincronizza"; }
+      _syncing = false; if (btn) { btn.disabled = false; btn.textContent = orig; }
       return result.ok;
     }).catch(function () {
-      _syncing = false;
-      if (btn) { btn.disabled = false; btn.textContent = "🔄 Sincronizza"; }
+      _syncing = false; if (btn) { btn.disabled = false; btn.textContent = orig; }
       return false;
     });
   }
 
-  // ---------- render ----------
-  function tipoLabel(t) { return ({ contanti: "Contanti", carta: "Carte & Wallet", conto: "Conto", investimento: "Investimenti" }[t] || "Altro"); }
-  function escapeHtml(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (m) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m]; }); }
-
+  // ---------- dati in memoria ----------
   var _wallets = [], _cats = [], _movs = [];
+  function walletNome(uid) { var w = _wallets.find(function (x) { return x.uid === uid; }); return w ? w.nome : "—"; }
+  function catNome(uid) { var c = _cats.find(function (x) { return x.uid === uid; }); return c ? c.nome : null; }
+
+  function dateLabel(iso) {
+    var d = new Date(iso); if (isNaN(d)) return "";
+    var now = new Date();
+    var a = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var b = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var diff = Math.round((b - a) / 86400000);
+    if (diff === 0) return "oggi";
+    if (diff === 1) return "ieri";
+    return d.toLocaleDateString(lang, { day: "2-digit", month: "2-digit" });
+  }
+
+  // riga movimento -> {main, sub, val, cls}
+  function movToView(m) {
+    var cls, val, sub;
+    if (m.tipo === "giro") {
+      var gd = FIN.giroDisplay(m); cls = "muted";
+      val = (gd > 0 ? "+" : gd < 0 ? "−" : "") + eur(Math.abs(gd));
+      sub = "Giro" + (m.controparte ? " · " + m.controparte : "") + " · " + walletNome(m.wallet_uid);
+    } else if (m.tipo === "entrata") {
+      cls = "pos"; val = "+" + eur(m.importo); sub = (catNome(m.categoria_uid) || "Entrata") + " · " + walletNome(m.wallet_uid);
+    } else if (m.tipo === "uscita") {
+      cls = "neg"; val = "−" + eur(m.importo); sub = (catNome(m.categoria_uid) || "Uscita") + " · " + walletNome(m.wallet_uid);
+    } else {
+      cls = ""; val = eur(m.importo); sub = walletNome(m.wallet_uid) + " → " + walletNome(m.wallet_to_uid);
+    }
+    return { main: m.descrizione ? m.descrizione : sub, sub: sub, val: val, cls: cls };
+  }
+
+  function renderConti(box, wallets, saldoMap, compact) {
+    if (!box) return;
+    box.innerHTML = "";
+    wallets.forEach(function (w) {
+      var val = saldoMap[w.uid] || 0, neg = val < 0 ? " neg" : "";
+      var c = document.createElement("div");
+      if (w.colore) c.style.setProperty("--wc", w.colore);
+      if (compact) {
+        c.className = "cchip";
+        c.innerHTML = '<div class="n">' + escapeHtml(w.nome) + '</div>' +
+          '<div class="v num' + neg + '">' + eur(val) + '</div>';
+      } else {
+        c.className = "wcard";
+        c.innerHTML = '<div class="wmain"><div class="wname">' + escapeHtml(w.nome) + '</div>' +
+          '<div class="wtype">' + tipoLabel(w.tipo) + '</div></div>' +
+          '<div class="wval num' + neg + '">' + eur(val) + '</div>';
+      }
+      box.appendChild(c);
+    });
+  }
+
+  function renderMovimenti(box, movs, dayHeaders) {
+    if (!box) return;
+    box.innerHTML = "";
+    var lastDay = null;
+    movs.forEach(function (m) {
+      if (dayHeaders) {
+        var dl = dateLabel(m.data);
+        if (dl !== lastDay) { var h = document.createElement("div"); h.className = "day-h"; h.textContent = dl; box.appendChild(h); lastDay = dl; }
+      }
+      var v = movToView(m);
+      var row = document.createElement("div"); row.className = "mrow";
+      var subTxt = dayHeaders ? v.sub : (dateLabel(m.data) + " · " + v.sub);
+      row.innerHTML = '<div class="mmain"><div class="mdesc">' + escapeHtml(v.main) + '</div>' +
+        '<div class="msub">' + escapeHtml(subTxt) + '</div></div>' +
+        '<div class="mval num ' + v.cls + '">' + v.val + '</div>';
+      box.appendChild(row);
+    });
+  }
 
   function render() {
     return Promise.all([DB.getAll("wallets"), DB.getAll("categorie"), DB.getAll("movimenti"), DB.getMeta("last_sync"), DB.getMeta("needs_update")])
@@ -67,98 +147,91 @@
         _wallets = (r[0] || []).filter(function (w) { return !w.deleted; });
         _cats = (r[1] || []).filter(function (c) { return !c.deleted; });
         _movs = (r[2] || []).filter(function (m) { return !m.deleted; });
-        var lastSync = r[3];
-        var needsUpdate = !!r[4];
+        var lastSync = r[3], needsUpdate = !!r[4];
 
         var banner = $("drive-needs-update");
         if (banner) banner.classList.toggle("hide", !needsUpdate);
-        if ($("sync-btn")) $("sync-btn").classList.toggle("stale", needsUpdate);
-        if ($("drive-btn")) $("drive-btn").classList.toggle("stale", needsUpdate);
 
-        // Senza portafogli il telefono non ha ancora dati (arrivano con la sync):
-        // niente form (inutilizzabile senza portafogli), stato "vuoto" in evidenza.
         var vuoto = !_wallets.length;
         $("empty").hidden = !vuoto;
-        $("add").hidden = vuoto;
-        if (vuoto) { $("add-form").hidden = true; $("lista-sec").hidden = true; $("wallets").innerHTML = ""; }
+        $("home-full").hidden = vuoto;
+        if ($("fab")) $("fab").style.visibility = vuoto ? "hidden" : "";
 
         var saldoMap = FIN.saldi(_wallets, _movs);
         var tot = FIN.totale(_wallets, saldoMap);
         var now = new Date();
         var riep = FIN.riepilogoMese(_movs, now.getFullYear(), now.getMonth() + 1);
         $("totale").textContent = vuoto ? "—" : eur(tot);
-        $("mese").textContent = vuoto ? "In attesa della sincronizzazione" : ("Questo mese: +" + eur(riep.entrate) + " · −" + eur(riep.uscite));
+        $("mese").textContent = vuoto ? "In attesa della sincronizzazione"
+          : ("Questo mese +" + eur(riep.entrate) + " · −" + eur(riep.uscite));
 
-        // card portafogli
-        var box = $("wallets"); box.innerHTML = "";
-        _wallets.slice().sort(function (a, b) {
+        // conti: investimenti in fondo, poi per |saldo| decrescente
+        var ordinati = _wallets.slice().sort(function (a, b) {
           var ai = a.tipo === "investimento", bi = b.tipo === "investimento";
           if (ai !== bi) return ai ? 1 : -1;
-          return (saldoMap[b.uid] || 0) - (saldoMap[a.uid] || 0);
-        }).forEach(function (w) {
-          var c = document.createElement("div"); c.className = "wcard";
-          if (w.colore) { c.setAttribute("data-accent", "1"); c.style.setProperty("--wc", w.colore); }
-          c.innerHTML = '<div><div class="wname">' + escapeHtml(w.nome) + '</div><div class="wtype">' + tipoLabel(w.tipo) + '</div></div>' +
-            '<div class="wval num">' + eur(saldoMap[w.uid] || 0) + '</div>';
-          box.appendChild(c);
+          return Math.abs(saldoMap[b.uid] || 0) - Math.abs(saldoMap[a.uid] || 0);
         });
+        renderConti($("home-conti"), ordinati.slice(0, 2), saldoMap, true);
+        renderConti($("lista-conti"), ordinati, saldoMap, false);
+        $("conti-vuoto").hidden = !!_wallets.length;
 
-        // lista movimenti (ultimi 40, per data desc)
-        renderLista(saldoMap);
+        var movOrd = _movs.slice().sort(function (a, b) { return new Date(b.data) - new Date(a.data); });
+        renderMovimenti($("home-movimenti"), movOrd.slice(0, 5), false);
+        renderMovimenti($("lista-movimenti"), movOrd.slice(0, 200), true);
+        $("movimenti-vuoto").hidden = !!_movs.length;
+
         popolaForm();
-
-        // info sync
-        var divStale = $("stale");
-        if (divStale) {
-          var msDiff = lastSync ? (new Date() - new Date(lastSync)) : Infinity;
-          var daysDiff = msDiff / (1000 * 3600 * 24);
-          if (!lastSync) {
-            divStale.hidden = false;
-            divStale.textContent = "Non hai ancora sincronizzato questo telefono";
-          } else if (daysDiff > 7) {
-            divStale.hidden = false;
-            divStale.textContent = "Ultima sincronizzazione oltre una settimana fa — tocca 🔄 o ☁️ per aggiornare";
-          } else {
-            divStale.hidden = true;
-          }
-        }
-
-        $("sync-info").textContent = lastSync
-          ? ("Ultima sync: " + new Date(lastSync).toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))
-          : (navigator.onLine ? "Non ancora sincronizzato" : "Offline");
+        renderSyncInfo(lastSync, needsUpdate);
       });
   }
 
-  function walletNome(uid) { var w = _wallets.find(function (x) { return x.uid === uid; }); return w ? w.nome : "—"; }
-  function catNome(uid) { var c = _cats.find(function (x) { return x.uid === uid; }); return c ? c.nome : null; }
-
-  function renderLista() {
-    var lista = $("lista");
-    var movs = _movs.slice().sort(function (a, b) { return new Date(b.data) - new Date(a.data); }).slice(0, 40);
-    if (!movs.length) { $("lista-sec").hidden = true; return; }
-    $("lista-sec").hidden = false;
-    lista.innerHTML = "";
-    movs.forEach(function (m) {
-      var row = document.createElement("div"); row.className = "mrow";
-      var d = new Date(m.data);
-      var data = d.toLocaleDateString(lang, { day: "2-digit", month: "2-digit" });
-      var imp, cls, sub;
-      if (m.tipo === "giro") {
-        var gd = FIN.giroDisplay(m); cls = "muted";
-        imp = (gd > 0 ? "+" : gd < 0 ? "−" : "") + eur(Math.abs(gd));
-        sub = "Giro" + (m.controparte ? " · " + escapeHtml(m.controparte) : "") + " · " + walletNome(m.wallet_uid);
-      } else if (m.tipo === "entrata") { cls = "pos"; imp = "+" + eur(m.importo); sub = (catNome(m.categoria_uid) || "Entrata") + " · " + walletNome(m.wallet_uid); }
-      else if (m.tipo === "uscita") { cls = "neg"; imp = "−" + eur(m.importo); sub = (catNome(m.categoria_uid) || "Uscita") + " · " + walletNome(m.wallet_uid); }
-      else { cls = ""; imp = eur(m.importo); sub = walletNome(m.wallet_uid) + " → " + walletNome(m.wallet_to_uid); }
-      row.innerHTML =
-        '<div class="mmain"><div class="mdesc">' + (escapeHtml(m.descrizione) || sub) + '</div>' +
-        '<div class="msub">' + data + " · " + escapeHtml(sub) + '</div></div>' +
-        '<div class="mval num ' + cls + '">' + imp + '</div>';
-      lista.appendChild(row);
-    });
+  function renderSyncInfo(lastSync, needsUpdate) {
+    var stale = $("stale");
+    if (stale) {
+      if (!lastSync) { stale.hidden = false; stale.textContent = "Non hai ancora sincronizzato questo telefono."; }
+      else {
+        var days = (new Date() - new Date(lastSync)) / 86400000;
+        if (days > 7) { stale.hidden = false; stale.textContent = "Ultima sincronizzazione oltre una settimana fa — tocca ☁️ Drive per aggiornare."; }
+        else stale.hidden = true;
+      }
+    }
+    if ($("sync-info")) $("sync-info").textContent = lastSync
+      ? ("Ultima sync: " + new Date(lastSync).toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))
+      : (navigator.onLine ? "Non ancora sincronizzato" : "Offline");
+    if ($("sync-btn")) $("sync-btn").classList.toggle("stale", needsUpdate);
+    if ($("drive-btn")) $("drive-btn").classList.toggle("stale", needsUpdate);
   }
 
-  // ---------- form aggiungi movimento ----------
+  // ---------- pannello Aggiungi movimento ----------
+  function openSheet() {
+    if (!_wallets.length) return;   // senza conti non si può aggiungere
+    if (!$("af-data").value) $("af-data").value = nowLocalInput();
+    $("backdrop").classList.add("show");
+    $("add-sheet").classList.add("show");
+    document.body.classList.add("locked");
+  }
+  function closeSheet() {
+    $("backdrop").classList.remove("show");
+    $("add-sheet").classList.remove("show");
+    document.body.classList.remove("locked");
+  }
+  if ($("fab")) $("fab").addEventListener("click", openSheet);
+  if ($("backdrop")) $("backdrop").addEventListener("click", closeSheet);
+  if ($("af-cancel")) $("af-cancel").addEventListener("click", closeSheet);
+
+  function setTipo(t) {
+    $("af-tipo").value = t;
+    document.querySelectorAll("#type-picker .ty").forEach(function (b) {
+      b.classList.toggle("on", b.getAttribute("data-tipo") === t);
+    });
+    $("af-wallet-to-lab").hidden = t !== "trasferimento";
+    $("af-cat-row").style.display = t === "trasferimento" ? "none" : "";
+    $("af-wallet-lab").firstChild.textContent = t === "trasferimento" ? "Da portafoglio" : "Portafoglio";
+  }
+  document.querySelectorAll("#type-picker .ty").forEach(function (b) {
+    b.addEventListener("click", function () { setTipo(b.getAttribute("data-tipo")); });
+  });
+
   function popolaForm() {
     ["af-wallet", "af-wallet-to"].forEach(function (id) {
       var sel = $(id), cur = sel.value; sel.innerHTML = "";
@@ -169,22 +242,6 @@
     _cats.forEach(function (c) { var o = document.createElement("option"); o.value = c.nome; dl.appendChild(o); });
   }
 
-  function toggleForm(show) {
-    var f = $("add-form");
-    var open = show == null ? f.hidden : show;
-    f.hidden = !open;
-    if (open) { if (!$("af-data").value) $("af-data").value = nowLocalInput(); $("af-tipo").dispatchEvent(new Event("change")); }
-  }
-
-  $("add").addEventListener("click", function () { toggleForm(true); });
-  $("af-cancel").addEventListener("click", function () { toggleForm(false); });
-  $("af-tipo").addEventListener("change", function () {
-    var t = $("af-tipo").value;
-    $("af-wallet-to-lab").hidden = t !== "trasferimento";
-    $("af-cat-row").style.display = t === "trasferimento" ? "none" : "";
-    $("af-wallet-lab").firstChild.textContent = t === "trasferimento" ? "Da portafoglio" : "Portafoglio";
-  });
-
   function trovaOCreaCategoria(nome, kind) {
     nome = (nome || "").trim();
     if (!nome) return Promise.resolve(null);
@@ -193,10 +250,7 @@
     var c = { uid: nuovoUid(), nome: nome, kind: kind || "", archiviato: false, deleted: false, rev: 1, updated_at: new Date().toISOString(), _local: true };
     return DB.put("categorie", c).then(function () {
       _cats.push(c);
-      // Registra nel diario per la sync
-      return SYNC.getDeviceId().then(function (did) {
-        return SYNC.recordOp("category", "upsert", c, did);
-      }).then(function () { return c.uid; });
+      return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("category", "upsert", c, did); }).then(function () { return c.uid; });
     });
   }
 
@@ -221,62 +275,43 @@
         rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
       };
       return DB.put("movimenti", m).then(function () {
-        // Registra nel diario per la sync
-        return SYNC.getDeviceId().then(function (did) {
-          return SYNC.recordOp("transaction", "upsert", m, did);
-        });
+        return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("transaction", "upsert", m, did); });
       });
     }).then(function () {
-      $("add-form").reset(); $("af-data").value = nowLocalInput();
-      toggleForm(false);
+      $("add-form").reset(); setTipo("uscita"); $("af-data").value = nowLocalInput();
+      closeSheet();
       return render();
     });
   });
 
-  // ---------- bottone sync ----------
-  $("sync-btn").addEventListener("click", function () {
-    doSync().then(function (ok) {
-      render();
-    });
-  });
-
   // ---------- Google Drive (Fase 5) ----------
-  // drive.js potrebbe non essere ancora arrivato (deploy/cache a metà) o il
-  // guscio in cache potrebbe essere una versione senza i bottoni Drive: in quel
-  // caso l'app deve funzionare LO STESSO, solo senza Drive. Mai bloccare l'avvio.
   var HAS_DRIVE = (typeof DRIVE !== "undefined") && !!$("drive-btn");
-
   function doDriveSync() {
     if (!HAS_DRIVE) return Promise.resolve();
     var btn = $("drive-btn");
     if (btn) { btn.disabled = true; btn.textContent = "⏳ Drive…"; }
     return DRIVE.driveSync().then(function (r) {
       if (btn) { btn.disabled = false; btn.textContent = "☁️ Drive"; }
-      if (r.ok) return render();   // render mostra "Ultima sync: …"
-      $("sync-info").textContent = r.reason === "token"
+      if (r.ok) return render();
+      if ($("sync-info")) $("sync-info").textContent = r.reason === "token"
         ? "Drive: tocca di nuovo ☁️ per accedere"
         : (r.reason === "quota" ? "Drive: spazio esaurito" : "Drive: errore (" + r.reason + ")");
     });
   }
-
   if (HAS_DRIVE) {
     $("drive-btn").addEventListener("click", function () {
       DRIVE.getClientId().then(function (cid) {
         if (!cid) { if ($("drive-setup")) $("drive-setup").hidden = false; return; }
         DRIVE.getToken().then(function (tok) {
-          if (!tok) { DRIVE.connect(); return; }   // redirect a Google e ritorno
+          if (!tok) { DRIVE.connect(); return; }
           doDriveSync();
         });
       });
     });
     if ($("drive-cid-save")) {
       $("drive-cid-save").addEventListener("click", function () {
-        var v = $("drive-cid").value.trim();
-        if (!v) return;
-        DRIVE.setClientId(v).then(function () {
-          $("drive-setup").hidden = true;
-          DRIVE.connect();
-        });
+        var v = $("drive-cid").value.trim(); if (!v) return;
+        DRIVE.setClientId(v).then(function () { $("drive-setup").hidden = true; DRIVE.connect(); });
       });
     }
     if ($("drive-cid-cancel")) {
@@ -290,27 +325,21 @@
       SYNC.exportBundle().then(function (bundle) {
         var blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
         var a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "mymoney-export.json";
-        a.click();
+        a.href = URL.createObjectURL(blob); a.download = "mymoney-export.json"; a.click();
         URL.revokeObjectURL(a.href);
       });
     });
   }
   if ($("import-btn")) {
     $("import-btn").addEventListener("click", function () {
-      var input = document.createElement("input");
-      input.type = "file"; input.accept = ".json";
+      var input = document.createElement("input"); input.type = "file"; input.accept = ".json";
       input.onchange = function () {
         var f = input.files[0]; if (!f) return;
         var reader = new FileReader();
         reader.onload = function () {
           try {
             var data = JSON.parse(reader.result);
-            SYNC.importBundle(data).then(function (result) {
-              alert("Importati: " + result.applied + " record.");
-              render();
-            });
+            SYNC.importBundle(data).then(function (result) { alert("Importati: " + result.applied + " record."); render(); });
           } catch (e) { alert("File non valido."); }
         };
         reader.readAsText(f);
@@ -321,16 +350,14 @@
 
   // ---------- boot ----------
   segnalaRete();
-  // Se stiamo TORNANDO dal consenso Google (token nel fragment), salvalo e
-  // parti subito con la sync via Drive; altrimenti la solita sync HTTP (LAN).
   var driveBoot = HAS_DRIVE ? DRIVE.handleRedirect() : Promise.resolve(false);
   driveBoot.then(function (daGoogle) {
+    if (daGoogle) setTab("sync");   // torni da Google: mostro l'esito nella scheda Sync
     return render().then(function () {
       if (daGoogle) return doDriveSync();
       return doSync().then(function (ok) { if (ok) return render(); });
     });
   }).catch(function () {
-    // Qualunque cosa vada storta nell'avvio, l'app deve almeno mostrarsi.
     try { render(); } catch (e) {}
   });
 })();
