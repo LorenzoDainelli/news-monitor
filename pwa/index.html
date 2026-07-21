@@ -27,6 +27,8 @@
     <symbol id="ic-out" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7v10H7"/></symbol>
     <symbol id="ic-in" viewBox="0 0 24 24"><path d="M17 17 7 7M7 17V7h10"/></symbol>
     <symbol id="ic-swap" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></symbol>
+    <symbol id="ic-giro" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></symbol>
+    <symbol id="ic-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M8 21h8"/></symbol>
   </svg>
 
   <header class="topbar">
@@ -148,16 +150,30 @@
   <div class="sheet" id="add-sheet" role="dialog" aria-modal="true" aria-labelledby="add-title">
     <div class="grip"></div>
     <h2 id="add-title">Nuovo movimento</h2>
+
+    <button type="button" class="ai-btn" id="ai-btn"><svg class="ic"><use href="#ic-mic"/></svg> Detta o scrivi con l'AI</button>
+    <div class="ai-hint">es. «17 euro di AirPods su Hype alle 14:13»</div>
+    <div class="ai-box" id="ai-box" hidden>
+      <textarea id="ai-text" rows="2" placeholder="Scrivi la spesa, o tocca Voce e parla…"></textarea>
+      <div class="ai-row">
+        <button type="button" class="btn" id="ai-mic"><svg class="ic"><use href="#ic-mic"/></svg> Voce</button>
+        <button type="button" class="btn primary" id="ai-go">Interpreta</button>
+      </div>
+      <div class="ai-status" id="ai-status" hidden></div>
+    </div>
+
     <form id="add-form">
       <div class="types" id="type-picker">
         <button type="button" class="ty on" data-tipo="uscita"><svg class="ic"><use href="#ic-out"/></svg>Uscita</button>
         <button type="button" class="ty" data-tipo="entrata"><svg class="ic"><use href="#ic-in"/></svg>Entrata</button>
-        <button type="button" class="ty" data-tipo="trasferimento"><svg class="ic"><use href="#ic-swap"/></svg>Trasf.</button>
+        <button type="button" class="ty" data-tipo="trasferimento"><svg class="ic"><use href="#ic-swap"/></svg>Trasferimento</button>
+        <button type="button" class="ty" data-tipo="giro"><svg class="ic"><use href="#ic-giro"/></svg>Giro</button>
       </div>
       <select name="tipo" id="af-tipo" hidden>
         <option value="uscita">Uscita</option>
         <option value="entrata">Entrata</option>
         <option value="trasferimento">Trasferimento</option>
+        <option value="giro">Giro</option>
       </select>
 
       <div class="form-grid">
@@ -172,15 +188,16 @@
             <select name="wallet_to" id="af-wallet-to"></select>
           </label>
         </div>
-        <div class="af-row" id="af-cat-row">
-          <label>Categoria
-            <input name="categoria" list="af-cats" autocomplete="off" placeholder="es. Spesa">
-            <datalist id="af-cats"></datalist>
-          </label>
-          <label>Data e ora
-            <input type="datetime-local" name="data" id="af-data">
-          </label>
-        </div>
+        <label class="af-full" id="af-controparte-lab" hidden>Chi ti rimborsa
+          <input name="controparte" id="af-controparte" autocomplete="off" placeholder="es. Marco">
+        </label>
+        <label class="af-full" id="af-cat-lab">Categoria
+          <input name="categoria" list="af-cats" autocomplete="off" placeholder="es. Spesa">
+          <datalist id="af-cats"></datalist>
+        </label>
+        <label class="af-full">Data e ora
+          <input type="datetime-local" name="data" id="af-data">
+        </label>
         <label class="af-full">Descrizione
           <input name="descrizione" placeholder="(facoltativa)">
         </label>
@@ -197,11 +214,34 @@
     <div class="grip"></div>
     <h2 id="detail-title">Movimento</h2>
     <div id="detail-body"></div>
-    <div class="af-actions" style="margin-top:16px">
-      <button type="button" class="btn primary" id="detail-edit">Modifica</button>
+    <button type="button" class="btn primary" id="detail-rientro" style="margin-top:14px;display:none">Registra rientro</button>
+    <div class="af-actions" style="margin-top:10px">
+      <button type="button" class="btn" id="detail-edit">Modifica</button>
       <button type="button" class="btn danger" id="detail-del">Elimina</button>
     </div>
     <button type="button" class="btn" id="detail-close" style="margin-top:10px">Chiudi</button>
+  </div>
+
+  <!-- ============ pannello Registra rientro (giro) ============ -->
+  <div class="sheet" id="rientro-sheet" role="dialog" aria-modal="true" aria-labelledby="rientro-title">
+    <div class="grip"></div>
+    <h2 id="rientro-title">Registra rientro</h2>
+    <div class="ai-hint" id="rientro-info"></div>
+    <div class="form-grid">
+      <label class="af-full">Importo ricevuto (€)
+        <input id="ri-importo" class="big" inputmode="decimal" placeholder="0,00">
+      </label>
+      <label class="af-full">In quale portafoglio
+        <select id="ri-wallet"></select>
+      </label>
+      <label class="af-full">Data e ora
+        <input type="datetime-local" id="ri-data">
+      </label>
+      <div class="af-actions">
+        <button type="button" class="btn primary" id="ri-save">Registra</button>
+        <button type="button" class="btn" id="ri-cancel">Annulla</button>
+      </div>
+    </div>
   </div>
 
   <script src="db.js"></script>

@@ -16,7 +16,7 @@ from fastapi import APIRouter, Request, UploadFile, File
 from fastapi.responses import JSONResponse, Response
 
 from finance import service
-from shared import sync
+from shared import ai, sync
 
 router = APIRouter(prefix="/api/finanze", tags=["finanze-api"])
 
@@ -120,3 +120,50 @@ async def api_import(request: Request):
         return JSONResponse({"ok": False, "error": "json_invalido"}, status_code=400)
     result = sync.import_bundle(data)
     return {"ok": True, **result}
+
+
+# ── Fase 2 (redesign PWA): interpretazione AI di una frase ───────────────────
+
+def _proposta_per_pwa(p: dict, wallets) -> dict:
+    """Traduce la bozza di `parse_movimento` (che usa gli id interni) in una
+    versione per la PWA, che ragiona per `uid` — gli STESSI su PC e telefono
+    (il sync li tiene allineati). Così il telefono può selezionare il portafoglio
+    giusto senza conoscere gli id interni del PC."""
+    id2uid = {w.id: w.uid for w in wallets}
+    return {
+        "ok": True,
+        "tipo": p.get("tipo", "uscita"),
+        "importo": p.get("importo", 0),
+        "categoria": p.get("categoria", ""),
+        "wallet_uid": id2uid.get(p.get("wallet_id"), ""),
+        "wallet_to_uid": id2uid.get(p.get("wallet_to_id"), "") if p.get("wallet_to_id") else "",
+        "data_local": p.get("data_local", ""),
+        "descrizione": p.get("descrizione", ""),
+        "confidenza": p.get("confidenza", "media"),
+        "controparte": p.get("controparte", ""),
+        "importo_ricevuto": p.get("importo_ricevuto"),
+        "wallet_ricevuto_uid": id2uid.get(p.get("wallet_ricevuto_id"), "") if p.get("wallet_ricevuto_id") else "",
+    }
+
+
+@router.post("/parse")
+async def api_parse(request: Request):
+    """La PWA manda una frase ('ieri 20€ di benzina con la carta'); il PC la
+    interpreta con l'AI e ritorna una BOZZA di movimento (con gli uid dei
+    portafogli). NON salva nulla: la conferma resta all'utente sul telefono.
+    Il testo è ripulito da IBAN/carte/nomi dentro `parse_movimento` (privacy).
+
+    Body JSON: {testo}. Ritorna la bozza, oppure {ok: False, error}.
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"ok": False, "error": "json_invalido"}, status_code=400)
+    testo = (body.get("testo") or "").strip()
+    if not testo:
+        return JSONResponse({"ok": False, "error": "vuoto"}, status_code=400)
+    ws = service.wallets()
+    p = ai.parse_movimento(testo, ws, service.categorie())
+    if not p.get("ok"):
+        return {"ok": False, "error": p.get("error", "parse")}
+    return _proposta_per_pwa(p, ws)

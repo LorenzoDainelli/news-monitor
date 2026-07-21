@@ -175,7 +175,7 @@ body.locked { overflow: hidden; }          /* col pannello aperto la pagina sott
 .sheet h2 { font-size: 17px; font-weight: 800; margin: 0 0 14px; letter-spacing: -.01em; }
 
 /* ---- form aggiungi movimento ---- */
-.types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.types { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
 .ty {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 10px 6px; border: 1px solid var(--border); border-radius: var(--r-sm);
@@ -243,3 +243,24 @@ body.locked { overflow: hidden; }          /* col pannello aperto la pagina sott
 .drow .dl { color: var(--muted); flex: 0 0 auto; }
 .drow .dv { font-weight: 700; text-align: right; min-width: 0; word-break: break-word; }
 .dv.pos { color: var(--pos); } .dv.neg { color: var(--neg); } .dv.muted { color: var(--muted); }
+
+/* ---- Fase 2c: detta o scrivi con l'AI ---- */
+.ai-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px; border-radius: 12px; font-family: inherit; font-size: 14px; font-weight: 700;
+  background: var(--accent-soft); color: var(--accent-strong); border: 1px solid var(--border); cursor: pointer;
+}
+.ai-btn .ic { width: 18px; height: 18px; }
+.ai-hint { font-size: 12px; color: var(--faint); text-align: center; font-style: italic; margin: 6px 2px 0; }
+.ai-box { margin-top: 12px; display: grid; gap: 10px; }
+.ai-box textarea {
+  font: inherit; font-size: 15px; padding: 11px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); width: 100%; resize: vertical;
+}
+.ai-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+.ai-row .btn { margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.ai-row .btn .ic { width: 18px; height: 18px; }
+.ai-row .btn.rec { background: var(--neg); color: #fff; border-color: transparent; }
+.ai-status { font-size: 13px; border-radius: var(--r-sm); padding: 9px 11px; background: var(--surface-alt); color: var(--muted); }
+.ai-status.ok { background: var(--accent-soft); color: var(--ink); }
+.ai-status.warn { background: rgba(226,71,74,.12); color: var(--neg); }
