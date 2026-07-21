@@ -220,17 +220,21 @@
   if ($("af-cancel")) $("af-cancel").addEventListener("click", closeSheet);
 
   function setTipo(t) {
+    var isT = t === "trasferimento";
     $("af-tipo").value = t;
     document.querySelectorAll("#type-picker .ty").forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-tipo") === t);
     });
-    $("af-wallet-to-lab").hidden = t !== "trasferimento";
-    $("af-cat-row").style.display = t === "trasferimento" ? "none" : "";
-    $("af-wallet-lab").firstChild.textContent = t === "trasferimento" ? "Da portafoglio" : "Portafoglio";
+    $("af-wallet-to-lab").hidden = !isT;
+    $("af-cat-row").style.display = isT ? "none" : "";
+    // senza "A portafoglio" il Portafoglio prende tutta la larghezza (niente mezzo vuoto)
+    $("af-wallet-lab").classList.toggle("af-full", !isT);
+    $("af-wallet-lab").firstChild.textContent = isT ? "Da portafoglio" : "Portafoglio";
   }
   document.querySelectorAll("#type-picker .ty").forEach(function (b) {
     b.addEventListener("click", function () { setTipo(b.getAttribute("data-tipo")); });
   });
+  setTipo("uscita");   // stato iniziale coerente (Portafoglio a tutta larghezza)
 
   function popolaForm() {
     ["af-wallet", "af-wallet-to"].forEach(function (id) {
