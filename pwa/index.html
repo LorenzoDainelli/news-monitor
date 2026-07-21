@@ -16,110 +16,181 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- icone (sprite inline: crisp e offline, niente font esterni) -->
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="ic-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></symbol>
+    <symbol id="ic-wallet" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v10a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2z"/><path d="M16 13h.01"/></symbol>
+    <symbol id="ic-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-7.97 6 6 0 0 1 11.5 1.3A3.5 3.5 0 0 1 17.5 18z"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="ic-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="ic-out" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7v10H7"/></symbol>
+    <symbol id="ic-in" viewBox="0 0 24 24"><path d="M17 17 7 7M7 17V7h10"/></symbol>
+    <symbol id="ic-swap" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></symbol>
+  </svg>
+
   <header class="topbar">
     <div class="brand">MyMoney</div>
     <div class="status"><span class="dot" id="dot"></span><span id="net">—</span></div>
   </header>
 
-  <main class="wrap">
-    <div id="stale" class="stale" hidden></div>
-    <div id="drive-needs-update" class="banner err hide" style="margin-bottom: 15px;">
+  <main class="app">
+    <div id="drive-needs-update" class="banner err hide">
       L'altro dispositivo usa una versione più recente dell'app.<br>
       Sincronizzazione in pausa finché non aggiorni la pagina.
-      <button class="btn ghost mt-10" onclick="location.reload(true)" style="margin-top:10px;">Ricarica App</button>
+      <button class="btn" style="margin-top:10px" onclick="location.reload(true)">Ricarica app</button>
     </div>
-    <section class="hero">
-      <div class="k">Patrimonio liquido</div>
-      <div class="v num" id="totale">—</div>
-      <div class="sub" id="mese"></div>
+
+    <!-- ============ HOME ============ -->
+    <section id="view-home" class="view">
+      <section class="hero">
+        <div class="k">Patrimonio liquido</div>
+        <div class="v num" id="totale">—</div>
+        <div class="sub" id="mese"></div>
+      </section>
+
+      <div id="home-full" hidden>
+        <div class="sec"><span class="t">Conti principali</span>
+          <button class="a" data-goto="conti">Tutti i conti <svg class="ic"><use href="#ic-chevron"/></svg></button>
+        </div>
+        <div id="home-conti" class="conti-grid"></div>
+
+        <div class="sec"><span class="t">Ultimi movimenti</span>
+          <button class="a" data-goto="movimenti">Tutti <svg class="ic"><use href="#ic-chevron"/></svg></button>
+        </div>
+        <div id="home-movimenti" class="lista"></div>
+      </div>
+
+      <section id="empty" class="empty" hidden>
+        <div class="empty-icon" aria-hidden="true">☁︎</div>
+        <p class="empty-title">Nessun dato sul telefono (ancora)</p>
+        <p class="muted">I tuoi portafogli e movimenti vivono sul PC. Vai nella scheda
+        <b>Sync</b> per scaricarli via Google Drive: da lì compaiono qui e puoi
+        aggiungere spese anche offline.</p>
+      </section>
     </section>
 
-    <section id="wallets" class="wallets" aria-live="polite"></section>
-
-    <section id="empty" class="empty" hidden>
-      <div class="empty-icon" aria-hidden="true">☁︎</div>
-      <p class="empty-title">Nessun dato sul telefono (ancora)</p>
-      <p class="muted">I tuoi portafogli e movimenti vivono sul PC. La
-      sincronizzazione automatica via Google Drive è la <b>prossima</b> cosa che
-      costruiamo: da lì compariranno qui e potrai aggiungere spese anche offline.</p>
-      <p class="muted" style="font-size:12px;margin-top:10px;">In casa, sulla stessa
-      rete del PC, puoi già collegarti: apri l'app dal PC e usa l'indirizzo di rete.</p>
+    <!-- ============ MOVIMENTI ============ -->
+    <section id="view-movimenti" class="view" hidden>
+      <h1 class="view-title">Movimenti</h1>
+      <div id="lista-movimenti" class="lista"></div>
+      <p id="movimenti-vuoto" class="muted" style="text-align:center;padding:24px" hidden>Nessun movimento.</p>
     </section>
 
-    <button class="btn primary" id="add">＋ Aggiungi movimento</button>
+    <!-- ============ CONTI ============ -->
+    <section id="view-conti" class="view" hidden>
+      <h1 class="view-title">Conti</h1>
+      <div id="lista-conti" class="wallets"></div>
+      <p id="conti-vuoto" class="muted" style="text-align:center;padding:24px" hidden>Nessun conto ancora sincronizzato.</p>
+    </section>
 
-    <!-- form offline: entrata / uscita / trasferimento -->
-    <form id="add-form" class="add-form" hidden>
-      <div class="af-row">
-        <label>Tipo
-          <select name="tipo" id="af-tipo">
-            <option value="uscita">Uscita</option>
-            <option value="entrata">Entrata</option>
-            <option value="trasferimento">Trasferimento</option>
-          </select>
-        </label>
-        <label>Importo (€)
-          <input name="importo" inputmode="decimal" placeholder="0,00" required>
-        </label>
+    <!-- ============ SYNC ============ -->
+    <section id="view-sync" class="view" hidden>
+      <h1 class="view-title">Sincronizzazione</h1>
+
+      <div id="stale" class="stale" hidden></div>
+
+      <div class="sync-card">
+        <h3>Google Drive</h3>
+        <p>I dati viaggiano solo nel tuo Google Drive, in una cartellina nascosta
+        riservata all'app.</p>
+        <div class="sync-row">
+          <button class="btn primary" id="drive-btn">☁️ Drive</button>
+          <button class="btn" id="sync-btn">🔄 Sincronizza (rete locale)</button>
+        </div>
+        <p class="sync-info" id="sync-info">—</p>
       </div>
-      <div class="af-row">
-        <label id="af-wallet-lab">Portafoglio
-          <select name="wallet" id="af-wallet"></select>
+
+      <!-- collegamento a Google Drive: il client id si incolla una volta -->
+      <div id="drive-setup" class="sync-card" hidden>
+        <h3>Collega Google Drive</h3>
+        <label style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);font-weight:600">
+          ID client OAuth (Web) di Google
+          <input id="drive-cid" autocomplete="off" placeholder="…apps.googleusercontent.com"
+                 style="font:inherit;padding:11px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--ink)">
         </label>
-        <label id="af-wallet-to-lab" hidden>A portafoglio
-          <select name="wallet_to" id="af-wallet-to"></select>
-        </label>
+        <p style="font-size:12px;margin:8px 0 12px">Si crea una volta sola con la guida
+        <b>docs/SETUP-DRIVE.md</b> (nel repo).</p>
+        <div class="sync-row two">
+          <button class="btn primary" id="drive-cid-save">Salva e collega</button>
+          <button class="btn" id="drive-cid-cancel">Annulla</button>
+        </div>
       </div>
-      <div class="af-row" id="af-cat-row">
-        <label>Categoria
-          <input name="categoria" list="af-cats" autocomplete="off" placeholder="es. Spesa">
-          <datalist id="af-cats"></datalist>
-        </label>
-        <label>Data
-          <input type="datetime-local" name="data" id="af-data">
-        </label>
+
+      <div class="sync-card">
+        <h3>Backup manuale</h3>
+        <p>Esporta o importa tutti i dati come file, senza passare dal Drive.</p>
+        <div class="sync-row two">
+          <button class="btn" id="export-btn">📤 Esporta</button>
+          <button class="btn" id="import-btn">📥 Importa</button>
+        </div>
       </div>
-      <label class="af-full">Descrizione
-        <input name="descrizione" placeholder="(facoltativa)">
-      </label>
-      <div class="af-actions">
-        <button type="submit" class="btn primary">Salva</button>
-        <button type="button" class="btn" id="af-cancel">Annulla</button>
+
+      <p class="sync-info" id="foot-state">MyMoney · v3</p>
+
+      <div id="install-hint" class="install-hint" hidden>
+        Per installarla: tocca <b>Condividi</b> e poi <b>Aggiungi alla schermata Home</b>.
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ barra di navigazione ============ -->
+  <nav class="tabbar">
+    <button class="tab on" data-tab="home"><svg class="ic"><use href="#ic-home"/></svg>Home</button>
+    <button class="tab" data-tab="movimenti"><svg class="ic"><use href="#ic-list"/></svg>Movimenti</button>
+    <button class="fab" id="fab" aria-label="Aggiungi movimento"><svg class="ic"><use href="#ic-plus"/></svg></button>
+    <button class="tab" data-tab="conti"><svg class="ic"><use href="#ic-wallet"/></svg>Conti</button>
+    <button class="tab" data-tab="sync"><svg class="ic"><use href="#ic-cloud"/></svg>Sync</button>
+  </nav>
+
+  <!-- ============ pannello Aggiungi movimento ============ -->
+  <div class="backdrop" id="backdrop"></div>
+  <div class="sheet" id="add-sheet" role="dialog" aria-modal="true" aria-labelledby="add-title">
+    <div class="grip"></div>
+    <h2 id="add-title">Nuovo movimento</h2>
+    <form id="add-form">
+      <div class="types" id="type-picker">
+        <button type="button" class="ty on" data-tipo="uscita"><svg class="ic"><use href="#ic-out"/></svg>Uscita</button>
+        <button type="button" class="ty" data-tipo="entrata"><svg class="ic"><use href="#ic-in"/></svg>Entrata</button>
+        <button type="button" class="ty" data-tipo="trasferimento"><svg class="ic"><use href="#ic-swap"/></svg>Trasf.</button>
+      </div>
+      <select name="tipo" id="af-tipo" hidden>
+        <option value="uscita">Uscita</option>
+        <option value="entrata">Entrata</option>
+        <option value="trasferimento">Trasferimento</option>
+      </select>
+
+      <div class="form-grid">
+        <label class="af-full">Importo (€)
+          <input name="importo" class="big" inputmode="decimal" placeholder="0,00" required>
+        </label>
+        <div class="af-row">
+          <label id="af-wallet-lab">Portafoglio
+            <select name="wallet" id="af-wallet"></select>
+          </label>
+          <label id="af-wallet-to-lab" hidden>A portafoglio
+            <select name="wallet_to" id="af-wallet-to"></select>
+          </label>
+        </div>
+        <div class="af-row" id="af-cat-row">
+          <label>Categoria
+            <input name="categoria" list="af-cats" autocomplete="off" placeholder="es. Spesa">
+            <datalist id="af-cats"></datalist>
+          </label>
+          <label>Data e ora
+            <input type="datetime-local" name="data" id="af-data">
+          </label>
+        </div>
+        <label class="af-full">Descrizione
+          <input name="descrizione" placeholder="(facoltativa)">
+        </label>
+        <div class="af-actions">
+          <button type="submit" class="btn primary">Salva</button>
+          <button type="button" class="btn" id="af-cancel">Annulla</button>
+        </div>
       </div>
     </form>
-
-    <section id="lista-sec" hidden>
-      <div class="lista-h">Ultimi movimenti</div>
-      <div id="lista" class="lista"></div>
-    </section>
-
-    <!-- collegamento a Google Drive (Fase 5): il client id si incolla una volta -->
-    <div id="drive-setup" class="add-form" hidden>
-      <label class="af-full">ID client OAuth (Web) di Google
-        <input id="drive-cid" autocomplete="off" placeholder="…apps.googleusercontent.com">
-      </label>
-      <p class="muted" style="font-size:12px;margin:6px 0 10px;">Si crea una volta
-      sola con la guida <b>docs/SETUP-DRIVE.md</b> (nel repo). I dati viaggiano SOLO
-      nel tuo Google Drive, in una cartellina nascosta riservata all'app.</p>
-      <div class="af-actions">
-        <button type="button" class="btn primary" id="drive-cid-save">Salva e collega</button>
-        <button type="button" class="btn" id="drive-cid-cancel">Annulla</button>
-      </div>
-    </div>
-
-    <p class="foot">
-      <span id="foot-state">MyMoney · v2 Fase 5</span><br>
-      <span class="muted" id="sync-info">—</span><br>
-      <button class="btn sync" id="drive-btn">☁️ Drive</button>
-      <button class="btn sync" id="sync-btn">🔄 Sincronizza</button>
-      <button class="btn small" id="export-btn">📤 Esporta</button>
-      <button class="btn small" id="import-btn">📥 Importa</button>
-    </p>
-
-    <div id="install-hint" class="install-hint" hidden>
-      Per installarla: tocca <b>Condividi</b> e poi <b>Aggiungi alla schermata Home</b>.
-    </div>
-  </main>
+  </div>
 
   <script src="db.js"></script>
   <script src="finance.js"></script>
