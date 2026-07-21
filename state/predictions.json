@@ -4244,6 +4244,159 @@
       "rilevanza": 52,
       "titolo": "BofA si aspetta che Meta batta le stime Q2 grazie alla pubblicità e all'AI",
       "url": "https://finnhub.io/api/news?id=7640f854c240c7e9972f8761a87844b206009d050037144c430fb28437d62a66"
+    },
+    {
+      "id": "tsm-q2-beat-capex",
+      "ticker": "TSM",
+      "data": "2026-07-21",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 75,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "TSMC batte le attese Q2 e alza la guidance, ma il titolo scende per l'elevato capex e le pressioni sui margini",
+      "url": "https://finnhub.io/api/news?id=abf5fcb41944ddf3a68f61fe7074b9448a552c3a0d47bc2d2770a4006a3b23ae"
+    },
+    {
+      "id": "orcl-wisconsin-collateral",
+      "ticker": "ORCL",
+      "data": "2026-07-21",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Oracle rischia un obbligo di collaterale da 7 miliardi di dollari per il mega data center nel Wisconsin",
+      "url": "https://finnhub.io/api/news?id=2a0b0ec5289db32a2f66ac910fd222661254623c4432c8cffca9ba57b3d554c7"
+    },
+    {
+      "id": "shel-houthi-blocco-navale",
+      "ticker": "SHEL",
+      "data": "2026-07-21",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Gli Houthi dichiarano un blocco navale contro l'Arabia Saudita: nuova escalation nel Mar Rosso",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQcUowRTU0M2hEUzRtdXAxY1FENjh0OWdXcEJlb2h4VlpBOVdGM2YzZ1BQSVhLMFQwOXhRN01aQ1poMVd5TTNRUHBZbV9jNWZRaGFaejU2ckpkNW5HUlZSdlJXWU5GNTlFU0NFUU9DYkJ1LXVFNHZBanlSemdrb3M1Vm80azBhNlRmTGRWbjQ2dEtkQVNfbTVNMUVReDIwYXB6aDNjN0pReHQ5S1BBUFl1NUc0Z1VyVHB4MWNnQ09JZw?oc=5"
+    },
+    {
+      "id": "nvda-nbis-stake-9pct",
+      "ticker": "NVDA",
+      "data": "2026-07-21",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Nvidia rivela una partecipazione superiore al 9% in Nebius Group, più alta delle stime di marzo",
+      "url": "https://finnhub.io/api/news?id=4b34426e1ff56d4ec051a0296ee47d268cf9bdd6ed5359ac280609e7af549a13"
+    },
+    {
+      "id": "nato-etf-budget-usa-2027",
+      "ticker": "NATO",
+      "data": "2026-07-21",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 57,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Budget difesa USA FY2027 proposto a 1.450 miliardi con il procurement militare in salto dell'88%; NATO summit di Ankara conferma l'impegno al 5% del PIL",
+      "url": "https://etfexpress.com/2026/07/15/hanetf-launches-us-defence-etf-gijo/"
+    },
+    {
+      "id": "jpm-iraq-60bn-deals",
+      "ticker": "JPM",
+      "data": "2026-07-21",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "JPMorgan guida accordi commerciali USA-Iraq da 60 miliardi di dollari",
+      "url": "https://finnhub.io/api/news?id=24acb67eccb8bc2232a75bd6932a3f4e7eeb6d5a94e290196683a803161a68af"
+    },
+    {
+      "id": "wdc-memoria-rimbalzo-ms",
+      "ticker": "WDC",
+      "data": "2026-07-21",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Le azioni di memoria rimbalzano del 4-6%: Morgan Stanley indica un punto d'ingresso forte dopo la sell-off",
+      "url": "https://finnhub.io/api/news?id=1374947665d5a8790829b4d41b3ec24bb3cf81821497689b392213eb1e69ce0c"
+    },
+    {
+      "id": "lly-illumina-atlas-ai",
+      "ticker": "LLY",
+      "data": "2026-07-21",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Eli Lilly entra nell'Illumina Billion Cell Atlas come membro fondatore per mappare le malattie con l'AI",
+      "url": "https://finnhub.io/api/news?id=3d9813fceba3cf5e2cd0c0d79b98773b1e68786cdc6c96489fa8468aba8b674d"
+    },
+    {
+      "id": "ko-ubs-q2-preview",
+      "ticker": "KO",
+      "data": "2026-07-21",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "UBS prevede un Q2 solido per Coca-Cola con guidance annuale confermata",
+      "url": "https://finnhub.io/api/news?id=4127faed0d19ec3b530137d14f8504b99584179dff94c0234d60465af5bfd174"
     }
   ]
 }
