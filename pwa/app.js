@@ -222,6 +222,10 @@
     if (!_wallets.length) return;   // senza conti non si può aggiungere
     _editUid = mov ? mov.uid : null;
     if ($("add-title")) $("add-title").textContent = mov ? "Modifica movimento" : "Nuovo movimento";
+    // riparti sempre con la barra AI chiusa e pulita
+    if ($("ai-box")) $("ai-box").hidden = true;
+    if ($("ai-text")) $("ai-text").value = "";
+    if ($("ai-status")) { $("ai-status").hidden = true; $("ai-status").textContent = ""; }
     if (mov) {
       prefillForm(mov);
     } else {
@@ -236,7 +240,8 @@
     f.importo.value = (m.importo != null) ? Number(m.importo).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
     $("af-wallet").value = m.wallet_uid || "";
     if (m.tipo === "trasferimento") $("af-wallet-to").value = m.wallet_to_uid || "";
-    f.categoria.value = (m.tipo === "trasferimento") ? "" : (catNome(m.categoria_uid) || "");
+    if ($("af-controparte")) $("af-controparte").value = (m.tipo === "giro") ? (m.controparte || "") : "";
+    f.categoria.value = (m.tipo === "trasferimento" || m.tipo === "giro") ? "" : (catNome(m.categoria_uid) || "");
     $("af-data").value = String(m.data || nowLocalInput()).slice(0, 16);
     f.descrizione.value = m.descrizione || "";
   }
@@ -249,18 +254,21 @@
   function drow(label, val) { return '<div class="drow"><span class="dl">' + label + '</span><span class="dv">' + escapeHtml(val) + '</span></div>'; }
   function openDetail(m) {
     _detailUid = m.uid;
-    var v = movToView(m), html = "";
+    var v = movToView(m), isG = m.tipo === "giro", html = "";
     html += drow("Tipo", tipoNome(m.tipo));
-    html += '<div class="drow"><span class="dl">Importo</span><span class="dv ' + v.cls + '">' + v.val + '</span></div>';
+    if (isG) html += drow("Stato", m.giro_aperta ? "Aperta · rimborso in arrivo" : "Chiusa · rimborsata");
+    html += '<div class="drow"><span class="dl">' + (isG ? "Anticipato" : "Importo") + '</span><span class="dv ' + v.cls + '">' + (isG ? eur(m.importo) : v.val) + '</span></div>';
     if (m.tipo === "trasferimento") { html += drow("Da", walletNome(m.wallet_uid)); html += drow("A", walletNome(m.wallet_to_uid)); }
-    else { html += drow("Portafoglio", walletNome(m.wallet_uid)); }
-    if (m.tipo !== "trasferimento" && m.categoria_uid) html += drow("Categoria", catNome(m.categoria_uid) || "—");
-    if (m.tipo === "giro" && m.controparte) html += drow("Controparte", m.controparte);
+    else { html += drow(isG ? "Da portafoglio" : "Portafoglio", walletNome(m.wallet_uid)); }
+    if (isG && m.controparte) html += drow("Ti rimborsa", m.controparte);
+    if (isG && m.importo_ricevuto != null) html += drow("Rientrato", eur(m.importo_ricevuto) + " · " + walletNome(m.wallet_to_uid));
+    if (m.tipo !== "trasferimento" && !isG && m.categoria_uid) html += drow("Categoria", catNome(m.categoria_uid) || "—");
     html += drow("Data", dataEstesa(m.data));
     if (m.descrizione) html += drow("Descrizione", m.descrizione);
     $("detail-body").innerHTML = html;
     $("detail-title").textContent = m.descrizione ? m.descrizione : v.sub;
-    $("detail-edit").style.display = (m.tipo === "giro") ? "none" : "";
+    $("detail-edit").style.display = "";
+    if ($("detail-rientro")) $("detail-rientro").style.display = (isG && m.giro_aperta) ? "" : "none";
     showSheet("detail-sheet");
   }
   document.addEventListener("click", function (e) {
@@ -285,16 +293,17 @@
   });
 
   function setTipo(t) {
-    var isT = t === "trasferimento";
+    var isT = t === "trasferimento", isG = t === "giro";
     $("af-tipo").value = t;
     document.querySelectorAll("#type-picker .ty").forEach(function (b) {
       b.classList.toggle("on", b.getAttribute("data-tipo") === t);
     });
     $("af-wallet-to-lab").hidden = !isT;
-    $("af-cat-row").style.display = isT ? "none" : "";
+    if ($("af-cat-lab")) $("af-cat-lab").hidden = (isT || isG);           // categoria solo uscita/entrata
+    if ($("af-controparte-lab")) $("af-controparte-lab").hidden = !isG;   // controparte solo giro
     // senza "A portafoglio" il Portafoglio prende tutta la larghezza (niente mezzo vuoto)
     $("af-wallet-lab").classList.toggle("af-full", !isT);
-    $("af-wallet-lab").firstChild.textContent = isT ? "Da portafoglio" : "Portafoglio";
+    $("af-wallet-lab").firstChild.textContent = (isT || isG) ? "Da portafoglio" : "Portafoglio";
   }
   document.querySelectorAll("#type-picker .ty").forEach(function (b) {
     b.addEventListener("click", function () { setTipo(b.getAttribute("data-tipo")); });
@@ -328,31 +337,45 @@
     var t = $("af-tipo").value;
     var importo = parseImporto($("add-form").importo.value);
     if (importo <= 0) return;
+    var isT = t === "trasferimento", isG = t === "giro";
     var wallet_uid = $("af-wallet").value;
-    var wallet_to_uid = t === "trasferimento" ? $("af-wallet-to").value : null;
-    if (t === "trasferimento" && wallet_to_uid === wallet_uid) { alert("Scegli due portafogli diversi."); return; }
+    var wallet_to_uid = isT ? $("af-wallet-to").value : null;
+    if (isT && wallet_to_uid === wallet_uid) { alert("Scegli due portafogli diversi."); return; }
     var data = $("af-data").value || nowLocalInput();
-    var descrizione = $("add-form").descrizione.value || "";
-    var catNomeIn = t === "trasferimento" ? "" : $("add-form").categoria.value;
+    var descrizione = ($("add-form").descrizione.value || "").trim();
+    var controparte = (isG && $("af-controparte")) ? ($("af-controparte").value || "").trim() : "";
+    var catNomeIn = (isT || isG) ? "" : $("add-form").categoria.value;
 
     trovaOCreaCategoria(catNomeIn, t).then(function (catUid) {
       var editing = _editUid ? _movs.find(function (x) { return x.uid === _editUid; }) : null;
       var m;
       if (editing) {
-        // Modifica: stesso uid, rev+1 e updated_at nuovo così la modifica vince
-        // (LWW). I campi del giro non toccati dal form vengono conservati.
+        // Modifica: stesso uid, rev+1 e updated_at nuovo → la modifica vince (LWW).
+        // I campi del giro non toccati dal form (es. rientro) vengono conservati.
         m = Object.assign({}, editing, {
           tipo: t, data: data, importo: Math.abs(importo),
-          wallet_uid: wallet_uid, wallet_to_uid: wallet_to_uid,
-          categoria_uid: catUid, descrizione: descrizione.trim(),
+          wallet_uid: wallet_uid,
+          wallet_to_uid: isT ? wallet_to_uid : (isG ? (editing.wallet_to_uid || wallet_uid) : null),
+          categoria_uid: catUid, descrizione: descrizione,
+          controparte: isG ? controparte : "",
           rev: (editing.rev || 1) + 1, updated_at: new Date().toISOString(),
           deleted: false, _local: true
         });
+      } else if (isG) {
+        // Nuovo giro: parte APERTO (rimborso in arrivo); il rientro si registra
+        // poi dal Dettaglio con "Registra rientro".
+        m = {
+          uid: nuovoUid(), tipo: "giro", data: data, importo: Math.abs(importo),
+          wallet_uid: wallet_uid, wallet_to_uid: wallet_uid,
+          categoria_uid: null, descrizione: descrizione,
+          giro_id: "", giro_aperta: true, importo_ricevuto: null, data_ricevuto: null, controparte: controparte,
+          rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
+        };
       } else {
         m = {
           uid: nuovoUid(), tipo: t, data: data, importo: Math.abs(importo),
           wallet_uid: wallet_uid, wallet_to_uid: wallet_to_uid,
-          categoria_uid: catUid, descrizione: descrizione.trim(),
+          categoria_uid: catUid, descrizione: descrizione,
           giro_id: "", giro_aperta: false, importo_ricevuto: null, data_ricevuto: null, controparte: "",
           rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
         };
@@ -367,6 +390,105 @@
       return render();
     });
   });
+
+  // ---------- Registra rientro (chiude un giro aperto) ----------
+  var _rientroUid = null;
+  function openRientro(m) {
+    _rientroUid = m.uid;
+    if ($("rientro-info")) $("rientro-info").textContent = "Da " + (m.controparte || "chi ti rimborsa") + " · anticipato " + eur(m.importo);
+    var sel = $("ri-wallet");
+    if (sel) {
+      sel.innerHTML = "";
+      _wallets.forEach(function (w) { var o = document.createElement("option"); o.value = w.uid; o.textContent = w.nome; sel.appendChild(o); });
+      sel.value = m.wallet_uid || (_wallets[0] && _wallets[0].uid) || "";
+    }
+    if ($("ri-importo")) $("ri-importo").value = Number(m.importo).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if ($("ri-data")) $("ri-data").value = nowLocalInput();
+    hideSheets(); showSheet("rientro-sheet");
+  }
+  if ($("detail-rientro")) $("detail-rientro").addEventListener("click", function () {
+    var m = _movs.find(function (x) { return x.uid === _detailUid; }); if (m) openRientro(m);
+  });
+  if ($("ri-cancel")) $("ri-cancel").addEventListener("click", hideSheets);
+  if ($("ri-save")) $("ri-save").addEventListener("click", function () {
+    var m = _movs.find(function (x) { return x.uid === _rientroUid; }); if (!m) return;
+    var ric = parseImporto($("ri-importo").value); if (ric <= 0) return;
+    var upd = Object.assign({}, m, {
+      importo_ricevuto: ric, data_ricevuto: $("ri-data").value || nowLocalInput(),
+      wallet_to_uid: $("ri-wallet").value, giro_aperta: false,
+      rev: (m.rev || 1) + 1, updated_at: new Date().toISOString(), _local: true
+    });
+    DB.put("movimenti", upd)
+      .then(function () { return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("transaction", "upsert", upd, did); }); })
+      .then(function () { hideSheets(); return render(); });
+  });
+
+  // ---------- Detta o scrivi con l'AI (2c) ----------
+  var _recog = null;
+  function aiStatus(msg, kind) {
+    var el = $("ai-status"); if (!el) return;
+    el.hidden = !msg; el.textContent = msg || ""; el.className = "ai-status" + (kind ? " " + kind : "");
+  }
+  if ($("ai-btn")) $("ai-btn").addEventListener("click", function () {
+    var box = $("ai-box"); if (!box) return;
+    box.hidden = !box.hidden;
+    if (!box.hidden && $("ai-text")) $("ai-text").focus();
+  });
+  if ($("ai-go")) $("ai-go").addEventListener("click", function () { interpretaTesto($("ai-text") ? $("ai-text").value : ""); });
+  if ($("ai-mic")) $("ai-mic").addEventListener("click", function () { dettaVoce(); });
+
+  function dettaVoce() {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { aiStatus("La dettatura vocale non è disponibile qui: scrivi la frase e tocca Interpreta.", "warn"); return; }
+    try {
+      if (_recog) { try { _recog.stop(); } catch (e) {} }
+      _recog = new SR();
+      _recog.lang = "it-IT"; _recog.interimResults = true; _recog.maxAlternatives = 1;
+      var mic = $("ai-mic");
+      _recog.onstart = function () { aiStatus("Sto ascoltando… parla pure.", ""); if (mic) mic.classList.add("rec"); };
+      _recog.onresult = function (e) {
+        var txt = ""; for (var i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
+        if ($("ai-text")) $("ai-text").value = txt;
+      };
+      _recog.onerror = function (ev) { aiStatus("Non ho sentito bene" + (ev && ev.error ? " (" + ev.error + ")" : "") + ". Riprova o scrivi.", "warn"); if (mic) mic.classList.remove("rec"); };
+      _recog.onend = function () { if (mic) mic.classList.remove("rec"); };
+      _recog.start();
+    } catch (e) { aiStatus("Dettatura non avviabile: scrivi la frase.", "warn"); }
+  }
+
+  function interpretaTesto(testo) {
+    testo = (testo || "").trim();
+    if (!testo) { aiStatus("Scrivi o detta una frase prima.", "warn"); return; }
+    var base = apiBase();
+    if (!base) { aiStatus("La detta-AI funziona quando il telefono raggiunge l'app (a casa, stessa rete del PC). Per ora scrivi il movimento a mano.", "warn"); return; }
+    aiStatus("Sto interpretando…", "");
+    var ctrl = new AbortController(); var to = setTimeout(function () { ctrl.abort(); }, 25000);
+    fetch(base + "/api/finanze/parse", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ testo: testo }), signal: ctrl.signal
+    }).then(function (r) { clearTimeout(to); if (!r.ok) throw new Error("http-" + r.status); return r.json(); })
+      .then(function (p) {
+        if (!p || !p.ok) { aiStatus(p && p.error === "no_key" ? "L'AI non è configurata sul PC." : "Non sono riuscito a interpretare. Prova a scriverlo più semplice.", "warn"); return; }
+        applicaProposta(p);
+        aiStatus("Fatto — controlla i campi qui sotto (confidenza " + (p.confidenza || "media") + ").", "ok");
+      }).catch(function () {
+        clearTimeout(to);
+        aiStatus("Non raggiungo l'app (sei sulla stessa rete del PC?). Per ora scrivi a mano.", "warn");
+      });
+  }
+
+  function applicaProposta(p) {
+    popolaForm();
+    setTipo(p.tipo || "uscita");
+    var f = $("add-form");
+    if (p.importo) f.importo.value = Number(p.importo).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (p.wallet_uid && _wallets.some(function (w) { return w.uid === p.wallet_uid; })) $("af-wallet").value = p.wallet_uid;
+    if (p.tipo === "trasferimento" && p.wallet_to_uid) $("af-wallet-to").value = p.wallet_to_uid;
+    if (p.tipo === "giro" && $("af-controparte")) $("af-controparte").value = p.controparte || "";
+    if (p.tipo !== "trasferimento" && p.tipo !== "giro") f.categoria.value = p.categoria || "";
+    if (p.data_local) $("af-data").value = String(p.data_local).slice(0, 16);
+    f.descrizione.value = p.descrizione || "";
+  }
 
   // ---------- Google Drive (Fase 5) ----------
   var HAS_DRIVE = (typeof DRIVE !== "undefined") && !!$("drive-btn");
