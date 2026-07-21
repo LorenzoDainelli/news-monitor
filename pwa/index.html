@@ -192,6 +192,18 @@
     </form>
   </div>
 
+  <!-- ============ pannello Dettaglio movimento ============ -->
+  <div class="sheet" id="detail-sheet" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div class="grip"></div>
+    <h2 id="detail-title">Movimento</h2>
+    <div id="detail-body"></div>
+    <div class="af-actions" style="margin-top:16px">
+      <button type="button" class="btn primary" id="detail-edit">Modifica</button>
+      <button type="button" class="btn danger" id="detail-del">Elimina</button>
+    </div>
+    <button type="button" class="btn" id="detail-close" style="margin-top:10px">Chiudi</button>
+  </div>
+
   <script src="db.js"></script>
   <script src="finance.js"></script>
   <script src="sync.js"></script>

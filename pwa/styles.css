@@ -230,3 +230,16 @@ body.locked { overflow: hidden; }          /* col pannello aperto la pagina sott
   font-size: 13px; color: var(--muted); text-align: center;
 }
 .hide { display: none !important; }
+
+/* ---- Fase 2: riga toccabile, dettaglio, elimina ---- */
+.mrow { cursor: pointer; }
+.mchev { width: 16px; height: 16px; color: var(--faint); flex: 0 0 auto; }
+.btn.danger { background: var(--neg); color: #fff; border-color: transparent; }
+.drow {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.drow:last-child { border-bottom: none; }
+.drow .dl { color: var(--muted); flex: 0 0 auto; }
+.drow .dv { font-weight: 700; text-align: right; min-width: 0; word-break: break-word; }
+.dv.pos { color: var(--pos); } .dv.neg { color: var(--neg); } .dv.muted { color: var(--muted); }
