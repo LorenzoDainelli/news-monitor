@@ -132,11 +132,12 @@
         if (dl !== lastDay) { var h = document.createElement("div"); h.className = "day-h"; h.textContent = dl; box.appendChild(h); lastDay = dl; }
       }
       var v = movToView(m);
-      var row = document.createElement("div"); row.className = "mrow";
+      var row = document.createElement("div"); row.className = "mrow"; row.setAttribute("data-uid", m.uid);
       var subTxt = dayHeaders ? v.sub : (dateLabel(m.data) + " · " + v.sub);
       row.innerHTML = '<div class="mmain"><div class="mdesc">' + escapeHtml(v.main) + '</div>' +
         '<div class="msub">' + escapeHtml(subTxt) + '</div></div>' +
-        '<div class="mval num ' + v.cls + '">' + v.val + '</div>';
+        '<div class="mval num ' + v.cls + '">' + v.val + '</div>' +
+        '<svg class="ic mchev" aria-hidden="true"><use href="#ic-chevron"/></svg>';
       box.appendChild(row);
     });
   }
@@ -202,22 +203,86 @@
     if ($("drive-btn")) $("drive-btn").classList.toggle("stale", needsUpdate);
   }
 
-  // ---------- pannello Aggiungi movimento ----------
-  function openSheet() {
-    if (!_wallets.length) return;   // senza conti non si può aggiungere
-    if (!$("af-data").value) $("af-data").value = nowLocalInput();
+  // ---------- pannelli (sheet): Aggiungi / Modifica / Dettaglio ----------
+  var _editUid = null, _detailUid = null;
+  function showSheet(id) {
     $("backdrop").classList.add("show");
-    $("add-sheet").classList.add("show");
+    $(id).classList.add("show");
     document.body.classList.add("locked");
   }
-  function closeSheet() {
+  function hideSheets() {
     $("backdrop").classList.remove("show");
-    $("add-sheet").classList.remove("show");
+    document.querySelectorAll(".sheet").forEach(function (s) { s.classList.remove("show"); });
     document.body.classList.remove("locked");
   }
-  if ($("fab")) $("fab").addEventListener("click", openSheet);
-  if ($("backdrop")) $("backdrop").addEventListener("click", closeSheet);
-  if ($("af-cancel")) $("af-cancel").addEventListener("click", closeSheet);
+  if ($("backdrop")) $("backdrop").addEventListener("click", hideSheets);
+
+  // --- Aggiungi / Modifica ---
+  function openSheet(mov) {
+    if (!_wallets.length) return;   // senza conti non si può aggiungere
+    _editUid = mov ? mov.uid : null;
+    if ($("add-title")) $("add-title").textContent = mov ? "Modifica movimento" : "Nuovo movimento";
+    if (mov) {
+      prefillForm(mov);
+    } else {
+      $("add-form").reset(); setTipo("uscita"); $("af-data").value = nowLocalInput();
+    }
+    showSheet("add-sheet");
+  }
+  function prefillForm(m) {
+    popolaForm();
+    setTipo(m.tipo);
+    var f = $("add-form");
+    f.importo.value = (m.importo != null) ? Number(m.importo).toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
+    $("af-wallet").value = m.wallet_uid || "";
+    if (m.tipo === "trasferimento") $("af-wallet-to").value = m.wallet_to_uid || "";
+    f.categoria.value = (m.tipo === "trasferimento") ? "" : (catNome(m.categoria_uid) || "");
+    $("af-data").value = String(m.data || nowLocalInput()).slice(0, 16);
+    f.descrizione.value = m.descrizione || "";
+  }
+  if ($("fab")) $("fab").addEventListener("click", function () { openSheet(); });
+  if ($("af-cancel")) $("af-cancel").addEventListener("click", hideSheets);
+
+  // --- Dettaglio movimento (tocco su una riga) ---
+  function tipoNome(t) { return ({ uscita: "Uscita", entrata: "Entrata", trasferimento: "Trasferimento", giro: "Partita di giro" }[t] || t); }
+  function dataEstesa(iso) { var d = new Date(iso); return isNaN(d) ? String(iso || "") : d.toLocaleString(lang, { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); }
+  function drow(label, val) { return '<div class="drow"><span class="dl">' + label + '</span><span class="dv">' + escapeHtml(val) + '</span></div>'; }
+  function openDetail(m) {
+    _detailUid = m.uid;
+    var v = movToView(m), html = "";
+    html += drow("Tipo", tipoNome(m.tipo));
+    html += '<div class="drow"><span class="dl">Importo</span><span class="dv ' + v.cls + '">' + v.val + '</span></div>';
+    if (m.tipo === "trasferimento") { html += drow("Da", walletNome(m.wallet_uid)); html += drow("A", walletNome(m.wallet_to_uid)); }
+    else { html += drow("Portafoglio", walletNome(m.wallet_uid)); }
+    if (m.tipo !== "trasferimento" && m.categoria_uid) html += drow("Categoria", catNome(m.categoria_uid) || "—");
+    if (m.tipo === "giro" && m.controparte) html += drow("Controparte", m.controparte);
+    html += drow("Data", dataEstesa(m.data));
+    if (m.descrizione) html += drow("Descrizione", m.descrizione);
+    $("detail-body").innerHTML = html;
+    $("detail-title").textContent = m.descrizione ? m.descrizione : v.sub;
+    $("detail-edit").style.display = (m.tipo === "giro") ? "none" : "";
+    showSheet("detail-sheet");
+  }
+  document.addEventListener("click", function (e) {
+    var row = e.target.closest ? e.target.closest(".mrow") : null;
+    if (!row) return;
+    var m = _movs.find(function (x) { return x.uid === row.getAttribute("data-uid"); });
+    if (m) openDetail(m);
+  });
+  if ($("detail-close")) $("detail-close").addEventListener("click", hideSheets);
+  if ($("detail-edit")) $("detail-edit").addEventListener("click", function () {
+    var m = _movs.find(function (x) { return x.uid === _detailUid; });
+    hideSheets(); if (m) openSheet(m);
+  });
+  if ($("detail-del")) $("detail-del").addEventListener("click", function () {
+    var m = _movs.find(function (x) { return x.uid === _detailUid; });
+    if (!m) return;
+    if (!confirm("Eliminare questo movimento? Verrà tolto anche dagli altri dispositivi alla prossima sincronizzazione.")) return;
+    var del = Object.assign({}, m, { deleted: true, rev: (m.rev || 1) + 1, updated_at: new Date().toISOString(), _local: true });
+    DB.put("movimenti", del)
+      .then(function () { return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("transaction", "delete", del, did); }); })
+      .then(function () { hideSheets(); return render(); });
+  });
 
   function setTipo(t) {
     var isT = t === "trasferimento";
@@ -271,19 +336,34 @@
     var catNomeIn = t === "trasferimento" ? "" : $("add-form").categoria.value;
 
     trovaOCreaCategoria(catNomeIn, t).then(function (catUid) {
-      var m = {
-        uid: nuovoUid(), tipo: t, data: data, importo: Math.abs(importo),
-        wallet_uid: wallet_uid, wallet_to_uid: wallet_to_uid,
-        categoria_uid: catUid, descrizione: descrizione.trim(),
-        giro_id: "", giro_aperta: false, importo_ricevuto: null, data_ricevuto: null, controparte: "",
-        rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
-      };
+      var editing = _editUid ? _movs.find(function (x) { return x.uid === _editUid; }) : null;
+      var m;
+      if (editing) {
+        // Modifica: stesso uid, rev+1 e updated_at nuovo così la modifica vince
+        // (LWW). I campi del giro non toccati dal form vengono conservati.
+        m = Object.assign({}, editing, {
+          tipo: t, data: data, importo: Math.abs(importo),
+          wallet_uid: wallet_uid, wallet_to_uid: wallet_to_uid,
+          categoria_uid: catUid, descrizione: descrizione.trim(),
+          rev: (editing.rev || 1) + 1, updated_at: new Date().toISOString(),
+          deleted: false, _local: true
+        });
+      } else {
+        m = {
+          uid: nuovoUid(), tipo: t, data: data, importo: Math.abs(importo),
+          wallet_uid: wallet_uid, wallet_to_uid: wallet_to_uid,
+          categoria_uid: catUid, descrizione: descrizione.trim(),
+          giro_id: "", giro_aperta: false, importo_ricevuto: null, data_ricevuto: null, controparte: "",
+          rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
+        };
+      }
       return DB.put("movimenti", m).then(function () {
         return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("transaction", "upsert", m, did); });
       });
     }).then(function () {
+      _editUid = null;
       $("add-form").reset(); setTipo("uscita"); $("af-data").value = nowLocalInput();
-      closeSheet();
+      hideSheets();
       return render();
     });
   });
