@@ -171,6 +171,12 @@ body.locked { overflow: hidden; }          /* col pannello aperto la pagina sott
   box-shadow: 0 -12px 40px -16px rgba(0,0,0,.55);
 }
 .sheet.show { transform: translateY(0); }
+/* Con la tastiera aperta (iOS) il pannello finiva "sotto" la tastiera e sembrava
+   bloccato: qui lo alziamo di --kb (altezza tastiera) e limitiamo l'altezza
+   all'area davvero visibile (--vvh = visualViewport). Così campi e pulsante
+   Salva restano sempre raggiungibili e si scorre dentro il pannello. */
+body.kbd .sheet.show { transform: translateY(calc(-1 * var(--kb, 0px))); }
+body.kbd .sheet { max-height: calc(var(--vvh, 92vh) - 8px); }
 .grip { width: 40px; height: 4px; border-radius: 2px; background: var(--faint); opacity: .55; margin: 6px auto 14px; }
 .sheet h2 { font-size: 17px; font-weight: 800; margin: 0 0 14px; letter-spacing: -.01em; }
 
@@ -186,11 +192,15 @@ body.locked { overflow: hidden; }          /* col pannello aperto la pagina sott
 .ty.on { background: var(--accent); color: var(--on-accent); border-color: transparent; }
 .form-grid { display: grid; gap: 13px; }
 .af-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-grid label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.form-grid label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--muted); font-weight: 600; min-width: 0; }
 .form-grid input, .form-grid select {
   font: inherit; padding: 11px 12px; border-radius: var(--r-sm);
-  border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); width: 100%;
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--ink);
+  width: 100%; min-width: 0; max-width: 100%;   /* iOS: datetime-local non deve sforare a destra */
 }
+/* il campo data/ora su iOS ha una larghezza "intrinseca" che sfora la griglia:
+   annulliamo l'aspetto nativo e lo forziamo dentro il contenitore */
+.form-grid input[type="datetime-local"] { -webkit-appearance: none; appearance: none; }
 .form-grid input.big { font-size: 22px; font-weight: 700; }
 .af-full { grid-column: 1 / -1; }
 .af-actions { display: flex; gap: 10px; margin-top: 4px; }
@@ -264,3 +274,20 @@ body.locked { overflow: hidden; }          /* col pannello aperto la pagina sott
 .ai-status { font-size: 13px; border-radius: var(--r-sm); padding: 9px 11px; background: var(--surface-alt); color: var(--muted); }
 .ai-status.ok { background: var(--accent-soft); color: var(--ink); }
 .ai-status.warn { background: rgba(226,71,74,.12); color: var(--neg); }
+
+/* ---- Fase 3: copia a specchio (Drive) ---- */
+.tb-right { display: inline-flex; align-items: center; gap: 10px; }
+/* pillola promemoria "in alto a destra": bianca sul lime = ben visibile */
+.pill {
+  border: none; font-family: inherit; font-size: 12px; font-weight: 800; cursor: pointer;
+  padding: 7px 12px; border-radius: 999px; white-space: nowrap;
+  background: #FFFFFF; color: #1B2A05; box-shadow: 0 3px 10px -4px rgba(0,0,0,.5);
+  display: inline-flex; align-items: center; gap: 5px; animation: pillIn .2s ease;
+}
+.pill.up { background: #1B2A05; color: #DCF3A6; }        /* da caricare: qualcosa di locale non è ancora sul Drive */
+.pill.down { background: #FFFFFF; color: #1B2A05; }       /* da scaricare: sul Drive c'è una copia più recente */
+@keyframes pillIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.mirror-card .sync-row.two { margin-bottom: 6px; }
+.mirror-card .big-btn { padding: 15px 16px; font-size: 15px; line-height: 1.25; }
+.mirror-card .big-btn small { display: block; font-size: 11px; font-weight: 600; opacity: .8; margin-top: 2px; }
+.mirror-note { font-size: 12px; color: var(--faint); margin: 4px 0 0; line-height: 1.5; }

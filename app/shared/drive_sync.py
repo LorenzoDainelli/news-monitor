@@ -284,6 +284,10 @@ class DriveClient:
                         body, {"Content-Type": f"multipart/related; boundary={boundary}"})
         return json.loads(raw).get("id", "")
 
+    def delete_file(self, file_id: str) -> None:
+        """Cancella un file dalla cartellina (usato per potare i vecchi backup)."""
+        self._req("DELETE", f"{API_BASE}/files/{file_id}")
+
 
 # ── orchestrazione ──────────────────────────────────────────────────────────
 
@@ -408,3 +412,112 @@ def sync_once(client=None) -> dict:
     settings_store.set_setting("drive_last_sync", json.dumps(
         {"ts": datetime.now().isoformat(timespec="minutes"), **result}))
     return result
+
+
+# ── Fase 3: copia a SPECCHIO (una sola copia autorevole su Drive) ───────────
+# mirror.json fa da riferimento condiviso tra PC e telefono. Diverso dal sync a
+# fusione qui sopra: "Carica" sovrascrive mirror.json col PC (tenendo un backup),
+# "Scarica" rimpiazza TUTTO il PC con mirror.json (sostituzione, non fusione).
+MIRROR_NAME = "mirror.json"
+BAK_PREFIX = "mirror-bak-"
+BAK_KEEP = 3
+
+
+def _find(files: list[dict], name: str) -> dict | None:
+    return next((f for f in files if f.get("name") == name), None)
+
+
+def _run_drive(fn, client=None) -> dict:
+    """Esegue `fn(client)` contro il Drive con il solito bootstrap del token e
+    UN retry su 401. Non solleva mai: ritorna {ok: False, error} sugli errori."""
+    own_client = client is None
+    if own_client:
+        if not is_configured() or not is_connected():
+            return {"ok": False, "error": "non_connesso"}
+        token = get_access_token()
+        if not token:
+            return {"ok": False, "error": "auth"}
+        client = DriveClient(token)
+    for tentativo in (1, 2):
+        try:
+            return fn(client)
+        except DriveAuthError:
+            if own_client and tentativo == 1:
+                token = get_access_token(force_refresh=True)
+                if token:
+                    client = DriveClient(token)
+                    continue
+            return {"ok": False, "error": "auth"}
+        except DriveError as e:
+            log.warning("drive mirror: fallita (%s)", e)
+            return {"ok": False, "error": "quota" if str(e) == "quota" else "drive"}
+        except Exception:
+            log.warning("drive mirror: fallita", exc_info=True)
+            return {"ok": False, "error": "errore"}
+    return {"ok": False, "error": "errore"}
+
+
+def _prune_backups(client, files: list[dict]) -> None:
+    """Tiene gli ultimi (BAK_KEEP-1) backup: col nuovo che stiamo per creare = BAK_KEEP."""
+    baks = sorted((f for f in files if f.get("name", "").startswith(BAK_PREFIX)),
+                  key=lambda f: f.get("name", ""))   # nomi con timestamp = ordine cronologico
+    excess = len(baks) - (BAK_KEEP - 1)
+    for f in baks[:max(0, excess)]:
+        try:
+            client.delete_file(f["id"])
+        except DriveError:
+            pass  # potatura best-effort
+
+
+def mirror_status(client=None) -> dict:
+    """C'è una copia sul Drive? quando è stata modificata? (per la pagina)."""
+    def _do(c):
+        m = _find(c.list_state_files(), MIRROR_NAME)
+        if not m:
+            return {"ok": True, "exists": False}
+        return {"ok": True, "exists": True, "modifiedTime": m.get("modifiedTime")}
+    return _run_drive(_do, client)
+
+
+def mirror_carica(client=None) -> dict:
+    """PC → Drive: sovrascrive mirror.json con lo stato del PC, tenendo un backup."""
+    def _do(c):
+        files = c.list_state_files()
+        existing = _find(files, MIRROR_NAME)
+        if existing is not None:
+            try:
+                old = c.download(existing["id"])
+                bname = BAK_PREFIX + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".json"
+                c.upload_state(bname, old, file_id=None)
+                _prune_backups(c, files)
+            except (DriveError, json.JSONDecodeError):
+                pass  # il backup è best-effort: non blocca il Carica
+        mirror = sync.build_mirror()
+        c.upload_state(MIRROR_NAME, mirror, file_id=existing["id"] if existing else None)
+        return {"ok": True, "ts": mirror.get("ts"), "counts": {
+            "wallets": len(mirror.get("wallets", [])),
+            "categorie": len(mirror.get("categorie", [])),
+            "movimenti": len(mirror.get("movimenti", [])),
+        }}
+    return _run_drive(_do, client)
+
+
+def mirror_scarica(client=None) -> dict:
+    """Drive → PC: rimpiazza TUTTO il PC con mirror.json. Prima fa un backup
+    locale recuperabile (backup_bundle_to_file)."""
+    def _do(c):
+        m = _find(c.list_state_files(), MIRROR_NAME)
+        if not m:
+            return {"ok": True, "exists": False}
+        data = c.download(m["id"])
+        if not isinstance(data, dict) or not isinstance(data.get("wallets"), list):
+            return {"ok": False, "error": "illeggibile"}
+        backup_path = sync.backup_bundle_to_file()
+        r = sync.replace_all_from_snapshot(data)
+        if not r.get("ok"):
+            return {"ok": False, "error": "schema_nuovo" if r.get("future") else "errore",
+                    "backup": str(backup_path)}
+        return {"ok": True, "exists": True, "count": r.get("count", 0),
+                "ts": data.get("ts"), "modifiedTime": m.get("modifiedTime"),
+                "backup": str(backup_path)}
+    return _run_drive(_do, client)

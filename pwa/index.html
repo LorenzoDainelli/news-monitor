@@ -33,7 +33,10 @@
 
   <header class="topbar">
     <div class="brand">MyMoney</div>
-    <div class="status"><span class="dot" id="dot"></span><span id="net">—</span></div>
+    <div class="tb-right">
+      <button class="pill" id="mirror-pill" hidden></button>
+      <div class="status"><span class="dot" id="dot"></span><span id="net">—</span></div>
+    </div>
   </header>
 
   <main class="app">
@@ -91,6 +94,19 @@
       <h1 class="view-title">Sincronizzazione</h1>
 
       <div id="stale" class="stale" hidden></div>
+
+      <div class="sync-card mirror-card" id="mirror-card" hidden>
+        <h3>Copia a specchio</h3>
+        <p>Una sola copia sul Drive fa da riferimento. <b>Carica</b> la sostituisce
+        con quella del telefono; <b>Scarica</b> rimpiazza tutto il telefono con
+        quella dal Drive (sostituzione, non fusione). Prima di sovrascrivere viene
+        sempre tenuto un backup.</p>
+        <div class="sync-row two">
+          <button class="btn primary big-btn" id="mirror-up">⬆️ Carica<small>telefono → Drive</small></button>
+          <button class="btn big-btn" id="mirror-down">⬇️ Scarica<small>Drive → telefono</small></button>
+        </div>
+        <p class="mirror-note" id="mirror-info">—</p>
+      </div>
 
       <div class="sync-card">
         <h3>Google Drive</h3>

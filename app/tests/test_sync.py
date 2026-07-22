@@ -457,3 +457,67 @@ class TestSchemaGuard:
         assert r["future"] == 1
         assert r["applied"] == 0
         assert settings_store.get_setting("sync_needs_update", "") == "1"
+
+
+class TestReplaceAllFromSnapshot:
+    """Fase 3 (specchio): la sostituzione TOTALE rimpiazza i dati, non li fonde."""
+
+    def test_sostituzione_totale(self, test_db):
+        Session = test_db["Session"]
+        # Dati di partenza da BUTTARE: 2 wallet, 1 categoria, 2 movimenti
+        with Session() as db:
+            db.add(_make_wallet(nome="Vecchio A", uid="old_a"))
+            db.add(_make_wallet(nome="Vecchio B", uid="old_b"))
+            db.add(_make_category(nome="Cat vecchia", uid="old_cat"))
+            db.commit()
+            wid = db.execute(select(Wallet).where(Wallet.uid == "old_a")).scalar_one().id
+            cid = db.execute(select(Category).where(Category.uid == "old_cat")).scalar_one().id
+            db.add(_make_transaction(importo=5, wallet_id=wid, category_id=cid, uid="old_t1"))
+            db.add(_make_transaction(importo=7, wallet_id=wid, uid="old_t2"))
+            db.commit()
+
+        # Snapshot "specchio" completamente diverso: 1 wallet, 1 categoria, 1 movimento
+        snap = {
+            "schema": 1,
+            "wallets": [{"uid": "new_w", "nome": "Nuovo", "tipo": "conto",
+                         "saldo_iniziale": 200.0, "note": "", "ordine": 0, "colore": "",
+                         "archiviato": False, "deleted": False, "rev": 4,
+                         "updated_at": "2026-07-22T10:00:00"}],
+            "categorie": [{"uid": "new_c", "nome": "Regali", "kind": "uscita",
+                           "archiviato": False, "deleted": False, "rev": 2,
+                           "updated_at": "2026-07-22T10:00:00"}],
+            "movimenti": [{"uid": "new_t", "tipo": "uscita", "data": "2026-07-20T10:00:00",
+                           "importo": 12.0, "wallet_uid": "new_w", "wallet_to_uid": None,
+                           "categoria_uid": "new_c", "descrizione": "Test", "giro_id": "",
+                           "giro_aperta": False, "importo_ricevuto": None,
+                           "data_ricevuto": None, "controparte": "", "deleted": False,
+                           "rev": 3, "updated_at": "2026-07-22T10:00:00"}],
+        }
+        r = sync_mod.replace_all_from_snapshot(snap)
+        assert r["ok"] is True
+        assert r["count"] == 1
+
+        with Session() as db:
+            wallets = db.execute(select(Wallet)).scalars().all()
+            cats = db.execute(select(Category)).scalars().all()
+            movs = db.execute(select(Transaction)).scalars().all()
+            # I vecchi record NON ci sono più (sostituzione, non fusione)
+            assert {w.uid for w in wallets} == {"new_w"}
+            assert {c.uid for c in cats} == {"new_c"}
+            assert {m.uid for m in movs} == {"new_t"}
+            # rev/updated_at preservati dallo snapshot (import: niente ri-timbratura)
+            assert wallets[0].rev == 4
+            assert wallets[0].saldo_iniziale == 200.0
+            # FK risolte via uid → id locale
+            assert movs[0].wallet_id == wallets[0].id
+            assert movs[0].category_id == cats[0].id
+
+    def test_schema_troppo_nuovo_non_distrugge(self, test_db):
+        Session = test_db["Session"]
+        with Session() as db:
+            db.add(_make_wallet(nome="Da tenere", uid="keep"))
+            db.commit()
+        r = sync_mod.replace_all_from_snapshot({"schema": 999, "wallets": []})
+        assert r.get("future") == 1
+        with Session() as db:   # i dati locali NON sono stati toccati
+            assert db.execute(select(Wallet)).scalars().all()[0].uid == "keep"

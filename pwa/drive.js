@@ -217,12 +217,96 @@ window.DRIVE = (function () {
     });
   }
 
+  // ── Fase 3: copia a SPECCHIO (un solo file di riferimento) ────────────────
+  /* Diverso dal sync a fusione qui sopra: mirror.json è UNA copia autorevole.
+     Carica = sovrascrivi mirror.json col telefono; Scarica = leggi mirror.json.
+     Prima di sovrascrivere si tiene un backup (mirror-bak-<ts>.json, ultimi 3). */
+  var MIRROR_NAME = "mirror.json";
+  var BAK_PREFIX = "mirror-bak-";
+  var BAK_KEEP = 3;
+
+  function deleteFile(token, id) {
+    return api(token, "DELETE", API + "/files/" + id).then(function () { return true; });
+  }
+
+  function _run(fn) {
+    return getToken().then(function (token) {
+      if (!token) return { ok: false, reason: "token" };
+      return fn(token);
+    }).catch(function (err) {
+      if (err && err.code === "auth") {
+        return clearToken().then(function () { return { ok: false, reason: "token" }; });
+      }
+      return { ok: false, reason: (err && err.code) || (err && err.message) || "errore" };
+    });
+  }
+
+  function _findMirror(files) { return files.filter(function (f) { return f.name === MIRROR_NAME; })[0] || null; }
+
+  function mirrorStatus() {
+    // Esiste una copia sul Drive? quando è stata modificata? (per la pillola)
+    return _run(function (token) {
+      return listFiles(token).then(function (files) {
+        var m = _findMirror(files);
+        return { ok: true, exists: !!m, id: m ? m.id : null, modifiedTime: m ? m.modifiedTime : null };
+      });
+    });
+  }
+
+  function mirrorPull() {
+    // Scarica il contenuto di mirror.json (senza applicarlo: lo fa app.js).
+    return _run(function (token) {
+      return listFiles(token).then(function (files) {
+        var m = _findMirror(files);
+        if (!m) return { ok: true, exists: false };
+        return download(token, m.id).then(function (snap) {
+          return { ok: true, exists: true, snap: snap, modifiedTime: m.modifiedTime };
+        });
+      });
+    });
+  }
+
+  function _pruneBackups(token, files) {
+    // Tieni gli ultimi (BAK_KEEP-1) backup: col nuovo che stiamo per creare = BAK_KEEP.
+    var baks = files.filter(function (f) { return f.name && f.name.indexOf(BAK_PREFIX) === 0; })
+      .sort(function (a, b) { return a.name < b.name ? -1 : 1; });   // nomi ISO = ordine cronologico
+    var excess = baks.length - (BAK_KEEP - 1);
+    if (excess <= 0) return Promise.resolve();
+    var p = Promise.resolve();
+    baks.slice(0, excess).forEach(function (f) {
+      p = p.then(function () { return deleteFile(token, f.id).catch(function () {}); });
+    });
+    return p;
+  }
+
+  function mirrorPush(mirror) {
+    // Sovrascrivi mirror.json col contenuto passato, tenendo un backup del vecchio.
+    return _run(function (token) {
+      return listFiles(token).then(function (files) {
+        var existing = _findMirror(files);
+        var backupP = existing
+          ? download(token, existing.id).then(function (old) {
+              if (!old) return;
+              var bname = BAK_PREFIX + new Date().toISOString().replace(/[:.]/g, "-") + ".json";
+              return upload(token, bname, old, null).then(function () { return _pruneBackups(token, files); });
+            })
+          : Promise.resolve();
+        return backupP
+          .then(function () { return upload(token, MIRROR_NAME, mirror, existing ? existing.id : null); })
+          .then(function () { return { ok: true, ts: mirror.ts }; });
+      });
+    });
+  }
+
   return {
     getClientId: getClientId,
     setClientId: setClientId,
     connect: connect,
     handleRedirect: handleRedirect,
     getToken: getToken,
-    driveSync: driveSync
+    driveSync: driveSync,
+    mirrorStatus: mirrorStatus,
+    mirrorPull: mirrorPull,
+    mirrorPush: mirrorPush
   };
 })();

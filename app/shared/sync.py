@@ -26,7 +26,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
-from sqlalchemy import event, select
+from sqlalchemy import delete, event, select
 from sqlalchemy.orm import Session
 
 from shared.config import APP_DIR
@@ -492,6 +492,79 @@ def import_bundle(data: dict) -> dict:
         result["errors"] += r.get("errors", 0)
         result["future"] += r.get("future", 0)
     return result
+
+
+# ── Fase 3: copia a SPECCHIO (sostituzione totale) ──────────────────────────
+
+def build_mirror() -> dict:
+    """Contenuto di mirror.json: la fotografia completa + un'etichetta."""
+    snap = build_snapshot()
+    snap["type"] = "mirror"
+    return snap
+
+
+def backup_bundle_to_file() -> Path:
+    """Scrive un bundle completo (snapshot + diario) su file, PRIMA di una
+    sostituzione distruttiva. Serve da rete di sicurezza recuperabile."""
+    backup_dir = APP_DIR / "data" / "backups"
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    path = backup_dir / f"pre-scarica-{stamp}.json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(export_bundle(), f, ensure_ascii=False, default=str, indent=2)
+    return path
+
+
+def replace_all_from_snapshot(data: dict) -> dict:
+    """Sostituzione TOTALE (non fusione): svuota wallet/categorie/movimenti e
+    ricarica esattamente ciò che c'è nello snapshot. Usata dallo «Scarica» a
+    specchio. Il chiamante DEVE aver già fatto un backup (backup_bundle_to_file).
+
+    Ritorna {ok, count} oppure {ok: False, future: 1} se lo schema è più nuovo.
+    """
+    from finance.models import Wallet, Category, Transaction
+
+    if _schema_troppo_nuovo(data.get("schema")):
+        settings_store.set_setting("sync_needs_update", "1")
+        return {"ok": False, "future": 1}
+
+    with importing():   # niente ri-timbratura di rev/updated_at, niente diario
+        with SessionLocal() as db:
+            # Svuota in ordine di FK: prima i movimenti, poi categorie e wallet.
+            db.execute(delete(Transaction))
+            db.execute(delete(Category))
+            db.execute(delete(Wallet))
+            db.flush()
+
+            uid_to_wallet_id: dict[str, int] = {}
+            for fields in data.get("wallets", []):
+                w = Wallet()
+                w.uid = fields.get("uid") or uuid.uuid4().hex
+                _set_fields(w, "wallet", fields, {}, {})
+                db.add(w)
+                db.flush()
+                uid_to_wallet_id[w.uid] = w.id
+
+            uid_to_cat_id: dict[str, int] = {}
+            for fields in data.get("categorie", []):
+                c = Category()
+                c.uid = fields.get("uid") or uuid.uuid4().hex
+                _set_fields(c, "category", fields, {}, {})
+                db.add(c)
+                db.flush()
+                uid_to_cat_id[c.uid] = c.id
+
+            n = 0
+            for fields in data.get("movimenti", []):
+                t = Transaction()
+                t.uid = fields.get("uid") or uuid.uuid4().hex
+                _set_fields(t, "transaction", fields, uid_to_wallet_id, uid_to_cat_id)
+                db.add(t)
+                n += 1
+
+            db.commit()
+
+    return {"ok": True, "count": n}
 
 
 # ── inizializzazione (chiamata all'import del modulo) ───────────────────────
