@@ -1,132 +1,6 @@
 {
   "items": [
     {
-      "id": "macrumors.com/2026/06/17/apple-increasing-prices",
-      "ticker": "AAPL",
-      "url": "https://www.macrumors.com/2026/06/17/apple-increasing-prices/",
-      "data_invio": "2026-06-21T22:29:42+02:00"
-    },
-    {
-      "id": "investing.com/analysis/appleintel-chip-manufacturing-deal-reshapes-foundry-race-200682398",
-      "ticker": "AAPL",
-      "url": "https://www.investing.com/analysis/appleintel-chip-manufacturing-deal-reshapes-foundry-race-200682398",
-      "data_invio": "2026-06-21T22:29:42+02:00"
-    },
-    {
-      "id": "cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates",
-      "ticker": "SPCX",
-      "url": "https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "SpaceX debutta in borsa (SPCX) a $2,1T di market cap; Starship anomalia il 18 giugno",
-      "tipo_evento": "news aziendale / IPO"
-    },
-    {
-      "id": "cnbc.com/2026/06/15/spacex-stock-record-ipo-debut",
-      "ticker": "SPCX",
-      "url": "https://www.cnbc.com/2026/06/15/spacex-stock-record-ipo-debut.html",
-      "data_invio": "2026-06-22T00:00:00+02:00"
-    },
-    {
-      "id": "cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026",
-      "ticker": "ORCL",
-      "url": "https://www.cnbc.com/2026/06/10/oracle-orcl-q4-earnings-report-2026.html",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Oracle Q4 FY2026: ricavi +21%, cloud IaaS +93%, RPO +363% — titolo −10% per piano raccolta $40B",
-      "tipo_evento": "earnings"
-    },
-    {
-      "id": "investor.oracle.com/investor-news/2026/Oracle-Record-Q4-FY2026",
-      "ticker": "ORCL",
-      "url": "https://investor.oracle.com/investor-news/news-details/2026/Oracle-Announces-Record-Q4-and-FY-2026-Results-Driven-by-Cloud-Infrastructure--Cloud-Applications/default.aspx",
-      "data_invio": "2026-06-22T00:00:00+02:00"
-    },
-    {
-      "id": "cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026",
-      "ticker": "AVGO",
-      "url": "https://www.cnbc.com/2026/06/03/broadcom-avgo-earnings-report-q2-2026.html",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Broadcom Q2 FY2026: AI revenue $10,8B (+2x), ricavi +48% — titolo −15% senza rialzo guidance",
-      "tipo_evento": "earnings"
-    },
-    {
-      "id": "bloomberg.com/news/2026-06-19/us-tells-asml-concerned-china-euv",
-      "ticker": "ASML",
-      "url": "https://www.bloomberg.com/news/articles/2026-06-19/us-tells-asml-it-s-concerned-china-may-have-top-chip-tool",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "USA accusano ASML di EUV in Cina — ASML nega, conta tutti i 314 sistemi",
-      "tipo_evento": "legale/regolatorio"
-    },
-    {
-      "id": "tomshardware.com/asml-denies-euv-china-shipment",
-      "ticker": "ASML",
-      "url": "https://www.tomshardware.com/tech-industry/semiconductors/asml-denies-us-government-report-that-its-euv-chipmaking-tool-was-shipped-to-china-says-rumors-are-inaccurate-and-damaging-to-our-reputation",
-      "data_invio": "2026-06-22T00:00:00+02:00"
-    },
-    {
-      "id": "investor.lilly.com/foundayo-achieve-glp1-oral",
-      "ticker": "LLY",
-      "url": "https://investor.lilly.com/news-releases/news-release-details/lillys-oral-glp-1-foundayo-orforglipron-delivered-superior-a1c",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Eli Lilly: Foundayo (GLP-1 orale) supera semaglutide in 3 trial Fase 3 su diabete tipo 2",
-      "tipo_evento": "prodotto"
-    },
-    {
-      "id": "intellectia.ai/nvda-earnings-analysis-may-2026",
-      "ticker": "NVDA",
-      "url": "https://intellectia.ai/blog/nvda-stock-earnings-analysis-may-2026",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "NVIDIA: guidance Q2 FY2027 a $91B, Blackwell esaurito — prossimi earnings 26 agosto",
-      "tipo_evento": "revisione guidance"
-    },
-    {
-      "id": "barchart.com/2500516/western-digital-mark-calendars-june-22",
-      "ticker": "WDC",
-      "url": "https://www.barchart.com/story/news/2500516/dear-western-digital-stock-fans-mark-your-calendars-for-june-22",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Western Digital: chiude oggi (22/6) lo swap azioni SanDisk, WDC diventa pure-play storage",
-      "tipo_evento": "news aziendale"
-    },
-    {
-      "id": "gurufocus.com/tsm-expects-30-revenue-growth-2026",
-      "ticker": "TSM",
-      "url": "https://www.gurufocus.com/news/8900265/tsm-expects-over-30-revenue-growth-by-2026-driven-by-ai-demand",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "TSMC: rialzo prezzi 3nm +15% nel H2 2026, crescita ricavi >30%, indagine ITC in corso",
-      "tipo_evento": "news aziendale"
-    },
-    {
-      "id": "fool.com/2026/06/04/massive-news-alphabet-investors",
-      "ticker": "GOOG",
-      "url": "https://www.fool.com/investing/2026/06/04/massive-news-for-alphabet-stock-investors/",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Alphabet: aumento capitale $80B per AI infra; capex 2026 $180-190B; Cloud $20B+",
-      "tipo_evento": "news aziendale"
-    },
-    {
-      "id": "heygotrade.com/intel-stock-2026-ai-comeback",
-      "ticker": "INTC",
-      "url": "https://www.heygotrade.com/en/blog/intel-stock-2026-ai-comeback/",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Intel: +250% nel 2026, Apple foundry deal, CHIPS Act grants — ma consensus analisti Hold a $92",
-      "tipo_evento": "news aziendale"
-    },
-    {
-      "id": "yahoo-finance/palantir-down-26-2026-despite-upgrade",
-      "ticker": "PLTR",
-      "url": "https://finance.yahoo.com/markets/stocks/articles/palantir-down-26-2026-despite-164049335.html",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Palantir: −26% nel 2026, Wolfe Research upgrade a Peer Perform; Q1 +85% YoY, guidance alzata",
-      "tipo_evento": "upgrade/downgrade analisti"
-    },
-    {
-      "id": "news.microsoft.com/build-2026",
-      "ticker": "MSFT",
-      "url": "https://news.microsoft.com/build-2026/",
-      "data_invio": "2026-06-22T00:00:00+02:00",
-      "titolo": "Microsoft Build 2026: Project Solara, Scout agent, MAI models — Azure +31%, dividendo $0,91",
-      "tipo_evento": "prodotto"
-    },
-    {
       "id": "netflix.ir/q2-2026-guidance-miss",
       "ticker": "NFLX",
       "url": "https://ir.netflix.net/investor-news-and-events/financial-releases/press-release-details/2026/Netflix-Q2-2026-Financial-Results/default.aspx",
@@ -2921,6 +2795,86 @@
       "tipo_evento": "upgrade/downgrade analisti",
       "url": "https://finnhub.io/api/news?id=4127faed0d19ec3b530137d14f8504b99584179dff94c0234d60465af5bfd174",
       "data_invio": "2026-07-21T05:15:00+00:00"
+    },
+    {
+      "id": "nflx-q2-earnings-20260722",
+      "ticker": "NFLX",
+      "titolo": "Netflix batte le attese nel Q2 e lancia il buyback trimestrale piu' grande della sua storia, ma il titolo crolla",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=96c9242c934df2be278fbfc093a0d7774de988c8e959a12a9da323085e91d4ea",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "wdc-kioxia-merger-20260722",
+      "ticker": "WDC",
+      "titolo": "Western Digital riprende le trattative di fusione con Kioxia per combinare le attivita' flash memory",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=8493b8a4db385a663f9735092efb7152fd346866276354251feae102792f9bb7",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "lly-novonordisk-lawsuit-20260722",
+      "ticker": "LLY",
+      "titolo": "Novo Nordisk denuncia Eli Lilly per pubblicita' GLP-1 ingannevole e chiede il ritiro degli annunci e il pagamento di danni",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=d312544c2126879586c6f841dd51947659f186109d11c9e56902a50eb9c0ea81",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "asml-guidance-raise-20260722",
+      "ticker": "ASML",
+      "titolo": "ASML alza le previsioni di ricavo: segnale positivo per tutto il settore dei chip di memoria",
+      "tipo_evento": "revisione guidance",
+      "url": "https://finnhub.io/api/news?id=29876288241a78a09c3c1db0c88d2f76425dc6131c45e6542ddde2c590a8172d",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "ko-fairlife-hack-20260722",
+      "ticker": "KO",
+      "titolo": "La gang hacker Anubis rivendica un attacco informatico a fairlife (sussidiaria Coca-Cola) e minaccia di rilasciare i dati rubati",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=fb2f23c85157775846743d52dd4e7a94d31de5f1d092772728e4d485b314735f",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "goog-q2-earnings-20260722",
+      "ticker": "GOOG",
+      "titolo": "Alphabet riporta i risultati Q2 oggi: Wall Street guarda alla crescita del cloud e al capex AI sotto scrutinio",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=d29b1aee6e4bfe2690fc815d1dc9d0671fecc40c6347e7c6e8ac82e898418dc0",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "shel-egypt-lng-20260722",
+      "ticker": "SHEL",
+      "titolo": "L'Egitto tratta con Shell, BP e TotalEnergies per un accordo LNG pluriennale da 8-11 miliardi di dollari",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=76faeb19d68966c36d364197b288fb3a25e9b7c225bc740f2f3772e56ec74f46",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "ssnlf-humanoid-robots-20260722",
+      "ticker": "SSNLF",
+      "titolo": "Samsung entra nel mercato dei robot umanoidi: assunto l'ex capo della robotica di Hyundai per guidare la nuova divisione",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=437318650d7e69eb1c19acdb564584e3eda3282f62857ccd907134a5c007e400",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "spcx-short-interest-20260722",
+      "ticker": "SPCX",
+      "titolo": "I venditori allo scoperto scommettono 25 miliardi contro SpaceX (32% del flottante): Musk li sfida",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=5e13988660ed5618445cdfd6e1a7c7058425d1012b3c87e77698294db35d8a8e",
+      "data_invio": "2026-07-22T05:15:00+00:00"
+    },
+    {
+      "id": "nvda-wistron-texas-20260722",
+      "ticker": "NVDA",
+      "titolo": "Wistron, fornitore di Nvidia, inaugura uno stabilimento texano da 700 milioni di dollari per la produzione di sistemi AI",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=eca9306c8b2e0b68b67e60dbdeab85c3962308c673881647e97c2d9976b74be7",
+      "data_invio": "2026-07-22T05:15:00+00:00"
     }
   ]
 }
