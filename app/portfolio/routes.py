@@ -67,13 +67,32 @@ def elenco(request: Request):
         if w:
             num += w * pf
             den += w
+    # P/L REALE per posizione: valore attuale vs quanto hai versato (versato_totale).
+    # Sostituisce nella colonna il vecchio rendimento a 12 mesi (che resta nel dettaglio).
+    tot_versato = 0.0
+    pl_map = {}
+    for r in vista["righe"]:
+        p = r["p"]
+        v = p.versato_totale or 0.0
+        tot_versato += v
+        if v > 0 and r["valore"] is not None:
+            pl_map[p.id] = {"eur": round(r["valore"] - v, 2),
+                            "pct": round((r["valore"] / v - 1) * 100, 2)}
+    pl_tot = None
+    if tot_versato > 0 and vista["ha_totale"]:
+        pl_tot = {"eur": round(vista["totale"] - tot_versato, 2),
+                  "pct": round((vista["totale"] / tot_versato - 1) * 100, 2)}
+
     qp = request.query_params
     return templates.TemplateResponse(request, "portfolio_positions.html", {
         "active": "portafoglio",
         "vista": vista,
         "riepilogo": service.riepilogo(vista),
-        "perf": snapshot,                            # P/L ~12m per ticker
+        "perf": snapshot,                            # P/L ~12m per ticker (ora nel dettaglio)
         "pf_perf": round(num / den, 2) if den else None,
+        "pl_map": pl_map,                            # {id: {eur, pct}} P/L reale per titolo
+        "tot_versato": round(tot_versato, 2),
+        "pl_tot": pl_tot,                            # P/L reale complessivo
         "versamenti": versamenti.lista(),            # storico PAC (in fondo alla pagina)
         "flash_added": qp.get("added", ""),
         "flash_deleted": qp.get("deleted", ""),

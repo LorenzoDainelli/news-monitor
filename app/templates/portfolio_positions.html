@@ -31,7 +31,7 @@
       <div class="k">{{ t('pf.total_value') }}</div>
       <div class="v num">{{ vista.totale | eur if vista.ha_totale else '—' }}</div>
       <div class="muted" style="font-size:13px;margin-top:4px;">
-        {% if pf_perf is not none %}<span class="{{ 'pos' if pf_perf >= 0 else 'neg' }}">{{ '+' if pf_perf >= 0 else '' }}{{ pf_perf | pct }}</span> · {% endif %}{{ riepilogo.n_posizioni }} {{ t('dash.posizioni') }}
+        {% if pl_tot %}<span class="{{ 'pos' if pl_tot.pct >= 0 else 'neg' }}">{{ '+' if pl_tot.pct >= 0 else '' }}{{ pl_tot.pct | pct }}</span> · versato {{ tot_versato | eur }} · {% endif %}{{ riepilogo.n_posizioni }} {{ t('dash.posizioni') }}
       </div>
     </div>
     <div class="stat">
@@ -102,7 +102,7 @@
       <tbody>
         {% for r in vista.righe %}
         {% set p = r.p %}
-        {% set pl = perf.get((p.ticker or '') | upper) %}
+        {% set plr = pl_map.get(p.id) %}
         <tr>
           <td data-s="{{ p.ticker or p.nome }}">
             <a href="/portafoglio/{{ p.id }}" class="mm-titlebtn" data-drawer style="display:block;width:100%;text-decoration:none;color:inherit;" title="{{ t('pf.tap_hint') }}">
@@ -120,8 +120,8 @@
           </td>
           <td class="num" data-s="{{ p.quantita if p.quantita is not none else '' }}">{{ p.quantita | qty }}</td>
           <td class="num" data-s="{{ r.valore if r.valore is not none else '' }}">{{ r.valore | eur if r.valore is not none else '—' }}</td>
-          <td class="num" data-s="{{ pl if pl is not none else '' }}">
-            {% if pl is not none %}<span class="{{ 'pos' if pl >= 0 else 'neg' }}" style="font-weight:600;">{{ '+' if pl >= 0 else '' }}{{ pl | pct }}</span>{% else %}—{% endif %}
+          <td class="num" data-s="{{ plr.pct if plr else '' }}" title="{% if plr %}{{ plr.eur | eur }} · versato {{ p.versato_totale | eur }}{% endif %}">
+            {% if plr %}<span class="{{ 'pos' if plr.pct >= 0 else 'neg' }}" style="font-weight:600;">{{ '+' if plr.pct >= 0 else '' }}{{ plr.pct | pct }}</span>{% else %}—{% endif %}
           </td>
           <td class="num">
             <div style="display:flex;gap:6px;justify-content:flex-end;align-items:center;">
@@ -142,7 +142,7 @@
           <td class="num"><b style="color:{{ 'var(--pos)' if riepilogo.target_ok else 'var(--neg)' }};">{{ riepilogo.somma_target | pct }}</b></td>
           <td></td>
           <td class="num"><b>{{ vista.totale | eur if vista.ha_totale else '' }}</b></td>
-          <td></td><td></td>
+          <td class="num">{% if pl_tot %}<b class="{{ 'pos' if pl_tot.pct >= 0 else 'neg' }}">{{ '+' if pl_tot.pct >= 0 else '' }}{{ pl_tot.pct | pct }}</b>{% endif %}</td><td></td>
         </tr>
       </tfoot>
     </table>
