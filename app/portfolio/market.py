@@ -30,10 +30,21 @@ ROME_OFFSET = timedelta(hours=2)  # ~Europe/Rome (CEST), come il news-monitor
 
 # Simboli Yahoo verificati per gli ETF europei: il ticker "semplice" non basta,
 # serve il suffisso di borsa. Le azioni USA usano invece il ticker così com'è.
+# ETF: simboli in EUR VERIFICATI (XETRA/Milano/Amsterdam) — così i valori sono
+# vicini a Trade Republic e senza il giro Londra-$/£-cambio. Prima diversi erano
+# su Londra in USD/pence (o, per GIFL, un fondo SBAGLIATO).
 SYMBOL_MAP = {
-    "IWDA": "IWDA.AS", "CSPX": "CSPX.L", "CNDX": "CNDX.L", "VHYL": "VHYL.L",
-    "XDWH": "XDWH.DE", "NATO": "NATO.L", "NUKL": "NUKL.DE", "XDWM": "XDWM.DE",
-    "GIFL": "GGRP.L", "UKRN": "UKRN.L", "HEAL": "HEAL.L",
+    "IWDA": "IWDA.AS",           # Amsterdam, EUR
+    "CSPX": "SXR8.DE",           # XETRA, EUR (era CSPX.L in USD)
+    "CNDX": "SXRV.DE",           # XETRA, EUR (era CNDX.L in USD)
+    "VHYL": "VGWD.DE",           # XETRA, EUR (era VHYL.L in pence)
+    "XDWH": "XDWH.DE",           # XETRA, EUR
+    "NATO": "ASWC.DE",           # XETRA, EUR (era NATO.L in USD)
+    "NUKL": "NUKL.DE",           # XETRA, EUR
+    "XDWM": "XDWM.DE",           # XETRA, EUR
+    "GIFL": "IE000CK5G8J7.SG",   # Stuttgart, EUR (era GGRP.L: fondo sbagliato). Dati sottili su Yahoo.
+    "UKRN": "UKRN.DE",           # XETRA, EUR (era UKRN.L in USD)
+    "HEAL": "2B78.DE",           # XETRA, EUR (era HEAL.L in USD)
 }
 
 
@@ -76,6 +87,16 @@ def _yahoo_quote(symbol: str):
     if cur_raw in ("ZAc", "ILA"):          # altri casi in centesimi
         return price / 100.0, cur_raw[:-1].upper()
     return price, cur_raw.upper()
+
+
+# Valute quotate in centesimi/pence: le chiusure vanno divise per 100 per avere
+# l'unità "grande" (come fa _yahoo_quote sul prezzo corrente). Se non lo facciamo,
+# lo storico di un titolo di Londra risulta 100× troppo grande.
+_CENT_CUR = {"GBp": 100.0, "GBX": 100.0, "ZAc": 100.0, "ILA": 100.0}
+
+
+def _cent_divisor(currency) -> float:
+    return _CENT_CUR.get(currency or "", 1.0)
 
 
 def _stooq_quote(ticker: str):
@@ -384,8 +405,9 @@ def history_closes(symbol: str, rng: str = "1y", interval: str = "1wk") -> list:
         url = (f"https://query1.finance.yahoo.com/v8/finance/chart/"
                f"{urllib.parse.quote(symbol)}?range={rng}&interval={interval}")
         res = json.loads(_http(url))["chart"]["result"][0]
+        div = _cent_divisor(res.get("meta", {}).get("currency"))
         closes = res["indicators"]["quote"][0]["close"]
-        return [c for c in closes if c is not None]
+        return [c / div for c in closes if c is not None]
     except Exception:
         return []
 
@@ -397,8 +419,9 @@ def history_series(symbol: str, rng: str = "1y", interval: str = "1d") -> list:
         url = (f"https://query1.finance.yahoo.com/v8/finance/chart/"
                f"{urllib.parse.quote(symbol)}?range={rng}&interval={interval}")
         res = json.loads(_http(url))["chart"]["result"][0]
+        div = _cent_divisor(res.get("meta", {}).get("currency"))
         ts = res.get("timestamp") or []
         closes = res["indicators"]["quote"][0]["close"]
-        return [(t, c) for t, c in zip(ts, closes) if c is not None]
+        return [(t, c / div) for t, c in zip(ts, closes) if c is not None]
     except Exception:
         return []
