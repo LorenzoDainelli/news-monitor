@@ -166,10 +166,15 @@
     </form>
   </div>
 
-  <!-- Google Drive (v2 Fase 5): sincronizzazione telefono ↔ PC -->
+  <!-- Google Drive: copia a SPECCHIO telefono ↔ PC (l'unica sincronizzazione) -->
+  {% set dcid = (voci | selectattr('chiave', 'equalto', 'drive_client_id') | list | first) %}
+  {% set dcs = (voci | selectattr('chiave', 'equalto', 'drive_client_secret') | list | first) %}
   <div class="card navy" style="margin-top:20px;">
-    <div class="card-h">{{ t('set.drive_h') }}</div>
-    <p style="margin:0 0 10px;">{{ t('set.drive_intro') }}</p>
+    <div class="card-h">Sincronizzazione (Google Drive)</div>
+    <p style="margin:0 0 10px;">Telefono e PC tengono <b>la stessa copia</b> in una
+    cartella nascosta del tuo Google Drive. <b>Carica</b> mette lo stato del PC sul
+    Drive; <b>Scarica</b> rimpiazza <b>tutto</b> il PC con la copia dal Drive
+    (sostituzione, non fusione). Prima di ogni sovrascrittura resta un backup.</p>
 
     {% if sync_needs_update %}
       <div class="note err" style="margin-bottom:12px;">{{ t('set.sync_update') }}</div>
@@ -187,79 +192,58 @@
 
     {% if drive_connected %}
       <div class="note ok" style="margin-bottom:12px;">{{ t('set.drive_status_on') }}</div>
+      <p class="muted" id="mirror-stato" style="font-size:13px;margin:0 0 12px;">Copia sul Drive: verifico…</p>
+      <div class="note" id="mirror-esito" style="display:none;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button type="button" class="btn primary" id="mirror-carica">⬆️ Carica (PC → Drive)</button>
+        <button type="button" class="btn ghost" id="mirror-scarica">⬇️ Scarica (Drive → PC)</button>
+      </div>
     {% elif drive_configured %}
       <div class="note warn" style="margin-bottom:12px;">{{ t('set.drive_status_ready') }}</div>
+      <a class="btn primary" href="/impostazioni/drive/connetti">{{ t('set.drive_connect') }}</a>
     {% else %}
       <div class="note warn" style="margin-bottom:12px;">{{ t('set.drive_status_unconf') }}<br>
         <span class="muted" style="font-size:13px;">{{ t('set.drive_guide') }}</span>
       </div>
     {% endif %}
 
-    {% if drive_last and drive_last.ok %}
-      <p class="muted" style="font-size:13px;margin:0 0 12px;">
-        {{ t('set.drive_last', when=drive_last.ts, applied=drive_last.applied,
-             skipped=drive_last.skipped, errors=drive_last.errors) }}
-        {% if drive_last_stale %}<span class="muted" style="color:var(--neg);">(più di una settimana fa)</span>{% endif %}
-      </p>
-    {% endif %}
-
-    {% set dcid = (voci | selectattr('chiave', 'equalto', 'drive_client_id') | list | first) %}
-    {% set dcs = (voci | selectattr('chiave', 'equalto', 'drive_client_secret') | list | first) %}
-    <form class="form" method="post" action="/impostazioni" style="margin:0;padding:0;border:none;box-shadow:none;background:none;max-width:none;">
-      <div class="row2">
-        <div class="field" style="margin-bottom:0;">
-          <label>{{ t('set.drive_cid') }}</label>
-          {% if dcid and dcid.presente %}
-            <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=dcid.mascherato) }}</div>
-          {% endif %}
-          <input type="text" name="drive_client_id" autocomplete="off" placeholder="{{ '…apps.googleusercontent.com' if not (dcid and dcid.presente) else t('set.ph_keep') }}">
-        </div>
-        <div class="field" style="margin-bottom:0;">
-          <label>{{ t('set.drive_csec') }}</label>
-          {% if dcs and dcs.presente %}
-            <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=dcs.mascherato) }}</div>
-          {% endif %}
-          <input type="password" name="drive_client_secret" autocomplete="off" placeholder="{{ 'GOCSPX-…' if not (dcs and dcs.presente) else t('set.ph_keep') }}">
-        </div>
-      </div>
-      <div class="actions" style="margin-bottom:0;margin-top:14px;">
-        <button type="submit" class="btn primary">{{ t('set.drive_save') }}</button>
-      </div>
-    </form>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">
-      {% if drive_configured and not drive_connected %}
-        <a class="btn primary" href="/impostazioni/drive/connetti">{{ t('set.drive_connect') }}</a>
-      {% endif %}
-      {% if drive_connected %}
-        <form method="post" action="/impostazioni/drive/sync" style="margin:0;">
-          <button type="submit" class="btn primary">{{ t('set.drive_sync_now') }}</button>
+    {# credenziali: aperte se non ancora configurate, ripiegate altrimenti (si toccano una volta sola) #}
+    <details style="margin-top:16px;"{% if not drive_configured %} open{% endif %}>
+      <summary class="muted" style="cursor:pointer;font-size:13px;">
+        {% if drive_connected %}Configurazione e scollegamento{% elif drive_configured %}Configurazione{% else %}Credenziali Google (una volta sola){% endif %}
+      </summary>
+      <div style="margin-top:12px;">
+        <form class="form" method="post" action="/impostazioni" style="margin:0;padding:0;border:none;box-shadow:none;background:none;max-width:none;">
+          <div class="row2">
+            <div class="field" style="margin-bottom:0;">
+              <label>{{ t('set.drive_cid') }}</label>
+              {% if dcid and dcid.presente %}
+                <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=dcid.mascherato) }}</div>
+              {% endif %}
+              <input type="text" name="drive_client_id" autocomplete="off" placeholder="{{ '…apps.googleusercontent.com' if not (dcid and dcid.presente) else t('set.ph_keep') }}">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>{{ t('set.drive_csec') }}</label>
+              {% if dcs and dcs.presente %}
+                <div class="muted" style="font-size:13px;margin-bottom:6px;">{{ t('set.current', masked=dcs.mascherato) }}</div>
+              {% endif %}
+              <input type="password" name="drive_client_secret" autocomplete="off" placeholder="{{ 'GOCSPX-…' if not (dcs and dcs.presente) else t('set.ph_keep') }}">
+            </div>
+          </div>
+          <div class="actions" style="margin-bottom:0;margin-top:14px;">
+            <button type="submit" class="btn primary">{{ t('set.drive_save') }}</button>
+          </div>
         </form>
-        <form method="post" action="/impostazioni/drive/scollega" style="margin:0;">
+        {% if drive_connected %}
+        <form method="post" action="/impostazioni/drive/scollega" style="margin-top:12px;">
           <button type="submit" class="btn ghost">{{ t('set.drive_disconnect') }}</button>
         </form>
-      {% endif %}
-    </div>
+        {% endif %}
+      </div>
+    </details>
   </div>
 
   {% if drive_connected %}
-  <!-- Fase 3 (redesign PWA): copia a SPECCHIO — una sola copia autorevole -->
-  <div class="card navy" style="margin-top:20px;">
-    <div class="card-h">Copia a specchio</div>
-    <p style="margin:0 0 10px;">Una sola copia sul Drive fa da riferimento (diverso
-    dalla «Sincronizza ora» qui sopra, che <b>fonde</b>). <b>Carica</b> la sostituisce
-    con quella del PC; <b>Scarica</b> rimpiazza <b>tutto</b> il PC con quella dal Drive
-    (sostituzione, non fusione). Prima di ogni sovrascrittura viene tenuto un backup.</p>
-
-    <p class="muted" id="mirror-stato" style="font-size:13px;margin:0 0 12px;">Copia sul Drive: verifico…</p>
-    <div class="note" id="mirror-esito" style="display:none;margin-bottom:12px;"></div>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button type="button" class="btn primary" id="mirror-carica">⬆️ Carica (PC → Drive)</button>
-      <button type="button" class="btn ghost" id="mirror-scarica">⬇️ Scarica (Drive → PC)</button>
-    </div>
-  </div>
-
   <script>
   (function () {
     var statoEl = document.getElementById("mirror-stato");

@@ -44,6 +44,8 @@
     TABS.forEach(function (n) { var v = $("view-" + n); if (v) v.hidden = n !== name; });
     document.querySelectorAll(".tab").forEach(function (t) { t.classList.toggle("on", t.getAttribute("data-tab") === name); });
     window.scrollTo(0, 0);
+    // aprendo la scheda Sync ri-controllo la copia a specchio (stato + auto-scarica sicura)
+    if (name === "sync" && typeof MIRROR !== "undefined" && MIRROR) MIRROR.autoOnOpen();
   }
   document.querySelectorAll(".tab").forEach(function (t) {
     t.addEventListener("click", function () { setTab(t.getAttribute("data-tab")); });
@@ -187,19 +189,10 @@
   }
 
   function renderSyncInfo(lastSync, needsUpdate) {
-    var stale = $("stale");
-    if (stale) {
-      if (!lastSync) { stale.hidden = false; stale.textContent = "Non hai ancora sincronizzato questo telefono."; }
-      else {
-        var days = (new Date() - new Date(lastSync)) / 86400000;
-        if (days > 7) { stale.hidden = false; stale.textContent = "Ultima sincronizzazione oltre una settimana fa — tocca ☁️ Drive per aggiornare."; }
-        else stale.hidden = true;
-      }
-    }
-    if ($("sync-info")) $("sync-info").textContent = lastSync
-      ? ("Ultima sync: " + new Date(lastSync).toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))
-      : (navigator.onLine ? "Non ancora sincronizzato" : "Offline");
-    if ($("sync-btn")) $("sync-btn").classList.toggle("stale", needsUpdate);
+    // Il vecchio banner "stale" e l'info dell'ultima fusione non servono più: il
+    // modello a specchio ha il suo stato (mirror-info + pillola). Resta solo
+    // l'evidenza rossa sul pulsante quando l'altro dispositivo usa una versione
+    // più recente dell'app.
     if ($("drive-btn")) $("drive-btn").classList.toggle("stale", needsUpdate);
   }
 
@@ -605,6 +598,11 @@
     }
     function fmt(iso) { var d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); }
     function setInfo(t) { if ($("mirror-info")) $("mirror-info").textContent = t; }
+    // mostra il pulsante "Collega" oppure le azioni Carica/Scarica, secondo lo stato
+    function showConn(connected) {
+      if ($("drive-connect-row")) $("drive-connect-row").hidden = !!connected;
+      if ($("mirror-actions")) $("mirror-actions").hidden = !connected;
+    }
 
     function updatePill() {
       return meta().then(function (s) {
@@ -627,7 +625,7 @@
     }
 
     function segnalaErrore(reason) {
-      if (reason === "token") setInfo("Collega prima il Drive qui sotto (☁️ Drive).");
+      if (reason === "token") setInfo("Collega prima il tuo Google Drive (qui sopra).");
       else if (reason === "quota") setInfo("Spazio del Drive esaurito.");
       else setInfo("Non è riuscito (" + (reason || "errore") + "). Controlla la connessione al Drive.");
     }
@@ -726,18 +724,21 @@
 
     function autoOnOpen() {
       if (!have()) return Promise.resolve();
-      $("mirror-card").hidden = false;
-      if (!navigator.onLine) { setInfo("Offline: la copia si sincronizza quando torni online."); return updatePill(); }
-      return refreshStatus().then(function (info) {
-        if (!info.token) { setInfo("Collega il Drive (☁️ qui sotto) per la copia a specchio."); return updatePill(); }
-        if (!info.exists) { setInfo("Sul Drive non c'è ancora una copia: fai «Carica» dal PC (o da qui)."); return updatePill(); }
-        var s = info.state;
-        // auto-scarica SOLO se sicuro: base presente, non sporco, e sul Drive è più nuovo
-        if (s.base && !s.dirty && info.modifiedTime !== s.seen) return doDownload(false);
-        // modifiche locali in sospeso con base già fatta → prova a ricaricare
-        if (s.base && s.dirty) scheduleUpload();
-        setInfo("Copia sul Drive · " + (fmt(info.modifiedTime) || "presente"));
-        return updatePill();
+      if ($("mirror-card")) $("mirror-card").hidden = false;
+      return DRIVE.getToken().then(function (tok) {
+        showConn(!!tok);
+        if (!tok) { setInfo("Collega il tuo Google Drive per tenere telefono e PC allineati."); return updatePill(); }
+        if (!navigator.onLine) { setInfo("Offline: la copia si sincronizza quando torni online."); return updatePill(); }
+        return refreshStatus().then(function (info) {
+          if (!info.exists) { setInfo("Sul Drive non c'è ancora una copia: fai «Carica» (dal PC o da qui)."); return updatePill(); }
+          var s = info.state;
+          // auto-scarica SOLO se sicuro: base presente, non sporco, e sul Drive è più nuovo
+          if (s.base && !s.dirty && info.modifiedTime !== s.seen) return doDownload(false);
+          // modifiche locali in sospeso con base già fatta → prova a ricaricare
+          if (s.base && s.dirty) scheduleUpload();
+          setInfo("Copia sul Drive · " + (fmt(info.modifiedTime) || "presente"));
+          return updatePill();
+        });
       }).catch(function () { return updatePill(); });
     }
 
@@ -749,6 +750,7 @@
 
   if ($("mirror-up")) $("mirror-up").addEventListener("click", function () { MIRROR.doUpload(true); });
   if ($("mirror-down")) $("mirror-down").addEventListener("click", function () { MIRROR.doDownload(true); });
+  if ($("drive-recheck")) $("drive-recheck").addEventListener("click", function () { MIRROR.autoOnOpen(); });
   if ($("mirror-pill")) $("mirror-pill").addEventListener("click", function () {
     setTab("sync");
     DB.getMeta("mirror_dirty").then(function (d) { if (d) MIRROR.doUpload(true); else MIRROR.doDownload(true); });
