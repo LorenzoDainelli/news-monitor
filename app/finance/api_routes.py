@@ -16,7 +16,7 @@ from fastapi import APIRouter, Request, UploadFile, File
 from fastapi.responses import JSONResponse, Response
 
 from finance import service
-from shared import ai, sync
+from shared import ai, drive_sync, sync
 
 router = APIRouter(prefix="/api/finanze", tags=["finanze-api"])
 
@@ -167,3 +167,23 @@ async def api_parse(request: Request):
     if not p.get("ok"):
         return {"ok": False, "error": p.get("error", "parse")}
     return _proposta_per_pwa(p, ws)
+
+
+# ── Fase 3 (redesign PWA): copia a SPECCHIO (Drive) ──────────────────────────
+
+@router.get("/mirror/stato")
+def api_mirror_stato():
+    """C'è una copia a specchio sul Drive? quando è stata modificata?"""
+    return drive_sync.mirror_status()
+
+
+@router.post("/mirror/carica")
+def api_mirror_carica():
+    """PC → Drive: sovrascrive mirror.json con lo stato del PC (tiene un backup)."""
+    return drive_sync.mirror_carica()
+
+
+@router.post("/mirror/scarica")
+def api_mirror_scarica():
+    """Drive → PC: rimpiazza TUTTO il PC con mirror.json (con backup locale prima)."""
+    return drive_sync.mirror_scarica()

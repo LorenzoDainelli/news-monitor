@@ -66,6 +66,26 @@ window.DB = (function () {
     },
     del: function (store, key) { return tx(store, "readwrite").then(function (s) { return wrap(s.delete(key)); }); },
     clear: function (store) { return tx(store, "readwrite").then(function (s) { return wrap(s.clear()); }); },
+
+    // ── Fase 3 (specchio): sostituzione TOTALE dei dati (non fusione) ──────
+    // Svuota wallets/categorie/movimenti e il diario, poi carica lo snapshot.
+    // Tutto in un'unica transazione: o riesce tutto o niente.
+    replaceData: function (snap) {
+      snap = snap || {};
+      return open().then(function (db) {
+        return new Promise(function (resolve, reject) {
+          var stores = ["wallets", "categorie", "movimenti", "diary"];
+          var t = db.transaction(stores, "readwrite");
+          stores.forEach(function (s) { t.objectStore(s).clear(); });
+          (snap.wallets || []).forEach(function (o) { t.objectStore("wallets").put(o); });
+          (snap.categorie || []).forEach(function (o) { t.objectStore("categorie").put(o); });
+          (snap.movimenti || []).forEach(function (o) { t.objectStore("movimenti").put(o); });
+          t.oncomplete = function () { resolve(true); };
+          t.onerror = function () { reject(t.error); };
+          t.onabort = function () { reject(t.error); };
+        });
+      });
+    },
     getMeta: function (k) { return this.get("meta", k).then(function (r) { return r ? r.v : null; }); },
     setMeta: function (k, v) { return this.put("meta", { k: k, v: v }); },
     isEmpty: function () {

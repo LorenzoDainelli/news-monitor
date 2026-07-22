@@ -28,7 +28,7 @@
     if ($("net")) $("net").textContent = on ? "online" : "offline";
     if ($("dot")) $("dot").className = "dot " + (on ? "online" : "offline");
   }
-  window.addEventListener("online", function () { segnalaRete(); doSync().then(render); });
+  window.addEventListener("online", function () { segnalaRete(); if (typeof MIRROR !== "undefined" && MIRROR) MIRROR.autoOnOpen(); });
   window.addEventListener("offline", segnalaRete);
 
   // ---------- installazione (iOS) ----------
@@ -211,11 +211,37 @@
     document.body.classList.add("locked");
   }
   function hideSheets() {
+    // chiudi la tastiera (altrimenti su iOS resta su e il layout resta "corto")
+    if (document.activeElement && document.activeElement.blur) { try { document.activeElement.blur(); } catch (e) {} }
     $("backdrop").classList.remove("show");
     document.querySelectorAll(".sheet").forEach(function (s) { s.classList.remove("show"); });
     document.body.classList.remove("locked");
   }
   if ($("backdrop")) $("backdrop").addEventListener("click", hideSheets);
+
+  // ---------- tastiera iOS: tieni il pannello SOPRA la tastiera ----------
+  /* Su iOS la tastiera copre il pannello che sale dal fondo: sembra "bloccato"
+     perché il campo e il pulsante Salva finiscono sotto la tastiera. Con la
+     visualViewport misuriamo l'altezza della tastiera (--kb) e l'area visibile
+     (--vvh): il CSS alza il pannello e ne riduce l'altezza; qui portiamo anche
+     in vista il campo che stai scrivendo. */
+  (function () {
+    var vv = window.visualViewport; if (!vv) return;
+    function onVV() {
+      var kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      var root = document.documentElement;
+      root.style.setProperty("--kb", kb + "px");
+      root.style.setProperty("--vvh", Math.round(vv.height) + "px");
+      document.body.classList.toggle("kbd", kb > 60);   // soglia: ignora micro-variazioni della barra
+    }
+    vv.addEventListener("resize", onVV);
+    vv.addEventListener("scroll", onVV);
+  })();
+  document.addEventListener("focusin", function (e) {
+    if (!document.body.classList.contains("locked")) return;
+    var el = e.target; if (!el || !el.scrollIntoView) return;
+    setTimeout(function () { try { el.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e2) {} }, 250);
+  });
 
   // --- Aggiungi / Modifica ---
   function openSheet(mov) {
@@ -241,7 +267,7 @@
     $("af-wallet").value = m.wallet_uid || "";
     if (m.tipo === "trasferimento") $("af-wallet-to").value = m.wallet_to_uid || "";
     if ($("af-controparte")) $("af-controparte").value = (m.tipo === "giro") ? (m.controparte || "") : "";
-    f.categoria.value = (m.tipo === "trasferimento" || m.tipo === "giro") ? "" : (catNome(m.categoria_uid) || "");
+    f.categoria.value = (m.tipo === "trasferimento") ? "" : (catNome(m.categoria_uid) || "");
     $("af-data").value = String(m.data || nowLocalInput()).slice(0, 16);
     f.descrizione.value = m.descrizione || "";
   }
@@ -262,7 +288,7 @@
     else { html += drow(isG ? "Da portafoglio" : "Portafoglio", walletNome(m.wallet_uid)); }
     if (isG && m.controparte) html += drow("Ti rimborsa", m.controparte);
     if (isG && m.importo_ricevuto != null) html += drow("Rientrato", eur(m.importo_ricevuto) + " · " + walletNome(m.wallet_to_uid));
-    if (m.tipo !== "trasferimento" && !isG && m.categoria_uid) html += drow("Categoria", catNome(m.categoria_uid) || "—");
+    if (m.tipo !== "trasferimento" && m.categoria_uid) html += drow("Categoria", catNome(m.categoria_uid) || "—");
     html += drow("Data", dataEstesa(m.data));
     if (m.descrizione) html += drow("Descrizione", m.descrizione);
     $("detail-body").innerHTML = html;
@@ -289,7 +315,8 @@
     var del = Object.assign({}, m, { deleted: true, rev: (m.rev || 1) + 1, updated_at: new Date().toISOString(), _local: true });
     DB.put("movimenti", del)
       .then(function () { return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("transaction", "delete", del, did); }); })
-      .then(function () { hideSheets(); return render(); });
+      .then(function () { hideSheets(); return render(); })
+      .then(function () { return MIRROR.afterLocalChange(); });
   });
 
   function setTipo(t) {
@@ -299,7 +326,7 @@
       b.classList.toggle("on", b.getAttribute("data-tipo") === t);
     });
     $("af-wallet-to-lab").hidden = !isT;
-    if ($("af-cat-lab")) $("af-cat-lab").hidden = (isT || isG);           // categoria solo uscita/entrata
+    if ($("af-cat-lab")) $("af-cat-lab").hidden = isT;                    // categoria: uscita/entrata/giro (come sul PC), non trasferimento
     if ($("af-controparte-lab")) $("af-controparte-lab").hidden = !isG;   // controparte solo giro
     // senza "A portafoglio" il Portafoglio prende tutta la larghezza (niente mezzo vuoto)
     $("af-wallet-lab").classList.toggle("af-full", !isT);
@@ -344,7 +371,7 @@
     var data = $("af-data").value || nowLocalInput();
     var descrizione = ($("add-form").descrizione.value || "").trim();
     var controparte = (isG && $("af-controparte")) ? ($("af-controparte").value || "").trim() : "";
-    var catNomeIn = (isT || isG) ? "" : $("add-form").categoria.value;
+    var catNomeIn = isT ? "" : $("add-form").categoria.value;   // categoria anche per il giro (come sul PC)
 
     trovaOCreaCategoria(catNomeIn, t).then(function (catUid) {
       var editing = _editUid ? _movs.find(function (x) { return x.uid === _editUid; }) : null;
@@ -367,7 +394,7 @@
         m = {
           uid: nuovoUid(), tipo: "giro", data: data, importo: Math.abs(importo),
           wallet_uid: wallet_uid, wallet_to_uid: wallet_uid,
-          categoria_uid: null, descrizione: descrizione,
+          categoria_uid: catUid, descrizione: descrizione,
           giro_id: "", giro_aperta: true, importo_ricevuto: null, data_ricevuto: null, controparte: controparte,
           rev: 1, updated_at: new Date().toISOString(), deleted: false, _local: true
         };
@@ -388,7 +415,7 @@
       $("add-form").reset(); setTipo("uscita"); $("af-data").value = nowLocalInput();
       hideSheets();
       return render();
-    });
+    }).then(function () { return MIRROR.afterLocalChange(); });
   });
 
   // ---------- Registra rientro (chiude un giro aperto) ----------
@@ -420,7 +447,8 @@
     });
     DB.put("movimenti", upd)
       .then(function () { return SYNC.getDeviceId().then(function (did) { return SYNC.recordOp("transaction", "upsert", upd, did); }); })
-      .then(function () { hideSheets(); return render(); });
+      .then(function () { hideSheets(); return render(); })
+      .then(function () { return MIRROR.afterLocalChange(); });
   });
 
   // ---------- Detta o scrivi con l'AI (2c) ----------
@@ -485,7 +513,7 @@
     if (p.wallet_uid && _wallets.some(function (w) { return w.uid === p.wallet_uid; })) $("af-wallet").value = p.wallet_uid;
     if (p.tipo === "trasferimento" && p.wallet_to_uid) $("af-wallet-to").value = p.wallet_to_uid;
     if (p.tipo === "giro" && $("af-controparte")) $("af-controparte").value = p.controparte || "";
-    if (p.tipo !== "trasferimento" && p.tipo !== "giro") f.categoria.value = p.categoria || "";
+    if (p.tipo !== "trasferimento") f.categoria.value = p.categoria || "";
     if (p.data_local) $("af-data").value = String(p.data_local).slice(0, 16);
     f.descrizione.value = p.descrizione || "";
   }
@@ -510,7 +538,9 @@
         if (!cid) { if ($("drive-setup")) $("drive-setup").hidden = false; return; }
         DRIVE.getToken().then(function (tok) {
           if (!tok) { DRIVE.connect(); return; }
-          doDriveSync();
+          // Già collegato: nel modello a specchio "☁️ Drive" ri-controlla la copia
+          // (auto-scarica se sicuro), NON fa la vecchia fusione.
+          MIRROR.autoOnOpen();
         });
       });
     });
@@ -554,14 +584,184 @@
     });
   }
 
+  // ---------- Fase 3: copia a SPECCHIO (Drive) ----------
+  /* Modello "una copia autorevole": UN file mirror.json fa da riferimento.
+       Carica  = sovrascrivi mirror.json con il telefono (tenendo un backup);
+       Scarica = rimpiazza TUTTO il telefono con mirror.json (sostituzione).
+     Il vecchio sync a fusione (rete locale / ☁️ Drive) resta disponibile ma
+     manuale. Invarianti di sicurezza per gli automatismi:
+       - auto-scarica SOLO se hai già una base allineata, non sei "sporco"
+         (nessuna modifica locale non ancora caricata) e sul Drive c'è di più
+         nuovo → così non si perde mai una modifica locale non sincronizzata;
+       - auto-carica SOLO dopo che il telefono ha una base (prima sincronizzazione
+         esplicita) → così un telefono con dati sbagliati non sovrascrive il Drive. */
+  var MIRROR = (function () {
+    var _remoteNew = false, _autoTimer = null, _busy = false;
+
+    function have() { return (typeof DRIVE !== "undefined") && !!$("mirror-pill"); }
+    function meta() {
+      return Promise.all([DB.getMeta("mirror_base_ts"), DB.getMeta("mirror_dirty"), DB.getMeta("mirror_seen_modified")])
+        .then(function (r) { return { base: r[0] || "", dirty: !!r[1], seen: r[2] || "" }; });
+    }
+    function fmt(iso) { var d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString(lang, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); }
+    function setInfo(t) { if ($("mirror-info")) $("mirror-info").textContent = t; }
+
+    function updatePill() {
+      return meta().then(function (s) {
+        var pill = $("mirror-pill"); if (!pill) return;
+        if (s.dirty) { pill.hidden = false; pill.className = "pill up"; pill.textContent = "⬆︎ Da caricare"; }
+        else if (_remoteNew) { pill.hidden = false; pill.className = "pill down"; pill.textContent = "⬇︎ Da scaricare"; }
+        else { pill.hidden = true; }
+      });
+    }
+
+    function buildMirror() {
+      return SYNC.exportBundle().then(function (b) {
+        var snap = b.snapshot;
+        return {
+          schema: 1, type: "mirror", ts: new Date().toISOString(), device: snap.device_id,
+          counts: { w: (snap.wallets || []).length, c: (snap.categorie || []).length, m: (snap.movimenti || []).length },
+          wallets: snap.wallets || [], categorie: snap.categorie || [], movimenti: snap.movimenti || []
+        };
+      });
+    }
+
+    function segnalaErrore(reason) {
+      if (reason === "token") setInfo("Collega prima il Drive qui sotto (☁️ Drive).");
+      else if (reason === "quota") setInfo("Spazio del Drive esaurito.");
+      else setInfo("Non è riuscito (" + (reason || "errore") + "). Controlla la connessione al Drive.");
+    }
+
+    function afterAligned(baseTs, modifiedTime) {
+      _remoteNew = false;
+      return DB.setMeta("mirror_base_ts", baseTs)
+        .then(function () { return DB.setMeta("mirror_dirty", ""); })
+        .then(function () { return modifiedTime ? DB.setMeta("mirror_seen_modified", modifiedTime) : Promise.resolve(); });
+    }
+
+    // Carica: telefono → Drive (sovrascrive, con backup)
+    function doUpload(manual) {
+      if (_busy) return Promise.resolve(); _busy = true;
+      if (manual) setInfo("Carico sul Drive…");
+      return buildMirror().then(function (mirror) {
+        return DRIVE.mirrorPush(mirror).then(function (res) {
+          if (!res || !res.ok) { _busy = false; if (manual) segnalaErrore(res && res.reason); return; }
+          // rileggo la modifiedTime reale del file appena scritto (per il confronto futuro)
+          return DRIVE.mirrorStatus().then(function (st) {
+            var mt = (st && st.ok && st.modifiedTime) ? st.modifiedTime : null;
+            return afterAligned(mirror.ts, mt);
+          }).then(function () {
+            _busy = false;
+            setInfo("Copia sul Drive aggiornata · " + fmt(mirror.ts));
+            return updatePill();
+          });
+        });
+      }).catch(function () { _busy = false; if (manual) segnalaErrore("errore"); });
+    }
+
+    // Scarica: Drive → telefono (sostituzione TOTALE)
+    function doDownload(manual) {
+      if (_busy) return Promise.resolve(); _busy = true;
+      if (manual) setInfo("Scarico dal Drive…");
+      return DRIVE.mirrorPull().then(function (res) {
+        if (!res || !res.ok) { _busy = false; if (manual) segnalaErrore(res && res.reason); return; }
+        if (!res.exists) { _busy = false; setInfo("Sul Drive non c'è ancora una copia: fai prima «Carica» (dal PC o da qui)."); return; }
+        var snap = res.snap || {};
+        if (!Array.isArray(snap.wallets)) { _busy = false; setInfo("La copia sul Drive non è leggibile."); return; }
+        var quando = fmt(snap.ts) || (res.modifiedTime ? fmt(res.modifiedTime) : "");
+        var n = (snap.movimenti || []).length;
+        if (manual && !confirm("Sostituire TUTTO sul telefono con la copia dal Drive"
+            + (quando ? " (del " + quando + ")" : "") + "?\n\n" + n + " movimenti verranno messi al posto di quelli attuali del telefono. "
+            + "Sul Drive resta comunque un backup.")) {
+          _busy = false; setInfo("Annullato."); return updatePill();
+        }
+        return DB.replaceData(snap)
+          .then(resetSyncBookkeeping)
+          .then(function () { return afterAligned(snap.ts || new Date().toISOString(), res.modifiedTime); })
+          .then(function () { _busy = false; setInfo("Telefono allineato alla copia del Drive · " + (quando || "ora")); return render(); })
+          .then(updatePill);
+      }).catch(function () { _busy = false; if (manual) segnalaErrore("errore"); });
+    }
+
+    function resetSyncBookkeeping() {
+      // Dopo una sostituzione totale azzera lo stato del vecchio sync a fusione
+      // (il diario è già stato svuotato da replaceData) così i due modelli non litigano.
+      return DB.setMeta("drive_seen", {})
+        .then(function () { return DB.setMeta("drive_up_hash", ""); })
+        .then(function () { return DB.setMeta("pc_diary_cursor", 0); })
+        .then(function () { return DB.setMeta("needs_update", false); });
+    }
+
+    function refreshStatus() {
+      return DRIVE.getToken().then(function (tok) {
+        if (!tok) { _remoteNew = false; return { token: false }; }
+        return DRIVE.mirrorStatus().then(function (st) {
+          if (!st || !st.ok) return { token: true, exists: false };
+          return meta().then(function (s) {
+            _remoteNew = !!st.exists && !s.dirty && st.modifiedTime !== s.seen;
+            return { token: true, exists: !!st.exists, modifiedTime: st.modifiedTime, state: s };
+          });
+        });
+      });
+    }
+
+    function scheduleUpload() {
+      if (_autoTimer) clearTimeout(_autoTimer);
+      _autoTimer = setTimeout(function () {
+        meta().then(function (s) {
+          if (!s.base || !s.dirty) return;                          // gate: solo con base e se ancora "sporco"
+          if (!navigator.onLine) return;
+          DRIVE.getToken().then(function (tok) { if (tok) doUpload(false); });
+        });
+      }, 2500);
+    }
+
+    function afterLocalChange() {
+      return DB.setMeta("mirror_dirty", "1").then(function () {
+        _remoteNew = false;                                          // priorità al "da caricare"
+        updatePill();
+        scheduleUpload();
+      });
+    }
+
+    function autoOnOpen() {
+      if (!have()) return Promise.resolve();
+      $("mirror-card").hidden = false;
+      if (!navigator.onLine) { setInfo("Offline: la copia si sincronizza quando torni online."); return updatePill(); }
+      return refreshStatus().then(function (info) {
+        if (!info.token) { setInfo("Collega il Drive (☁️ qui sotto) per la copia a specchio."); return updatePill(); }
+        if (!info.exists) { setInfo("Sul Drive non c'è ancora una copia: fai «Carica» dal PC (o da qui)."); return updatePill(); }
+        var s = info.state;
+        // auto-scarica SOLO se sicuro: base presente, non sporco, e sul Drive è più nuovo
+        if (s.base && !s.dirty && info.modifiedTime !== s.seen) return doDownload(false);
+        // modifiche locali in sospeso con base già fatta → prova a ricaricare
+        if (s.base && s.dirty) scheduleUpload();
+        setInfo("Copia sul Drive · " + (fmt(info.modifiedTime) || "presente"));
+        return updatePill();
+      }).catch(function () { return updatePill(); });
+    }
+
+    return {
+      autoOnOpen: autoOnOpen, doUpload: doUpload, doDownload: doDownload,
+      afterLocalChange: afterLocalChange, updatePill: updatePill, have: have
+    };
+  })();
+
+  if ($("mirror-up")) $("mirror-up").addEventListener("click", function () { MIRROR.doUpload(true); });
+  if ($("mirror-down")) $("mirror-down").addEventListener("click", function () { MIRROR.doDownload(true); });
+  if ($("mirror-pill")) $("mirror-pill").addEventListener("click", function () {
+    setTab("sync");
+    DB.getMeta("mirror_dirty").then(function (d) { if (d) MIRROR.doUpload(true); else MIRROR.doDownload(true); });
+  });
+
   // ---------- boot ----------
   segnalaRete();
   var driveBoot = HAS_DRIVE ? DRIVE.handleRedirect() : Promise.resolve(false);
   driveBoot.then(function (daGoogle) {
     if (daGoogle) setTab("sync");   // torni da Google: mostro l'esito nella scheda Sync
     return render().then(function () {
-      if (daGoogle) return doDriveSync();
-      return doSync().then(function (ok) { if (ok) return render(); });
+      // Modello a specchio: all'apertura si scarica dallo specchio (solo se sicuro).
+      return MIRROR.autoOnOpen();
     });
   }).catch(function () {
     try { render(); } catch (e) {}
