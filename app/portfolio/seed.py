@@ -38,6 +38,9 @@ def migra_schema():
         if cols and "nome_breve" not in cols:
             c.execute(text("ALTER TABLE portfolio_positions ADD COLUMN nome_breve VARCHAR(80) DEFAULT ''"))
             c.commit()
+        if cols and "versato_totale" not in cols:
+            c.execute(text("ALTER TABLE portfolio_positions ADD COLUMN versato_totale FLOAT DEFAULT 0.0"))
+            c.commit()
 
 
 # (nome, tipo, categoria, ticker, isin, pct_target, importo_fisso, note)

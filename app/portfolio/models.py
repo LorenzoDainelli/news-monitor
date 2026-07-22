@@ -4,9 +4,9 @@ Una 'posizione' = un titolo che vuoi seguire (ETF o azione) con la sua quota
 target. I campi di mercato (prezzo, ecc.) NON stanno qui: vivono in market.py
 in tabelle separate, così i tuoi dati restano puliti e mai 'inventati'.
 """
-from datetime import date
+from datetime import date, datetime
 
-from sqlalchemy import String, Float, Integer, Date, Text
+from sqlalchemy import String, Float, Integer, Date, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from shared.db import Base
@@ -40,6 +40,8 @@ class Position(Base):
     quantita: Mapped[float | None] = mapped_column(Float, nullable=True)
     valore_posseduto: Mapped[float | None] = mapped_column(Float, nullable=True)  # in €
     data_ultimo_acquisto: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # totale versato su questo titolo (somma dei PAC): esatto, non dipende dai prezzi
+    versato_totale: Mapped[float] = mapped_column(Float, default=0.0)
 
     note: Mapped[str] = mapped_column(Text, default="")
     ordine: Mapped[int] = mapped_column(Integer, default=0)  # ordine di visualizzazione
@@ -52,3 +54,38 @@ class Position(Base):
     def nome_vista(self) -> str:
         """Nome da mostrare in elenco: quello corto se c'è, altrimenti l'ufficiale."""
         return (self.nome_breve or "").strip() or self.nome
+
+
+class Versamento(Base):
+    """Un versamento PAC: un acquisto distribuito su più titoli in una data.
+
+    È l'evento (data, importo, conto di provenienza). Il dettaglio per titolo
+    (quanto e quante quote) sta nelle `VersamentoRiga`, così il PAC è
+    modificabile ed eliminabile e le quantità delle posizioni si possono
+    annullare esattamente."""
+    __tablename__ = "portfolio_versamenti"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    data: Mapped[date] = mapped_column(Date)
+    importo: Mapped[float] = mapped_column(Float, default=0.0)   # totale investito (€)
+    conto: Mapped[str] = mapped_column(String(80), default="")   # conto di provenienza (informativo)
+    note: Mapped[str] = mapped_column(Text, default="")
+    creato_il: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class VersamentoRiga(Base):
+    """Una riga di un versamento: quanto è finito su un titolo e quante quote.
+
+    Conserva il DELTA applicato alla posizione, così eliminare/modificare il
+    versamento ripristina esattamente le quantità."""
+    __tablename__ = "portfolio_versamento_righe"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    versamento_id: Mapped[int] = mapped_column(Integer, index=True)
+    position_id: Mapped[int] = mapped_column(Integer, index=True)
+    isin: Mapped[str] = mapped_column(String(20), default="")
+    ticker: Mapped[str] = mapped_column(String(30), default="")
+    euro: Mapped[float] = mapped_column(Float, default=0.0)        # € destinati a questo titolo
+    qta: Mapped[float | None] = mapped_column(Float, nullable=True)  # quote aggiunte (None se prezzo n/d)
+    prezzo_eur: Mapped[float | None] = mapped_column(Float, nullable=True)
+    fonte: Mapped[str] = mapped_column(String(16), default="")     # live | storico | n/d

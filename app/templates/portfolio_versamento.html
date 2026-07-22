@@ -1,0 +1,111 @@
+{# ============================================================================
+   Registra PAC (versamento): data · importo · conto di provenienza · i titoli
+   con interruttore (ON di default). "Anteprima →" mostra la ripartizione
+   (€, prezzo, quote) senza salvare; "Conferma" scrive e applica il PMC.
+   Testi in italiano diretto (come le altre parti aggiunte fuori dal freeze).
+   ============================================================================ #}
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Registra PAC — {{ t('app.name') }}{% endblock %}
+{% block content %}
+  <style>
+    .pac-titoli { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 8px; }
+    .pac-tog { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; cursor: pointer; }
+    .pac-tog input { width: auto; flex: 0 0 auto; }
+    .pac-tog .t { font-weight: 700; }
+    .pac-tog .muted { margin-left: auto; }
+  </style>
+  <div class="page-title">{{ 'Modifica versamento PAC' if vid else 'Registra PAC' }}</div>
+  <p class="page-sub">Un acquisto distribuito sui titoli, secondo le quote target.
+  Le quantità si sommano alle posizioni (prezzo medio di carico, come TR).</p>
+
+  <form method="post" action="/portafoglio/versamento" class="form" style="margin-bottom:16px;">
+    <input type="hidden" name="azione" value="anteprima">
+    <input type="hidden" name="vid" value="{{ vid }}">
+    <div class="row3">
+      <div class="field">
+        <label>Data esecuzione</label>
+        <input type="date" name="data" value="{{ data }}">
+      </div>
+      <div class="field">
+        <label>Importo (€)</label>
+        <input type="text" name="importo" inputmode="decimal" value="{{ importo }}">
+      </div>
+      <div class="field">
+        <label>Conto di provenienza</label>
+        {% if conti %}
+          <select name="conto">
+            {% for c in conti %}<option value="{{ c }}" {{ 'selected' if c == conto else '' }}>{{ c }}</option>{% endfor %}
+          </select>
+        {% else %}
+          <input type="text" name="conto" value="{{ conto }}" placeholder="es. TR">
+        {% endif %}
+        <div class="hint">Per ora è solo un'informazione sul versamento.</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Titoli inclusi in questo PAC</label>
+      <div class="pac-titoli">
+        {% for p in posizioni %}
+        <label class="pac-tog">
+          <input type="checkbox" name="incl" value="{{ p.id }}" {{ 'checked' if p.id in inclusi_ids else '' }}>
+          <span class="t">{{ p.ticker or p.nome_vista }}</span>
+          <span class="muted">{{ p.pct_target | pct }}</span>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="hint">Di default sono tutti inclusi. Togli la spunta per escludere un titolo da questo versamento.</div>
+    </div>
+
+    <div class="actions" style="margin-bottom:0;">
+      <button type="submit" class="btn primary">Anteprima →</button>
+      <a href="/portafoglio" class="btn ghost">Annulla</a>
+    </div>
+  </form>
+
+  {% if anteprima %}
+    <div class="page-title" style="font-size:18px;margin-top:8px;">Anteprima</div>
+    {% if anteprima.n_inclusi == 0 %}
+      <div class="note warn">Nessun titolo incluso (o percentuali a zero): niente da registrare.</div>
+    {% else %}
+      {% if anteprima.avvisi %}
+        <div class="note warn">Prezzo non disponibile per: {{ anteprima.avvisi | join(', ') }}.
+        A questi il versamento aggiunge solo il valore in €, senza calcolare le quote.</div>
+      {% endif %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Titolo</th><th class="num">%</th><th class="num">€</th>
+                <th class="num">Prezzo</th><th class="num">Quote</th></tr>
+          </thead>
+          <tbody>
+            {% for r in anteprima.righe %}
+            <tr>
+              <td><span class="t-ticker">{{ r.ticker or r.nome }}</span></td>
+              <td class="num">{{ r.pct | pct }}</td>
+              <td class="num">{{ r.euro | eur }}</td>
+              <td class="num">{{ r.prezzo | eur if r.prezzo else '—' }}</td>
+              <td class="num">{{ r.qta | qty if r.qta is not none else '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr><td><b>Totale</b></td><td></td><td class="num"><b>{{ anteprima.totale | eur }}</b></td>
+                <td></td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <form method="post" action="/portafoglio/versamento" style="margin-top:14px;">
+        <input type="hidden" name="azione" value="conferma">
+        <input type="hidden" name="vid" value="{{ vid }}">
+        <input type="hidden" name="importo" value="{{ importo }}">
+        <input type="hidden" name="data" value="{{ data }}">
+        <input type="hidden" name="conto" value="{{ conto }}">
+        {% for r in anteprima.righe %}<input type="hidden" name="incl" value="{{ r.id }}">{% endfor %}
+        <button type="submit" class="btn primary">{{ icon('check', 16) }} Conferma e registra</button>
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

@@ -20,6 +20,10 @@
     <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} {{ t('pf.toast_deleted', tk=flash_deleted) }}</span></div>
   {% elif flash_saved %}
     <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} {{ t('pf.toast_saved') }}</span></div>
+  {% elif flash_pac == '1' %}
+    <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} Versamento PAC registrato.</span></div>
+  {% elif flash_pac == 'del' %}
+    <div class="note ok"><span style="display:inline-flex;align-items:center;gap:6px;">{{ icon('check', 16) }} Versamento eliminato, quantità ripristinate.</span></div>
   {% endif %}
 
   <div class="grid" style="margin-bottom:16px;">
@@ -43,7 +47,8 @@
   </div>
 
   <div class="actions">
-    <button type="button" class="btn primary" data-toggle="#pf-add" data-alt="{{ t('pf.btn_close') }}">{{ icon('plus', 16) }} {{ t('pf.btn_add') }}</button>
+    <a href="/portafoglio/versamento" class="btn primary">{{ icon('plus', 16) }} Registra PAC</a>
+    <button type="button" class="btn ghost" data-toggle="#pf-add" data-alt="{{ t('pf.btn_close') }}">{{ icon('plus', 16) }} {{ t('pf.btn_add') }}</button>
     <form method="post" action="/portafoglio/aggiorna" style="margin:0;">
       <button type="submit" class="btn ghost">{{ icon('refresh', 16) }} {{ t('pf.btn_refresh') }}</button>
     </form>
@@ -144,4 +149,35 @@
   </div>
 
   <p class="faint" style="font-size:12px;margin-top:12px;">{{ t('pf.prices_note') }}</p>
+
+  {# ---------- storico versamenti (PAC): cronologia, con modifica/elimina ---------- #}
+  {% if versamenti %}
+  <div class="page-title" style="font-size:18px;margin-top:28px;">Storico versamenti (PAC)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Data</th><th class="num">Importo</th><th>Conto</th><th class="num">Titoli</th><th style="width:1%;"></th></tr>
+      </thead>
+      <tbody>
+        {% for v in versamenti %}
+        <tr>
+          <td>{{ v.data.strftime('%d/%m/%Y') }}</td>
+          <td class="num">{{ v.importo | eur }}</td>
+          <td><span class="muted">{{ v.conto or '—' }}</span></td>
+          <td class="num">{{ v.n_titoli }}</td>
+          <td class="num">
+            <div style="display:flex;gap:6px;justify-content:flex-end;align-items:center;">
+              <a href="/portafoglio/versamento?vid={{ v.id }}" class="btn sm ghost icon-only" aria-label="Modifica" title="Modifica">{{ icon('edit', 15) }}</a>
+              <form method="post" action="/portafoglio/versamento/{{ v.id }}/elimina" class="js-confirm"
+                    data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:0;">
+                <button type="submit" class="btn sm danger icon-only" aria-label="Elimina" title="Elimina">{{ icon('trash', 15) }}</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
 {% endblock %}

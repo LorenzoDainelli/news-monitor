@@ -4,7 +4,7 @@ Tutto modificabile dall'interfaccia, MAI da codice (come da requisiti).
 """
 import json
 import urllib.parse
-from datetime import datetime
+from datetime import date, datetime
 
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse, HTMLResponse
@@ -15,7 +15,8 @@ from shared.parsing import to_float, to_date
 from shared.charts import chart_points
 from shared import ai, settings_store
 from portfolio.models import Position, TIPO_ETF, TIPO_AZIONE
-from portfolio import service, market, analytics
+from portfolio import service, market, analytics, versamenti
+from finance import service as fin_service
 
 router = APIRouter()
 
@@ -73,11 +74,77 @@ def elenco(request: Request):
         "riepilogo": service.riepilogo(vista),
         "perf": snapshot,                            # P/L ~12m per ticker
         "pf_perf": round(num / den, 2) if den else None,
+        "versamenti": versamenti.lista(),            # storico PAC (in fondo alla pagina)
         "flash_added": qp.get("added", ""),
         "flash_deleted": qp.get("deleted", ""),
         "flash_saved": qp.get("saved", "") == "1",
+        "flash_pac": qp.get("pac", ""),
         "open_form": qp.get("add", "") == "1",       # apre il form inline
     })
+
+
+def _default_conto(conti: list) -> str:
+    """Conto di provenienza suggerito: 'TR' se esiste, altrimenti il primo."""
+    for c in conti:
+        if (c or "").strip().upper() == "TR":
+            return c
+    return conti[0] if conti else ""
+
+
+@router.get("/portafoglio/versamento", response_class=HTMLResponse)
+def versamento_form(request: Request, vid: int = 0):
+    """Schermata 'Registra PAC': data, importo, conto, i 37 titoli con
+    interruttore (ON di default). Con ?vid=N pre-riempie per la modifica."""
+    posizioni = service.lista_posizioni()
+    conti = [w.nome for w in fin_service.wallets()]
+    pre = versamenti.dettaglio(vid) if vid else None
+    return templates.TemplateResponse(request, "portfolio_versamento.html", {
+        "active": "portafoglio", "posizioni": posizioni, "conti": conti,
+        "importo": (pre["importo"] if pre else 100.0),
+        "data": (pre["data"] if pre else date.today()).isoformat(),
+        "conto": (pre["conto"] if pre else _default_conto(conti)),
+        "inclusi_ids": (pre["inclusi_ids"] if pre else {p.id for p in posizioni}),
+        "vid": str(vid) if vid else "", "anteprima": None,
+    })
+
+
+@router.post("/portafoglio/versamento", response_class=HTMLResponse)
+def versamento_post(
+    request: Request,
+    azione: str = Form("anteprima"),
+    importo: str = Form("0"),
+    data: str = Form(""),
+    conto: str = Form(""),
+    vid: str = Form(""),
+    incl: list[str] = Form(default=[]),
+):
+    """Un solo endpoint: 'anteprima' ricalcola e mostra la tabella; 'conferma'
+    scrive (nuovo o modifica) e torna al portafoglio."""
+    imp = to_float(importo, 0.0) or 0.0
+    d = to_date(data) or date.today()
+    incl_ids = {int(x) for x in incl if x.isdigit()}
+    posizioni = service.lista_posizioni()
+    esclusi = {p.id for p in posizioni if p.id not in incl_ids}
+    vid_i = int(vid) if vid.strip().isdigit() else None
+
+    if azione == "conferma":
+        versamenti.salva(imp, d, conto, esclusi, vid=vid_i)
+        return RedirectResponse("/portafoglio?pac=1", status_code=303)
+
+    conti = [w.nome for w in fin_service.wallets()]
+    return templates.TemplateResponse(request, "portfolio_versamento.html", {
+        "active": "portafoglio", "posizioni": posizioni, "conti": conti,
+        "importo": imp, "data": d.isoformat(),
+        "conto": conto or _default_conto(conti),
+        "inclusi_ids": incl_ids, "vid": vid,
+        "anteprima": versamenti.anteprima(imp, d, esclusi),
+    })
+
+
+@router.post("/portafoglio/versamento/{vid}/elimina")
+def versamento_elimina(vid: int):
+    versamenti.elimina(vid)
+    return RedirectResponse("/portafoglio?pac=del", status_code=303)
 
 
 @router.post("/portafoglio/aggiorna")
