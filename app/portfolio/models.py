@@ -70,6 +70,10 @@ class Versamento(Base):
     importo: Mapped[float] = mapped_column(Float, default=0.0)   # totale investito (€)
     conto: Mapped[str] = mapped_column(String(80), default="")   # conto di provenienza (informativo)
     note: Mapped[str] = mapped_column(Text, default="")
+    # movimento di Finanze collegato: il TRASFERIMENTO dal conto di provenienza
+    # al portafoglio "PAC investimenti". Uno solo per versamento (viene
+    # aggiornato/eliminato insieme al PAC, mai duplicato).
+    tx_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     creato_il: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 

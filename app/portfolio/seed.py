@@ -41,6 +41,10 @@ def migra_schema():
         if cols and "versato_totale" not in cols:
             c.execute(text("ALTER TABLE portfolio_positions ADD COLUMN versato_totale FLOAT DEFAULT 0.0"))
             c.commit()
+        vcols = [r[1] for r in c.execute(text("PRAGMA table_info(portfolio_versamenti)"))]
+        if vcols and "tx_id" not in vcols:
+            c.execute(text("ALTER TABLE portfolio_versamenti ADD COLUMN tx_id INTEGER"))
+            c.commit()
 
 
 # (nome, tipo, categoria, ticker, isin, pct_target, importo_fisso, note)
