@@ -99,6 +99,54 @@ def anteprima(importo: float, data: date, esclusi: set) -> dict:
             "avvisi": avvisi, "data": data, "importo": round(importo, 2)}
 
 
+DESCRIZIONE_MOVIMENTO = "Versamento PAC"
+
+
+def _sync_finanze(vid: int, importo: float, data: date, conto: str) -> None:
+    """Riflette il PAC in Finanze: UN trasferimento dal conto di provenienza al
+    portafoglio 'PAC investimenti'.
+
+    È un giro interno, quindi il patrimonio non cambia: si sposta e basta. Il
+    movimento è uno solo per versamento (aggiornato, mai duplicato). Le
+    oscillazioni di mercato NON diventano movimenti: il saldo del conto PAC è
+    derivato dal Portafoglio (vedi finance.service.valore_pac_live)."""
+    from finance import service as fin
+    from finance.models import TIPO_TRASFERIMENTO
+
+    with SessionLocal() as db:
+        v = db.get(Versamento, vid)
+        tx_id = v.tx_id if v is not None else None
+        if v is None:
+            return
+
+    dest = fin.wallet_per_nome(fin.NOME_WALLET_PAC)
+    src = fin.wallet_per_nome(conto)
+    # conto non riconosciuto (o coincide con la destinazione): niente movimento
+    # inventato, ma se ce n'era uno vecchio va tolto.
+    if dest is None or src is None or dest.id == src.id:
+        if tx_id:
+            fin.elimina_movimento(tx_id)
+            with SessionLocal() as db:
+                v = db.get(Versamento, vid)
+                if v is not None:
+                    v.tx_id = None
+                    db.commit()
+        return
+
+    quando = datetime.combine(data, datetime.min.time())
+    if tx_id and fin.aggiorna_movimento(tx_id, TIPO_TRASFERIMENTO, quando, importo,
+                                        src.id, dest.id,
+                                        descrizione=DESCRIZIONE_MOVIMENTO):
+        return
+    nuovo = fin.crea_movimento(TIPO_TRASFERIMENTO, quando, importo, src.id, dest.id,
+                               descrizione=DESCRIZIONE_MOVIMENTO)
+    with SessionLocal() as db:
+        v = db.get(Versamento, vid)
+        if v is not None:
+            v.tx_id = nuovo
+            db.commit()
+
+
 def _reverse(db, vid: int, posmap: dict) -> None:
     """Annulla i delta di un versamento sulle posizioni e cancella le sue righe."""
     righe = db.execute(
@@ -152,7 +200,9 @@ def salva(importo: float, data: date, conto: str, esclusi: set, vid=None) -> int
                                   ticker=p.ticker, euro=euro, qta=qta,
                                   prezzo_eur=prezzo, fonte=fonte))
         db.commit()
-        return v.id
+        nuovo_id = v.id
+    _sync_finanze(nuovo_id, round(importo, 2), data, conto)
+    return nuovo_id
 
 
 def elimina(vid: int) -> bool:
@@ -161,11 +211,15 @@ def elimina(vid: int) -> bool:
         v = db.get(Versamento, vid)
         if v is None:
             return False
+        tx_id = v.tx_id
         posizioni = list(db.execute(select(Position)).scalars().all())
         _reverse(db, vid, {p.id: p for p in posizioni})
         db.delete(v)
         db.commit()
-        return True
+    if tx_id:                       # via anche il trasferimento in Finanze
+        from finance import service as fin
+        fin.elimina_movimento(tx_id)
+    return True
 
 
 def dettaglio(vid: int) -> dict | None:

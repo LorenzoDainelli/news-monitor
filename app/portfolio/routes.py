@@ -103,9 +103,10 @@ def elenco(request: Request):
 
 
 def _default_conto(conti: list) -> str:
-    """Conto di provenienza suggerito: 'TR' se esiste, altrimenti il primo."""
+    """Conto di provenienza suggerito: Trade Republic se c'è, altrimenti il primo."""
     for c in conti:
-        if (c or "").strip().upper() == "TR":
+        k = (c or "").strip().lower()
+        if k in ("trade republic", "tr") or k.startswith("trade republic"):
             return c
     return conti[0] if conti else ""
 

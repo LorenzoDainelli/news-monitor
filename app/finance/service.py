@@ -54,6 +54,10 @@ SALDI_INIZIALI = {
     "PAC investimenti": 0.0,
 }
 
+# Il portafoglio degli investimenti: unico conto a SALDO DERIVATO (il suo valore
+# arriva dal Portafoglio, non dalla somma dei movimenti). Vedi valore_pac_live().
+NOME_WALLET_PAC = "PAC investimenti"
+
 # Portafogli precaricati la prima volta (li puoi rinominare/eliminare).
 SEED_WALLETS = [
     ("Contanti", "contanti", ""),
@@ -240,16 +244,60 @@ def _saldi_map(db) -> dict:
     return saldi
 
 
+def wallet_per_nome(nome: str, include_archived: bool = True):
+    """Wallet con questo nome (confronto senza maiuscole/spazi). None se non c'è."""
+    key = (nome or "").strip().lower()
+    if not key:
+        return None
+    for w in wallets(include_archived=include_archived):
+        if (w.nome or "").strip().lower() == key:
+            return w
+    return None
+
+
+def valore_pac_live() -> dict | None:
+    """Il conto PAC non è un conto normale: il suo valore NON è la somma dei
+    movimenti, è quello VIVO del Portafoglio (oscilla col mercato).
+
+    Regola: il versamento è un movimento reale, l'oscillazione NON lo è mai —
+    la rivalutazione è calcolata qui al volo, così lo storico movimenti resta
+    pulito (una riga per PAC) e i totali entrate/uscite non vengono falsati.
+
+    Ritorna {'valore', 'versato', 'rivalutazione'} oppure None se il Portafoglio
+    non ha ancora prezzi: in quel caso il saldo resta quello dei movimenti,
+    niente numeri inventati."""
+    try:
+        from portfolio import service as pf_service
+        vista = pf_service.vista_portafoglio()
+    except Exception:
+        return None
+    if not vista.get("ha_totale"):
+        return None
+    versato = round(sum((r["p"].versato_totale or 0.0) for r in vista["righe"]), 2)
+    valore = round(vista["totale"], 2)
+    return {"valore": valore, "versato": versato,
+            "rivalutazione": round(valore - versato, 2)}
+
+
 def saldi():
     """Lista (wallet, saldo) per i wallet attivi, piu' il patrimonio totale.
     Ordine delle card: saldo decrescente, ma il PAC (tipo 'investimento')
-    resta SEMPRE per ultimo, come richiesto."""
+    resta SEMPRE per ultimo, come richiesto.
+    Il conto PAC porta il valore vivo del Portafoglio (vedi valore_pac_live)."""
     with SessionLocal() as db:
         smap = _saldi_map(db)
         ws = list(db.execute(
             select(Wallet).where(Wallet.archiviato.is_(False), Wallet.deleted.is_(False)).order_by(Wallet.ordine, Wallet.id)
         ).scalars().all())
     righe = [{"w": w, "saldo": round(smap.get(w.id, 0.0), 2)} for w in ws]
+    pac = valore_pac_live()
+    if pac:
+        for r in righe:
+            if (r["w"].nome or "").strip().lower() == NOME_WALLET_PAC.lower():
+                r["saldo"] = pac["valore"]
+                r["versato"] = pac["versato"]
+                r["rivalutazione"] = pac["rivalutazione"]
+                r["derivato"] = True
     righe.sort(key=lambda r: (r["w"].tipo == "investimento", -r["saldo"]))
     totale = round(sum(r["saldo"] for r in righe), 2)
     return {"righe": righe, "totale": totale}
@@ -283,18 +331,21 @@ def _get_or_create_categoria(db, nome, kind=""):
 # ------------------------------ movimenti ------------------------------
 def crea_movimento(tipo, data, importo, wallet_id, wallet_to_id=None,
                    categoria_nome="", descrizione=""):
+    """Crea un movimento. Ritorna l'id del record creato."""
     with SessionLocal() as db:
         cat_id = None
         if tipo in (TIPO_ENTRATA, TIPO_USCITA):
             cat_id = _get_or_create_categoria(
                 db, categoria_nome, "entrata" if tipo == TIPO_ENTRATA else "uscita")
-        db.add(Transaction(
+        t = Transaction(
             tipo=tipo, data=data or datetime.now(), importo=abs(importo or 0.0),
             wallet_id=wallet_id,
             wallet_to_id=wallet_to_id if tipo == TIPO_TRASFERIMENTO else None,
             category_id=cat_id if tipo != TIPO_TRASFERIMENTO else None,
-            descrizione=descrizione.strip()))
+            descrizione=descrizione.strip())
+        db.add(t)
         db.commit()
+        return t.id
 
 
 def elimina_movimento(tid):
