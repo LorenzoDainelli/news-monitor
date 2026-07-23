@@ -1,82 +1,6 @@
 {
   "items": [
     {
-      "id": "yahoo-orcl-workforce-cut-13pct-20260623",
-      "ticker": "ORCL",
-      "url": "https://finnhub.io/api/news?id=da00d69b0262467ad2601b01a4cb6c6b9c2619eb7c21f3e66cb456bb21425b3a",
-      "data_invio": "2026-06-23T07:30:00+00:00",
-      "titolo": "Oracle taglia 21.000 posti e punta a 50 miliardi di dollari per l'AI",
-      "tipo_evento": "news aziendale"
-    },
-    {
-      "id": "yahoo-amgn-willful-patent-infringement-20260623",
-      "ticker": "AMGN",
-      "url": "https://finnhub.io/api/news?id=85eca25839d94e22c7ea0ab0eba3eb415758c3c248778ffe8556cabf1a1e0793",
-      "data_invio": "2026-06-23T07:30:00+00:00",
-      "titolo": "Giuria del Delaware: Amgen ha violato intenzionalmente brevetti altrui",
-      "tipo_evento": "legale/regolatorio"
-    },
-    {
-      "id": "yahoo-avgo-ai-revenue-triple-dip-17pct-20260623",
-      "ticker": "AVGO",
-      "url": "https://finnhub.io/api/news?id=660a402b56dae407427945a9fa0d5908306c790678a618e2e5a4608f20669fc0",
-      "data_invio": "2026-06-23T07:30:00+00:00",
-      "titolo": "Broadcom: ricavi AI verso 16 miliardi al trimestre, ma il titolo cede il 17%",
-      "tipo_evento": "earnings"
-    },
-    {
-      "id": "globenewswire-lly-centessa-court-approval-20260622",
-      "ticker": "LLY",
-      "url": "https://finnhub.io/api/news?id=20da687d23bf7ef570c1669738033c927266e214292f219c0508cd9059ee4a03",
-      "data_invio": "2026-06-23T07:30:00+00:00",
-      "titolo": "L'Alta Corte inglese approva l'acquisizione di Centessa Pharmaceuticals da parte di Eli Lilly",
-      "tipo_evento": "M&A"
-    },
-    {
-      "id": "yahoo-ibm-trump-quantum-eo-20260622",
-      "ticker": "IBM",
-      "url": "https://finnhub.io/api/news?id=8d1b04a7f5952a86196a5bf9d6d4bfeb6db1dcaeeead820c335d0c7b87555f5f",
-      "data_invio": "2026-06-23T07:30:00+00:00",
-      "titolo": "Trump firma due decreti per accelerare il quantum computing negli USA",
-      "tipo_evento": "macro"
-    },
-    {
-      "id": "orcl-ellison-cuts-21000-jobs-20260623",
-      "ticker": "ORCL",
-      "url": "https://finnhub.io/api/news?id=8db707d55e9125bcb49a9b3ee0b3cdb2ed0f6d3e2a52b790dc5f4942b00d18d",
-      "data_invio": "2026-06-23T11:10:00+02:00"
-    },
-    {
-      "id": "spcx-sheds-600b-three-days-20260623",
-      "ticker": "SPCX",
-      "url": "https://finnhub.io/api/news?id=47811726647250996d99dc32ea8e88a78555c0b369a5095f35a96027ca52f130",
-      "data_invio": "2026-06-23T11:10:00+02:00"
-    },
-    {
-      "id": "aapl-hardware-price-hikes-downgrade-20260623",
-      "ticker": "AAPL",
-      "url": "https://finnhub.io/api/news?id=7408f7ecad7f86651a65b6ae0056d1177f989e150b98a91b94434474d2a1bff5",
-      "data_invio": "2026-06-23T11:10:00+02:00"
-    },
-    {
-      "id": "finnhub-orcl-cuts-21000-jobs-20260623",
-      "ticker": "ORCL",
-      "url": "https://finnhub.io/api/news?id=a5cc71cd2dd441f0af56d5b274512eb6339a62a2a379645da7660d7aff20a93c",
-      "data_invio": "2026-06-23T15:09:00+02:00"
-    },
-    {
-      "id": "finnhub-sndk-wdc-memory-crash-20260623",
-      "ticker": "SNDK,WDC",
-      "url": "https://finnhub.io/api/news?id=029b73e1b73c5f9486c6f772dd1f87ee3d91652575335f5d40b61fd67d01e770",
-      "data_invio": "2026-06-23T15:09:00+02:00"
-    },
-    {
-      "id": "finnhub-goog-talent-departures-20260623",
-      "ticker": "GOOG",
-      "url": "https://finnhub.io/api/news?id=c16c31322e24a9b7a27c14f92b0ffe822e0d4c2e5a8443820ab2c8f7c8784104",
-      "data_invio": "2026-06-23T15:09:00+02:00"
-    },
-    {
       "id": "korea-selloff-chip-intc-nvda-sndk-20260623",
       "ticker": "MACRO",
       "url": "https://finnhub.io/api/news?id=f304f526512184de6f58a9a597e8854fa955fc4a19dc955c3f98aed38ee317fa",
@@ -2561,6 +2485,54 @@
       "tipo_evento": "M&A",
       "url": "https://finnhub.io/api/news?id=5de6d142a7935fa5f807cd02906130f81d13f6375fb14439449dccdc72c7c845",
       "data_invio": "2026-07-23T05:15:00+00:00"
+    },
+    {
+      "id": "lly-retatrutide-filing-2026-07-23",
+      "ticker": "LLY",
+      "titolo": "Eli Lilly depositerà la domanda di approvazione per retatrutide all'inizio del 2027",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=d16681bea87a6c620037072934ddd19c62b77d701ddb423dc87133e19ef199ec",
+      "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "jnj-tecvayli-talvey-mieloma-2026-07-23",
+      "ticker": "JNJ",
+      "titolo": "J&J: la combo TECVAYLI+TALVEY riduce del 89% il rischio di progressione del mieloma multiplo",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=3e5112537701d1d11c6dcbe27975b37a9f64ba94d81f255b1b487843afdf4fe0",
+      "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "intc-foundry-yield-85-2026-07-23",
+      "ticker": "INTC",
+      "titolo": "Intel raggiunge una resa dell'85% nella fonderia: possibile catalizzatore per la ripresa nel secondo semestre",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=cd9ca4f504a13c26ed8239d1db52129c3bbedb454316d9db2d9d159340b1528e",
+      "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "amgn-enbrel-colorado-ruling-2026-07-23",
+      "ticker": "AMGN",
+      "titolo": "Giudice federale blocca il tetto di prezzo del 70% sul Enbrel imposto dal Colorado",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=0b0e6dac5c1617eb42aa813615a3459f9196acbb7f8cb1677e299847b7c12338",
+      "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "ibm-ms-h2-recovery-2026-07-23",
+      "ticker": "IBM",
+      "titolo": "Morgan Stanley: la ripresa di IBM nel secondo semestre è 'plausibile' grazie al recupero dei contratti",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=4ac21cc684656056236c5a6887907f3d7ca63da970dab885b89aa4c0e3dd939d",
+      "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "ssnlf-samsung-foldables-2026-07-23",
+      "ticker": "SSNLF",
+      "titolo": "Samsung presenta l'ottava generazione di smartphone pieghevoli all'Unpacked di Londra",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=3b6af3c4ecaead5c2897a44620b790fbed7673445711ff562331bbb1e5540e55",
+      "data_invio": "2026-07-23T17:05:00+00:00"
     }
   ]
 }

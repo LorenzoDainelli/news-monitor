@@ -4873,6 +4873,91 @@
       "inviata": false,
       "titolo": "Alibaba conferma che il suo modello Qwen alimenterà Apple Intelligence in Cina",
       "url": "https://finnhub.io/api/news?id=c5352e9cbedbc3050cc1d9117ef1436e2161cf9163502022bd3d3b6e1505561f"
+    },
+    {
+      "id": "lly-retatrutide-filing-2026-07-23",
+      "ticker": "LLY",
+      "data": "2026-07-23T17:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Eli Lilly depositerà la domanda di approvazione per retatrutide all'inizio del 2027",
+      "url": "https://finnhub.io/api/news?id=d16681bea87a6c620037072934ddd19c62b77d701ddb423dc87133e19ef199ec"
+    },
+    {
+      "id": "jnj-tecvayli-talvey-mieloma-2026-07-23",
+      "ticker": "JNJ",
+      "data": "2026-07-23T17:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "J&J: la combo TECVAYLI+TALVEY riduce del 89% il rischio di progressione del mieloma multiplo",
+      "url": "https://finnhub.io/api/news?id=3e5112537701d1d11c6dcbe27975b37a9f64ba94d81f255b1b487843afdf4fe0"
+    },
+    {
+      "id": "intc-foundry-yield-85-2026-07-23",
+      "ticker": "INTC",
+      "data": "2026-07-23T17:05:00+00:00",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Intel raggiunge una resa dell'85% nella fonderia: possibile catalizzatore per la ripresa nel secondo semestre",
+      "url": "https://finnhub.io/api/news?id=cd9ca4f504a13c26ed8239d1db52129c3bbedb454316d9db2d9d159340b1528e"
+    },
+    {
+      "id": "ibm-ms-h2-recovery-2026-07-23",
+      "ticker": "IBM",
+      "data": "2026-07-23T17:05:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Morgan Stanley: la ripresa di IBM nel secondo semestre è 'plausibile' grazie al recupero dei contratti",
+      "url": "https://finnhub.io/api/news?id=4ac21cc684656056236c5a6887907f3d7ca63da970dab885b89aa4c0e3dd939d"
+    },
+    {
+      "id": "ssnlf-samsung-foldables-2026-07-23",
+      "ticker": "SSNLF",
+      "data": "2026-07-23T17:05:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 50,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Samsung presenta l'ottava generazione di smartphone pieghevoli all'Unpacked di Londra",
+      "url": "https://finnhub.io/api/news?id=3b6af3c4ecaead5c2897a44620b790fbed7673445711ff562331bbb1e5540e55"
     }
   ]
 }
