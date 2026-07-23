@@ -122,6 +122,7 @@ def versamento_form(request: Request, vid: int = 0):
         "active": "portafoglio", "posizioni": posizioni, "conti": conti,
         "importo": (pre["importo"] if pre else 100.0),
         "data": (pre["data"] if pre else date.today()).isoformat(),
+        "ora": (pre["ora"] if pre else ""),
         "conto": (pre["conto"] if pre else _default_conto(conti)),
         "inclusi_ids": (pre["inclusi_ids"] if pre else {p.id for p in posizioni}),
         "vid": str(vid) if vid else "", "anteprima": None,
@@ -134,6 +135,7 @@ def versamento_post(
     azione: str = Form("anteprima"),
     importo: str = Form("0"),
     data: str = Form(""),
+    ora: str = Form(""),
     conto: str = Form(""),
     vid: str = Form(""),
     incl: list[str] = Form(default=[]),
@@ -148,16 +150,16 @@ def versamento_post(
     vid_i = int(vid) if vid.strip().isdigit() else None
 
     if azione == "conferma":
-        versamenti.salva(imp, d, conto, esclusi, vid=vid_i)
+        versamenti.salva(imp, d, conto, esclusi, vid=vid_i, ora=ora)
         return RedirectResponse("/portafoglio?pac=1", status_code=303)
 
     conti = [w.nome for w in fin_service.wallets()]
     return templates.TemplateResponse(request, "portfolio_versamento.html", {
         "active": "portafoglio", "posizioni": posizioni, "conti": conti,
-        "importo": imp, "data": d.isoformat(),
+        "importo": imp, "data": d.isoformat(), "ora": ora,
         "conto": conto or _default_conto(conti),
         "inclusi_ids": incl_ids, "vid": vid,
-        "anteprima": versamenti.anteprima(imp, d, esclusi),
+        "anteprima": versamenti.anteprima(imp, d, esclusi, ora),
     })
 
 

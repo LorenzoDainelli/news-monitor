@@ -161,7 +161,7 @@
       <tbody>
         {% for v in versamenti %}
         <tr>
-          <td>{{ v.data.strftime('%d/%m/%Y') }}</td>
+          <td>{{ v.data.strftime('%d/%m/%Y') }}{% if v.ora %} <span class="muted">{{ v.ora }}</span>{% endif %}</td>
           <td class="num">{{ v.importo | eur }}</td>
           <td><span class="muted">{{ v.conto or '—' }}</span></td>
           <td class="num">{{ v.n_titoli }}</td>

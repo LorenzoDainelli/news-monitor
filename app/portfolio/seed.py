@@ -45,6 +45,9 @@ def migra_schema():
         if vcols and "tx_id" not in vcols:
             c.execute(text("ALTER TABLE portfolio_versamenti ADD COLUMN tx_id INTEGER"))
             c.commit()
+        if vcols and "ora" not in vcols:
+            c.execute(text("ALTER TABLE portfolio_versamenti ADD COLUMN ora VARCHAR(5) DEFAULT ''"))
+            c.commit()
 
 
 # (nome, tipo, categoria, ticker, isin, pct_target, importo_fisso, note)

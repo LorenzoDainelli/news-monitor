@@ -22,14 +22,64 @@ from portfolio.models import Position, Versamento, VersamentoRiga
 from portfolio import service, market
 
 
-def _prezzo_eur_alla_data(p: Position, data: date, qmap: dict, oggi: date):
-    """Prezzo in € del titolo alla data indicata. Ritorna (prezzo, fonte).
-    fonte: 'live' (prezzo corrente), 'storico' (chiusura di quel giorno),
-    'live~' (ripiego sul corrente se manca lo storico), 'n/d' (non disponibile)."""
+def parse_ora(s: str):
+    """'HH:MM' -> time, oppure None se vuota/non valida. Nessun orario inventato."""
+    s = (s or "").strip()
+    if not s:
+        return None
+    try:
+        return datetime.strptime(s[:5], "%H:%M").time()
+    except ValueError:
+        return None
+
+
+# Yahoo tiene le candele orarie solo per il periodo recente: oltre, si usa la
+# chiusura del giorno (unico dato onesto disponibile).
+GIORNI_INTRADAY = 25
+
+
+def _prezzo_intraday(tk: str, quando: datetime):
+    """Prezzo alla ORA indicata, dalle candele orarie. None se non c'è.
+    I timestamp di Yahoo sono epoch: li converto all'ora LOCALE, la stessa in
+    cui l'utente ha scritto l'orario."""
+    serie = market.history_series(market._yahoo_symbol(tk), "1mo", "1h")
+    best = None
+    for epoch, close in serie:
+        if close and datetime.fromtimestamp(epoch) <= quando:
+            best = close
+    return best
+
+
+def _prezzo_eur_alla_data(p: Position, data: date, qmap: dict, oggi: date, ora=None):
+    """Prezzo in € del titolo alla data (e all'ora, se indicata).
+    Ritorna (prezzo, fonte). fonte: 'live' (prezzo corrente), 'orario' (candela
+    dell'ora indicata), 'storico' (chiusura di quel giorno), 'live~' (ripiego sul
+    corrente), 'n/d' (non disponibile)."""
     tk = (p.ticker or "").strip()
     if not tk:
         return None, "n/d"
     q = qmap.get(tk.upper())
+
+    def in_euro(prezzo):
+        """Converte in € usando la valuta di quotazione del titolo."""
+        cur = (q.currency if q else "") or "EUR"
+        try:
+            rate = market._fx_to_eur_rate(cur)
+        except Exception:
+            rate = 0
+        return round(prezzo / rate, 4) if rate else None
+
+    # con l'ora: provo la candela oraria (solo per il periodo recente)
+    t = parse_ora(ora) if isinstance(ora, str) else ora
+    if t is not None and 0 <= (oggi - data).days <= GIORNI_INTRADAY:
+        quando = datetime.combine(data, t)
+        if quando <= datetime.now():
+            val = _prezzo_intraday(tk, quando)
+            if val is not None:
+                prezzo = in_euro(val)
+                if prezzo:
+                    return prezzo, "orario"
+
     # oggi (o data futura, per sicurezza): usa il prezzo corrente in €
     if data >= oggi:
         if q and q.ok and q.price_eur:
@@ -43,13 +93,9 @@ def _prezzo_eur_alla_data(p: Position, data: date, qmap: dict, oggi: date):
         if d <= data and close:
             best = close
     if best is not None:
-        cur = (q.currency if q else "") or "EUR"
-        try:
-            rate = market._fx_to_eur_rate(cur)
-        except Exception:
-            rate = 0
-        if rate:
-            return round(best / rate, 4), "storico"
+        prezzo = in_euro(best)
+        if prezzo:
+            return prezzo, "storico"
     # ripiego: prezzo corrente, se lo storico non è raggiungibile
     if q and q.ok and q.price_eur:
         return round(q.price_eur, 4), "live~"
@@ -78,7 +124,7 @@ def _riparti(posizioni, importo: float, esclusi: set):
     return inclusi, euros
 
 
-def anteprima(importo: float, data: date, esclusi: set) -> dict:
+def anteprima(importo: float, data: date, esclusi: set, ora: str = "") -> dict:
     """Calcola (senza salvare nulla) come verrebbe distribuito il versamento."""
     qmap = market.quotes_map()
     oggi = date.today()
@@ -88,7 +134,7 @@ def anteprima(importo: float, data: date, esclusi: set) -> dict:
     for p in inclusi:
         euro = euros[p.id]
         tot += euro
-        prezzo, fonte = _prezzo_eur_alla_data(p, data, qmap, oggi)
+        prezzo, fonte = _prezzo_eur_alla_data(p, data, qmap, oggi, ora)
         qta = round(euro / prezzo, 6) if (prezzo and prezzo > 0) else None
         if qta is None:
             avvisi.append(p.ticker or p.nome_vista)
@@ -102,7 +148,8 @@ def anteprima(importo: float, data: date, esclusi: set) -> dict:
 DESCRIZIONE_MOVIMENTO = "Versamento PAC"
 
 
-def _sync_finanze(vid: int, importo: float, data: date, conto: str) -> None:
+def _sync_finanze(vid: int, importo: float, data: date, conto: str,
+                  ora: str = "") -> None:
     """Riflette il PAC in Finanze: UN trasferimento dal conto di provenienza al
     portafoglio 'PAC investimenti'.
 
@@ -133,7 +180,8 @@ def _sync_finanze(vid: int, importo: float, data: date, conto: str) -> None:
                     db.commit()
         return
 
-    quando = datetime.combine(data, datetime.min.time())
+    # il movimento porta l'ora del versamento, se l'hai indicata
+    quando = datetime.combine(data, parse_ora(ora) or datetime.min.time())
     if tx_id and fin.aggiorna_movimento(tx_id, TIPO_TRASFERIMENTO, quando, importo,
                                         src.id, dest.id,
                                         descrizione=DESCRIZIONE_MOVIMENTO):
@@ -163,7 +211,8 @@ def _reverse(db, vid: int, posmap: dict) -> None:
         db.delete(r)
 
 
-def salva(importo: float, data: date, conto: str, esclusi: set, vid=None) -> int | None:
+def salva(importo: float, data: date, conto: str, esclusi: set, vid=None,
+          ora: str = "") -> int | None:
     """Registra un nuovo versamento (vid=None) o ne modifica uno esistente.
     Applica le quote alle posizioni (PMC) e memorizza i delta. Ritorna l'id."""
     qmap = market.quotes_map()
@@ -184,10 +233,11 @@ def salva(importo: float, data: date, conto: str, esclusi: set, vid=None) -> int
             v = Versamento()
             db.add(v)
         v.data, v.importo, v.conto = data, round(importo, 2), (conto or "").strip()
+        v.ora = (ora or "").strip()[:5]
         db.flush()                                # per avere v.id
         for p in inclusi:
             euro = euros[p.id]
-            prezzo, fonte = _prezzo_eur_alla_data(p, data, qmap, oggi)
+            prezzo, fonte = _prezzo_eur_alla_data(p, data, qmap, oggi, ora)
             qta = round(euro / prezzo, 6) if (prezzo and prezzo > 0) else None
             if qta is not None:
                 p.quantita = round((p.quantita or 0) + qta, 8)
@@ -201,7 +251,7 @@ def salva(importo: float, data: date, conto: str, esclusi: set, vid=None) -> int
                                   prezzo_eur=prezzo, fonte=fonte))
         db.commit()
         nuovo_id = v.id
-    _sync_finanze(nuovo_id, round(importo, 2), data, conto)
+    _sync_finanze(nuovo_id, round(importo, 2), data, conto, ora)
     return nuovo_id
 
 
@@ -231,7 +281,7 @@ def dettaglio(vid: int) -> dict | None:
         ids = [r.position_id for r in db.execute(
             select(VersamentoRiga).where(VersamentoRiga.versamento_id == vid)
         ).scalars().all()]
-        return {"id": v.id, "data": v.data, "importo": v.importo,
+        return {"id": v.id, "data": v.data, "ora": v.ora or "", "importo": v.importo,
                 "conto": v.conto, "inclusi_ids": set(ids)}
 
 
@@ -244,6 +294,6 @@ def lista() -> list:
         for v in vs:
             n = db.execute(select(func.count()).select_from(VersamentoRiga)
                            .where(VersamentoRiga.versamento_id == v.id)).scalar()
-            out.append({"id": v.id, "data": v.data, "importo": v.importo,
-                        "conto": v.conto, "n_titoli": n or 0})
+            out.append({"id": v.id, "data": v.data, "ora": v.ora or "",
+                        "importo": v.importo, "conto": v.conto, "n_titoli": n or 0})
         return out
