@@ -364,6 +364,31 @@ input[type=checkbox], input[type=radio] { accent-color: var(--accent); width: au
   background-size: 200% 100%; animation: mm-sheen 4s var(--ease-in-out) infinite;
 }
 
+/* --- prosa dell'AI: pensata per essere letta FINO IN FONDO ----------------
+   Quattro accorgimenti, tutti di leggibilità (nessuno cambia il testo):
+   1. paragrafi separati -> l'occhio vede subito che sono blocchi brevi;
+   2. testo giustificato con sillabazione (lang="it") -> niente "fiumi" bianchi;
+   3. prima riga in evidenza -> aggancia lo sguardo e invita a partire;
+   4. cifre in grassetto -> appigli per riprendere il filo se ci si distrae. */
+.ai-prosa { color: var(--ink); line-height: var(--lh-relaxed); }
+.ai-prosa p {
+  margin: 10px 0 0;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto; -webkit-hyphens: auto;
+  text-wrap: pretty;
+}
+.ai-prosa p + p {
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px dashed color-mix(in oklab, var(--ai) 30%, transparent);
+}
+.ai-prosa p:first-child::first-line { font-weight: var(--fw-semibold, 600); }
+.ai-cifra {
+  font-weight: var(--fw-bold); font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--ai) 70%, var(--ink));
+  white-space: nowrap;
+}
+
 /* =========================================================================
    LOADING (skeleton) + EMPTY STATE
    ========================================================================= */
