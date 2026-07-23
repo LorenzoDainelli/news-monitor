@@ -17,9 +17,9 @@
   <div class="grid mm-stats4">
     <div class="stat hero">
       <div class="k">{{ t('fin.patrimonio_liq') }}</div>
-      {# "liquido" = senza il conto PAC, che non è denaro disponibile ma investito #}
-      <div class="v num">{{ saldi.liquido | eur }}</div>
-      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('fin.n_wallets', n=(saldi.righe | length)) }}{% if saldi.totale != saldi.liquido %} · con gli investimenti {{ saldi.totale | eur }}{% endif %}</div>
+      {# il totale include il conto PAC (col valore vivo del Portafoglio) #}
+      <div class="v num">{{ saldi.totale | eur }}</div>
+      <div class="muted" style="font-size:13px;margin-top:4px;">{{ t('fin.n_wallets', n=(saldi.righe | length)) }}{% if saldi.totale != saldi.liquido %} · di cui liquidi {{ saldi.liquido | eur }}{% endif %}</div>
     </div>
     <div class="stat ok">
       <div class="k">{{ t('fin.month_income') }}</div>

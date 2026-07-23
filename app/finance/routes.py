@@ -294,7 +294,7 @@ def _contesto_finanze() -> str:
             f"Mese {y}-{m:02d}: entrate {r['entrate']:.0f}€, uscite {r['uscite']:.0f}€, "
             f"saldo {r['saldo']:.0f}€. Spese principali per categoria: {cat}.")
     sal = service.saldi()
-    righe.append(f"Patrimonio totale attuale: {sal['liquido']:.0f}€ distribuito su "
+    righe.append(f"Patrimonio totale attuale: {sal['totale']:.0f}€ distribuito su "
                  f"{len(sal['righe'])} portafogli.")
     return "\n".join(righe)
 
