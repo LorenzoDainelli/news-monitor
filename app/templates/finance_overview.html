@@ -175,7 +175,7 @@
         {% if lettura_ai %}<span class="pill gray" style="text-transform:none;">{{ t('dash.conf') }}: {{ t('conf.' ~ lettura_ai.conf) }}</span>{% endif %}
       </div>
       {% if lettura_ai %}
-      <p style="margin:10px 0 0;color:var(--ink);font-size:14px;line-height:var(--lh-relaxed);white-space:pre-line;">{{ lettura_ai.text }}</p>
+      <div class="ai-prosa" lang="it">{{ lettura_ai.text | ai_text }}</div>
       <p class="faint" style="font-size:12px;margin:8px 0 0;">{{ t('fin.ai_disc') }}</p>
       {% elif ai_on %}
       <p class="muted" style="margin:10px 0 0;font-size:14px;">{{ t('fin.ai_analysis_intro') }}</p>
