@@ -275,9 +275,26 @@ document.addEventListener('click', function (e) {
   }
 });
 
-/* Prosa AI a scorrimento: la sfumatura in basso compare solo se c'è davvero
-   altro testo sotto, e sparisce quando sei arrivato in fondo. */
+/* Prosa AI: deve stare TUTTA nel riquadro, sopra il pulsante Rigenera.
+   Se sfora di poco, si stringe il carattere (fino a 12.5px) finché entra; solo
+   se proprio non basta resta lo scorrimento, con la sfumatura in basso che
+   compare quando c'è davvero altro testo e sparisce arrivati in fondo. */
 (function () {
+  var MIN_PX = 12.5;
+
+  function adatta(el) {
+    var base = parseFloat(el.dataset.fsBase || '');
+    if (!base) {
+      base = parseFloat(getComputedStyle(el).fontSize) || 15;
+      el.dataset.fsBase = String(base);
+    }
+    el.style.fontSize = base + 'px';
+    var px = base;
+    while (el.scrollHeight > el.clientHeight && px > MIN_PX) {
+      px = Math.max(MIN_PX, px - 0.5);
+      el.style.fontSize = px + 'px';
+    }
+  }
   function aggiorna(el) {
     var altro = el.scrollHeight - el.clientHeight - el.scrollTop > 4;
     el.classList.toggle('has-more', altro);
@@ -286,10 +303,12 @@ document.addEventListener('click', function (e) {
     var box = document.querySelectorAll('.ai-scroll');
     for (var i = 0; i < box.length; i++) {
       (function (el) {
+        adatta(el);
         aggiorna(el);
         el.addEventListener('scroll', function () { aggiorna(el); });
         if (window.ResizeObserver) {
-          new ResizeObserver(function () { aggiorna(el); }).observe(el);
+          // cambia lo spazio disponibile -> ricalcolo il carattere che ci sta
+          new ResizeObserver(function () { adatta(el); aggiorna(el); }).observe(el);
         }
       })(box[i]);
     }
@@ -301,6 +320,6 @@ document.addEventListener('click', function (e) {
   }
   window.addEventListener('resize', function () {
     var box = document.querySelectorAll('.ai-scroll');
-    for (var i = 0; i < box.length; i++) { aggiorna(box[i]); }
+    for (var i = 0; i < box.length; i++) { adatta(box[i]); aggiorna(box[i]); }
   });
 })();
