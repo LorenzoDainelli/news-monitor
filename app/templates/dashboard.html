@@ -136,15 +136,16 @@
       </div>
 
       {# ---- il punto della settimana (AI) — sempre presente, come nel design ---- #}
-      <div style="position:relative;overflow:hidden;background:var(--ai-bg);border:1px solid var(--ai-bd);border-left:3px solid var(--ai);border-radius:var(--r-lg);padding:16px;flex:1 1 auto;display:flex;flex-direction:column;box-shadow:0 12px 40px -14px color-mix(in oklab, var(--ai) 60%, transparent), var(--sheen-top);">
+      <div style="position:relative;overflow:hidden;background:var(--ai-bg);border:1px solid var(--ai-bd);border-left:3px solid var(--ai);border-radius:var(--r-lg);padding:16px;flex:1 1 0;min-height:0;display:flex;flex-direction:column;box-shadow:0 12px 40px -14px color-mix(in oklab, var(--ai) 60%, transparent), var(--sheen-top);">
         <div style="position:absolute;inset:0 0 auto 0;height:2px;background-image:linear-gradient(90deg, transparent, var(--ai), var(--accent), transparent);background-size:200% 100%;animation:mm-sheen 4s var(--ease-in-out) infinite;"></div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
           <span class="ai-label">{{ icon('sparkles', 13) }} {{ t('dash.ai_punto') }}</span>
           {% if d.ai %}<span class="pill gray" style="text-transform:none;">{{ t('dash.conf') }}: {{ t('conf.' ~ d.ai.conf) }}</span>{% endif %}
         </div>
         {% if d.ai %}
-        {# paragrafi giustificati, cifre in evidenza: si legge tutto senza perdersi #}
-        <div class="ai-prosa" lang="it" style="flex:1 1 auto;font-size:15px;">{{ d.ai.text | ai_text }}</div>
+        {# il testo prende lo spazio che resta: il box non allunga la colonna.
+           Se e' piu' lungo scorre qui dentro, con una sfumatura che lo segnala. #}
+        <div class="ai-prosa ai-scroll" lang="it" style="flex:1 1 0;min-height:0;font-size:15px;">{{ d.ai.text | ai_text }}</div>
         {% elif not d.ai_on %}
         <p class="muted" style="margin:10px 0 0;font-size:14px;line-height:var(--lh-relaxed);">{{ t('fin.ai_box_off') }} <a href="/impostazioni">{{ t('fin.ai_box_off_link') }}</a></p>
         {% endif %}

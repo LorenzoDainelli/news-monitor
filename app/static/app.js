@@ -274,3 +274,33 @@ document.addEventListener('click', function (e) {
     row.style.display = 'none';
   }
 });
+
+/* Prosa AI a scorrimento: la sfumatura in basso compare solo se c'è davvero
+   altro testo sotto, e sparisce quando sei arrivato in fondo. */
+(function () {
+  function aggiorna(el) {
+    var altro = el.scrollHeight - el.clientHeight - el.scrollTop > 4;
+    el.classList.toggle('has-more', altro);
+  }
+  function collega() {
+    var box = document.querySelectorAll('.ai-scroll');
+    for (var i = 0; i < box.length; i++) {
+      (function (el) {
+        aggiorna(el);
+        el.addEventListener('scroll', function () { aggiorna(el); });
+        if (window.ResizeObserver) {
+          new ResizeObserver(function () { aggiorna(el); }).observe(el);
+        }
+      })(box[i]);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', collega);
+  } else {
+    collega();
+  }
+  window.addEventListener('resize', function () {
+    var box = document.querySelectorAll('.ai-scroll');
+    for (var i = 0; i < box.length; i++) { aggiorna(box[i]); }
+  });
+})();
