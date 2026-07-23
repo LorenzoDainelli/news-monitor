@@ -4618,6 +4618,261 @@
       "inviata": false,
       "titolo": "Meta lancia la ricerca per l'intelligenza artificiale superintelligente accessibile a tutti; Zuckerberg guida il progetto",
       "url": "https://finnhub.io/api/news?id=e2ae869d1fed55a8e929b69cd6fd83b5d3e0c87aec80ef07f4cf30357004ebcaad5bf46975dd9154"
+    },
+    {
+      "id": "intc-foundry-customer-2026-07-23",
+      "ticker": "INTC",
+      "data": "2026-07-23",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 82,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Intel ottiene il primo cliente nominato per la fonderia sotto Lip-Bu Tan: titolo su dell'8%",
+      "url": "https://finnhub.io/api/news?id=75f24f2f841073442ef88779aea8696cc095bd5151168d8a9dd2a14f54980cfb"
+    },
+    {
+      "id": "goog-q2-earnings-2026-07-23",
+      "ticker": "GOOG",
+      "data": "2026-07-23",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Alphabet batte le stime Q2 e alza il capex AI 2026, ma il mercato penalizza la spesa crescente",
+      "url": "https://finnhub.io/api/news?id=3267226100aa23228c480a529cf298e0b879b8f0fb289fedd2daa6d627786b2f"
+    },
+    {
+      "id": "jpm-q2-record-2026-07-23",
+      "ticker": "JPM",
+      "data": "2026-07-23",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 72,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "JPMorgan registra il profitto trimestrale record di una banca USA: 21,2 miliardi di dollari, +41%",
+      "url": "https://finnhub.io/api/news?id=59e3f60e24a846ca89b7aa393f73d6d2bfc0923c54548b80fb513250b0dbdd60"
+    },
+    {
+      "id": "ibm-q2-miss-guidance-2026-07-23",
+      "ticker": "IBM",
+      "data": "2026-07-23",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 67,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "IBM conferma il trimestre debole: ricavi mancano le stime e la guidance 2026 viene tagliata",
+      "url": "https://finnhub.io/api/news?id=9a72d888b2de8016aeb25f2e1d6d03bb05995a7d27f6f2033b15ba697aac0241"
+    },
+    {
+      "id": "amzn-senate-china-investigation-2026-07-23",
+      "ticker": "AMZN",
+      "data": "2026-07-23",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Il Senato USA apre un'indagine su Amazon per presunta influenza cinese: titolo giù quasi 2%",
+      "url": "https://finnhub.io/api/news?id=97561e0d4e5e6fd048f6cf61d0fe81493aa67655a90b52e5e43a57cb2e82b51f"
+    },
+    {
+      "id": "sndk-wdc-memory-rally-goog-capex-2026-07-23",
+      "ticker": "SNDK",
+      "data": "2026-07-23",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Il maxi-capex AI di Alphabet spinge i titoli della memoria: SanDisk e Western Digital in rialzo",
+      "url": "https://finnhub.io/api/news?id=a98e9459a6f5b449591d3c834b7c72aff657f0babc99cc984f65d26a1a4fe40c"
+    },
+    {
+      "id": "jnj-ottava-fda-2026-07-23",
+      "ticker": "JNJ",
+      "data": "2026-07-23",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 62,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "J&J ottiene l'approvazione FDA per il robot chirurgico OTTAVA: entra nel mercato della chirurgia robotica",
+      "url": "https://finnhub.io/api/news?id=a13c31f2ca7a17cbdb44673ee3c85c3060b31c53559d522b6d7a2d88928cab6b"
+    },
+    {
+      "id": "nato-us-defense-bill-1t-2026-07-23",
+      "ticker": "NATO",
+      "data": "2026-07-23",
+      "tipo_evento": "macro tematica",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 60,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "La Camera USA approva un disegno di legge sulla difesa da 1.000 miliardi di dollari",
+      "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxPRXN5SFByNFBWb1hOU2l0QzNvTkU0QzFtZlEzRk1VRE43QzZmNlV1V2FiVk9qQXZ0MzlseE5qMUNVSGFVVk80eVFyWHVYcjVPWEZyanlvZWE0NU5FdmxoSzBraFdIcVNmM24wYkJXTmdITHZ6dE5GdFBMR2h3ZEhGLTlWbldBLWZKZ19xOVpLM3YtaGl1RnhObE5oTnJtQ3NhYTdMTGtjMV9kbWpmWU1LblZtbjRadkJVTkc2QnNHeXpURGY0azZ5eVcyaw?oc=5"
+    },
+    {
+      "id": "intc-nvda-china-cpu-deals-2026-07-23",
+      "ticker": "INTC",
+      "data": "2026-07-23",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Intel e AMD firmano accordi pluriennali con clienti cinesi per CPU server mentre i prezzi salgono",
+      "url": "https://finnhub.io/api/news?id=58b9383d1e65fac5deee6239b06fae4c52a874d839d758a5a9069f0a6c3fee6d"
+    },
+    {
+      "id": "spcx-tesla-spacex-merger-2026-07-23",
+      "ticker": "SPCX",
+      "data": "2026-07-23",
+      "tipo_evento": "M&A",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 57,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Musk lascia aperta l'ipotesi di una fusione Tesla-SpaceX, citando la crescente sovrapposizione tra i due business",
+      "url": "https://finnhub.io/api/news?id=5de6d142a7935fa5f807cd02906130f81d13f6375fb14439449dccdc72c7c845"
+    },
+    {
+      "id": "aapl-klarna-leasing-2026-07-23",
+      "ticker": "AAPL",
+      "data": "2026-07-23",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "Apple lancerà il 28 luglio un programma di leasing iPhone con Klarna: possibile impatto sul modello di ricavi hardware",
+      "url": "https://finnhub.io/api/news?id=063c5574f26a2ac713eeec851e1506cabc58c1230bf19dc15a1af8c01f9525c7"
+    },
+    {
+      "id": "avgo-35b-ai-chip-deal-2026-07-23",
+      "ticker": "AVGO",
+      "data": "2026-07-23",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "Le banche di Wall Street iniziano a scambiare un pacchetto da 35 miliardi per un mega-contratto di chip AI",
+      "url": "https://finnhub.io/api/news?id=7022a5f5b164d3f482280844073b7dfeabf8401ddfa560d4c2b5882fffc0f6b9"
+    },
+    {
+      "id": "sndk-analyst-target-raise-2026-07-23",
+      "ticker": "SNDK",
+      "data": "2026-07-23",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 53,
+      "descrittivo": true,
+      "inviata": false,
+      "titolo": "Un analista alza di 370 dollari il target price su SanDisk: titolo in evidenza mercoledì",
+      "url": "https://finnhub.io/api/news?id=2433a480c150c1ea2039636ca88317001a2b42e8530fc115b4cb56ea6d27de7e"
+    },
+    {
+      "id": "amgn-enbrel-colorado-2026-07-23",
+      "ticker": "AMGN",
+      "data": "2026-07-23",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 53,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "Un giudice federale blocca il tetto di prezzo del 70% sull'Enbrel in Colorado: vittoria per Amgen",
+      "url": "https://finnhub.io/api/news?id=0b0e6dac5c1617eb42aa813615a3459f9196acbb7f8cb1677e299847b7c12338"
+    },
+    {
+      "id": "aapl-alibaba-china-ai-2026-07-23",
+      "ticker": "AAPL",
+      "data": "2026-07-23",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 52,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "Alibaba conferma che il suo modello Qwen alimenterà Apple Intelligence in Cina",
+      "url": "https://finnhub.io/api/news?id=c5352e9cbedbc3050cc1d9117ef1436e2161cf9163502022bd3d3b6e1505561f"
     }
   ]
 }
