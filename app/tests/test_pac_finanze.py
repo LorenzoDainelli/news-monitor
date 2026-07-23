@@ -39,7 +39,7 @@ def test_db(tmp_path, monkeypatch):
         monkeypatch.setattr(mod, "SessionLocal", TestSession)
     monkeypatch.setattr(versamenti.market, "quotes_map", lambda: {})
     monkeypatch.setattr(versamenti, "_prezzo_eur_alla_data",
-                        lambda p, data, qmap, oggi: (10.0, "test"))
+                        lambda p, data, qmap, oggi, ora="": (10.0, "test"))
 
     with TestSession() as db:
         db.add_all([

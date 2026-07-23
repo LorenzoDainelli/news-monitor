@@ -19,6 +19,9 @@ from portfolio.models import Position, Versamento, VersamentoRiga
 import portfolio.service as pf_service
 import portfolio.versamenti as versamenti
 
+# la funzione VERA, presa prima che la fixture la sostituisca con lo stub
+_PREZZO_REALE = versamenti._prezzo_eur_alla_data
+
 
 @pytest.fixture(autouse=True)
 def test_db(tmp_path, monkeypatch):
@@ -34,7 +37,7 @@ def test_db(tmp_path, monkeypatch):
     # niente rete: prezzo fisso 10€ per tutti, e nessuna quotazione in cache
     monkeypatch.setattr(versamenti.market, "quotes_map", lambda: {})
     monkeypatch.setattr(versamenti, "_prezzo_eur_alla_data",
-                        lambda p, data, qmap, oggi: (10.0, "test"))
+                        lambda p, data, qmap, oggi, ora="": (10.0, "test"))
     yield TestSession
 
 
@@ -116,3 +119,42 @@ def test_elimina_ripristina(test_db):
     with Session() as db:
         assert db.execute(select(Versamento)).scalars().first() is None
         assert db.execute(select(VersamentoRiga)).scalars().first() is None
+
+
+# ------------------------- orario del versamento -------------------------
+def test_parse_ora():
+    """L'ora è facoltativa: se manca o è scritta male, si torna al giorno."""
+    from datetime import time
+    assert versamenti.parse_ora("09:30") == time(9, 30)
+    assert versamenti.parse_ora("  17:05  ") == time(17, 5)
+    assert versamenti.parse_ora("") is None
+    assert versamenti.parse_ora(None) is None
+    assert versamenti.parse_ora("boh") is None
+
+
+def test_ora_salvata_sul_versamento(test_db):
+    Session = test_db
+    _seed(Session)
+    vid = versamenti.salva(100.0, date.today(), "TR", esclusi=set(), ora="09:30")
+    with Session() as db:
+        assert db.get(Versamento, vid).ora == "09:30"
+    assert versamenti.dettaglio(vid)["ora"] == "09:30"
+    assert versamenti.lista()[0]["ora"] == "09:30"
+
+
+def test_prezzo_usa_la_candela_dell_ora(monkeypatch):
+    """Con l'ora indicata si prende l'ultima candela oraria FINO a quel momento,
+    non la successiva."""
+    from datetime import datetime as dt, timedelta
+    import portfolio.versamenti as v
+
+    ieri = date.today() - timedelta(days=1)
+    candele = [(dt.combine(ieri, dt.min.time().replace(hour=h)).timestamp(), 10.0 + h)
+               for h in (9, 10, 11, 12)]
+    monkeypatch.setattr(v.market, "history_series", lambda sym, r, i: candele)
+    monkeypatch.setattr(v.market, "_yahoo_symbol", lambda tk: tk)
+    monkeypatch.setattr(v.market, "_fx_to_eur_rate", lambda cur: 1.0)
+
+    p = Position(nome="Alpha", ticker="A", pct_target=100.0)
+    prezzo, fonte = _PREZZO_REALE(p, ieri, {}, date.today(), "10:30")
+    assert (prezzo, fonte) == (20.0, "orario")     # candela delle 10, non delle 11

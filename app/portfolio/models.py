@@ -67,6 +67,7 @@ class Versamento(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     data: Mapped[date] = mapped_column(Date)
+    ora: Mapped[str] = mapped_column(String(5), default="")      # "HH:MM" locale, facoltativa
     importo: Mapped[float] = mapped_column(Float, default=0.0)   # totale investito (€)
     conto: Mapped[str] = mapped_column(String(80), default="")   # conto di provenienza (informativo)
     note: Mapped[str] = mapped_column(Text, default="")
