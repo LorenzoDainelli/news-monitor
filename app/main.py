@@ -200,6 +200,30 @@ def home(request: Request):
 def dashboard_ai():
     """Genera 'il punto della settimana' (dati aggregati e anonimi) e lo salva."""
     contesto = _contesto_finanze()
+    # più materiale = lettura più ricca; ogni pezzo è opzionale e non blocca
+    try:
+        sal = fin_service.saldi()
+        pac = fin_service.valore_pac_live()
+        contesto += (f"\nLiquidità disponibile (esclusi gli investimenti): "
+                     f"{sal['liquido']:.0f}€.")
+        if pac:
+            contesto += (f"\nPAC: versati {pac['versato']:.2f}€, valore attuale "
+                         f"{pac['valore']:.2f}€ (rivalutazione {pac['rivalutazione']:+.2f}€).")
+    except Exception:
+        pass
+    try:
+        d = _dashboard_ctx()
+        if d["perf12m"] is not None:
+            contesto += f"\nAndamento medio degli investimenti a 12 mesi: {d['perf12m']:+.1f}%."
+        if d["movers"]:
+            mv = ", ".join(f"{m['tk']} {m['pl']:+.0f}%" for m in d["movers"])
+            contesto += f"\nSi sono mossi di più (12 mesi): {mv}."
+        if d["dividendi"]:
+            contesto += (f"\nDividendi attesi (stima lorda dai rendimenti dichiarati): "
+                         f"{d['dividendi']['annuo']:.2f}€ l'anno, "
+                         f"{d['dividendi']['mese']:.2f}€ al mese.")
+    except Exception:
+        pass
     try:
         lt = analytics.look_through()
         settori = ", ".join(f"{s['key']} {s['pct']}%" for s in lt["settori"][:6])

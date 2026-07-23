@@ -381,16 +381,26 @@ def _estrai_confidenza(txt: str) -> tuple[str, str]:
 
 
 def punto_settimana(contesto: str) -> dict:
-    """'Il punto della settimana' per la dashboard: 2-4 frasi descrittive su dati
-    aggregati e anonimi. Ritorna {ok, text, conf} oppure {ok: False, error}."""
+    """'Il punto della settimana' per la dashboard: una lettura descrittiva, in
+    tre brevi paragrafi, su dati aggregati e anonimi.
+    Ritorna {ok, text, conf} oppure {ok: False, error}."""
     if not is_configured():
         return {"ok": False, "error": "no_key"}
     prompt = (
         "Questi sono dati AGGREGATI e anonimi (nessun dato sensibile) della situazione "
         "finanziaria dell'utente. Scrivi 'il punto della settimana' in italiano semplice, "
-        "2-4 frasi DESCRITTIVE: cosa salta all'occhio su liquidità, spese e composizione "
-        "del portafoglio. Vietato ogni consiglio operativo (comprare/vendere/spostare "
-        "soldi): descrivi soltanto i fatti. Chiudi con una riga 'Confidenza: bassa|media|alta'.\n\n"
+        "da leggere al volo. Struttura in TRE paragrafi brevi separati da una riga vuota, "
+        "8-12 frasi in tutto:\n"
+        "1) SOLDI DEL MESE: entrate, uscite, saldo, dove sono finite le spese e come si "
+        "confronta con i mesi precedenti;\n"
+        "2) PATRIMONIO: com'è distribuito fra liquidità e investimenti, quanto è stato "
+        "versato nel PAC e come si sta muovendo il valore;\n"
+        "3) PORTAFOGLIO: composizione per settori, cosa si è mosso di più, dividendi attesi.\n"
+        "Regole: solo FATTI descrittivi, commentati in modo utile a capire. "
+        "Vietato ogni consiglio operativo (comprare/vendere/spostare soldi) e ogni "
+        "previsione di prezzo. Se un dato manca, dillo invece di inventarlo. "
+        "NON iniziare con preamboli tipo 'Ecco il punto della settimana': entra subito "
+        "nel merito. Chiudi con una riga 'Confidenza: bassa|media|alta'.\n\n"
         + privacy.scrub_text(contesto)
     )
     try:
