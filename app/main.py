@@ -98,7 +98,9 @@ def _dashboard_ctx() -> dict:
     now = datetime.now()
     riep = fin_service.riepilogo_mese(now.year, now.month)
     inv_tot = vista["totale"]
-    liq = sal["totale"]
+    # solo la liquidità: il conto PAC porta già il valore del Portafoglio (inv_tot),
+    # sommarlo qui lo conterebbe due volte
+    liq = sal["liquido"]
     snapshot = market.get_perf_snapshot()
 
     # perf ~12 mesi degli investimenti: media pesata sui titoli con storia nota
