@@ -300,7 +300,10 @@ def saldi():
                 r["derivato"] = True
     righe.sort(key=lambda r: (r["w"].tipo == "investimento", -r["saldo"]))
     totale = round(sum(r["saldo"] for r in righe), 2)
-    return {"righe": righe, "totale": totale}
+    # 'liquido' = i soldi davvero disponibili, SENZA i conti a saldo derivato
+    # (il PAC è già il valore del Portafoglio: sommarlo altrove lo conterebbe due volte)
+    liquido = round(sum(r["saldo"] for r in righe if not r.get("derivato")), 2)
+    return {"righe": righe, "totale": totale, "liquido": liquido}
 
 
 # ------------------------------ categorie ------------------------------

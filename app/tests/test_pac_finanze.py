@@ -124,3 +124,22 @@ def test_senza_prezzi_il_saldo_resta_quello_dei_movimenti(test_db, monkeypatch):
     pac = next(r for r in fin_service.saldi()["righe"]
                if r["w"].nome == fin_service.NOME_WALLET_PAC)
     assert pac["saldo"] == 100.0 and "derivato" not in pac   # niente valori inventati
+
+
+def test_niente_doppio_conteggio_nel_patrimonio(test_db, monkeypatch):
+    """Il conto PAC vale quanto il Portafoglio: nel patrimonio va contato UNA volta.
+    'liquido' è la liquidità vera (senza i conti derivati)."""
+    Session = test_db
+    versamenti.salva(100.0, date.today(), "Trade Republic", esclusi=set())
+
+    def finta_vista():
+        with Session() as db:
+            righe = [{"p": p} for p in db.execute(select(Position)).scalars().all()]
+        return {"righe": righe, "totale": 100.42, "ha_totale": True}
+
+    monkeypatch.setattr(pf_service, "vista_portafoglio", finta_vista)
+    res = fin_service.saldi()
+    assert res["liquido"] == -100.0             # i 100 usciti da TR
+    assert res["totale"] == 0.42                # liquidità + valore investito
+    # patrimonio come lo calcola la dashboard: liquido + portafoglio, non totale
+    assert round(res["liquido"] + 100.42, 2) == 0.42
