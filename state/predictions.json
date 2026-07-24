@@ -4958,6 +4958,159 @@
       "inviata": true,
       "titolo": "Samsung presenta l'ottava generazione di smartphone pieghevoli all'Unpacked di Londra",
       "url": "https://finnhub.io/api/news?id=3b6af3c4ecaead5c2897a44620b790fbed7673445711ff562331bbb1e5540e55"
+    },
+    {
+      "id": "orcl-military-contract-7b",
+      "ticker": "ORCL",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "alta",
+      "rilevanza": 78,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Oracle vince un contratto software e cloud USA da fino a 7 miliardi di dollari per difesa e intelligence",
+      "url": "https://finnhub.io/api/news?id=a16ce105bb60217fc196e2788f20cc3c78e68e01b9858627f993a583ddaa763b"
+    },
+    {
+      "id": "sndk-wdc-korea-memory-selloff",
+      "ticker": "SNDK",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "La vendita di titoli memoria in Corea trascina SanDisk -9% e il comparto USA: WDC coinvolta",
+      "url": "https://finnhub.io/api/news?id=d0a211f08c4f3ff98ea4c0d6b45acbe03cd53a39761d6dd34e2741b4935d4756"
+    },
+    {
+      "id": "intc-q2-earnings-beat",
+      "ticker": "INTC",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 70,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Intel batte le stime nel Q2: ricavi +25% a 16,1 miliardi di dollari, guidance Q3 superiore alle attese",
+      "url": "https://finnhub.io/api/news?id=a3a41b71ae9ff069681edf10c5d3c83b46f04c16d9e4dfb54275f795b0cfb980"
+    },
+    {
+      "id": "amgn-trump-200pct-tariff-generics",
+      "ticker": "AMGN",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 65,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Trump dà 2 anni ai produttori di farmaci generici per rientrare negli USA o affrontare dazi del 200%",
+      "url": "https://finnhub.io/api/news?id=09b0ee23712127e790437bd7239e1db83cc0d6bbe776a957098f94fa4e6d192b"
+    },
+    {
+      "id": "spcx-hsbc-hold-launch-delay",
+      "ticker": "SPCX",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "HSBC avvia la copertura di SpaceX a Hold: rischi esecutivi frenano l'upside; titolo giù anche per un ritardo di lancio",
+      "url": "https://finnhub.io/api/news?id=80ecc7b71e8b838ed70facae8ced49131a4c5518dcfd40ca176822ae30b8c71c"
+    },
+    {
+      "id": "msft-mistral-european-sovereign-ai",
+      "ticker": "MSFT",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 57,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Microsoft espande l'accordo con Mistral per un'infrastruttura AI sovrana in Europa con un deal multimiliardario",
+      "url": "https://finnhub.io/api/news?id=4dc668c73b94a773b6f97e0f1bf02b826d7a96d8816e3c277f9e1ada22385cc7"
+    },
+    {
+      "id": "goog-verizon-dark-fiber-tpu-service",
+      "ticker": "GOOG",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Verizon firma un accordo da 1 miliardo per la fibra dei data center Google; Barclays stima un impatto del 15%+ sugli utili 2028 dal TPU-as-a-Service",
+      "url": "https://finnhub.io/api/news?id=d8c738c8c0de3349af3a7eaab266b46ef0e44f0937df27f9e3375a9ad210f502"
+    },
+    {
+      "id": "asml-equipment-intel-capex-bump",
+      "ticker": "ASML",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 52,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "I titoli delle attrezzature per chip salgono in scia al capex di Intel: ASML tra i beneficiari",
+      "url": "https://finnhub.io/api/news?id=c96648bfcfc9ac47365025f7ce7a522add50427459950a7b09021f695e175f83"
+    },
+    {
+      "id": "ko-india-iran-war-coke-can",
+      "ticker": "KO",
+      "data": "2026-07-24T17:10:00+00:00",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 50,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "La guerra India-Iran spinge Coca-Cola a lanciare in India una lattina più grande a prezzo più alto",
+      "url": "https://finnhub.io/api/news?id=8137466bca568cb58c2ac4cbeb2f366c4cdf320f00c7d9849b8b788b4ba6e37a"
     }
   ]
 }

@@ -1,92 +1,6 @@
 {
   "items": [
     {
-      "id": "korea-selloff-chip-intc-nvda-sndk-20260623",
-      "ticker": "MACRO",
-      "url": "https://finnhub.io/api/news?id=f304f526512184de6f58a9a597e8854fa955fc4a19dc955c3f98aed38ee317fa",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "Crollo dei mercati coreani trascina giù i chip mondiali",
-      "tipo_evento": "macro"
-    },
-    {
-      "id": "korea-selloff-ssnlf-hynix-20260623",
-      "ticker": "SSNLF",
-      "url": "https://finnhub.io/api/news?id=0f214835037d1e4e5665cbf86048de0b2e5fb6212b9a87135c06244f5cbbfdb2",
-      "data_invio": "2026-06-23T19:10:00+00:00"
-    },
-    {
-      "id": "bofa-semiconductor-outlook-intc-2028-20260623",
-      "ticker": "INTC",
-      "url": "https://finnhub.io/api/news?id=066d1c84fedd5badec81931f952326a7e99038b03af7b3b305f7db035811256c",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "BofA alza le stime sull'AI fino al 2028 e indica Intel tra i principali beneficiari",
-      "tipo_evento": "upgrade/downgrade analisti"
-    },
-    {
-      "id": "jpm-upgrades-ibm-20260623",
-      "ticker": "IBM",
-      "url": "https://finnhub.io/api/news?id=c322bd2d722017ebbb7143293021c93b7d8d4e90ec497c4b49170ce74ce2120c",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "JPMorgan promuove IBM nonostante il crollo generalizzato dei tecnologici",
-      "tipo_evento": "upgrade/downgrade analisti"
-    },
-    {
-      "id": "palantir-zeta-ai-marketing-pact-20260623",
-      "ticker": "PLTR",
-      "url": "https://finnhub.io/api/news?id=acf8eaf109a0fad712f5b7ba2650fe19f5b3a07cb559388185cdada78d8a8beb",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "Palantir sigla un'alleanza con Zeta per costruire una piattaforma AI di marketing",
-      "tipo_evento": "prodotto"
-    },
-    {
-      "id": "netherlands-pax-silica-asml-dispute-20260623",
-      "ticker": "ASML",
-      "url": "https://finnhub.io/api/news?id=bb87f1c7bb35f3e57cd849142ec25430631c43045485290f78962d983ee7676d",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "I Paesi Bassi entrano nell'iniziativa AI alleata degli USA nonostante il contenzioso su ASML",
-      "tipo_evento": "legale/regolatorio"
-    },
-    {
-      "id": "goog-djia-2026-06-24",
-      "ticker": "GOOG",
-      "titolo": "Alphabet (Google) entra nel Dow Jones Industrial Average al posto di Verizon",
-      "tipo_evento": "news aziendale",
-      "url": "https://finnhub.io/api/news?id=6b33e3ccd0dea34fae22f3a766aaf9fdb39dfba51805e056bf3026a468f2c509",
-      "data_invio": "2026-06-24T07:10:00+00:00"
-    },
-    {
-      "id": "avgo-ai-xpv-platform-2026-06-24",
-      "ticker": "AVGO",
-      "titolo": "Broadcom co-fonda una piattaforma AI da 35 miliardi di dollari con Apollo, Blackstone e Anthropic",
-      "tipo_evento": "prodotto",
-      "url": "https://finnhub.io/api/news?id=2cb45fd35a3d8fa612f42064332b0e97b3db0e6287c6a0d090e68d36a8ab4996",
-      "data_invio": "2026-06-24T07:10:00+00:00"
-    },
-    {
-      "id": "aapl-bofa-siri-ai-2026-06-24",
-      "ticker": "AAPL",
-      "titolo": "Bank of America mantiene Buy su Apple e aggiorna le stime dopo il cambio di strategia AI di Siri",
-      "tipo_evento": "upgrade/downgrade analisti",
-      "url": "https://finnhub.io/api/news?id=1e9d482d7ab183572989200b44e125c6663b6cae0508e5234ff0f302ab7ec443",
-      "data_invio": "2026-06-24T07:10:00+00:00"
-    },
-    {
-      "id": "jnj-talvey-mieloma-2026-06-24",
-      "ticker": "JNJ",
-      "titolo": "Johnson & Johnson: dati clinici positivi per TALVEY nel mieloma multiplo refrattario",
-      "tipo_evento": "prodotto",
-      "url": "https://finnhub.io/api/news?id=be5be001081f5b439cb616202bf81fce3c26b718051042a1766cda96acdd9dc2",
-      "data_invio": "2026-06-24T07:10:00+00:00"
-    },
-    {
-      "id": "lly-trump-factory-2026-06-24",
-      "ticker": "LLY",
-      "titolo": "Trump promuove il nuovo stabilimento da 3,5 miliardi di dollari di Eli Lilly per i farmaci anti-obesità",
-      "tipo_evento": "news aziendale",
-      "url": "https://finnhub.io/api/news?id=5da5cfe25e2b9295e8c80ace3f944fcf610f8a53a43d262d7e2aa9f6d816699e",
-      "data_invio": "2026-06-24T07:10:00+00:00"
-    },
-    {
       "id": "micron-q3-sndk-rally-2026-06-25",
       "ticker": "SNDK",
       "titolo": "Micron pubblica risultati record e il settore memoria vola: SanDisk e Western Digital in forte rialzo",
@@ -2533,6 +2447,78 @@
       "tipo_evento": "prodotto",
       "url": "https://finnhub.io/api/news?id=3b6af3c4ecaead5c2897a44620b790fbed7673445711ff562331bbb1e5540e55",
       "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "orcl-military-contract-7b",
+      "ticker": "ORCL",
+      "titolo": "Oracle vince un contratto software e cloud USA da fino a 7 miliardi di dollari per difesa e intelligence",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=a16ce105bb60217fc196e2788f20cc3c78e68e01b9858627f993a583ddaa763b",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "sndk-wdc-korea-memory-selloff",
+      "ticker": "SNDK",
+      "titolo": "La vendita di titoli memoria in Corea trascina SanDisk -9% e il comparto USA: WDC coinvolta",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=d0a211f08c4f3ff98ea4c0d6b45acbe03cd53a39761d6dd34e2741b4935d4756",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "intc-q2-earnings-beat",
+      "ticker": "INTC",
+      "titolo": "Intel batte le stime nel Q2: ricavi +25% a 16,1 miliardi di dollari, guidance Q3 superiore alle attese",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=a3a41b71ae9ff069681edf10c5d3c83b46f04c16d9e4dfb54275f795b0cfb980",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "amgn-trump-200pct-tariff-generics",
+      "ticker": "AMGN",
+      "titolo": "Trump dà 2 anni ai produttori di farmaci generici per rientrare negli USA o affrontare dazi del 200%",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://finnhub.io/api/news?id=09b0ee23712127e790437bd7239e1db83cc0d6bbe776a957098f94fa4e6d192b",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "spcx-hsbc-hold-launch-delay",
+      "ticker": "SPCX",
+      "titolo": "HSBC avvia la copertura di SpaceX a Hold: rischi esecutivi frenano l'upside; titolo giù anche per un ritardo di lancio",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=80ecc7b71e8b838ed70facae8ced49131a4c5518dcfd40ca176822ae30b8c71c",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "msft-mistral-european-sovereign-ai",
+      "ticker": "MSFT",
+      "titolo": "Microsoft espande l'accordo con Mistral per un'infrastruttura AI sovrana in Europa con un deal multimiliardario",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=4dc668c73b94a773b6f97e0f1bf02b826d7a96d8816e3c277f9e1ada22385cc7",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "goog-verizon-dark-fiber-tpu-service",
+      "ticker": "GOOG",
+      "titolo": "Verizon firma un accordo da 1 miliardo per la fibra dei data center Google; Barclays stima un impatto del 15%+ sugli utili 2028 dal TPU-as-a-Service",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=d8c738c8c0de3349af3a7eaab266b46ef0e44f0937df27f9e3375a9ad210f502",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "asml-equipment-intel-capex-bump",
+      "ticker": "ASML",
+      "titolo": "I titoli delle attrezzature per chip salgono in scia al capex di Intel: ASML tra i beneficiari",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=c96648bfcfc9ac47365025f7ce7a522add50427459950a7b09021f695e175f83",
+      "data_invio": "2026-07-24T17:10:00+00:00"
+    },
+    {
+      "id": "ko-india-iran-war-coke-can",
+      "ticker": "KO",
+      "titolo": "La guerra India-Iran spinge Coca-Cola a lanciare in India una lattina più grande a prezzo più alto",
+      "tipo_evento": "macro",
+      "url": "https://finnhub.io/api/news?id=8137466bca568cb58c2ac4cbeb2f366c4cdf320f00c7d9849b8b788b4ba6e37a",
+      "data_invio": "2026-07-24T17:10:00+00:00"
     }
   ]
 }
