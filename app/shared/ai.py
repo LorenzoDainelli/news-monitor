@@ -434,12 +434,17 @@ def _estrai_confidenza(txt: str) -> tuple[str, str]:
 
 
 def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
-            timeout: int = 30) -> dict:
+            timeout: int = 30, memoria: bool = False) -> dict:
     """Motore unico di tutte le letture dell'agente.
 
     Monta il prompt con: il registro della superficie, i FATTI già calcolati
-    dall'app (insights.py) e il contesto di supporto. I fatti arrivano ordinati
-    per forza del segnale: il modello deve partire dal primo.
+    dall'app (insights.py), la MEMORIA (cosa ha già detto e cosa ha capito) e il
+    contesto di supporto. I fatti arrivano ordinati per forza del segnale: il
+    modello deve partire dal primo.
+
+    Con `memoria=True` la lettura viene anche registrata, e l'eventuale riga
+    "RICORDA: ..." estratta e salvata nel profilo (mai mostrata all'utente nel
+    testo: la trova nella pagina della memoria, dove può cancellarla).
 
     Ritorna {ok, text, conf} oppure {ok: False, error}."""
     if not is_configured():
@@ -447,6 +452,17 @@ def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
     sup = SUPERFICI.get(superficie) or SUPERFICI["dashboard"]
 
     parti = [sup["ruolo"], "", "FORMA: " + sup["forma"], ""]
+    if memoria:
+        from shared import ai_memory
+        blocco = ai_memory.come_testo(superficie)
+        if blocco:
+            parti += [blocco]
+        parti += [
+            "Se da questi dati emerge qualcosa di DUREVOLE sull'utente (una sua "
+            "abitudine, un ritmo, una stagionalità) che ti servirebbe sapere anche "
+            "fra un mese, aggiungi in fondo UNA sola riga che inizia con "
+            f"'{ai_memory.MARCATORE_RICORDO}'. Non è per l'utente: è il tuo "
+            "appunto. Nessuna riga se non hai imparato niente di nuovo.", ""]
     if fatti is not None:
         from shared import insights
         parti += [
@@ -470,6 +486,13 @@ def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
     except Exception as e:
         return {"ok": False, "error": type(e).__name__}
     testo, conf = _estrai_confidenza(txt)
+    if memoria:
+        from shared import ai_memory
+        testo, ricordo = ai_memory.estrai_ricordo(testo)
+        if ricordo:
+            ai_memory.aggiungi_ricordo(ricordo, motivo=f"dedotto in {superficie}")
+        ai_memory.salva_lettura(superficie, testo,
+                                chiavi=[f.chiave for f in (fatti or [])])
     return {"ok": True, "text": testo, "conf": conf}
 
 
@@ -478,7 +501,8 @@ def punto_settimana(contesto: str) -> dict:
     tre brevi paragrafi, su dati aggregati e anonimi.
     Ritorna {ok, text, conf} oppure {ok: False, error}."""
     from shared import insights
-    return _genera("dashboard", contesto=contesto, fatti=insights.raccogli(limite=8))
+    return _genera("dashboard", contesto=contesto,
+                   fatti=insights.raccogli(limite=8), memoria=True)
 
 
 def analizza_posizione(descr: str) -> dict:
@@ -501,7 +525,7 @@ def analizza_finanze(contesto: str) -> dict:
     e anonimo (nessun nome/carta/IBAN). Ritorna {ok, testo} oppure {ok:False, error}.
     """
     from shared import insights
-    res = _genera("finanze", contesto=contesto,
+    res = _genera("finanze", contesto=contesto, memoria=True,
                   fatti=insights.raccogli(aree=("finanze",), limite=6))
     if res.get("ok"):
         res["testo"] = res["text"]      # nome storico usato dai template

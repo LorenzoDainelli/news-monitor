@@ -11,6 +11,7 @@ from datetime import datetime
 from shared.templating import templates
 from shared import settings_store as store
 from shared import ai
+from shared import ai_memory
 from shared import drive_sync
 
 router = APIRouter()
@@ -57,7 +58,24 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: s
         "drive_last": drive_last,
         "drive_last_stale": drive_last_stale,
         "sync_needs_update": bool(store.get_setting("sync_needs_update", "")),
+        # memoria dell'agente: deve essere LEGGIBILE e cancellabile riga per riga,
+        # altrimenti diventa una scatola nera che nessuno può correggere
+        "ai_ricordi": ai_memory.ricordi(),
+        "ai_letture": ai_memory.ultime_letture(n=5),
     })
+
+
+@router.post("/impostazioni/memoria/{rid}/dimentica")
+def memoria_dimentica(rid: int):
+    ai_memory.dimentica(rid)
+    return RedirectResponse("/impostazioni#memoria", status_code=303)
+
+
+@router.post("/impostazioni/memoria/svuota")
+def memoria_svuota(tipo: str = Form("")):
+    ai_memory.dimentica_tutto(tipo if tipo in
+                              (ai_memory.TIPO_RICORDO, ai_memory.TIPO_LETTURA) else "")
+    return RedirectResponse("/impostazioni#memoria", status_code=303)
 
 
 @router.post("/impostazioni/ai")

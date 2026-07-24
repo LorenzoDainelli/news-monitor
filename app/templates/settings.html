@@ -287,6 +287,66 @@
   </script>
   {% endif %}
 
+  {# ---------- memoria dell'agente: leggibile e cancellabile riga per riga ----------
+     Non è una funzione in più: è la contromisura al rischio della memoria. Una
+     conclusione sbagliata, se non la puoi vedere, si fossilizza e l'agente ci
+     ragiona sopra per sempre. #}
+  <div class="card" id="memoria" style="margin-top:20px;">
+    <div class="card-h">Memoria dell'assistente</div>
+    <p class="muted" style="font-size:13px;margin:0 0 14px;">
+      Quello che l'assistente ha capito di te, e le sue ultime letture. Serve a
+      non farlo ripetere e a non fargli scambiare un'abitudine per un'anomalia.
+      <b>Puoi cancellare qualsiasi riga</b>: se una conclusione è sbagliata,
+      buttala e non la userà più.
+    </p>
+
+    <div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-bottom:8px;">Cosa ha capito di te</div>
+    {% if ai_ricordi %}
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ricordo</th><th style="width:110px;">Quando</th><th style="width:1%;"></th></tr></thead>
+          <tbody>
+            {% for r in ai_ricordi %}
+            <tr>
+              <td>{{ r.testo }}{% if r.motivo %}<br><span class="faint" style="font-size:12px;">{{ r.motivo }}</span>{% endif %}</td>
+              <td><span class="muted">{{ r.quando.strftime('%d/%m/%Y') }}</span></td>
+              <td class="num">
+                <form method="post" action="/impostazioni/memoria/{{ r.id }}/dimentica" style="margin:0;">
+                  <button type="submit" class="btn sm danger icon-only" aria-label="Dimentica" title="Dimentica">{{ icon('trash', 15) }}</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <form method="post" action="/impostazioni/memoria/svuota" class="js-confirm"
+            data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:10px 0 0;">
+        <input type="hidden" name="tipo" value="ricordo">
+        <button type="submit" class="btn sm ghost">Dimentica tutto</button>
+      </form>
+    {% else %}
+      <p class="faint" style="margin:0;font-size:13px;">Non ha ancora imparato niente su di te. Comincerà a farlo dopo qualche lettura.</p>
+    {% endif %}
+
+    <div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin:20px 0 8px;">Ultime letture</div>
+    {% if ai_letture %}
+      {% for m in ai_letture %}
+      <div style="border-left:2px solid var(--border);padding:0 0 0 12px;margin-bottom:12px;">
+        <div class="muted" style="font-size:12px;">{{ m.quando.strftime('%d/%m/%Y %H:%M') }} · {{ m.superficie or '—' }}</div>
+        <div style="font-size:13px;color:var(--ink);">{{ m.testo[:300] }}{% if m.testo|length > 300 %}…{% endif %}</div>
+      </div>
+      {% endfor %}
+      <form method="post" action="/impostazioni/memoria/svuota" class="js-confirm"
+            data-confirm="{{ t('btn.confirm') }}" data-cancel="{{ t('form.cancel') }}" style="margin:0;">
+        <input type="hidden" name="tipo" value="lettura">
+        <button type="submit" class="btn sm ghost">Cancella lo storico</button>
+      </form>
+    {% else %}
+      <p class="faint" style="margin:0;font-size:13px;">Nessuna lettura registrata.</p>
+    {% endif %}
+  </div>
+
   <div class="card navy" style="margin-top:20px;">
     <div class="card-h">{{ t('set.what_h') }}</div>
     <p style="margin:0;">{{ t('set.gemini_for') }}</p>
