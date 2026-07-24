@@ -101,9 +101,10 @@ def test_ordinati_per_forza(monkeypatch):
 def _cattura_prompt(monkeypatch):
     visto = {}
 
-    def finto_call(prompt, system=ai.SYSTEM_PROMPT, timeout=20, _model=None):
+    def finto_call(prompt, system=ai.SYSTEM_PROMPT, timeout=20, _model=None, **kw):
         visto["prompt"] = prompt
         visto["system"] = system
+        visto["strumenti"] = kw.get("strumenti")
         return "Testo di prova.\nConfidenza: media"
 
     monkeypatch.setattr(ai, "_call", finto_call)

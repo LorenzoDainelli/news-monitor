@@ -231,34 +231,90 @@ def _endpoint_headers(model: str) -> tuple:
     }
 
 
-def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20, _model: str = None) -> str:
+MAX_GIRI_STRUMENTI = 4     # tetto duro: l'agente non può girare all'infinito
+
+
+def _post(body: dict, timeout: int, _model: str = None) -> dict:
+    """Una chiamata sola al modello. I ripieghi (modello ritirato, limiti
+    esauriti) stanno qui, così valgono anche per il ciclo degli strumenti."""
     model = _model or get_model()
     url, headers = _endpoint_headers(model)
-    body = {
-        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-        "systemInstruction": {"parts": [{"text": system}]},
-        "generationConfig": {"temperature": 0.4},
-    }
     req = urllib.request.Request(
         url, data=json.dumps(body).encode("utf-8"), method="POST", headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
-            data = json.loads(r.read())
+            return json.loads(r.read())
     except urllib.error.HTTPError as e:
         # Modello non trovato/ritirato (es. un nome vecchio salvato, o un nome
         # dell'altro provider): ripiega UNA volta sul default DI QUESTO provider,
         # così l'agente non si rompe da solo.
         if e.code == 404 and _model is None and model != default_model():
-            return _call(prompt, system, timeout, _model=default_model())
+            return _post(body, timeout, _model=default_model())
         # Limiti del piano esauriti sul principale: UNA prova col ripiego lite.
         if e.code == 429 and _model is None and model != default_fallback():
-            return _call(prompt, system, timeout, _model=default_fallback())
+            return _post(body, timeout, _model=default_fallback())
         raise
+
+
+def _testo(data: dict) -> str:
     cands = data.get("candidates") or []
     if not cands:
         raise ValueError("risposta vuota")
     parts = cands[0].get("content", {}).get("parts", [])
     return "".join(p.get("text", "") for p in parts).strip()
+
+
+def _chiamate_strumenti(data: dict) -> list:
+    """Le richieste di strumenti nella risposta: [(nome, argomenti), ...]."""
+    cands = data.get("candidates") or []
+    if not cands:
+        return []
+    fuori = []
+    for p in cands[0].get("content", {}).get("parts", []):
+        fc = p.get("functionCall")
+        if fc and fc.get("name"):
+            fuori.append((fc["name"], fc.get("args") or {}))
+    return fuori
+
+
+def _call(prompt: str, system: str = SYSTEM_PROMPT, timeout: int = 20,
+          _model: str = None, strumenti=None) -> str:
+    """Una generazione di testo. Con `strumenti` il modello può chiedere dati
+    (sola lettura) prima di rispondere: si esegue, si rimanda indietro il
+    risultato e si continua, fino a MAX_GIRI_STRUMENTI.
+
+    Se il giro degli strumenti non produce testo, si ricade sulla risposta
+    semplice: meglio una lettura più povera che nessuna lettura."""
+    body = {
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "systemInstruction": {"parts": [{"text": system}]},
+        "generationConfig": {"temperature": 0.4},
+    }
+    if not strumenti:
+        return _testo(_post(body, timeout, _model))
+
+    from shared import ai_tools
+    body["tools"] = [{"functionDeclarations": strumenti}]
+    for _ in range(MAX_GIRI_STRUMENTI):
+        data = _post(body, timeout, _model)
+        richieste = _chiamate_strumenti(data)
+        if not richieste:
+            return _testo(data)
+        # rimetto in conversazione ciò che il modello ha chiesto...
+        body["contents"].append(data["candidates"][0]["content"])
+        risposte = []
+        for nome, args in richieste:
+            risposte.append({"functionResponse": {
+                "name": nome,
+                "response": {"risultato": ai_tools.esegui(nome, args)}}})
+        # ...e il risultato vero, preso dal database in sola lettura
+        body["contents"].append({"role": "user", "parts": risposte})
+
+    # tetto raggiunto: chiedo la risposta senza più strumenti
+    body.pop("tools", None)
+    body["contents"].append({"role": "user", "parts": [{
+        "text": "Basta strumenti: rispondi ora con quello che hai."}]})
+    return _testo(_post(body, timeout, _model))
 
 
 def test_connection() -> tuple[bool, str]:
@@ -479,10 +535,18 @@ def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
     if contesto:
         parti += ["DATI DI SUPPORTO (usali solo se servono a spiegare un fatto):",
                   privacy.scrub_text(contesto), ""]
+    from shared import ai_tools
+    attrezzi = ai_tools.dichiarazioni(superficie)
+    if attrezzi:
+        parti.append(
+            "Hai a disposizione degli strumenti di SOLA LETTURA sui dati "
+            "dell'utente. Usali quando ti manca qualcosa per spiegare un fatto — "
+            "per esempio per capire PERCHÉ una spesa è cresciuta o cosa è "
+            "successo a un titolo. Non usarli se i fatti bastano già.")
     parti.append("Chiudi con una riga 'Confidenza: bassa|media|alta'.")
 
     try:
-        txt = _call("\n".join(parti), timeout=timeout)
+        txt = _call("\n".join(parti), timeout=timeout, strumenti=attrezzi)
     except Exception as e:
         return {"ok": False, "error": type(e).__name__}
     testo, conf = _estrai_confidenza(txt)
