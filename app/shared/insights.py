@@ -1,0 +1,363 @@
+"""Estrattore di FATTI: trova in Python ciò che merita davvero di essere detto.
+
+Il principio dell'agente è questo: **l'AI non calcola, spiega**. Qui dentro non
+c'è nessuna chiamata all'AI — solo aritmetica sui dati veri. Ogni fatto nasce
+da un confronto con la STORIA DELL'UTENTE (la sua mediana, le sue abitudini),
+mai con medie generiche: "molto" non esiste, "il doppio del tuo solito" sì.
+
+Perché serve: se all'AI passiamo dei totali, può solo riformularli — ed è per
+questo che oggi suona come un'informativa. Se le passiamo "gli abbonamenti sono
+il 114% sopra la tua mediana di 6 mesi", ha qualcosa da spiegare.
+
+Due garanzie che discendono da qui:
+- i numeri non possono essere inventati: li calcola il codice, non il modello;
+- se NIENTE supera le soglie, la lista torna vuota e l'agente deve dirlo. È la
+  difesa contro il rischio peggiore: un'AI che, dovendo per forza dire qualcosa
+  di interessante, inventa un significato che non c'è.
+"""
+from dataclasses import dataclass, field
+from datetime import datetime
+from statistics import median
+
+# ---------------------------------------------------------------------------
+# Soglie: sotto queste, un fatto NON è un fatto (è rumore). Sono deliberatamente
+# alte: meglio poche osservazioni vere che tante plausibili.
+# ---------------------------------------------------------------------------
+MIN_EURO_CATEGORIA = 15.0     # sotto questa cifra uno scostamento non conta
+MIN_SCOSTAMENTO = 40.0        # % di distanza dalla mediana per essere notevole
+MIN_MESI_STORIA = 2           # mesi passati necessari per avere una "abitudine"
+SOGLIA_CONCENTRAZIONE = 30.0  # % di un settore sul portafoglio
+SOGLIA_DOMINANZA_CAT = 40.0   # % di una categoria sulle uscite del mese
+MULT_MOVIMENTO_ANOMALO = 3.0  # quante volte la spesa tipica per essere "grosso"
+GIORNI_PAC_RUMORE = 45        # sotto, il rendimento del PAC è rumore, non trend
+
+
+@dataclass
+class Fatto:
+    """Una cosa notevole, già verificata e già quantificata.
+
+    `chiave` è stabile nel tempo (es. "cat:abbonamenti:sopra"): serve alla
+    memoria per sapere se questa osservazione è già stata fatta e non ripeterla.
+    `forza` (0-100) dice quanto merita di aprire il discorso.
+    """
+    chiave: str
+    testo: str
+    forza: float
+    area: str = "finanze"
+    dati: dict = field(default_factory=dict)
+
+
+def _eur(v) -> str:
+    """Numero all'italiana dentro il testo di un fatto (1.234,56 €)."""
+    s = f"{abs(float(v)):,.2f}".replace(",", "§").replace(".", ",").replace("§", ".")
+    return ("-" if v < 0 else "") + s + " €"
+
+
+def _pct(v, dec: int = 0, segno: bool = False) -> str:
+    """Percentuale all'italiana (36,9%): la virgola decimale conta, il testo
+    finisce sotto gli occhi dell'utente."""
+    s = f"{float(v):+.{dec}f}" if segno else f"{float(v):.{dec}f}"
+    return s.replace(".", ",") + "%"
+
+
+def _mesi_indietro(now: datetime, k: int) -> tuple:
+    y, m = now.year, now.month - k
+    while m <= 0:
+        m += 12
+        y -= 1
+    return y, m
+
+
+def _forza(scostamento_pct: float, euro: float) -> float:
+    """Un fatto pesa per QUANTO è fuori scala e per QUANTI soldi muove: uno
+    scostamento enorme su 3 € non interessa, uno del 50% su 200 € sì."""
+    peso_pct = min(abs(scostamento_pct) / 2.0, 50.0)      # 100% fuori -> 50 punti
+    peso_eur = min(abs(euro) / 10.0, 50.0)                # 500 € -> 50 punti
+    return round(min(peso_pct + peso_eur, 100.0), 1)
+
+
+# ===========================================================================
+#  FINANZE: confronti col passato dell'utente
+# ===========================================================================
+def fatti_finanze(mesi_storia: int = 6, oggi: datetime = None) -> list:
+    """Cosa è successo ai soldi di questo mese che non somiglia ai mesi scorsi."""
+    from finance import service as fin
+
+    now = oggi or datetime.now()
+    fatti = []
+    try:
+        corrente = fin.riepilogo_mese(now.year, now.month)
+        passati = []
+        for k in range(1, mesi_storia + 1):
+            y, m = _mesi_indietro(now, k)
+            r = fin.riepilogo_mese(y, m)
+            # un mese senza alcun movimento non è "un mese a zero spese":
+            # è un mese in cui non c'erano ancora dati. Non fa storia.
+            if r["entrate"] or r["uscite"]:
+                passati.append(r)
+    except Exception:
+        return fatti
+
+    spese_corr = {s["nome"]: s["tot"] for s in corrente["spese_categoria"]}
+
+    # --- 1. categorie fuori dalla loro abitudine -------------------------
+    if len(passati) >= MIN_MESI_STORIA:
+        storiche = {}
+        for r in passati:
+            visti = {s["nome"]: s["tot"] for s in r["spese_categoria"]}
+            for nome in set(visti) | set(storiche):
+                storiche.setdefault(nome, []).append(visti.get(nome, 0.0))
+
+        for nome, tot in spese_corr.items():
+            serie = storiche.get(nome)
+            if tot < MIN_EURO_CATEGORIA:
+                continue
+            if not serie or all(v == 0 for v in serie):
+                fatti.append(Fatto(
+                    chiave=f"cat:{nome.lower()}:nuova",
+                    testo=f"«{nome}» compare per la prima volta: {_eur(tot)} "
+                          f"questo mese, mai negli ultimi {len(passati)} mesi.",
+                    forza=_forza(100.0, tot),
+                    dati={"categoria": nome, "importo": tot, "tipo": "nuova"}))
+                continue
+            med = median(serie)
+            if med <= 0:
+                continue
+            scost = (tot / med - 1) * 100
+            if abs(scost) >= MIN_SCOSTAMENTO:
+                verso = "sopra" if scost > 0 else "sotto"
+                fatti.append(Fatto(
+                    chiave=f"cat:{nome.lower()}:{verso}",
+                    testo=f"«{nome}»: {_eur(tot)} questo mese contro una mediana "
+                          f"di {_eur(med)}, cioè il {_pct(abs(scost))} {verso} "
+                          f"il tuo solito.",
+                    forza=_forza(scost, tot),
+                    dati={"categoria": nome, "importo": tot, "mediana": med,
+                          "scostamento_pct": round(scost, 1)}))
+
+        # --- 2. abitudini SPARITE (spesso più informative di quelle nuove) ---
+        for nome, serie in storiche.items():
+            presenze = sum(1 for v in serie if v > 0)
+            if nome in spese_corr or presenze < 3:
+                continue
+            tipica = median([v for v in serie if v > 0])
+            if tipica < MIN_EURO_CATEGORIA:
+                continue
+            fatti.append(Fatto(
+                chiave=f"cat:{nome.lower()}:sparita",
+                testo=f"«{nome}» non compare questo mese: c'era in {presenze} "
+                      f"degli ultimi {len(passati)} mesi, di solito {_eur(tipica)}.",
+                forza=_forza(100.0, tipica),
+                dati={"categoria": nome, "tipica": tipica, "presenze": presenze}))
+
+    # --- 3. il mese nel suo insieme --------------------------------------
+    if len(passati) >= MIN_MESI_STORIA:
+        med_usc = median([r["uscite"] for r in passati])
+        if med_usc > 0:
+            scost = (corrente["uscite"] / med_usc - 1) * 100
+            if abs(scost) >= MIN_SCOSTAMENTO:
+                fatti.append(Fatto(
+                    chiave="mese:uscite",
+                    testo=f"Uscite del mese {_eur(corrente['uscite'])}, "
+                          f"{_pct(abs(scost))} {'sopra' if scost > 0 else 'sotto'} "
+                          f"la mediana degli ultimi mesi ({_eur(med_usc)}).",
+                    forza=_forza(scost, corrente["uscite"]),
+                    dati={"uscite": corrente["uscite"], "mediana": med_usc}))
+
+        # proiezione a fine mese al ritmo tenuto finora
+        giorni_passati = now.day
+        if giorni_passati >= 7:
+            fine = 31 if now.month in (1, 3, 5, 7, 8, 10, 12) else 30
+            if now.month == 2:
+                fine = 29 if now.year % 4 == 0 else 28
+            proiezione = corrente["uscite"] / giorni_passati * fine
+            if med_usc > 0 and abs(proiezione / med_usc - 1) * 100 >= MIN_SCOSTAMENTO:
+                fatti.append(Fatto(
+                    chiave="mese:proiezione",
+                    testo=f"Al ritmo di questi {giorni_passati} giorni il mese "
+                          f"chiuderebbe intorno a {_eur(proiezione)} di uscite.",
+                    forza=_forza((proiezione / med_usc - 1) * 100, proiezione) * 0.7,
+                    dati={"proiezione": round(proiezione, 2)}))
+
+    # --- 4. una sola categoria si mangia il mese -------------------------
+    if corrente["uscite"] > 0 and corrente["spese_categoria"]:
+        prima = corrente["spese_categoria"][0]
+        quota = prima["tot"] / corrente["uscite"] * 100
+        if quota >= SOGLIA_DOMINANZA_CAT and prima["tot"] >= MIN_EURO_CATEGORIA:
+            fatti.append(Fatto(
+                chiave=f"cat:{prima['nome'].lower()}:dominante",
+                testo=f"«{prima['nome']}» da sola vale il {_pct(quota)} delle "
+                      f"uscite del mese ({_eur(prima['tot'])}).",
+                forza=_forza(quota, prima["tot"]),
+                dati={"categoria": prima["nome"], "quota_pct": round(quota, 1)}))
+
+    # --- 5. il movimento singolo fuori scala -----------------------------
+    try:
+        movimenti = fin.lista_movimenti(anno=now.year, mese=now.month)
+        uscite = [m for m in movimenti if m["t"].tipo == "uscita" and m["t"].importo]
+        if len(uscite) >= 5:
+            tipica = median([m["t"].importo for m in uscite])
+            grosso = max(uscite, key=lambda m: m["t"].importo)
+            if tipica > 0 and grosso["t"].importo >= tipica * MULT_MOVIMENTO_ANOMALO:
+                d = grosso["t"].data.strftime("%d/%m")
+                desc = (grosso["t"].descrizione or grosso["categoria"] or "senza descrizione").strip()
+                fatti.append(Fatto(
+                    chiave="mov:anomalo",
+                    testo=f"Spesa singola più grossa del mese: {_eur(grosso['t'].importo)} "
+                          f"il {d} ({desc}), contro una spesa tipica di {_eur(tipica)}.",
+                    forza=_forza(grosso["t"].importo / tipica * 100 - 100, grosso["t"].importo),
+                    dati={"importo": grosso["t"].importo, "tipica": tipica}))
+    except Exception:
+        pass
+
+    return fatti
+
+
+# ===========================================================================
+#  PORTAFOGLIO: composizione, contributi, copertura dei dati
+# ===========================================================================
+def fatti_portafoglio() -> list:
+    """Cosa dice il portafoglio che non si vede guardando il totale."""
+    from portfolio import service as pf, analytics, market
+
+    fatti = []
+    try:
+        vista = pf.vista_portafoglio()
+    except Exception:
+        return fatti
+
+    # --- copertura dei prezzi: onestà prima di tutto ---------------------
+    if vista["n_ticker"] and vista["n_prezzi"] < vista["n_ticker"]:
+        mancanti = vista["n_ticker"] - vista["n_prezzi"]
+        fatti.append(Fatto(
+            chiave="pf:copertura",
+            testo=f"Attenzione: mancano i prezzi di {mancanti} titoli su "
+                  f"{vista['n_ticker']}, quindi il totale è sottostimato.",
+            forza=40 + mancanti * 5, area="portafoglio",
+            dati={"mancanti": mancanti}))
+
+    # --- concentrazione settoriale ---------------------------------------
+    try:
+        lt = analytics.look_through(cached_only=True)
+        for s in lt["settori"][:3]:
+            if s["pct"] >= SOGLIA_CONCENTRAZIONE:
+                fatti.append(Fatto(
+                    chiave=f"settore:{s['key']}:concentrazione",
+                    testo=f"Il settore {s['key']} vale il {_pct(s['pct'], 1)} del "
+                          f"portafoglio: è la concentrazione più alta.",
+                    forza=min(30 + (s["pct"] - SOGLIA_CONCENTRAZIONE) * 2, 90),
+                    area="portafoglio", dati={"settore": s["key"], "pct": s["pct"]}))
+                break
+    except Exception:
+        pass
+
+    # --- chi muove davvero il portafoglio --------------------------------
+    # Non "chi è salito di più" (lo si vede già), ma chi PESA di più sul
+    # risultato: un +300% su una posizione minuscola non sposta niente.
+    try:
+        snapshot = market.get_perf_snapshot()
+        if snapshot and vista["ha_totale"]:
+            contributi = []
+            for r in vista["righe"]:
+                p, val = r["p"], r["valore"]
+                perf = snapshot.get((p.ticker or "").upper())
+                if not val or perf is None:
+                    continue
+                contributi.append((p, val, perf, val * perf / 100.0))
+            if contributi:
+                tot_abs = sum(abs(c[3]) for c in contributi)
+                p, val, perf, contrib = max(contributi, key=lambda c: abs(c[3]))
+                if tot_abs > 0:
+                    quota_contrib = abs(contrib) / tot_abs * 100
+                    quota_peso = val / vista["totale"] * 100
+                    if quota_contrib >= 35 and quota_contrib > quota_peso * 1.5:
+                        fatti.append(Fatto(
+                            chiave=f"pf:{(p.ticker or '').lower()}:motore",
+                            testo=f"{p.ticker} pesa il {_pct(quota_peso)} del "
+                                  f"portafoglio ma spiega da solo il "
+                                  f"{_pct(quota_contrib)} del movimento a 12 mesi "
+                                  f"({_pct(perf, segno=True)}).",
+                            forza=min(quota_contrib, 85), area="portafoglio",
+                            dati={"ticker": p.ticker, "peso_pct": round(quota_peso, 1),
+                                  "contributo_pct": round(quota_contrib, 1)}))
+    except Exception:
+        pass
+
+    return fatti
+
+
+# ===========================================================================
+#  PAC: versato contro valore, e la scala del tempo
+# ===========================================================================
+def fatti_pac(oggi: datetime = None) -> list:
+    """Il PAC visto con onestà: soprattutto quando è troppo presto per leggerlo."""
+    from portfolio import versamenti
+    from finance import service as fin
+
+    now = oggi or datetime.now()
+    fatti = []
+    try:
+        storico = versamenti.lista()
+        pac = fin.valore_pac_live()
+    except Exception:
+        return fatti
+    if not storico or not pac:
+        return fatti
+
+    prima = min(v["data"] for v in storico)
+    giorni = (now.date() - prima).days
+    versato, valore = pac["versato"], pac["valore"]
+    riv = pac["rivalutazione"]
+    pct = (valore / versato - 1) * 100 if versato else 0.0
+
+    if giorni <= GIORNI_PAC_RUMORE:
+        # il fatto NOTEVOLE qui è proprio che non c'è ancora niente da leggere
+        fatti.append(Fatto(
+            chiave="pac:troppo_presto",
+            testo=f"Il PAC è partito da {giorni} giorni: {_eur(versato)} versati, "
+                  f"valore {_eur(valore)} ({riv:+.2f} €, {_pct(pct, 1, segno=True)}). A questa "
+                  f"scala di tempo la variazione è rumore di mercato, non un "
+                  f"andamento.",
+            forza=55, area="pac",
+            dati={"giorni": giorni, "versato": versato, "valore": valore}))
+    else:
+        fatti.append(Fatto(
+            chiave="pac:andamento",
+            testo=f"PAC: {_eur(versato)} versati in {len(storico)} versamenti, "
+                  f"valore attuale {_eur(valore)} ({_pct(pct, 1, segno=True)}).",
+            forza=45, area="pac",
+            dati={"versato": versato, "valore": valore, "pct": round(pct, 2)}))
+
+    return fatti
+
+
+# ===========================================================================
+#  Raccolta
+# ===========================================================================
+AREE = ("finanze", "portafoglio", "pac")
+
+
+def raccogli(aree=AREE, limite: int = 8, oggi: datetime = None) -> list:
+    """Tutti i fatti delle aree richieste, dal più forte al più debole.
+
+    Lista VUOTA è un risultato legittimo e va rispettato: vuol dire che non è
+    successo niente degno di nota, e l'agente deve poterlo dire in una riga."""
+    fatti = []
+    if "finanze" in aree:
+        fatti += fatti_finanze(oggi=oggi)
+    if "portafoglio" in aree:
+        fatti += fatti_portafoglio()
+    if "pac" in aree:
+        fatti += fatti_pac(oggi=oggi)
+    fatti.sort(key=lambda f: f.forza, reverse=True)
+    return fatti[:limite]
+
+
+def come_testo(fatti: list) -> str:
+    """I fatti come lista numerata da mettere nel prompt, forza inclusa: così
+    il modello sa da quale partire senza doverlo indovinare."""
+    if not fatti:
+        return "NESSUN FATTO NOTEVOLE: niente ha superato le soglie."
+    return "\n".join(
+        f"{i}. [{f.area}, forza {f.forza:.0f}] {f.testo}"
+        for i, f in enumerate(fatti, 1))

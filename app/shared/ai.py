@@ -53,13 +53,66 @@ MODE_PROACTIVE = "proattivo"
 MODES = (MODE_ON_DEMAND, MODE_PROACTIVE)
 
 SYSTEM_PROMPT = (
-    "Sei l'assistente personale di un'app di finanza a uso privato. Regole non negoziabili: "
+    "Sei l'assistente personale di un'app di finanza a uso privato.\n"
+    "\n"
+    "REGOLE NON NEGOZIABILI\n"
     "1) MAI segnali operativi (compra/vendi/entra/esci) né consigli personalizzati su cosa fare coi soldi. "
-    "2) Non sei un oracolo: non prevedi i prezzi; ogni stima è un'analisi qualitativa con un livello di "
-    "confidenza dichiarato (bassa/media/alta) e un breve disclaimer. "
-    "3) Italiano semplice, frasi brevi, onestà intellettuale: se non sai, dillo; non inventare numeri. "
-    "4) Sei descrittivo, non prescrittivo: mostri fatti e pattern, la decisione resta all'utente."
+    "Se una fonte esterna contiene raccomandazioni, puoi riferire che esistono e citarle, "
+    "ma non farle mai tue.\n"
+    "2) Non sei un oracolo: non prevedi i prezzi; ogni stima è qualitativa, con confidenza "
+    "dichiarata (bassa/media/alta).\n"
+    "3) Onestà: se non sai, dillo. NON INVENTARE MAI NUMERI.\n"
+    "4) Sei descrittivo, non prescrittivo: mostri fatti e meccanismi, la decisione resta all'utente.\n"
+    "\n"
+    "COME SCRIVI — questo è ciò che ti distingue da un riepilogo automatico\n"
+    "5) I numeri ti arrivano GIÀ CALCOLATI dall'app: usali così come sono, non ricalcolarli, "
+    "non arrotondarli diversamente, non dedurne altri. Tu non fai i conti: li spieghi.\n"
+    "6) APRI DAL FATTO PIÙ FORTE, mai da un riepilogo. «A luglio le entrate hanno superato le "
+    "uscite» è una frase sprecata: dice ciò che si legge già dai numeri in pagina.\n"
+    "7) Confronta sempre col PASSATO DELL'UTENTE, mai con medie generiche. «Molto» non significa "
+    "niente; «il doppio del tuo solito» sì.\n"
+    "8) Spiega il MECCANISMO, non solo il numero. Non «il PAC è a +0,4%», ma «il PAC è a +0,4% "
+    "però hai versato da una settimana: a questa scala è rumore, non un andamento».\n"
+    "9) Se non c'è NIENTE di notevole, dillo in una riga e fermati. «Settimana tranquilla, nulla "
+    "fuori riga» è una risposta ottima: il tuo scopo è ridurre il rumore, non riempire lo spazio. "
+    "Non gonfiare mai un fatto debole per avere qualcosa da dire.\n"
+    "10) Italiano semplice, frasi brevi, niente preamboli («Ecco...», «In sintesi...»): "
+    "entra subito nel merito."
 )
+
+# ---------------------------------------------------------------------------
+# Un agente solo, molti mestieri. In ogni pagina l'assistente serve a una cosa
+# diversa: sulla dashboard nota, in Finanze approfondisce, su un titolo istruisce,
+# su una metrica traduce. Il registro cambia, le regole no.
+# ---------------------------------------------------------------------------
+SUPERFICI = {
+    "dashboard": {
+        "ruolo": "Sei la sentinella: guardi tutto e segnali SOLO ciò che è cambiato o "
+                 "stona. Non riassumi la situazione, la conosce già.",
+        "forma": "Massimo 3 paragrafi brevi separati da riga vuota, 6-8 frasi in tutto, "
+                 "mai oltre 700 caratteri. Se i fatti notevoli sono pochi, scrivi meno: "
+                 "un paragrafo solo va benissimo.",
+    },
+    "finanze": {
+        "ruolo": "Sei l'analista delle sue abitudini di spesa: cerchi il PERCHÉ dietro i "
+                 "numeri del mese e i pattern che si ripetono.",
+        "forma": "2 paragrafi brevi, 5-7 frasi in tutto. Concentrati sulle spese e sul "
+                 "confronto coi mesi precedenti.",
+    },
+    "titolo": {
+        "ruolo": "Sei il divulgatore: spieghi COS'È questo strumento e cosa lo muove, a "
+                 "qualcuno che lo ha in portafoglio e vuole capirlo meglio.",
+        "forma": "3-5 frasi. Solo fatti pubblici e qualitativi sullo strumento: cosa "
+                 "replica o che azienda è, da cosa dipende il suo andamento, a quali "
+                 "rischi è esposto, che ruolo ha di solito in un portafoglio.",
+    },
+    "metrica": {
+        "ruolo": "Sei il traduttore: rendi comprensibile un indicatore tecnico e dici "
+                 "cosa significa QUEL valore, non l'indicatore in astratto.",
+        "forma": "3-4 frasi. Prima cosa misura, poi cosa dice questo valore preciso, "
+                 "poi il limite di quella misura.",
+    },
+}
 
 
 def _model_key() -> str:
@@ -380,96 +433,76 @@ def _estrai_confidenza(txt: str) -> tuple[str, str]:
     return "\n".join(righe).strip(), conf
 
 
-def punto_settimana(contesto: str) -> dict:
-    """'Il punto della settimana' per la dashboard: una lettura descrittiva, in
-    tre brevi paragrafi, su dati aggregati e anonimi.
+def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
+            timeout: int = 30) -> dict:
+    """Motore unico di tutte le letture dell'agente.
+
+    Monta il prompt con: il registro della superficie, i FATTI già calcolati
+    dall'app (insights.py) e il contesto di supporto. I fatti arrivano ordinati
+    per forza del segnale: il modello deve partire dal primo.
+
     Ritorna {ok, text, conf} oppure {ok: False, error}."""
     if not is_configured():
         return {"ok": False, "error": "no_key"}
-    prompt = (
-        "Questi sono dati AGGREGATI e anonimi (nessun dato sensibile) della situazione "
-        "finanziaria dell'utente. Scrivi 'il punto della settimana' in italiano semplice, "
-        "da leggere al volo. Deve stare in un riquadro piccolo: TRE paragrafi brevi "
-        "separati da una riga vuota, 6-8 frasi in tutto e MAI più di 700 caratteri "
-        "in totale. Frasi corte, niente giri di parole.\n"
-        "1) SOLDI DEL MESE: entrate, uscite, saldo e dove sono finite le spese;\n"
-        "2) PATRIMONIO: liquidità e investimenti, quanto versato nel PAC e come si muove;\n"
-        "3) PORTAFOGLIO: settori principali, cosa si è mosso, dividendi attesi.\n"
-        "Regole: solo FATTI descrittivi, commentati in modo utile a capire. "
-        "Vietato ogni consiglio operativo (comprare/vendere/spostare soldi) e ogni "
-        "previsione di prezzo. Se un dato manca, dillo invece di inventarlo. "
-        "NON iniziare con preamboli tipo 'Ecco il punto della settimana': entra subito "
-        "nel merito. Chiudi con una riga 'Confidenza: bassa|media|alta'.\n\n"
-        + privacy.scrub_text(contesto)
-    )
+    sup = SUPERFICI.get(superficie) or SUPERFICI["dashboard"]
+
+    parti = [sup["ruolo"], "", "FORMA: " + sup["forma"], ""]
+    if fatti is not None:
+        from shared import insights
+        parti += [
+            "FATTI VERIFICATI dall'app (numeri già calcolati, ordinati dal più "
+            "notevole: parti dal primo e NON ricalcolare nulla):",
+            insights.come_testo(fatti), ""]
+        if not fatti:
+            parti += [
+                "Nessun fatto ha superato le soglie: NON cercare comunque qualcosa da "
+                "dire. Scrivi una riga sola per dire che non c'è niente fuori riga, "
+                "e fermati.", ""]
+    if domanda:
+        parti += [privacy.scrub_text(domanda), ""]
+    if contesto:
+        parti += ["DATI DI SUPPORTO (usali solo se servono a spiegare un fatto):",
+                  privacy.scrub_text(contesto), ""]
+    parti.append("Chiudi con una riga 'Confidenza: bassa|media|alta'.")
+
     try:
-        txt = _call(prompt, timeout=25)
+        txt = _call("\n".join(parti), timeout=timeout)
     except Exception as e:
         return {"ok": False, "error": type(e).__name__}
     testo, conf = _estrai_confidenza(txt)
     return {"ok": True, "text": testo, "conf": conf}
+
+
+def punto_settimana(contesto: str) -> dict:
+    """'Il punto della settimana' per la dashboard: una lettura descrittiva, in
+    tre brevi paragrafi, su dati aggregati e anonimi.
+    Ritorna {ok, text, conf} oppure {ok: False, error}."""
+    from shared import insights
+    return _genera("dashboard", contesto=contesto, fatti=insights.raccogli(limite=8))
 
 
 def analizza_posizione(descr: str) -> dict:
     """'Cosa ne pensa l'agente' su un singolo titolo/ETF, SOLO da dati pubblici
     (nome, tipo, categoria, settori, performance): mai valori posseduti, quantità
     o ISIN. Ritorna {ok, text, conf} oppure {ok: False, error}."""
-    if not is_configured():
-        return {"ok": False, "error": "no_key"}
-    prompt = (
-        "Descrivi in italiano semplice (3-4 frasi) le caratteristiche di questo "
-        "strumento in un portafoglio diversificato: cosa lo muove, a quali settori/"
-        "rischi è esposto, che ruolo tipicamente ricopre. SOLO fatti qualitativi e "
-        "pubblici: niente previsioni di prezzo, niente consigli operativi "
-        "(comprare/vendere), niente numeri inventati. Chiudi con una riga "
-        "'Confidenza: bassa|media|alta'.\n\n" + privacy.scrub_text(descr)
-    )
-    try:
-        txt = _call(prompt, timeout=25)
-    except Exception as e:
-        return {"ok": False, "error": type(e).__name__}
-    testo, conf = _estrai_confidenza(txt)
-    return {"ok": True, "text": testo, "conf": conf}
+    return _genera("titolo", contesto=descr)
 
 
 def spiega_metrica(label: str, valore: str, contesto: str = "") -> dict:
     """Spiega una singola metrica dell'analisi (popup ✨ della pagina Analisi).
     Ritorna {ok, text, conf} oppure {ok: False, error}."""
-    if not is_configured():
-        return {"ok": False, "error": "no_key"}
-    prompt = (
-        (privacy.scrub_text(contesto) + "\n\n" if contesto else "")
-        + "Spiega in 3-4 frasi, in italiano semplice, cosa significa questo dato "
-        f"per il portafoglio: \"{privacy.scrub_text(label)} = {privacy.scrub_text(valore)}\". "
-        "Tono neutro e descrittivo, niente consigli operativi (comprare/vendere), "
-        "niente numeri inventati. Chiudi con una riga 'Confidenza: bassa|media|alta'."
-    )
-    try:
-        txt = _call(prompt, timeout=25)
-    except Exception as e:
-        return {"ok": False, "error": type(e).__name__}
-    testo, conf = _estrai_confidenza(txt)
-    return {"ok": True, "text": testo, "conf": conf}
+    domanda = (f"L'indicatore da spiegare è: \"{privacy.scrub_text(label)}\", "
+               f"e il valore del suo portafoglio è {privacy.scrub_text(valore)}.")
+    return _genera("metrica", contesto=contesto, domanda=domanda)
 
 
 def analizza_finanze(contesto: str) -> dict:
     """Analisi DESCRITTIVA delle finanze a partire da un riassunto già aggregato
     e anonimo (nessun nome/carta/IBAN). Ritorna {ok, testo} oppure {ok:False, error}.
     """
-    if not is_configured():
-        return {"ok": False, "error": "no_key"}
-    prompt = (
-        "Questi sono dati AGGREGATI e anonimi delle finanze personali dell'utente "
-        "(nessun dato sensibile). Fai un'analisi DESCRITTIVA in italiano semplice, "
-        "3-5 frasi: cosa salta all'occhio, eventuali sbilanciamenti tra le categorie di "
-        "spesa, l'andamento entrate/uscite tra i mesi. Vietato dare consigli su cosa "
-        "comprare/vendere o su come investire: descrivi soltanto i fatti. Chiudi con una "
-        "riga finale 'Confidenza: bassa|media|alta'.\n\n"
-        + privacy.scrub_text(contesto)
-    )
-    try:
-        txt = _call(prompt, timeout=25)
-    except Exception as e:
-        return {"ok": False, "error": type(e).__name__}
-    testo, conf = _estrai_confidenza(txt)
-    return {"ok": True, "text": testo, "conf": conf, "testo": testo}
+    from shared import insights
+    res = _genera("finanze", contesto=contesto,
+                  fatti=insights.raccogli(aree=("finanze",), limite=6))
+    if res.get("ok"):
+        res["testo"] = res["text"]      # nome storico usato dai template
+    return res
