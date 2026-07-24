@@ -172,18 +172,22 @@ def come_testo(superficie: str = "") -> str:
         parti += [f"- {r.testo}" for r in rs]
         parti.append("")
 
-    ultime = ultime_letture(superficie, n=2)
+    # Il testo delle letture precedenti NON viene rimandato indietro. Sembrava
+    # utile ("così non si ripete") ed era esattamente il contrario: il modello lo
+    # trattava come uno stampo e riscriveva la stessa lettura, numeri vecchi
+    # compresi. Basta sapere QUANDO ha scritto e SU COSA: le chiavi dei fatti.
+    ultime = ultime_letture(superficie, n=3)
     if ultime:
-        parti.append("COSA HAI GIÀ SCRITTO (non ripeterti: se un fatto è lo "
-                     "stesso di prima e non è cambiato, lascialo perdere e passa "
-                     "ad altro; se invece è cambiato, dì COME è cambiato):")
-        for m in ultime:
-            parti.append(f"[{m.quando.strftime('%d/%m')}] {m.testo[:400]}")
+        quando = ", ".join(m.quando.strftime("%d/%m") for m in ultime)
+        parti.append(f"Hai già scritto qui il {quando}. Questa è una lettura "
+                     "NUOVA: non riprendere la struttura né le frasi delle "
+                     "precedenti, e non ripartire dagli stessi argomenti.")
         parti.append("")
 
     gia = chiavi_gia_dette(superficie)
     if gia:
-        parti.append("Osservazioni già fatte nelle ultime settimane (evitale se "
-                     "immutate): " + ", ".join(sorted(gia)))
+        parti.append("Argomenti già trattati di recente — NON tornarci sopra a "
+                     "meno che il fatto di oggi non sia cambiato di molto: "
+                     + ", ".join(sorted(gia)))
         parti.append("")
     return "\n".join(parti)

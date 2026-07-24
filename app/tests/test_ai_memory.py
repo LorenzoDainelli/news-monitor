@@ -118,14 +118,18 @@ def test_la_memoria_entra_nel_prompt(monkeypatch):
     monkeypatch.setattr(ai, "_call",
                         lambda p, **k: visto.setdefault("p", p) and "" or "ok\nConfidenza: alta")
     mem.aggiungi_ricordo("Il PAC parte il 16 di ogni mese.")
-    mem.salva_lettura("dashboard", "Lettura precedente sul PAC.", chiavi=["pac:andamento"])
+    mem.salva_lettura("dashboard", "SNDK segna +3445% a 12 mesi.",
+                      chiavi=["pac:andamento"])
 
     ai._genera("dashboard", fatti=[], memoria=True)
     p = visto["p"]
-    assert "Il PAC parte il 16 di ogni mese." in p
-    assert "Lettura precedente sul PAC." in p
-    assert "pac:andamento" in p
-    assert "non ripeterti" in p.lower()
+    assert "Il PAC parte il 16 di ogni mese." in p     # i ricordi servono
+    assert "pac:andamento" in p                        # gli argomenti già trattati
+    # ...ma il TESTO della lettura precedente no: rimandarlo indietro faceva
+    # riscrivere al modello la stessa lettura, numeri vecchi compresi
+    assert "+3445%" not in p
+    assert "SNDK" not in p
+    assert "lettura NUOVA" in p
 
 
 def test_senza_memoria_il_prompt_resta_pulito(monkeypatch):
