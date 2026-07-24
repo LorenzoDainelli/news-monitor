@@ -203,3 +203,68 @@ def test_la_regola_sui_periodi_e_nel_system(monkeypatch):
     s = visto["system"]
     assert "NON PARLARE MAI DI PERIODI PIÙ LUNGHI DELLA STORIA CHE HAI" in s
     assert "non è il suo guadagno" in s
+
+
+# ------------- il contributo si misura su cio' che l'utente ha vissuto -------------
+class _Pos:
+    def __init__(self, ticker, versato):
+        self.ticker, self.versato_totale = ticker, versato
+        self.nome_vista, self.tipo, self.is_fisso = ticker, "Azione", False
+        self.id, self.pct_target = 1, 10.0
+
+
+def _vista(monkeypatch, righe, totale):
+    import portfolio.service as pf, portfolio.analytics as an, portfolio.market as mk
+    monkeypatch.setattr(pf, "vista_portafoglio", lambda: {
+        "righe": righe, "totale": totale, "ha_totale": totale > 0,
+        "n_prezzi": len(righe), "n_ticker": len(righe), "ultimo_agg": ""})
+    monkeypatch.setattr(an, "look_through", lambda **k: {"settori": [], "n_titoli": len(righe)})
+    # se il rendimento a 12 mesi venisse ancora usato, questo lo farebbe esplodere
+    monkeypatch.setattr(mk, "get_perf_snapshot", lambda: {"SNDK": 3492.0, "IWDA": 8.0})
+
+
+def test_il_contributo_non_usa_il_rendimento_a_12_mesi(monkeypatch):
+    """SNDK ha fatto +3492% sul mercato, ma l'utente ci ha messo 2 € e ne valgono
+    2,01: il suo contributo e' di un centesimo, non del 60%."""
+    righe = [
+        {"p": _Pos("SNDK", 2.0), "valore": 2.01},
+        {"p": _Pos("IWDA", 98.0), "valore": 97.68},
+    ]
+    _vista(monkeypatch, righe, 99.69)
+    fatti = insights.fatti_portafoglio()
+    motori = [f for f in fatti if ":contributo" in f.chiave]
+    # il titolo che pesa sul risultato e' IWDA (-0,32 €), non SNDK (+0,01 €)
+    assert not any("SNDK" in f.testo for f in motori)
+    if motori:
+        assert "IWDA" in motori[0].testo
+
+
+def test_niente_contributo_senza_versato(monkeypatch):
+    """Se non si sa quanto e' stato versato, non si puo' dire cosa ha reso."""
+    righe = [{"p": _Pos("SNDK", 0.0), "valore": 500.0}]
+    _vista(monkeypatch, righe, 500.0)
+    assert not [f for f in insights.fatti_portafoglio() if ":contributo" in f.chiave]
+
+
+def test_gli_spiccioli_non_sono_un_fatto(monkeypatch):
+    """PAC appena partito: scostamenti da pochi centesimi non meritano una frase."""
+    righe = [{"p": _Pos("SNDK", 50.0), "valore": 50.02},
+             {"p": _Pos("IWDA", 50.0), "valore": 49.99}]
+    _vista(monkeypatch, righe, 100.01)
+    assert not [f for f in insights.fatti_portafoglio() if ":contributo" in f.chiave]
+
+
+def test_il_contributo_dice_versato_e_valore(monkeypatch):
+    righe = [{"p": _Pos("IWDA", 100.0), "valore": 88.0},
+             {"p": _Pos("SNDK", 100.0), "valore": 100.5}]
+    _vista(monkeypatch, righe, 188.5)
+    f = [x for x in insights.fatti_portafoglio() if ":contributo" in x.chiave][0]
+    assert "IWDA" in f.testo and "100,00 €" in f.testo and "88,00 €" in f.testo
+    assert "TUO" in f.testo
+
+
+def test_niente_numeri_di_mercato_come_notizia(monkeypatch):
+    visto = _cattura_prompt(monkeypatch)
+    ai._genera("dashboard")
+    assert "non è mai una notizia" in visto["system"]
+    assert "3445% a 3492%" in visto["system"]

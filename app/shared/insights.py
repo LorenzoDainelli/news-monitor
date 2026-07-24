@@ -324,39 +324,37 @@ def fatti_portafoglio() -> list:
     except Exception:
         pass
 
-    # --- chi muove davvero il portafoglio --------------------------------
-    # Non "chi è salito di più" (lo si vede già), ma chi PESA di più sul
-    # risultato: un +300% su una posizione minuscola non sposta niente.
-    try:
-        snapshot = market.get_perf_snapshot()
-        if snapshot and vista["ha_totale"]:
-            contributi = []
-            for r in vista["righe"]:
-                p, val = r["p"], r["valore"]
-                perf = snapshot.get((p.ticker or "").upper())
-                if not val or perf is None:
-                    continue
-                contributi.append((p, val, perf, val * perf / 100.0))
-            if contributi:
-                tot_abs = sum(abs(c[3]) for c in contributi)
-                p, val, perf, contrib = max(contributi, key=lambda c: abs(c[3]))
-                if tot_abs > 0:
-                    quota_contrib = abs(contrib) / tot_abs * 100
-                    quota_peso = val / vista["totale"] * 100
-                    if quota_contrib >= 35 and quota_contrib > quota_peso * 1.5:
-                        fatti.append(Fatto(
-                            chiave=f"pf:{(p.ticker or '').lower()}:motore",
-                            testo=f"{p.ticker} pesa il {_pct(quota_peso)} del "
-                                  f"portafoglio ma spiega da solo il "
-                                  f"{_pct(quota_contrib)} del movimento "
-                                  f"({_pct(perf, segno=True)} a 12 mesi). "
-                                  f"NB: è l'andamento del TITOLO sul mercato, non "
-                                  f"il guadagno dell'utente, che lo possiede da poco.",
-                            forza=min(quota_contrib, 85), area="portafoglio",
-                            dati={"ticker": p.ticker, "peso_pct": round(quota_peso, 1),
-                                  "contributo_pct": round(quota_contrib, 1)}))
-    except Exception:
-        pass
+    # --- chi muove davvero il portafoglio DELL'UTENTE ---------------------
+    # Il contributo si misura su ciò che l'utente ha VISSUTO: valore di oggi
+    # meno quanto ci ha messo. Usare qui il rendimento a 12 mesi del titolo
+    # sarebbe un errore di aritmetica, non solo di parole: moltiplicherebbe le
+    # sue quote per un andamento che la sua posizione non ha mai attraversato,
+    # perché quel titolo lui non ce l'aveva.
+    contributi = []
+    for r in vista["righe"]:
+        p, val = r["p"], r["valore"]
+        versato = p.versato_totale or 0.0
+        if not val or versato <= 0:
+            continue
+        contributi.append((p, val, versato, val - versato))
+    if contributi:
+        tot_abs = sum(abs(c[3]) for c in contributi)
+        p, val, versato, delta = max(contributi, key=lambda c: abs(c[3]))
+        # sotto un euro di scostamento non c'è niente da spiegare: sono i
+        # centesimi di un PAC appena partito
+        if tot_abs >= 1.0 and abs(delta) >= 0.50:
+            quota = abs(delta) / tot_abs * 100
+            if quota >= 35:
+                pct = (val / versato - 1) * 100
+                fatti.append(Fatto(
+                    chiave=f"pf:{(p.ticker or '').lower()}:contributo",
+                    testo=f"{p.ticker} è il titolo che pesa di più sul TUO "
+                          f"risultato: {_eur(versato)} versati valgono ora "
+                          f"{_eur(val)} ({_pct(pct, 1, segno=True)}), cioè il "
+                          f"{_pct(quota)} dello scostamento complessivo.",
+                    forza=min(quota, 70), area="portafoglio",
+                    dati={"ticker": p.ticker, "versato": versato, "valore": val,
+                          "delta": round(delta, 2)}))
 
     return fatti
 
