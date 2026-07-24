@@ -1,52 +1,6 @@
 {
   "items": [
     {
-      "id": "korea-selloff-chip-intc-nvda-sndk-20260623",
-      "ticker": "MACRO",
-      "url": "https://finnhub.io/api/news?id=f304f526512184de6f58a9a597e8854fa955fc4a19dc955c3f98aed38ee317fa",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "Crollo dei mercati coreani trascina giù i chip mondiali",
-      "tipo_evento": "macro"
-    },
-    {
-      "id": "korea-selloff-ssnlf-hynix-20260623",
-      "ticker": "SSNLF",
-      "url": "https://finnhub.io/api/news?id=0f214835037d1e4e5665cbf86048de0b2e5fb6212b9a87135c06244f5cbbfdb2",
-      "data_invio": "2026-06-23T19:10:00+00:00"
-    },
-    {
-      "id": "bofa-semiconductor-outlook-intc-2028-20260623",
-      "ticker": "INTC",
-      "url": "https://finnhub.io/api/news?id=066d1c84fedd5badec81931f952326a7e99038b03af7b3b305f7db035811256c",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "BofA alza le stime sull'AI fino al 2028 e indica Intel tra i principali beneficiari",
-      "tipo_evento": "upgrade/downgrade analisti"
-    },
-    {
-      "id": "jpm-upgrades-ibm-20260623",
-      "ticker": "IBM",
-      "url": "https://finnhub.io/api/news?id=c322bd2d722017ebbb7143293021c93b7d8d4e90ec497c4b49170ce74ce2120c",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "JPMorgan promuove IBM nonostante il crollo generalizzato dei tecnologici",
-      "tipo_evento": "upgrade/downgrade analisti"
-    },
-    {
-      "id": "palantir-zeta-ai-marketing-pact-20260623",
-      "ticker": "PLTR",
-      "url": "https://finnhub.io/api/news?id=acf8eaf109a0fad712f5b7ba2650fe19f5b3a07cb559388185cdada78d8a8beb",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "Palantir sigla un'alleanza con Zeta per costruire una piattaforma AI di marketing",
-      "tipo_evento": "prodotto"
-    },
-    {
-      "id": "netherlands-pax-silica-asml-dispute-20260623",
-      "ticker": "ASML",
-      "url": "https://finnhub.io/api/news?id=bb87f1c7bb35f3e57cd849142ec25430631c43045485290f78962d983ee7676d",
-      "data_invio": "2026-06-23T19:10:00+00:00",
-      "titolo": "I Paesi Bassi entrano nell'iniziativa AI alleata degli USA nonostante il contenzioso su ASML",
-      "tipo_evento": "legale/regolatorio"
-    },
-    {
       "id": "goog-djia-2026-06-24",
       "ticker": "GOOG",
       "titolo": "Alphabet (Google) entra nel Dow Jones Industrial Average al posto di Verizon",
@@ -2533,6 +2487,86 @@
       "tipo_evento": "prodotto",
       "url": "https://finnhub.io/api/news?id=3b6af3c4ecaead5c2897a44620b790fbed7673445711ff562331bbb1e5540e55",
       "data_invio": "2026-07-23T17:05:00+00:00"
+    },
+    {
+      "id": "intc-earnings-q2-2026-07-24",
+      "ticker": "INTC",
+      "titolo": "Intel riporta la crescita dei ricavi più alta in un decennio: +25% anno su anno grazie alla domanda AI",
+      "tipo_evento": "earnings",
+      "url": "https://finnhub.io/api/news?id=273ffb4a6945b1c1117a4a9e215c1895ba12e6dbe01ccb3934fd7ad02e59c281",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "orcl-dod-contract-7b-2026-07-24",
+      "ticker": "ORCL",
+      "titolo": "Oracle vince un contratto software del Pentagono del valore fino a 7 miliardi di dollari",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=b536aa05a6101a207f40c0c90a1831a80c37d2963a36374cca5781606a92a253",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "ibm-acquires-hrl-labs-2026-07-24",
+      "ticker": "IBM",
+      "titolo": "IBM acquisisce HRL Laboratories per puntare sul quantum computing",
+      "tipo_evento": "M&A",
+      "url": "https://finnhub.io/api/news?id=0180cc1cd05204512d991a9591e0c945aee2f0a1d4ad8a7420ae46951f245d26",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "iran-strikes-13th-night-oil-2026-07-24",
+      "ticker": "SHEL",
+      "titolo": "13ª notte consecutiva di attacchi USA sull'Iran: petrolio in spike, borse asiatiche in calo per timori inflazione",
+      "tipo_evento": "macro",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOS2RjdGstOHhBcnk2VmZRa3dlaHA4YlM5M056cW1TcktoUDZMUHlYa3BCTmhQRlJaVnAxdkR1VGhUX180ck1vSVY5UnBjNnJyVjVVN1FzdjRlYlhVcGFHTld6RkFWUVhEVzN0T0ZQd3E2U0pGcHhZM2FlREMtckJVSXJNUERBbXZkbThpQ0U4d0dFQnNjbDRsaU1hNkp6Y19TVkRVbFE5cGk2QXdLVjd0aGJZVUNLbVNnOUpr?oc=5",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "goog-spcx-94b-stake-2026-07-24",
+      "ticker": "GOOG",
+      "titolo": "Alphabet rivela una quota in SpaceX valorizzata $94 miliardi: da un investimento di $1 miliardo nel 2015",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=8d0ac92b5bf85450deac7ae40353753422ae16e363af556e425da24fd81caf3f",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "meta-datacenter-12b-borrowing-2026-07-24",
+      "ticker": "META",
+      "titolo": "Meta paga tassi più alti per finanziare il mega-data center da $12 miliardi: il costo del capitale AI cresce",
+      "tipo_evento": "news aziendale",
+      "url": "https://finnhub.io/api/news?id=628af44dcf87b8e9f5836c055e6794e9a044cfd68aedf0628d7c6ac90281d194",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "openai-huggingface-hack-ai-killswitch-2026-07-24",
+      "ticker": "MSFT",
+      "titolo": "Modelli AI di OpenAI violano HuggingFace: il Congresso USA propone un 'interruttore di emergenza' per l'AI",
+      "tipo_evento": "legale/regolatorio",
+      "url": "https://www.cnbc.com/2026/07/23/open-ai-hugging-face-hack-kill-switch-bill-congress.html",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "sndk-susquehanna-pt-cut-2026-07-24",
+      "ticker": "SNDK",
+      "titolo": "Susquehanna abbassa il prezzo target su SanDisk ma mantiene aspettative di forte crescita",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=678c6def7b8e2d38053fed94e7948c04fbf41c6e27e99032141b600da604de39",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "aapl-consensus-below-market-2026-07-24",
+      "ticker": "AAPL",
+      "titolo": "Il prezzo medio target degli analisti su Apple è ora sotto la quotazione corrente, a sette giorni dagli earnings",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "url": "https://finnhub.io/api/news?id=189f9596245abdd42ae7c13e65e0365546544faa286bdcb482461eb13a8e6e2e",
+      "data_invio": "2026-07-24T05:10:00+00:00"
+    },
+    {
+      "id": "ssnlf-apple-foldable-25pct-2026-07-24",
+      "ticker": "SSNLF",
+      "titolo": "Apple mira al 25% del mercato degli smartphone pieghevoli già nel primo anno: sfida diretta a Samsung",
+      "tipo_evento": "prodotto",
+      "url": "https://finnhub.io/api/news?id=f78915b577931cfc6d6789cdda8b65924ec51bcf8b6d25b237a9cab8b641bdd4",
+      "data_invio": "2026-07-24T05:10:00+00:00"
     }
   ]
 }

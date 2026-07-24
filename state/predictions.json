@@ -4958,6 +4958,227 @@
       "inviata": true,
       "titolo": "Samsung presenta l'ottava generazione di smartphone pieghevoli all'Unpacked di Londra",
       "url": "https://finnhub.io/api/news?id=3b6af3c4ecaead5c2897a44620b790fbed7673445711ff562331bbb1e5540e55"
+    },
+    {
+      "id": "intc-earnings-q2-2026-07-24",
+      "ticker": "INTC",
+      "data": "2026-07-24",
+      "tipo_evento": "earnings",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 72,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Intel riporta la crescita dei ricavi più alta in un decennio: +25% anno su anno grazie alla domanda AI",
+      "url": "https://finnhub.io/api/news?id=273ffb4a6945b1c1117a4a9e215c1895ba12e6dbe01ccb3934fd7ad02e59c281"
+    },
+    {
+      "id": "orcl-dod-contract-7b-2026-07-24",
+      "ticker": "ORCL",
+      "data": "2026-07-24",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 65,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "Oracle vince un contratto software del Pentagono del valore fino a 7 miliardi di dollari",
+      "url": "https://finnhub.io/api/news?id=b536aa05a6101a207f40c0c90a1831a80c37d2963a36374cca5781606a92a253"
+    },
+    {
+      "id": "ibm-acquires-hrl-labs-2026-07-24",
+      "ticker": "IBM",
+      "data": "2026-07-24",
+      "tipo_evento": "M&A",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "IBM acquisisce HRL Laboratories per puntare sul quantum computing",
+      "url": "https://finnhub.io/api/news?id=0180cc1cd05204512d991a9591e0c945aee2f0a1d4ad8a7420ae46951f245d26"
+    },
+    {
+      "id": "iran-strikes-13th-night-oil-2026-07-24",
+      "ticker": "SHEL",
+      "data": "2026-07-24",
+      "tipo_evento": "macro",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 60,
+      "descrittivo": true,
+      "inviata": true,
+      "titolo": "13ª notte consecutiva di attacchi USA sull'Iran: petrolio in spike, borse asiatiche in calo per timori inflazione",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOS2RjdGstOHhBcnk2VmZRa3dlaHA4YlM5M056cW1TcktoUDZMUHlYa3BCTmhQRlJaVnAxdkR1VGhUX180ck1vSVY5UnBjNnJyVjVVN1FzdjRlYlhVcGFHTld6RkFWUVhEVzN0T0ZQd3E2U0pGcHhZM2FlREMtckJVSXJNUERBbXZkbThpQ0U4d0dFQnNjbDRsaU1hNkp6Y19TVkRVbFE5cGk2QXdLVjd0aGJZVUNLbVNnOUpr?oc=5"
+    },
+    {
+      "id": "goog-spcx-94b-stake-2026-07-24",
+      "ticker": "GOOG",
+      "data": "2026-07-24",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "media",
+      "rilevanza": 58,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Alphabet rivela una quota in SpaceX valorizzata $94 miliardi: da un investimento di $1 miliardo nel 2015",
+      "url": "https://finnhub.io/api/news?id=8d0ac92b5bf85450deac7ae40353753422ae16e363af556e425da24fd81caf3f"
+    },
+    {
+      "id": "meta-datacenter-12b-borrowing-2026-07-24",
+      "ticker": "META",
+      "data": "2026-07-24",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "negativo",
+        "lungo": "neutro"
+      },
+      "confidenza": "media",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Meta paga tassi più alti per finanziare il mega-data center da $12 miliardi: il costo del capitale AI cresce",
+      "url": "https://finnhub.io/api/news?id=628af44dcf87b8e9f5836c055e6794e9a044cfd68aedf0628d7c6ac90281d194"
+    },
+    {
+      "id": "openai-huggingface-hack-ai-killswitch-2026-07-24",
+      "ticker": "MSFT",
+      "data": "2026-07-24",
+      "tipo_evento": "legale/regolatorio",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Modelli AI di OpenAI violano HuggingFace: il Congresso USA propone un 'interruttore di emergenza' per l'AI",
+      "url": "https://www.cnbc.com/2026/07/23/open-ai-hugging-face-hack-kill-switch-bill-congress.html"
+    },
+    {
+      "id": "sndk-susquehanna-pt-cut-2026-07-24",
+      "ticker": "SNDK",
+      "data": "2026-07-24",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Susquehanna abbassa il prezzo target su SanDisk ma mantiene aspettative di forte crescita",
+      "url": "https://finnhub.io/api/news?id=678c6def7b8e2d38053fed94e7948c04fbf41c6e27e99032141b600da604de39"
+    },
+    {
+      "id": "aapl-consensus-below-market-2026-07-24",
+      "ticker": "AAPL",
+      "data": "2026-07-24",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Il prezzo medio target degli analisti su Apple è ora sotto la quotazione corrente, a sette giorni dagli earnings",
+      "url": "https://finnhub.io/api/news?id=189f9596245abdd42ae7c13e65e0365546544faa286bdcb482461eb13a8e6e2e"
+    },
+    {
+      "id": "ssnlf-apple-foldable-25pct-2026-07-24",
+      "ticker": "SSNLF",
+      "data": "2026-07-24",
+      "tipo_evento": "prodotto",
+      "impatto": {
+        "breve": "negativo",
+        "medio": "negativo",
+        "lungo": "negativo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 52,
+      "descrittivo": false,
+      "inviata": true,
+      "titolo": "Apple mira al 25% del mercato degli smartphone pieghevoli già nel primo anno: sfida diretta a Samsung",
+      "url": "https://finnhub.io/api/news?id=f78915b577931cfc6d6789cdda8b65924ec51bcf8b6d25b237a9cab8b641bdd4"
+    },
+    {
+      "id": "orcl-mizuho-outperform-reiterate-2026-07-24",
+      "ticker": "ORCL",
+      "data": "2026-07-24",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "positivo",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 55,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "Mizuho ribadisce Outperform su Oracle dopo il calo del 38%: il titolo potrebbe più che raddoppiare",
+      "url": "https://finnhub.io/api/news?id=18feed72155a67a43c4cebb7e2f65ff02c516453a73a8060057937d1cecbaaed"
+    },
+    {
+      "id": "shel-piper-sandler-neutral-2026-07-24",
+      "ticker": "SHEL",
+      "data": "2026-07-24",
+      "tipo_evento": "upgrade/downgrade analisti",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "neutro",
+        "lungo": "neutro"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 50,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "Piper Sandler avvia la copertura di Shell con giudizio Neutral e prezzo obiettivo $88",
+      "url": "https://finnhub.io/api/news?id=652f97b61a629e96d70525eedd403e09e26e8c00d78f63bb12bddad58a0cbfeb"
+    },
+    {
+      "id": "tsm-pricing-dispute-ai-supply-chain-2026-07-24",
+      "ticker": "TSM",
+      "data": "2026-07-24",
+      "tipo_evento": "news aziendale",
+      "impatto": {
+        "breve": "neutro",
+        "medio": "positivo",
+        "lungo": "positivo"
+      },
+      "confidenza": "bassa",
+      "rilevanza": 50,
+      "descrittivo": false,
+      "inviata": false,
+      "titolo": "TSMC: la disputa sui prezzi con Nvidia e ASML potrebbe ridisegnare la catena di fornitura AI",
+      "url": "https://finnhub.io/api/news?id=6d842b868282d0c07bbb5f2592fac2c9d9e1aae5010ac7299aee18e5ff0499f9"
     }
   ]
 }
