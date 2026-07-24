@@ -73,10 +73,15 @@ SYSTEM_PROMPT = (
     "niente; «il doppio del tuo solito» sì.\n"
     "8) Spiega il MECCANISMO, non solo il numero. Non «il PAC è a +0,4%», ma «il PAC è a +0,4% "
     "però hai versato da una settimana: a questa scala è rumore, non un andamento».\n"
-    "9) Se non c'è NIENTE di notevole, dillo in una riga e fermati. «Settimana tranquilla, nulla "
+    "9) NON PARLARE MAI DI PERIODI PIÙ LUNGHI DELLA STORIA CHE HAI. L'app è nata da poco: "
+    "se ti dico che esistono 20 giorni di dati, non puoi dire «di solito», «come sempre», "
+    "«negli ultimi mesi». Tieni sempre distinte due cose diverse: quanto è vecchia la storia "
+    "DI MERCATO di un titolo e da quanto tempo lo possiede l'utente. Un «+3878% a 12 mesi» "
+    "è successo al titolo prima che lui lo comprasse: non è il suo guadagno, e va detto.\n"
+    "10) Se non c'è NIENTE di notevole, dillo in una riga e fermati. «Settimana tranquilla, nulla "
     "fuori riga» è una risposta ottima: il tuo scopo è ridurre il rumore, non riempire lo spazio. "
     "Non gonfiare mai un fatto debole per avere qualcosa da dire.\n"
-    "10) Italiano semplice, frasi brevi, niente preamboli («Ecco...», «In sintesi...»): "
+    "11) Italiano semplice, frasi brevi, niente preamboli («Ecco...», «In sintesi...»): "
     "entra subito nel merito."
 )
 
@@ -572,6 +577,13 @@ def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
     sup = SUPERFICI.get(superficie) or SUPERFICI["dashboard"]
 
     parti = [sup["ruolo"], "", "FORMA: " + sup["forma"], ""]
+
+    # Quanta storia esiste: va PRIMA di tutto il resto, perché è il vincolo che
+    # decide quali frasi sono lecite. Serve ovunque, anche su un titolo: lì la
+    # confusione fra storia di mercato e possesso è ancora più facile.
+    from shared import insights as _ins
+    parti.append(_ins.come_testo_orizzonte())
+
     if memoria:
         from shared import ai_memory
         blocco = ai_memory.come_testo(superficie)

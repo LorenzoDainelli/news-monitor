@@ -77,6 +77,79 @@ def _forza(scostamento_pct: float, euro: float) -> float:
 
 
 # ===========================================================================
+#  QUANTA STORIA ESISTE DAVVERO
+#  Il vincolo più importante di tutti: l'app raccoglie dati dal 4/7/2026, e non
+#  si può parlare di andamenti che durano più della storia che possediamo. Un
+#  titolo può avere 12 mesi di storia DI MERCATO, ma se l'utente lo possiede da
+#  otto giorni quel numero non racconta la SUA esperienza: sono due cose diverse
+#  e vanno tenute distinte, altrimenti l'agente scrive frasi false.
+# ===========================================================================
+def orizzonte(oggi: datetime = None) -> dict:
+    """Da quando esistono i dati, e per quali confronti bastano."""
+    from finance import service as fin
+
+    now = oggi or datetime.now()
+    inizio = fin.data_inizio()
+    giorni = max(0, (now - inizio).days)
+
+    # mesi civili COMPLETI prima di quello corrente: sono gli unici con cui si
+    # possa fare un confronto onesto
+    mesi_completi = 0
+    for k in range(1, 25):
+        y, m = _mesi_indietro(now, k)
+        primo = datetime(y, m, 1)
+        ultimo = datetime(y + (1 if m == 12 else 0), 1 if m == 12 else m + 1, 1)
+        if primo >= inizio and ultimo <= now:
+            mesi_completi += 1
+        else:
+            break
+
+    giorni_pac = None
+    try:
+        from portfolio import versamenti
+        storico = versamenti.lista()
+        if storico:
+            giorni_pac = (now.date() - min(v["data"] for v in storico)).days
+    except Exception:
+        pass
+
+    return {"inizio": inizio, "giorni": giorni, "mesi_completi": mesi_completi,
+            "giorni_pac": giorni_pac}
+
+
+def come_testo_orizzonte(oz: dict = None) -> str:
+    """Il paragrafo che impedisce all'agente di parlare di anni quando ha
+    settimane. Va in cima al prompt: è un vincolo, non un dettaglio."""
+    oz = oz or orizzonte()
+    righe = [
+        "QUANTA STORIA ESISTE (vincolo, non dettaglio):",
+        f"- l'app raccoglie dati dal {oz['inizio'].strftime('%d/%m/%Y')}: "
+        f"{oz['giorni']} giorni in tutto.",
+    ]
+    if oz["mesi_completi"] == 0:
+        righe.append("- NON esiste nessun mese passato completo: non hai un "
+                     "termine di paragone storico. Non dire mai «rispetto ai "
+                     "mesi scorsi», «di solito», «come sempre»: non lo sai.")
+    else:
+        righe.append(f"- mesi passati completi disponibili: {oz['mesi_completi']}. "
+                     "Confronta solo con questi.")
+    if oz["giorni_pac"] is not None:
+        righe.append(f"- il PAC esiste da {oz['giorni_pac']} giorni.")
+    righe += [
+        "- ATTENZIONE alla differenza fra la storia DI MERCATO di un titolo (che "
+        "può essere lunga anni) e da quanto tempo la possiede l'utente. Un "
+        "«+3878% a 12 mesi» è successo al titolo, NON a lui: lui non c'era. "
+        "Se citi una performance a 12 mesi, di' esplicitamente che è l'andamento "
+        "del titolo sul mercato, non il suo guadagno.",
+        "- Non descrivere MAI tendenze più lunghe della storia che hai. Con poche "
+        "settimane di dati non esistono «abitudini», «andamenti» o «tendenze»: "
+        "esistono solo singoli fatti. Dirlo è più utile che fingere il contrario.",
+        "",
+    ]
+    return "\n".join(righe)
+
+
+# ===========================================================================
 #  FINANZE: confronti col passato dell'utente
 # ===========================================================================
 def fatti_finanze(mesi_storia: int = 6, oggi: datetime = None) -> list:
@@ -275,8 +348,10 @@ def fatti_portafoglio() -> list:
                             chiave=f"pf:{(p.ticker or '').lower()}:motore",
                             testo=f"{p.ticker} pesa il {_pct(quota_peso)} del "
                                   f"portafoglio ma spiega da solo il "
-                                  f"{_pct(quota_contrib)} del movimento a 12 mesi "
-                                  f"({_pct(perf, segno=True)}).",
+                                  f"{_pct(quota_contrib)} del movimento "
+                                  f"({_pct(perf, segno=True)} a 12 mesi). "
+                                  f"NB: è l'andamento del TITOLO sul mercato, non "
+                                  f"il guadagno dell'utente, che lo possiede da poco.",
                             forza=min(quota_contrib, 85), area="portafoglio",
                             dati={"ticker": p.ticker, "peso_pct": round(quota_peso, 1),
                                   "contributo_pct": round(quota_contrib, 1)}))
@@ -341,7 +416,9 @@ def raccogli(aree=AREE, limite: int = 8, oggi: datetime = None) -> list:
     """Tutti i fatti delle aree richieste, dal più forte al più debole.
 
     Lista VUOTA è un risultato legittimo e va rispettato: vuol dire che non è
-    successo niente degno di nota, e l'agente deve poterlo dire in una riga."""
+    successo niente degno di nota, e l'agente deve poterlo dire in una riga.
+    All'inizio della vita dell'app è anzi la norma: senza mesi passati non c'è
+    nulla con cui confrontare, e fingere il contrario sarebbe disonesto."""
     fatti = []
     if "finanze" in aree:
         fatti += fatti_finanze(oggi=oggi)

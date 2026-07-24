@@ -151,3 +151,55 @@ def test_le_regole_anti_piattume_sono_nel_system(monkeypatch):
 def test_senza_chiave_non_chiama_il_modello(monkeypatch):
     monkeypatch.setattr(ai, "is_configured", lambda: False)
     assert ai._genera("dashboard")["error"] == "no_key"
+
+
+# --------------------------- quanta storia esiste ---------------------------
+def _orizzonte_finto(monkeypatch, inizio, movimenti_dal=None):
+    import finance.service as fin
+    monkeypatch.setattr(fin, "data_inizio", lambda: inizio)
+    import portfolio.versamenti as v
+    monkeypatch.setattr(v, "lista", lambda: [])
+
+
+def test_app_appena_nata_niente_confronti(monkeypatch):
+    """Il caso vero: app dal 4/7/2026, oggi 24/7/2026. Venti giorni."""
+    _orizzonte_finto(monkeypatch, datetime(2026, 7, 4))
+    oz = insights.orizzonte(oggi=datetime(2026, 7, 24))
+    assert oz["giorni"] == 20
+    assert oz["mesi_completi"] == 0            # nemmeno un mese passato completo
+
+    testo = insights.come_testo_orizzonte(oz)
+    assert "20 giorni" in testo
+    assert "NON esiste nessun mese passato completo" in testo
+    assert "«di solito»" in testo
+
+
+def test_con_qualche_mese_alle_spalle(monkeypatch):
+    _orizzonte_finto(monkeypatch, datetime(2026, 1, 10))
+    oz = insights.orizzonte(oggi=datetime(2026, 7, 24))
+    assert oz["mesi_completi"] == 5            # feb, mar, apr, mag, giu
+    assert "mesi passati completi disponibili: 5" in insights.come_testo_orizzonte(oz)
+
+
+def test_mercato_e_possesso_restano_distinti(monkeypatch):
+    _orizzonte_finto(monkeypatch, datetime(2026, 7, 4))
+    testo = insights.come_testo_orizzonte(insights.orizzonte(oggi=datetime(2026, 7, 24)))
+    assert "storia DI MERCATO" in testo
+    assert "non il suo guadagno" in testo
+
+
+def test_l_orizzonte_e_in_cima_a_ogni_prompt(monkeypatch):
+    visto = _cattura_prompt(monkeypatch)
+    monkeypatch.setattr(insights, "come_testo_orizzonte",
+                        lambda oz=None: "QUANTA STORIA ESISTE: 20 giorni.\n")
+    for superficie in ("dashboard", "finanze", "titolo", "metrica"):
+        ai._genera(superficie)
+        assert "QUANTA STORIA ESISTE: 20 giorni." in visto["prompt"], superficie
+
+
+def test_la_regola_sui_periodi_e_nel_system(monkeypatch):
+    visto = _cattura_prompt(monkeypatch)
+    ai._genera("dashboard")
+    s = visto["system"]
+    assert "NON PARLARE MAI DI PERIODI PIÙ LUNGHI DELLA STORIA CHE HAI" in s
+    assert "non è il suo guadagno" in s
