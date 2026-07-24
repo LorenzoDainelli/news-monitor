@@ -114,6 +114,17 @@
   </div>
   {% if fund and fund.ai %}
   <div class="ai-prosa" lang="it">{{ fund.ai.text | ai_text }}</div>
+  {# fonti consultate sul web: sempre citate, così puoi controllare da solo #}
+  {% if fund.ai.fonti %}
+  <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--ai-bd);">
+    <div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:var(--ls-caps);font-weight:600;margin-bottom:4px;">Fonti consultate</div>
+    {% for f in fund.ai.fonti %}
+    <div style="font-size:12px;line-height:1.5;">
+      <a href="{{ f.url }}" target="_blank" rel="noopener noreferrer" class="muted">{{ f.titolo }}</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
   <p class="faint" style="font-size:12px;margin:10px 0 0;">{{ t('detail.ai_disclaimer') }}</p>
   {% endif %}
   {% if ai_on and p.ticker %}
