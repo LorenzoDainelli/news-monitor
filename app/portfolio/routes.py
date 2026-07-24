@@ -363,5 +363,8 @@ def genera_ai_take(pos_id: int):
     if res.get("ok"):
         settings_store.set_setting(f"ai_take_{p.ticker.upper()}", json.dumps({
             "text": res["text"], "conf": res["conf"],
+            # le pagine effettivamente consultate: si citano sempre, così puoi
+            # controllare da solo invece di fidarti
+            "fonti": res.get("fonti") or [],
             "when": datetime.now().isoformat(timespec="minutes")}))
     return RedirectResponse(f"/portafoglio/{pos_id}", status_code=303)

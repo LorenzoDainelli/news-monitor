@@ -157,6 +157,18 @@
           {% endfor %}
         </select>
       </div>
+      {# Ricerca sul web: solo sui titoli, mai sulle finanze personali — lì il
+         mondo esterno non c'entra e aggiungerebbe soltanto rumore. #}
+      <div class="field" style="margin-top:14px;margin-bottom:0;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" name="web" value="1" {{ 'checked' if ai_web else '' }} style="width:auto;margin:0;">
+          <span>Cerca sul web (solo sui titoli)</span>
+        </label>
+        <div class="hint">Serve a spiegare <b>perché</b> un titolo si è mosso, citando
+        le fonti. Non viene mai usata sulle tue finanze personali. Le raccomandazioni
+        trovate in rete possono essere riferite, mai fatte proprie: l'assistente non
+        dice cosa fare.</div>
+      </div>
       <div class="actions" style="margin-bottom:0;margin-top:14px;">
         <button type="submit" class="btn primary">{{ t('set.ai_save') }}</button>
       </div>

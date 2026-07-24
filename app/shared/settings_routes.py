@@ -45,6 +45,7 @@ def impostazioni(request: Request, salvato: int = 0, ai_test: str = "", drive: s
         "ai_configured": ai.is_configured(),
         "ai_model": ai.get_model(),
         "ai_mode": ai.get_mode(),
+        "ai_web": ai.usa_web(),
         "ai_test": ai_test,
         "MODES": ai.MODES,
         "ai_provider": ai.get_provider(),
@@ -79,9 +80,10 @@ def memoria_svuota(tipo: str = Form("")):
 
 
 @router.post("/impostazioni/ai")
-def salva_ai(modello: str = Form(""), modalita: str = Form("")):
+def salva_ai(modello: str = Form(""), modalita: str = Form(""), web: str = Form("")):
     ai.set_model(modello)
     ai.set_mode(modalita)
+    ai.set_usa_web(bool(web))
     return RedirectResponse("/impostazioni?salvato=1", status_code=303)
 
 
