@@ -206,3 +206,50 @@ def test_se_il_web_non_e_accettato_si_ripiega(monkeypatch):
     monkeypatch.setattr(ai, "_post", finto_post)
     res = ai._genera("titolo", contesto="ETF globale")
     assert res["ok"] and "Senza web." in res["text"] and res["fonti"] == []
+
+
+# ------------- nessuna via d'accesso ai 12 mesi dalla dashboard -------------
+def test_la_scheda_titolo_non_espone_i_12_mesi():
+    """Il numero a 12 mesi, messo in mano all'agente, ricompariva puntualmente
+    come se fosse un guadagno dell'utente. Non deve piu' essere raggiungibile."""
+    import inspect
+    sorgente = inspect.getsource(tools.posizione)
+    assert "perf_12m" not in sorgente
+    assert "get_perf_snapshot" not in sorgente
+
+
+def test_dalla_dashboard_non_si_arriva_allo_storico_prezzi():
+    """`andamento` (prezzi nel tempo) esiste solo dove si parla dello STRUMENTO."""
+    assert "andamento" not in tools.PER_SUPERFICIE["dashboard"]
+    assert "andamento" not in tools.PER_SUPERFICIE["finanze"]
+    assert "andamento" in tools.PER_SUPERFICIE["titolo"]
+
+
+def test_la_scheda_titolo_da_il_risultato_dell_utente(monkeypatch):
+    """Al posto del rendimento di mercato: versato e valore, cioe' cio' che
+    l'utente ha davvero vissuto."""
+    class _P:
+        ticker, nome_vista, tipo, categoria = "SNDK", "SanDisk", "Azione", "Tech"
+        pct_target, versato_totale = 2.0, 2.0
+    import portfolio.service as pf, portfolio.market as mk
+    monkeypatch.setattr(pf, "vista_portafoglio", lambda: {
+        "righe": [{"p": _P(), "valore": 2.01, "prezzo_eur": 40.0}], "totale": 100.0,
+        "ha_totale": True, "n_prezzi": 1, "n_ticker": 1, "ultimo_agg": ""})
+    monkeypatch.setattr(mk, "get_fundamentals_cached", lambda t: {})
+
+    out = tools.posizione("SNDK")
+    assert "perf_12m_pct" not in out
+    assert out["versato"] == 2.0 and out["valore"] == 2.01
+    assert out["risultato_utente"] == 0.01        # un centesimo, non il +3492%
+
+
+def test_niente_cause_inventate(monkeypatch):
+    visto = {}
+    monkeypatch.setattr(ai, "is_configured", lambda: True)
+    monkeypatch.setattr(ai, "_post",
+                        lambda body, t, _model=None: visto.__setitem__("b", body)
+                        or _risposta_testo())
+    ai._genera("dashboard", fatti=[])
+    s = visto["b"]["systemInstruction"]["parts"][0]["text"]
+    assert "non inventare mai le CAUSE" in s
+    assert "«spinto da»" in s

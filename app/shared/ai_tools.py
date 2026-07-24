@@ -104,15 +104,21 @@ def posizione(ticker: str) -> dict:
     if riga is None:
         return {"errore": f"{tk} non è in portafoglio"}
     p = riga["p"]
-    perf = market.get_perf_snapshot().get(tk)
     fond = market.get_fundamentals_cached(tk) or {}
     peso = (riga["valore"] / vista["totale"] * 100) if (riga["valore"] and vista["totale"]) else None
+    versato = p.versato_totale or 0.0
+    # NIENTE performance a 12 mesi qui: è storia del mercato avvenuta prima
+    # dell'acquisto, e messa in mano all'agente ricompare puntualmente come se
+    # fosse un guadagno dell'utente. Quello che conta è il SUO risultato:
+    # quanto ha versato e quanto vale adesso. Il prezzo nel tempo, quando serve
+    # davvero, sta nello strumento `andamento` (solo sulla scheda di un titolo).
     return {
         "ticker": tk, "nome": p.nome_vista, "tipo": p.tipo,
         "categoria": p.categoria, "pct_target": p.pct_target,
         "valore": riga["valore"], "peso_pct": round(peso, 1) if peso else None,
-        "versato": p.versato_totale, "prezzo_eur": riga["prezzo_eur"],
-        "perf_12m_pct": perf,
+        "versato": versato, "prezzo_eur": riga["prezzo_eur"],
+        "risultato_utente": (round(riga["valore"] - versato, 2)
+                             if (riga["valore"] and versato) else None),
         "settori": (fond.get("settori") or [])[:5],
         "div_yield": fond.get("div_yield"),
     }
