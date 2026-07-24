@@ -405,6 +405,105 @@ def fatti_pac(oggi: datetime = None) -> list:
 
 
 # ===========================================================================
+#  IL QUADRO DI OGGI
+#  I "fatti" qui sopra rispondono a "cosa è cambiato?", e all'inizio della vita
+#  dell'app la risposta onesta è spesso "poco": non c'è passato con cui
+#  confrontare. Ma esiste una seconda domanda, altrettanto legittima e che NON
+#  richiede storia: "com'è messa la situazione adesso?".
+#  Questo è il quadro: descrittivo, sempre disponibile, tutto calcolato. Serve a
+#  dare sostanza senza inventare significato — è sfondo, non notizia, e infatti
+#  il prompt vieta di aprirci il discorso.
+# ===========================================================================
+def quadro(oggi: datetime = None) -> list:
+    """Fotografia del presente in righe brevi e verificabili."""
+    from finance import service as fin
+
+    now = oggi or datetime.now()
+    righe = []
+
+    # --- il mese in corso ------------------------------------------------
+    try:
+        r = fin.riepilogo_mese(now.year, now.month)
+        righe.append(f"Mese in corso: entrate {_eur(r['entrate'])}, uscite "
+                     f"{_eur(r['uscite'])}, saldo {_eur(r['saldo'])}.")
+        if r["spese_categoria"]:
+            voci = ", ".join(f"{s['nome']} {_eur(s['tot'])}"
+                             for s in r["spese_categoria"][:4])
+            righe.append(f"Dove sono finite le uscite: {voci}.")
+        if r["uscite"] and now.day:
+            righe.append(f"Ritmo di spesa: {_eur(r['uscite'] / now.day)} al giorno "
+                         f"su {now.day} giorni di mese.")
+    except Exception:
+        pass
+
+    # --- liquidità e investito -------------------------------------------
+    try:
+        sal = fin.saldi()
+        pac = fin.valore_pac_live()
+        righe.append(f"Liquidità sui conti: {_eur(sal['liquido'])}; "
+                     f"patrimonio totale (investimenti inclusi) {_eur(sal['totale'])}.")
+        if pac:
+            quota = (pac["valore"] / sal["totale"] * 100) if sal["totale"] else 0
+            righe.append(f"Investito nel PAC: {_eur(pac['valore'])}, cioè il "
+                         f"{_pct(quota)} del patrimonio; versati "
+                         f"{_eur(pac['versato'])}, differenza "
+                         f"{_eur(pac['rivalutazione'])}.")
+    except Exception:
+        pass
+
+    # --- il portafoglio ---------------------------------------------------
+    try:
+        from portfolio import service as pf, analytics
+        vista = pf.vista_portafoglio()
+        posizioni = [r["p"] for r in vista["righe"]]
+        n_etf = sum(1 for p in posizioni if p.tipo == "ETF")
+        righe.append(f"Portafoglio: {len(posizioni)} titoli ({n_etf} ETF, "
+                     f"{len(posizioni) - n_etf} azioni), valore complessivo "
+                     f"{_eur(vista['totale'])}.")
+        try:
+            lt = analytics.look_through(cached_only=True)
+            settori = lt.get("settori") or []
+            if settori:
+                primi = ", ".join(f"{s['key']} {_pct(s['pct'], 1)}" for s in settori[:4])
+                righe.append(f"Settori più presenti: {primi}. In tutto "
+                             f"{len(settori)} settori.")
+        except Exception:
+            pass
+        # i tre titoli più pesanti: dice com'è distribuito, senza giudicare
+        pesi = [(r["p"].ticker, r["valore"]) for r in vista["righe"] if r["valore"]]
+        if pesi and vista["totale"]:
+            pesi.sort(key=lambda x: -x[1])
+            top = ", ".join(f"{t} {_pct(v / vista['totale'] * 100, 1)}" for t, v in pesi[:3])
+            righe.append(f"Titoli più pesanti: {top}.")
+    except Exception:
+        pass
+
+    # --- il PAC: cadenza e prossimo atteso --------------------------------
+    try:
+        from portfolio import versamenti
+        storico = versamenti.lista()
+        if storico:
+            ultimo = max(v["data"] for v in storico)
+            tot = sum(v["importo"] for v in storico)
+            righe.append(f"PAC: {len(storico)} versamenti per {_eur(tot)} in tutto, "
+                         f"l'ultimo il {ultimo.strftime('%d/%m/%Y')}.")
+    except Exception:
+        pass
+
+    return righe
+
+
+def come_testo_quadro(righe: list = None) -> str:
+    righe = quadro() if righe is None else righe
+    if not righe:
+        return ""
+    return ("IL QUADRO DI OGGI (sfondo verificato: serve a dare sostanza e "
+            "contesto. NON aprire il discorso da qui — questi non sono fatti "
+            "nuovi, sono lo stato delle cose):\n"
+            + "\n".join(f"- {r}" for r in righe) + "\n")
+
+
+# ===========================================================================
 #  Raccolta
 # ===========================================================================
 AREE = ("finanze", "portafoglio", "pac")

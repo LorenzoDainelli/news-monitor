@@ -99,17 +99,22 @@ SYSTEM_PROMPT = (
 # ---------------------------------------------------------------------------
 SUPERFICI = {
     "dashboard": {
-        "ruolo": "Sei la sentinella: guardi tutto e segnali SOLO ciò che è cambiato o "
-                 "stona. Non riassumi la situazione, la conosce già.",
-        "forma": "Massimo 3 paragrafi brevi separati da riga vuota, 6-8 frasi in tutto, "
-                 "mai oltre 700 caratteri. Se i fatti notevoli sono pochi, scrivi meno: "
-                 "un paragrafo solo va benissimo.",
+        "ruolo": "Sei la sentinella: apri da ciò che è cambiato o stona, poi dai il "
+                 "quadro di come è messa la situazione oggi. Le due cose in "
+                 "quest'ordine, mai mescolate.",
+        "forma": "3 paragrafi separati da una riga vuota, fino a 1000 caratteri: "
+                 "(1) la cosa più notevole, se c'è; (2) i soldi del mese e il "
+                 "patrimonio; (3) il portafoglio e il PAC. La lunghezza deve "
+                 "seguire il MATERIALE: se hai poco, scrivi poco — un paragrafo "
+                 "solo va benissimo. Non allungare mai per riempire.",
     },
     "finanze": {
         "ruolo": "Sei l'analista delle sue abitudini di spesa: cerchi il PERCHÉ dietro i "
                  "numeri del mese e i pattern che si ripetono.",
-        "forma": "2 paragrafi brevi, 5-7 frasi in tutto. Concentrati sulle spese e sul "
-                 "confronto coi mesi precedenti.",
+        "forma": "2-3 paragrafi, fino a 900 caratteri: cosa stona nelle spese, poi "
+                 "com'è composto il mese (dove vanno i soldi, con che ritmo). Se non "
+                 "hai mesi passati da confrontare, descrivi il mese in corso senza "
+                 "far finta di conoscere abitudini.",
     },
     "titolo": {
         "ruolo": "Sei il divulgatore: spieghi COS'È questo strumento e cosa lo muove, a "
@@ -610,9 +615,15 @@ def _genera(superficie: str, contesto: str = "", fatti=None, domanda: str = "",
             insights.come_testo(fatti), ""]
         if not fatti:
             parti += [
-                "Nessun fatto ha superato le soglie: NON cercare comunque qualcosa da "
-                "dire. Scrivi una riga sola per dire che non c'è niente fuori riga, "
-                "e fermati.", ""]
+                "Nessun fatto ha superato le soglie: non c'è NIENTE DI NUOVO da "
+                "segnalare, e non devi cercarlo. Dillo in una riga — poi, se il "
+                "quadro qui sotto contiene materiale utile, puoi descrivere com'è "
+                "messa la situazione oggi. Descrivere il presente è lecito; "
+                "spacciarlo per una novità no.", ""]
+        # il quadro: sostanza senza inventare significato. Risponde alla seconda
+        # domanda legittima — non "cos'è cambiato" ma "com'è messa adesso" — che
+        # non ha bisogno di storia per essere utile.
+        parti.append(insights.come_testo_quadro())
     if domanda:
         parti += [privacy.scrub_text(domanda), ""]
     if contesto:

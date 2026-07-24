@@ -122,11 +122,37 @@ def test_i_fatti_finiscono_nel_prompt(monkeypatch):
     assert "NON ricalcolare" in visto["prompt"]
 
 
-def test_senza_fatti_il_prompt_ordina_di_tacere(monkeypatch):
+def test_senza_fatti_niente_novita_inventate(monkeypatch):
+    """Zero fatti non vuol dire zero testo: si può descrivere il presente. Ma
+    NON si può spacciarlo per una novità."""
     visto = _cattura_prompt(monkeypatch)
     ai._genera("dashboard", fatti=[])
-    assert "NESSUN FATTO NOTEVOLE" in visto["prompt"]
-    assert "NON cercare comunque qualcosa da" in visto["prompt"]
+    p = visto["prompt"]
+    assert "NESSUN FATTO NOTEVOLE" in p
+    assert "non c'è NIENTE DI NUOVO da segnalare" in p
+    assert "spacciarlo per una novità no" in p
+
+
+def test_il_quadro_da_sostanza_senza_inventare(monkeypatch):
+    visto = _cattura_prompt(monkeypatch)
+    monkeypatch.setattr(insights, "quadro",
+                        lambda oggi=None: ["Portafoglio: 37 titoli.",
+                                           "Liquidità sui conti: 63,78 €."])
+    ai._genera("dashboard", fatti=[])
+    p = visto["prompt"]
+    assert "Portafoglio: 37 titoli." in p
+    assert "Liquidità sui conti: 63,78 €." in p
+    # è sfondo, non notizia: non ci si apre il discorso
+    assert "NON aprire il discorso da qui" in p
+
+
+def test_il_quadro_non_va_dove_non_c_entra(monkeypatch):
+    """Sulla scheda di un titolo si parla dello strumento, non del suo bilancio."""
+    visto = _cattura_prompt(monkeypatch)
+    monkeypatch.setattr(insights, "quadro",
+                        lambda oggi=None: ["Liquidità sui conti: 63,78 €."])
+    ai._genera("titolo", contesto="ETF globale")
+    assert "63,78" not in visto["prompt"]
 
 
 def test_ogni_superficie_ha_il_suo_registro(monkeypatch):
@@ -268,3 +294,19 @@ def test_niente_numeri_di_mercato_come_notizia(monkeypatch):
     ai._genera("dashboard")
     assert "non è mai una notizia" in visto["system"]
     assert "3445% a 3492%" in visto["system"]
+
+
+def test_niente_mesi_in_cui_l_app_non_esisteva(monkeypatch):
+    """Un mese prima dell'inizio del tracking NON e' "un mese senza spese":
+    passarlo all'agente invita a confronti falsi."""
+    import finance.service as fin
+    import finance.routes as fr
+    monkeypatch.setattr(fin, "data_inizio", lambda: datetime(2026, 7, 4))
+    monkeypatch.setattr(fin, "saldi", lambda: {"totale": 64.0, "liquido": 64.0,
+                                               "righe": [1] * 7})
+    _riepiloghi(monkeypatch, {(2026, 7): {"uscite": 35.0, "categorie": {"Spesa": 15.0}}})
+    monkeypatch.setattr(fr, "datetime", __import__("datetime").datetime)
+
+    testo = fr._contesto_finanze()
+    assert "2026-05" not in testo and "2026-06" not in testo
+    assert "2026-07" in testo

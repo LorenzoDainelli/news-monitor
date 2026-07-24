@@ -283,11 +283,20 @@ def _mesi_indietro(now, k):
 
 def _contesto_finanze() -> str:
     """Riassunto AGGREGATO e anonimo degli ultimi 3 mesi per l'analisi AI.
-    Niente nomi/carte/IBAN: solo totali e categorie."""
+    Niente nomi/carte/IBAN: solo totali e categorie.
+
+    I mesi PRECEDENTI all'inizio del tracking non si passano: un mese in cui
+    l'app non esisteva non è "un mese senza spese", e presentarlo come tale
+    invita l'agente a confronti falsi ("le uscite sono cresciute rispetto a
+    maggio", quando a maggio semplicemente non registravamo niente)."""
     now = datetime.now()
+    inizio = service.data_inizio()
     righe = []
     for k in (2, 1, 0):
         y, m = _mesi_indietro(now, k)
+        # il mese conta solo se è cominciato dopo l'inizio del tracking
+        if datetime(y, m, 1) < datetime(inizio.year, inizio.month, 1):
+            continue
         r = service.riepilogo_mese(y, m)
         cat = "; ".join(f"{c['nome']}: {c['tot']:.0f}€" for c in r["spese_categoria"][:6]) or "nessuna"
         righe.append(
