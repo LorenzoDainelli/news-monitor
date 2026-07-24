@@ -213,16 +213,11 @@ def dashboard_ai():
         pass
     try:
         d = _dashboard_ctx()
-        # Questi due sono STORIA DI MERCATO dei titoli, non risultati dell'utente:
-        # etichettarli male è il modo più facile per far scrivere all'agente una
-        # frase falsa ("hai guadagnato il 3878%").
-        if d["perf12m"] is not None:
-            contesto += (f"\nAndamento a 12 mesi dei titoli sul MERCATO (media pesata, "
-                         f"periodo in gran parte precedente all'acquisto): {d['perf12m']:+.1f}%.")
-        if d["movers"]:
-            mv = ", ".join(f"{m['tk']} {m['pl']:+.0f}%" for m in d["movers"])
-            contesto += (f"\nTitoli col movimento di mercato più ampio a 12 mesi "
-                         f"(NON guadagni dell'utente): {mv}.")
+        # NB: le performance a 12 mesi dei titoli NON entrano qui di proposito.
+        # Sono storia del mercato, avvenuta prima che l'utente comprasse: dargliele
+        # significa vederle rispuntare come se fossero suoi guadagni. Restano
+        # visibili in pagina, dove sono etichettate per quello che sono, e sulla
+        # scheda del singolo titolo dove il discorso è sullo strumento.
         if d["dividendi"]:
             contesto += (f"\nDividendi attesi (stima lorda dai rendimenti dichiarati): "
                          f"{d['dividendi']['annuo']:.2f}€ l'anno, "
